@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Input as RNKTextInput } from '@ui-kitten/components'
-
+// import { Input as RNKTextInput } from '@ui-kitten/components'
 import {
   StyleSheet,
   Pressable,
   Text,
+  TextInput,
   View,
   Image,
   Alert,
@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
-// import { FontFamily, FontSize, Border, Color, Padding } from '../GlobalStyles'
+import { FontFamily, FontSize, Border, Color, Padding } from '../GlobalStyles'
 import firebase from '../database/firebase'
 import Globals from '../Globals'
 import { checkAuthState } from '../helperFunctions'
@@ -27,7 +27,7 @@ const Login = () => {
 
   useEffect(() => {
     if (checkAuthState()) {
-      navigation.navigate('Today')
+      navigation.navigate('Map')
     }
   }, [])
 
@@ -108,14 +108,14 @@ const Login = () => {
       <View style={styles.logins}>
         <View style={styles.frameParent}>
           <View style={styles.beaconlogo51Parent}>
-            {/* <Image
+            <Image
               style={styles.beaconlogo51Icon}
               resizeMode="cover"
               source={require('../assets/beaconlogo.png')}
-            /> */}
+            />
             <Text style={[styles.beacon, styles.loginTypo, { color: '#FF6422' }]}>Beacon</Text>
           </View>
-          <RNKTextInput
+          <TextInput
             style={styles.frameChild}
             placeholder="Email" // Change the placeholder to "Email"
             value={email}
@@ -125,7 +125,7 @@ const Login = () => {
             autoCorrect={false} // Disable auto-correction
             autoCapitalize="none" // Disable auto-capitalization
           />
-          <RNKTextInput
+          <TextInput
             style={styles.frameItem}
             placeholder="Password"
             value={password}
@@ -157,23 +157,41 @@ const Login = () => {
                 <Text style={[styles.login, styles.loginTypo]}>Login</Text>
               </Pressable>
             </LinearGradient>
-          </View>
-            <Text
-                style={[styles.text, styles.textLayout, styles.forgotPassword]}
+
+            <LinearGradient
+              style={[
+                styles.wrapper,
+                forgotPressed && styles.wrapperPressed,
+                { borderRadius: 50 },
+              ]} // Add the "wrapperPressed" style when the button is pressed
+              locations={[0, 1]}
+              colors={
+                forgotPressed ? ['#cc501b', '#cc8353'] : ['#ff6422', '#ffa266']
+              } // Darken the colors when the button is pressed
+            >
+              <Pressable
+                style={[styles.pressable, styles.roundedButton]}
                 onPress={() => navigation.navigate('ForgotPassword')}
                 onPressIn={() => setForgotPressed(true)} // Set "pressed" state to true when the button is pressed
                 onPressOut={() => setForgotPressed(false)} // Set "pressed" state to false when the button is released
               >
-                <Text style={styles.signUp}>
+                <Text style={[styles.login, styles.loginTypo]}>
                   Forgot Password?
                 </Text>
-            </Text>
+              </Pressable>
+            </LinearGradient>
           </View>
+          <Pressable
+            style={styles.dontHaveAnContainer}
+            onPress={() => navigation.navigate('Signup')}
+          >
             <Text style={[styles.text, styles.textLayout]}>
               {`Don’t have an account? `}
               <Text style={styles.signUp}>Sign up</Text>
             </Text>
+          </Pressable>
         </View>
+      </View>
     </KeyboardAvoidingView>
   )
 }
@@ -185,6 +203,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'center',
   },
+  forgotPasswordButton: {
+    marginTop: 10,
+  },
   wrapperPressed: {
     opacity: 0.8, // Reduce the opacity of the button when pressed
   },
@@ -195,63 +216,53 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   loginTypo: {
-    // fontFamily: FontFamily.epilogueBold,
+    fontFamily: FontFamily.epilogueBold,
     fontWeight: '700',
     textAlign: 'left',
   },
   textLayout: {
     lineHeight: 25,
-    // fontSize: FontSize.size_lg,
+    fontSize: FontSize.size_lg,
   },
   frameChild: {
     borderColor: '#c1c1c1',
     borderStyle: 'solid',
-    // borderRadius: Border.br_8xs,
+    borderRadius: Border.br_8xs,
   },
   frameItem: {
     marginTop: 20,
-    // borderRadius: Border.br_8xs,
+    borderRadius: Border.br_8xs,
   },
   login: {
-    // color: Color.white,
+    color: Color.white,
     textAlign: 'left',
     lineHeight: 25,
-    // fontSize: FontSize.size_lg,
+    fontSize: FontSize.size_lg,
   },
   pressable: {
     flexDirection: 'row',
-    // paddingHorizontal: Padding.p_xl,
-    // paddingVertical: Padding.p_3xs,
+    paddingHorizontal: Padding.p_xl,
+    paddingVertical: Padding.p_3xs,
     justifyContent: 'center',
-    // backgroundColor: Color.papaya,
+    backgroundColor: Color.papaya,
     alignItems: 'center',
     width: '100%',
   },
   wrapper: {
     width: 322,
     marginTop: 20,
-    marginBottom: 6,
   },
   frameParent: {
     // alignItems: 'center',
   },
   signUp: {
-    // textDecorationLine: 'underline',
-    color: '#FF6422',
-  },
-  forgotPassword: {
-    // textDecorationLine: 'underline',
-    color: '#FF6422',
-    textAlign: 'left',
-    marginBottom: 40,
-    fontSize: 14,
-    marginLeft: 10,
+    textDecorationLine: 'underline',
   },
   text: {
     fontWeight: '500',
-    // fontFamily: FontFamily.epilogueMedium,
-    // color: Color.black,
-    textAlign: 'center',
+    fontFamily: FontFamily.epilogueMedium,
+    color: Color.black,
+    textAlign: 'left',
   },
   dontHaveAnContainer: {
     alignSelf: 'center',
@@ -262,7 +273,7 @@ const styles = StyleSheet.create({
     height: 135,
   },
   beacon: {
-    // fontSize: FontSize.size_31xl,
+    fontSize: FontSize.size_31xl,
     lineHeight: 69,
     width: 195,
     marginTop: 11,
@@ -273,8 +284,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logins: {
-    // borderRadius: Border.br_11xl,
-    // backgroundColor: Color.white,
+    borderRadius: Border.br_11xl,
+    backgroundColor: Color.white,
     flex: 1,
     // height: 896,
     overflow: 'hidden',
@@ -284,4 +295,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default Login;
+export default Login
