@@ -75,12 +75,12 @@ const SettingsStack = () => (
 const theme = {
   dark: false,
   colors: {
-    primary: 'rgb(255, 45, 85)',
+    primary: "rgb(255, 45, 85)",
     background: "#DD4F4F",
-    card: 'rgb(255, 255, 255)',
-    text: 'rgb(28, 28, 30)',
-    border: 'rgb(199, 199, 204)',
-    notification: 'rgb(255, 69, 58)',
+    card: "rgb(255, 255, 255)",
+    text: "rgb(28, 28, 30)",
+    border: "rgb(199, 199, 204)",
+    notification: "rgb(255, 69, 58)",
   },
 };
 
@@ -172,7 +172,6 @@ export default function App() {
               }}
             />
           </Tab.Navigator>
-
         ) : (
           <AuthStack />
         )
@@ -185,12 +184,12 @@ export default function App() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderTopWidth: 0,
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
-    height: 100
+    height: 100,
   },
 });

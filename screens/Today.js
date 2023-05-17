@@ -3,41 +3,83 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
+import {
+  widthPercentageToDP,
+  heightPercentageToDP,
+} from "react-native-responsive-screen";
 
 const Today = () => {
+  const todos = [
+    {
+      id: 1,
+      title: "Learn to juggle",
+      description: "Practice juggling with three oranges",
+      amount: "$3",
+      tag: "Fitness",
+    },
+    {
+      id: 2,
+      title: "Create a silly dance",
+      description: "Choreograph a funny dance routine",
+      amount: "$5",
+      tag: "Entertainment",
+    },
+    {
+      id: 3,
+      title: "Build a blanket fort",
+      description: "Construct a cozy fort using blankets and pillows",
+      amount: "$2",
+      tag: "Cozy",
+    },
+  ];
+
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        <Text style={styles.title}>Today</Text>
-        <Text style={styles.subtitle}>Ends @ 9:00 PM</Text>
-        <Todo />
+    <SafeAreaView style={styles.pageContainer}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerTitle}>Today</Text>
+        <Text style={styles.headerSubtitle}>Ends @ 9:00 PM</Text>
+      </View>
+      <View style={styles.todoContainer}>
+        {todos.map((todo, i) => (
+          <Todo
+            key={todo.id}
+            todoNumber={i + 1}
+            title={todo.title}
+            description={todo.description}
+            amount={todo.amount}
+            tag={todo.tag}
+          />
+        ))}
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  pageContainer: {
     flex: 1,
-    flexDirection: "column",
-    alignItems: "flex-start",
-    padding: 0,
-    gap: 11,
-    position: "absolute",
-    width: 192,
-    height: 66,
-    left: 33,
-    top: 87,
+    alignItems: "center",
+    marginHorizontal: 25,
   },
-  title: {
-    color: Color.white,
-    fontSize: 48,
+  headerContainer: {
+    marginTop: 10,
+    width: "100%",
+    flexDirection: "col",
+  },
+  headerTitle: {
+    color: "white",
+    fontSize: 64,
     fontWeight: "bold",
   },
-  subtitle: {
-    color: Color.white,
-    fontSize: 24,
+  headerSubtitle: {
+    color: "white",
+    fontSize: 30,
     fontWeight: "bold",
+  },
+  todoContainer: {
+    marginTop: 20,
+    gap: 22,
+    width: "100%",
   },
 });
 
