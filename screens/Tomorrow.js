@@ -1,14 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import React from "react";
 
 const Tomorrow = () => {
   return (
-    <View>
-      <Text>Tomorrow</Text>
-    </View>
-  )
-}
+    <SafeAreaView>
+      <View>
+        <Text>Bruv</Text>
+      </View>
+    </SafeAreaView>
+  );
+};
 
-export default Tomorrow
+export default Tomorrow;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

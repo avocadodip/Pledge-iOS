@@ -1,22 +1,91 @@
 import * as React from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { StyleSheet, Text, View, Image } from "react-native";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import Today from "./screens/Today";
+import Tomorrow from "./screens/Tomorrow";
+import Settings from "./screens/Settings";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
+import Splash from "./screens/Splash";
+import { Color } from "./GlobalStyles";
+
 // import { MenuProvider } from "react-native-popup-menu";
 // import { IconRegistry, ApplicationProvider } from "@ui-kitten/components";
+
+import TodayActiveIcon from "./assets/icons/fire-active-icon.svg";
+import TodayInactiveIcon from "./assets/icons/fire-inactive-icon.svg";
+import TomorrowActiveIcon from "./assets/icons/add-active-icon.svg";
+import TomorrowInactiveIcon from "./assets/icons/add-inactive-icon.svg";
+import SettingsActiveIcon from "./assets/icons/settings-active-icon.svg";
+import SettingsInactiveIcon from "./assets/icons/settings-inactive-icon.svg";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const AuthStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen
+      name="Login"
+      component={Login}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Signup"
+      component={Signup}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
+
+const TodayStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen
+      name="TodayScreen"
+      component={Today}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
+
+const TomorrowStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen
+      name="TomorrowScreen"
+      component={Tomorrow}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
+
+const SettingsStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen
+      name="SettingsScreen"
+      component={Settings}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
+
+const theme = {
+  dark: false,
+  colors: {
+    primary: 'rgb(255, 45, 85)',
+    background: "#DD4F4F",
+    card: 'rgb(255, 255, 255)',
+    text: 'rgb(28, 28, 30)',
+    border: 'rgb(199, 199, 204)',
+    notification: 'rgb(255, 69, 58)',
+  },
+};
+
 export default function App() {
-  const [hideSplashScreen, setHideSplashScreen] = React.useState(false);
+  const [hideSplashScreen, setHideSplashScreen] = React.useState(true);
   const [fontsLoaded, error] = useFonts({
     Epilogue_regular: require("./assets/fonts/Epilogue_regular.ttf"),
     Epilogue_medium: require("./assets/fonts/Epilogue_medium.ttf"),
@@ -27,51 +96,101 @@ export default function App() {
     Inter_bold: require("./assets/fonts/Inter_bold.ttf"),
   });
 
+  React.useEffect(() => {
+    setTimeout(() => {
+      setHideSplashScreen(true);
+    }, 2000);
+  }, []);
+
   if (!fontsLoaded && !error) {
     return null;
   }
 
+  const userLoggedIn = true; // Set this based on your authentication logic
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Login"
-        screenOptions={{ headerShown: false }}
-      >
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Signup"
-          component={Signup}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Today"
-          component={Today}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Tomorrow"
-          component={Tomorrow}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Settings"
-          component={Settings}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
+    <NavigationContainer theme={theme}>
+      {hideSplashScreen ? (
+        userLoggedIn ? (
+          <Tab.Navigator
+            screenOptions={{
+              headerShown: false,
+              tabBarStyle: styles.tabBar,
+              tabBarShowLabel: false,
+            }}
+          >
+            <Tab.Screen
+              name="Today"
+              component={TodayStack}
+              options={{
+                tabBarIcon: ({ focused }) =>
+                  focused ? (
+                    <TodayActiveIcon width={30} height={30} color={"white"} />
+                  ) : (
+                    <TodayInactiveIcon width={30} height={30} color={"white"} />
+                  ),
+              }}
+            />
+            <Tab.Screen
+              name="Tomorrow"
+              component={TomorrowStack}
+              options={{
+                tabBarIcon: ({ focused }) =>
+                  focused ? (
+                    <TomorrowActiveIcon
+                      width={30}
+                      height={30}
+                      color={"white"}
+                    />
+                  ) : (
+                    <TomorrowInactiveIcon
+                      width={30}
+                      height={30}
+                      color={"white"}
+                    />
+                  ),
+              }}
+            />
+            <Tab.Screen
+              name="Settings"
+              component={SettingsStack}
+              options={{
+                tabBarIcon: ({ focused }) =>
+                  focused ? (
+                    <SettingsActiveIcon
+                      width={30}
+                      height={30}
+                      color={"white"}
+                    />
+                  ) : (
+                    <SettingsInactiveIcon
+                      width={30}
+                      height={30}
+                      color={"white"}
+                    />
+                  ),
+              }}
+            />
+          </Tab.Navigator>
+
+        ) : (
+          <AuthStack />
+        )
+      ) : (
+        <Splash />
+      )}
     </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+  tabBar: {
+    backgroundColor: 'transparent',
+    borderTopWidth: 0,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 100
   },
 });

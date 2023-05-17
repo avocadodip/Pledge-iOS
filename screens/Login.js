@@ -27,7 +27,7 @@ const Login = () => {
 
   useEffect(() => {
     if (checkAuthState()) {
-      navigation.navigate('Map')
+      navigation.navigate('Today')
     }
   }, [])
 
@@ -79,8 +79,8 @@ const Login = () => {
             } else {
               console.log('No such document!')
             }
-            // Navigate to the Map screen after retrieving the full name
-            navigation.navigate('Map')
+            // Navigate to the Today screen after retrieving the full name
+            navigation.navigate('Today')
           })
           .catch((error) => {
             console.error('Error getting document:', error)

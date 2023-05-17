@@ -20,6 +20,10 @@ export const FontSize = {
 };
 /* Colors */
 export const Color = {
+  fervo_red: "#DD4F4F",
+  fervo_green: "#2FAC52",
+  fervo_purple: "#6E48D9",
+  fervo_blue: "#3D56DD",
   white: "#fff",
   black: "#000",
   gray_100: "rgba(0, 0, 0, 0.5)",
