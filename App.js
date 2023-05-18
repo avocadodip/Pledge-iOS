@@ -12,7 +12,7 @@ import Signup from "./screens/Signup";
 import Splash from "./screens/Splash";
 import TodoBottomSheet from "./components/TodoBottomSheet";
 import { Color } from "./GlobalStyles";
-import { BottomSheetProvider } from "./BottomSheetContext";
+import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 // import { MenuProvider } from "react-native-popup-menu";
 // import { IconRegistry, ApplicationProvider } from "@ui-kitten/components";
 import TodayActiveIcon from "./assets/icons/fire-active-icon.svg";

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useRef } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { useBottomSheet } from "../BottomSheetContext";
+import { useBottomSheet } from "../hooks/BottomSheetContext";
 import PledgeDollarIcon from "../assets/icons/pledge-dollar-icon.svg";
 import FolderIcon from "../assets/icons/amount-folder-icon.svg";
 import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
@@ -129,6 +129,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "500",
-    lineHeight: 25
+    lineHeight: 25,
   },
 });

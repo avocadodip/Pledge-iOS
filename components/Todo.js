@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import CheckIcon from "../assets/icons/check-icon.svg";
-import { useBottomSheet } from "../BottomSheetContext";
+import { useBottomSheet } from "../hooks/BottomSheetContext";
 import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
 
 const Todo = ({ todoNumber, title, description, amount, tag }) => {
