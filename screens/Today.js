@@ -76,13 +76,14 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: "white",
-    fontSize: 58,
+    fontSize: 50,
     fontWeight: "bold",
   },
   headerSubtitle: {
     color: "white",
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: "bold",
+    marginTop: 5
   },
   todoContainer: {
     marginTop: 20,
