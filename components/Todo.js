@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   upperHalfContainer: {
     flex: 4,
-    justifyContent: "center",
+    // justifyContent: "center", //commented out this to shift number/title to the top
   },
   numberTitleContainer: {
     flexDirection: "row",
@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 4,
     maxWidth: 80,
+    alignSelf: "stretch", // Added alignSelf to stretch the container
   },
   todoNumber: {
     color: "white",
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
   },
   todoAmount: {
     color: "white",
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: "bold",
   },
 });
