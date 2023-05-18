@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
 import {
@@ -9,6 +9,7 @@ import {
 } from "react-native-responsive-screen";
 
 const Today = () => {
+
   const todos = [
     {
       id: 1,
@@ -51,15 +52,22 @@ const Today = () => {
           />
         ))}
       </View>
+
+
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  bottomSheet: {
+    backgroundColor: "red",
+    width: "100%",
+    height: "100%",
+  },
   pageContainer: {
     flex: 1,
     alignItems: "center",
-    marginHorizontal: 25,
+    marginHorizontal: 20,
   },
   headerContainer: {
     marginTop: 10,
@@ -68,7 +76,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: "white",
-    fontSize: 64,
+    fontSize: 58,
     fontWeight: "bold",
   },
   headerSubtitle: {

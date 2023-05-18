@@ -7,7 +7,7 @@ const Settings = () => {
   return (
     <SafeAreaView>
       <View>
-        <Text>Today</Text>
+        <Text>Settings Screen</Text>
       </View>
     </SafeAreaView>
   );

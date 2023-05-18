@@ -1,6 +1,6 @@
-import * as React from "react";
+import React, { useContext, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Image } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
@@ -10,11 +10,11 @@ import Settings from "./screens/Settings";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import Splash from "./screens/Splash";
+import TodoBottomSheet from "./components/TodoBottomSheet";
 import { Color } from "./GlobalStyles";
-
+import { BottomSheetProvider } from "./BottomSheetContext";
 // import { MenuProvider } from "react-native-popup-menu";
 // import { IconRegistry, ApplicationProvider } from "@ui-kitten/components";
-
 import TodayActiveIcon from "./assets/icons/fire-active-icon.svg";
 import TodayInactiveIcon from "./assets/icons/fire-inactive-icon.svg";
 import TomorrowActiveIcon from "./assets/icons/add-active-icon.svg";
@@ -85,7 +85,7 @@ const theme = {
 };
 
 export default function App() {
-  const [hideSplashScreen, setHideSplashScreen] = React.useState(true);
+  const [hideSplashScreen, setHideSplashScreen] = useState(true);
   const [fontsLoaded, error] = useFonts({
     Epilogue_regular: require("./assets/fonts/Epilogue_regular.ttf"),
     Epilogue_medium: require("./assets/fonts/Epilogue_medium.ttf"),
@@ -109,76 +109,89 @@ export default function App() {
   const userLoggedIn = true; // Set this based on your authentication logic
 
   return (
-    <NavigationContainer theme={theme}>
-      {hideSplashScreen ? (
-        userLoggedIn ? (
-          <Tab.Navigator
-            screenOptions={{
-              headerShown: false,
-              tabBarStyle: styles.tabBar,
-              tabBarShowLabel: false,
-            }}
-          >
-            <Tab.Screen
-              name="Today"
-              component={TodayStack}
-              options={{
-                tabBarIcon: ({ focused }) =>
-                  focused ? (
-                    <TodayActiveIcon width={30} height={30} color={"white"} />
-                  ) : (
-                    <TodayInactiveIcon width={30} height={30} color={"white"} />
-                  ),
-              }}
-            />
-            <Tab.Screen
-              name="Tomorrow"
-              component={TomorrowStack}
-              options={{
-                tabBarIcon: ({ focused }) =>
-                  focused ? (
-                    <TomorrowActiveIcon
-                      width={30}
-                      height={30}
-                      color={"white"}
-                    />
-                  ) : (
-                    <TomorrowInactiveIcon
-                      width={30}
-                      height={30}
-                      color={"white"}
-                    />
-                  ),
-              }}
-            />
-            <Tab.Screen
-              name="Settings"
-              component={SettingsStack}
-              options={{
-                tabBarIcon: ({ focused }) =>
-                  focused ? (
-                    <SettingsActiveIcon
-                      width={30}
-                      height={30}
-                      color={"white"}
-                    />
-                  ) : (
-                    <SettingsInactiveIcon
-                      width={30}
-                      height={30}
-                      color={"white"}
-                    />
-                  ),
-              }}
-            />
-          </Tab.Navigator>
-        ) : (
-          <AuthStack />
-        )
-      ) : (
-        <Splash />
-      )}
-    </NavigationContainer>
+    <BottomSheetProvider>
+      <View style={{ flex: 1 }}>
+        <NavigationContainer theme={theme}>
+          {hideSplashScreen ? (
+            userLoggedIn ? (
+              <Tab.Navigator
+                screenOptions={{
+                  headerShown: false,
+                  tabBarStyle: styles.tabBar,
+                  tabBarShowLabel: false,
+                }}
+              >
+                <Tab.Screen
+                  name="Today"
+                  component={TodayStack}
+                  options={{
+                    tabBarIcon: ({ focused }) =>
+                      focused ? (
+                        <TodayActiveIcon
+                          width={40}
+                          height={40}
+                          color={"white"}
+                        />
+                      ) : (
+                        <TodayInactiveIcon
+                          width={40}
+                          height={40}
+                          color={"white"}
+                        />
+                      ),
+                  }}
+                />
+                <Tab.Screen
+                  name="Tomorrow"
+                  component={TomorrowStack}
+                  options={{
+                    tabBarIcon: ({ focused }) =>
+                      focused ? (
+                        <TomorrowActiveIcon
+                          width={40}
+                          height={40}
+                          color={"white"}
+                        />
+                      ) : (
+                        <TomorrowInactiveIcon
+                          width={40}
+                          height={40}
+                          color={"white"}
+                        />
+                      ),
+                  }}
+                />
+                <Tab.Screen
+                  name="Settings"
+                  component={SettingsStack}
+                  options={{
+                    tabBarIcon: ({ focused }) =>
+                      focused ? (
+                        <SettingsActiveIcon
+                          width={40}
+                          height={40}
+                          color={"white"}
+                        />
+                      ) : (
+                        <SettingsInactiveIcon
+                          width={40}
+                          height={40}
+                          color={"white"}
+                        />
+                      ),
+                  }}
+                />
+              </Tab.Navigator>
+            ) : (
+              <AuthStack />
+            )
+          ) : (
+            <Splash />
+          )}
+        </NavigationContainer>
+        <TodoBottomSheet />
+      </View>
+    </BottomSheetProvider>
   );
 }
 

@@ -6,7 +6,7 @@ const Tomorrow = () => {
   return (
     <SafeAreaView>
       <View>
-        <Text>Bruv</Text>
+        <Text>Tomorrow Screen</Text>
       </View>
     </SafeAreaView>
   );
