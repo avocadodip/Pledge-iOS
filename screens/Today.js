@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useRef, useState } from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
-import EmptyTodo from "../components/EmptyTodo";
+import { useBottomSheet } from "../hooks/BottomSheetContext";
 
 const Today = () => {
   const todos = [
@@ -50,10 +50,23 @@ const Today = () => {
             description={todo.description}
             amount={todo.amount}
             tag={todo.tag}
+            componentType="info"
+            isLocked={null}
           />
         );
       } else {
-        result.push(<EmptyTodo key={i + 1} />); // keys now start from 1
+        result.push(
+          <Todo
+            key={i + 1}
+            todoNumber={""}
+            title={""}
+            description={""}
+            amount={""}
+            tag={""}
+            componentType="fined"
+            isLocked={null}
+          />
+        ); // keys now start from 1
       }
     }
 
