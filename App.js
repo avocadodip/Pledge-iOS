@@ -10,9 +10,12 @@ import Settings from "./screens/Settings";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import Splash from "./screens/Splash";
+import Billing from "./screens/Billing";
+import Account from "./screens/Account";
+import Stats from "./screens/Stats";
 import TodoBottomSheet from "./components/TodoBottomSheet";
 import { Color } from "./GlobalStyles";
-import { BottomSheetProvider } from "./BottomSheetContext";
+import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 // import { MenuProvider } from "react-native-popup-menu";
 // import { IconRegistry, ApplicationProvider } from "@ui-kitten/components";
 import TodayActiveIcon from "./assets/icons/fire-active-icon.svg";
@@ -70,8 +73,18 @@ const SettingsStack = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="AccountScreen"
+      name="Account"
       component={Account}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Stats"
+      component={Stats}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Billing"
+      component={Billing}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
