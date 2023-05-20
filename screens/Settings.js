@@ -13,7 +13,7 @@ const Settings = ({ navigation }) => {
   const handlePress = (screenName) => {
     navigation.navigate(screenName);
   };
-  
+
   return (
     <SafeAreaView style={styles.pageContainer}>
       <View style={styles.headerContainer}>
@@ -41,8 +41,8 @@ const Settings = ({ navigation }) => {
       </View>
       <View style={styles.settingsButtonContainer}>
 	      <TouchableOpacity 
-						style={styles.settingsButton}
-						onPress={() => handlePress("Stats")}
+					style={styles.settingsButton}
+					onPress={() => handlePress("Stats")}
 				>
           <View style={styles.leftSettingsButton}>
             <LibraryIcon
@@ -56,7 +56,7 @@ const Settings = ({ navigation }) => {
               width={24}
               height={24}
               color={Color.white}
-            />
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.settingsButtonContainer}>
@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   headerTitle: {
-    color: "white",
+    color: Color.white,
     fontSize: 30,
     fontWeight: "bold",
   },
   buttonTitle: {
-    color: "white",
+    color: Color.white,
     fontSize: 20,
     marginLeft: 24,
   },

@@ -129,6 +129,7 @@ export default function App() {
   return (
     <BottomSheetProvider>
       <View style={{ flex: 1 }}>
+        <StatusBar style="light" backgroundColor={Color.white} />
         <NavigationContainer theme={theme}>
           {hideSplashScreen ? (
             userLoggedIn ? (
