@@ -1,9 +1,8 @@
 import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
-import { useBottomSheet } from "../hooks/BottomSheetContext";
 
 const Today = () => {
   const todos = [
@@ -84,11 +83,6 @@ const Today = () => {
 };
 
 const styles = StyleSheet.create({
-  bottomSheet: {
-    backgroundColor: "red",
-    width: "100%",
-    height: "100%",
-  },
   pageContainer: {
     flex: 1,
     alignItems: "center",

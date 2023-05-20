@@ -24,6 +24,7 @@ import TomorrowActiveIcon from "./assets/icons/add-active-icon.svg";
 import TomorrowInactiveIcon from "./assets/icons/add-inactive-icon.svg";
 import SettingsActiveIcon from "./assets/icons/settings-active-icon.svg";
 import SettingsInactiveIcon from "./assets/icons/settings-inactive-icon.svg";
+import { checkAuthState } from "./utils/authHelper";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -124,7 +125,7 @@ export default function App() {
     return null;
   }
 
-  const userLoggedIn = true; // Set this based on your authentication logic
+  const userLoggedIn = checkAuthState(); // Set this based on your authentication logic
 
   return (
     <BottomSheetProvider>
