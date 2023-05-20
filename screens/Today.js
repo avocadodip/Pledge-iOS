@@ -11,7 +11,7 @@ const Today = () => {
       id: 1,
       title: "Learn to juggle",
       description: "Practice juggling with three oranges",
-      amount: "$3",
+      amount: "3",
       tag: "Fitness",
     },
     // {
@@ -25,7 +25,7 @@ const Today = () => {
       id: 3,
       title: "Build a blanket fort",
       description: "Construct a cozy fort using blankets and pillows",
-      amount: "$2",
+      amount: "2",
       tag: "Cozy",
     },
   ];

@@ -14,7 +14,7 @@ const Tomorrow = () => {
         todoNumber: 1,
         title: "Learn to juggle",
         description: "Practice juggling with three oranges",
-        amount: "$3",
+        amount: "3",
         tag: "Fitness",
         isLocked: true,
       },
@@ -45,7 +45,6 @@ const Tomorrow = () => {
     for (let i = 0; i < 3; i++) {
       const todo = todos.find((item) => item.todoNumber === i + 1);
       console.log(todo);
-
       if (todo && todo.title !== "") {
         result.push(
           <Todo
@@ -69,7 +68,7 @@ const Tomorrow = () => {
             description={""}
             amount={""}
             tag={""}
-            isLocked={todo ? todo.isLocked : false}
+            isLocked={false}
           />
         );
       }

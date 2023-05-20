@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import CheckIcon from "../assets/icons/check-icon.svg";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
@@ -15,36 +21,36 @@ const Todo = ({
   componentType,
   isLocked,
 }) => {
-  const { setIsBottomSheetOpen, setSelectedTodo, isBottomSheetEditable, setIsBottomSheetEditable } = useBottomSheet();
+  const {
+    setIsBottomSheetOpen,
+    setSelectedTodo,
+    isBottomSheetEditable,
+    setIsBottomSheetEditable,
+  } = useBottomSheet();
 
   const handlePress = () => {
-    setSelectedTodo({ todoNumber, title, description, amount, tag });
+    setSelectedTodo({ todoNumber, title, description, amount, tag, isLocked });
     setIsBottomSheetOpen(true);
-    if (isLocked == null || isLocked == true) { // (isLocked == null on today page)
+    if (isLocked == null || isLocked == true) {
+      // (isLocked == null on today page)
       setIsBottomSheetEditable(false);
+      console.log("hi");
     } else setIsBottomSheetEditable(true);
   };
 
   const handleNewTodoPress = () => {
     setIsBottomSheetEditable(true);
     setIsBottomSheetOpen(true);
-    setSelectedTodo({ todoNumber, title, description, amount, tag });
-  }
-
-  const renderIcon = () => {
-    if (isLocked === null) {
-      return <CheckIcon />;
-    } else if (isLocked) {
-      return <LockIcon />;
-    } else {
-      return <UnlockIcon />;
-    }
+    setSelectedTodo({ todoNumber, title, description, amount, tag, isLocked });
   };
-
+  
   // 1. number [tmrw page]
   if (componentType == "number") {
     return (
-      <TouchableOpacity style={styles.numberContainer} onPress={handleNewTodoPress}>
+      <TouchableOpacity
+        style={styles.numberContainer}
+        onPress={handleNewTodoPress}
+      >
         <Text style={styles.numberText}>{todoNumber}</Text>
       </TouchableOpacity>
     );
@@ -88,11 +94,23 @@ const Todo = ({
               </View>
             </View>
             <View style={styles.amountContainer}>
-              <Text style={styles.todoAmount}>{amount}</Text>
+              <Text style={styles.todoAmount}>${amount}</Text>
             </View>
           </View>
         </TouchableOpacity>
-        <View style={styles.rightContainer}>{renderIcon()}</View>
+        {isLocked === true ? (
+          <View style={styles.rightContainer}>
+            <LockIcon />
+            </View>
+        ) : isLocked === false ? (
+          <TouchableOpacity style={styles.rightContainer}>
+            <UnlockIcon />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.rightContainer}>
+            <CheckIcon />
+          </TouchableOpacity>
+        )}
       </View>
     );
   }

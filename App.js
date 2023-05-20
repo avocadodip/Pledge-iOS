@@ -10,6 +10,9 @@ import Settings from "./screens/Settings";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import Splash from "./screens/Splash";
+import Billing from "./screens/Billing";
+import Account from "./screens/Account";
+import Stats from "./screens/Stats";
 import TodoBottomSheet from "./components/TodoBottomSheet";
 import { Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
@@ -67,6 +70,21 @@ const SettingsStack = () => (
     <Stack.Screen
       name="SettingsScreen"
       component={Settings}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Account"
+      component={Account}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Stats"
+      component={Stats}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Billing"
+      component={Billing}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

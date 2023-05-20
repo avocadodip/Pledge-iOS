@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 30,
     fontWeight: "bold",
+    width: "80%",
   },
   text: {
     color: "white",
