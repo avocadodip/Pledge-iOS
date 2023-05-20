@@ -25,6 +25,7 @@ export const Color = {
   fervo_purple: "#6E48D9",
   fervo_blue: "#3D56DD",
   white: "#fff",
+  border_white: "rgba(243, 243, 243, 0.32)",
   black: "#000",
   gray_100: "rgba(0, 0, 0, 0.5)",
   gray_200: "rgba(0, 0, 0, 0.6)",

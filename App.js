@@ -69,6 +69,11 @@ const SettingsStack = () => (
       component={Settings}
       options={{ headerShown: false }}
     />
+    <Stack.Screen
+      name="AccountScreen"
+      component={Account}
+      options={{ headerShown: false }}
+    />
   </Stack.Navigator>
 );
 
