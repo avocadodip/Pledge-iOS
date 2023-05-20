@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import {
+  Alert,
   View,
   Text,
   TextInput,
@@ -21,29 +22,70 @@ const Todo = ({
   componentType,
   isLocked,
 }) => {
-  const {
-    setIsBottomSheetOpen,
-    setSelectedTodo,
-    isBottomSheetEditable,
-    setIsBottomSheetEditable,
-  } = useBottomSheet();
+  const [isTodoLocked, setIsTodoLocked] = useState(isLocked);
 
-  const handlePress = () => {
-    setSelectedTodo({ todoNumber, title, description, amount, tag, isLocked });
+  const { setIsBottomSheetOpen, setSelectedTodo, setIsBottomSheetEditable } =
+    useBottomSheet();
+
+  const handleOpenBottomSheet = () => {
+    setSelectedTodo({
+      todoNumber,
+      title,
+      description,
+      amount,
+      tag,
+      isTodoLocked,
+    });
     setIsBottomSheetOpen(true);
-    if (isLocked == null || isLocked == true) {
+    if (isTodoLocked == null || isTodoLocked == true) {
       // (isLocked == null on today page)
       setIsBottomSheetEditable(false);
-      console.log("hi");
     } else setIsBottomSheetEditable(true);
   };
 
   const handleNewTodoPress = () => {
     setIsBottomSheetEditable(true);
     setIsBottomSheetOpen(true);
-    setSelectedTodo({ todoNumber, title, description, amount, tag, isLocked });
+    setSelectedTodo({
+      todoNumber,
+      title,
+      description,
+      amount,
+      tag,
+      isTodoLocked,
+    });
   };
-  
+
+  const showAlert = (missingField) => {
+    let message;
+    if (missingField === "title") {
+      message = "Fill in a name for the task to lock it!";
+    } else if (missingField === "amount") {
+      message = "Fill in a pledge amount to lock the task!";
+    }
+    Alert.alert(
+      "Missing fields",
+      message,
+      [{ text: "OK", onPress: () => setIsBottomSheetOpen(true) }],
+      { cancelable: true }
+    );
+  };
+
+  const handleLockTodo = () => {
+    if (title == "") {
+      showAlert("title");
+      return;
+    }
+
+    if (amount == "") {
+      showAlert("amount");
+      return;
+    }
+
+    // convert amount to number before saving to database
+    setIsTodoLocked(true);
+  };
+
   // 1. number [tmrw page]
   if (componentType == "number") {
     return (
@@ -68,7 +110,10 @@ const Todo = ({
   else if (componentType == "info") {
     return (
       <View style={styles.infoContainer}>
-        <TouchableOpacity style={styles.leftContainer} onPress={handlePress}>
+        <TouchableOpacity
+          style={styles.leftContainer}
+          onPress={handleOpenBottomSheet}
+        >
           <View style={styles.upperHalfContainer}>
             <View style={styles.numberTitleContainer}>
               <Text style={styles.todoNumber}>{todoNumber}</Text>
@@ -98,12 +143,20 @@ const Todo = ({
             </View>
           </View>
         </TouchableOpacity>
-        {isLocked === true ? (
-          <View style={styles.rightContainer}>
+        {isTodoLocked === true ? (
+          <View
+            style={{
+              ...styles.rightContainer,
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+            }}
+          >
             <LockIcon />
-            </View>
-        ) : isLocked === false ? (
-          <TouchableOpacity style={styles.rightContainer}>
+          </View>
+        ) : isTodoLocked === false ? (
+          <TouchableOpacity
+            style={styles.rightContainer}
+            onPress={handleLockTodo}
+          >
             <UnlockIcon />
           </TouchableOpacity>
         ) : (
@@ -125,7 +178,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 20,
     borderRadius: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     padding: 15,
   },
   finedContainer: {
@@ -157,7 +210,7 @@ const styles = StyleSheet.create({
   rightContainer: {
     borderTopRightRadius: 16,
     borderBottomRightRadius: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.17)",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     flex: 2,
     height: "100%",
     justifyContent: "center",

@@ -44,8 +44,13 @@ const Tomorrow = () => {
 
     for (let i = 0; i < 3; i++) {
       const todo = todos.find((item) => item.todoNumber === i + 1);
-      console.log(todo);
-      if (todo && todo.title !== "") {
+      if (
+        todo &&
+        (todo.title !== "" ||
+          todo.description !== "" ||
+          todo.amount !== "" ||
+          todo.tag !== "")
+      ) {
         result.push(
           <Todo
             key={i + 1}
