@@ -40,6 +40,7 @@ const TimeButton = ({ defaultTime }) => {
         onCancel={hideTimePicker}
         minuteInterval={15}
         date={selectedTime}
+        // textColor="black"
       />
     </>
   );

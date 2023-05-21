@@ -2,6 +2,7 @@
   "expo": {
     "name": "fervo-mobile",
     "slug": "fervo-mobile",
+    "plugins": ["@react-native-google-signin/google-signin"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -30,6 +31,7 @@
       "config": "metro.config.js",
       "sourceExts": ["ts", "tsx", "js", "jsx", "json", "wasm", "svg"]
     }
+
 
   }
 }
