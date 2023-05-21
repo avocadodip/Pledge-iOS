@@ -27,15 +27,15 @@ const Account = ({ navigation }) => {
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Name </Text>
-        <TextInput style={styles.preferenceInput} placeholder="First Last" placeholderTextColor={Color.faint_white}></TextInput>
+        <TextInput style={styles.preferenceInput} placeholder="First Last" placeholderTextColor={Color.faint_white} autoCorrect={false} autoCapitalize="none"></TextInput>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Email </Text>
-        <TextInput style={styles.preferenceInput} placeholder="email@domain.com" placeholderTextColor={Color.faint_white}></TextInput>
+        <TextInput style={styles.preferenceInput} placeholder="email@domain.com" placeholderTextColor={Color.faint_white} autoCorrect={false} autoCapitalize="none"></TextInput>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Time Zone </Text>
-        <TextInput style={styles.preferenceInput} placeholder="America/Chicago" placeholderTextColor={Color.faint_white}></TextInput>
+        <TextInput style={styles.preferenceInput} placeholder="America/Chicago" placeholderTextColor={Color.faint_white} autoCorrect={false} autoCapitalize="none"></TextInput>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Day Start </Text>
