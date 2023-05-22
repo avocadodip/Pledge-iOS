@@ -69,7 +69,11 @@ const Signup = () => {
             profilePhoto: 1,
             todos: [],
             tags: [],
-
+            dayStart: '07:30',
+            dayEnd: '9:30',
+            daysOff: [],
+            vacationMode: false,
+            theme: 'Classic'
         });
         setLoading(false);
     } catch (error) {

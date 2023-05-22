@@ -14,9 +14,11 @@ import { Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { Padding, Border, FontFamily, FontSize, Color } from "../GlobalStyles";
-import firebase from "../database/firebase";
+import firebase, { auth, db } from "../database/firebase";
 import "firebase/firestore";
 import Globals from "../Globals";
+import { doc, getDoc } from "firebase/firestore";
+import { signInWithEmailAndPassword } from "@firebase/auth";
 
 const Login = () => {
   const [fullName, setFullName] = useState();
@@ -50,47 +52,39 @@ const Login = () => {
       return
     }
 
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(lowerCaseEmail, lowerCasePassword)
-      .then((userCredential) => {
-        // Signed in successfully
-        const user = userCredential.user
-        Globals.currentUserID = user.uid
+    signInWithEmailAndPassword(auth, lowerCaseEmail, lowerCasePassword).then((userCredential) => {
+    // Signed in successfully
+    const user = userCredential.user;
+    Globals.currentUserID = user.uid;
 
-        // Get the user's document from Firestore
-        firebase
-          .firestore()
-          .collection('users')
-          .doc(user.uid)
-          .get()
-          .then((doc) => {
-            if (doc.exists) {
-              // Set the full name in Globals
-              Globals.fullName = doc.data().fullName
-              Globals.email = doc.data().email
-              Globals.profileImageUrl = doc.data().profileImageUrl || ''
-              Globals.phoneNumber = doc.data().phoneNumber || ''
-            } else {
-              console.log('No such document!')
-            }
-            // Navigate to the Map screen after retrieving the full name
-            navigation.navigate('Map')
-          })
-          .catch((error) => {
-            console.error('Error getting document:', error)
-          })
+    // Get the user's document from Firestore
+    const userDoc = doc(db, 'users', user.uid);
+
+    getDoc(userDoc)
+      .then((docSnap) => {
+        if (docSnap.exists()) {
+          // Set the full name in Globals
+          Globals.fullName = docSnap.data().fullName;
+          Globals.email = docSnap.data().email;
+          Globals.profileImageUrl = docSnap.data().profileImageUrl || '';
+        } else {
+          console.log('No such document!');
+        }
       })
       .catch((error) => {
-        // Handle login error
-        const errorMessage = error.message;
-        console.log(errorMessage);
-        // Show an alert to the user with a friendly error message
-        Alert.alert(
-          'Oops! 🙈',
-          'It looks like there was a typo in your login. Please double-check your email and password. 🌟'
-        );
+        console.error('Error getting document:', error);
       })
+  })
+  .catch((error) => {
+    // Handle login error
+    const errorMessage = error.message;
+    console.log(errorMessage);
+    // Show an alert to the user with a friendly error message
+    Alert.alert(
+      'Oops! 🙈',
+      'It looks like there was a typo in your login. Please double-check your email and password. 🌟'
+    );
+  });
   };
 
   return (
@@ -106,18 +100,8 @@ const Login = () => {
             <Text
               style={[styles.beacon, styles.loginTypo, { color: "#FF6422" }]}
             >
-              Beacon
+              Fervo
             </Text>
-            <TextInput
-              style={[styles.frameChild, styles.frameSpaceBlock]}
-              placeholder="Full name"
-              value={fullName}
-              onChangeText={setFullName}
-              placeholderTextColor="#000"
-              textStyle={styles.frameTextInputText}
-              autoCorrect={false} // Disable auto-correction
-              autoCapitalize="none" // Disable auto-capitalization
-            />
             <TextInput
               style={[styles.frameItem, styles.frameSpaceBlock]}
               placeholder="Email" // Email input field
@@ -127,17 +111,6 @@ const Login = () => {
               textStyle={styles.frameTextInput1Text}
               autoCorrect={false} // Disable auto-correction
               autoCapitalize="none" // Disable auto-capitalization
-            />
-            <TextInput
-              style={[styles.frameItem, styles.frameSpaceBlock]}
-              placeholder="Phone number"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-              placeholderTextColor="#000"
-              textStyle={styles.frameTextInput1Text}
-              autoCorrect={false} // Disable auto-correction
-              autoCapitalize="none" // Disable auto-capitalization
-              keyboardType="phone-pad" // Set the keyboard to show phone number input
             />
             <TextInput
               style={[styles.frameItem, styles.frameSpaceBlock]}
