@@ -5,6 +5,7 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import Today from "./screens/Today";
+import Onboard1 from "./screens/Onboard1";
 import Tomorrow from "./screens/Tomorrow";
 import Settings from "./screens/Settings";
 import Login from "./screens/Login";
@@ -50,7 +51,8 @@ const TodayStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen
       name="TodayScreen"
-      component={Today}
+      // component={Today} <-- Re-add when onboarding is done
+      component={Onboard1}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

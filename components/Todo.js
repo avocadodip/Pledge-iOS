@@ -152,6 +152,48 @@ const Todo = ({
       </View>
     );
   }
+  else if (componentType == "onboard") {
+    return (
+      <View style={[styles.infoContainer, { height: 86 }]}>
+        <View style={styles.leftContainer}>
+          <View style={styles.upperHalfContainer}>
+            <View style={styles.numberTitleContainer}>
+              <Text style={styles.todoNumber}>{todoNumber}</Text>
+              <TextInput 
+                autoCorrect={false}
+                multiline={true}
+                numberOfLines={2}
+                style={[styles.todoTitle, { flexGrow: 1, flexShrink: 1, lineHeight: 24 }]}
+                placeholder={'Write a screenplay'}
+                placeholderTextColor="rgba(243, 243, 243, 0.5)"
+                maxLength={40}
+                // borderWidth={1}
+                // borderColor={"black"}
+              />
+            </View>
+          </View>
+        </View>
+        {isTodoLocked === true ? (
+          <View
+            style={{
+              ...styles.rightContainer,
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+            }}
+          >
+            <LockIcon />
+          </View>
+        ) : isTodoLocked === false ? (
+          <TouchableOpacity style={styles.rightContainer} onPress={handleLockTodo}>
+            <UnlockIcon />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.rightContainer}>
+            <CheckIcon />
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -209,6 +251,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     gap: 15,
+    // borderWidth: 1,
+    // borderColor: 'black',
+    height: "100%",
+    overflow: "hidden",
   },
   lowerHalfContainer: {
     flex: 5,
