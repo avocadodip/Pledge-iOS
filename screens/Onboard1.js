@@ -67,7 +67,6 @@ const Today = () => {
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Welcome to Fervo!</Text>
         <Text style={styles.descTitle}>We'll take you on a quick walkthrough of the platform.</Text>
-        {/* <Text style={styles.descTitle}>But first!</Text> */}
         <Text style={styles.descTitle}>But first, what are some huge, spectacular dreams you want to achieve? Think big, anything is possible!</Text>
       </View>
       <View style={styles.todoContainer}>{renderTodos()}</View>
