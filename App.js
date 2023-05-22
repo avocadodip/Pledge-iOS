@@ -7,8 +7,8 @@ import { useFonts } from "expo-font";
 import Today from "./screens/Today";
 import Tomorrow from "./screens/Tomorrow";
 import Settings from "./screens/Settings";
-import Login from "./screens/Login";
-import Signup from "./screens/Signup";
+import Login from "./screens/Signup";
+import Signup from "./screens/Login";
 import Splash from "./screens/Splash";
 import Billing from "./screens/Billing";
 import Account from "./screens/Account";
@@ -34,13 +34,13 @@ const Tab = createBottomTabNavigator();
 const AuthStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen
-      name="Login"
-      component={Login}
+      name="Signup"
+      component={Signup}
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="Signup"
-      component={Signup}
+      name="Login"
+      component={Login}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
@@ -125,7 +125,7 @@ export default function App() {
     return null;
   }
 
-  const userLoggedIn = true; // Set this based on your authentication logic
+  const userLoggedIn = checkAuthState(); // Set this based on your authentication logic
 
   return (
     <BottomSheetProvider>
