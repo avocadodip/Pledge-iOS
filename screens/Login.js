@@ -24,101 +24,73 @@ const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
-  const [SignupPressed, setSignupPressed] = useState(false); // Add this state to handle the button pressed state
+  const [loginPressed, setLoginPressed] = useState(false); // Add this state to handle the button pressed state
   const navigation = useNavigation();
 
-  const handleSignup = async () => {
-    // Check if the inputPhoneNumber field is empty or invalid
-    // Check if all fields are filled
-    if (!fullName || !email || !phoneNumber || !password) {
-      Alert.alert("Oops! 🙈", "Please fill in all fields");
-      return;
+  const handleLogin = async () => {
+    let lowerCaseEmail = email.trim().toLowerCase()
+    let lowerCasePassword = password.trim().toLowerCase()
+
+    // Validate email and password inputs
+    if (!lowerCaseEmail || !lowerCasePassword) {
+      Alert.alert(
+        '🤔 Whoops!',
+        'Email and password are needed to login. Try again!',
+      )
+      return
     }
 
-    // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Alert.alert("Uh-oh! 📧", "Please enter a valid email address");
-      return;
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(lowerCaseEmail)) {
+      Alert.alert(
+        '📧 Email Error',
+        'Make sure your email is formatted correctly!',
+      )
+      return
     }
 
-    // Validate phone number
-    const phoneNumberRegex = /^\+?[1-9]\d{1,14}$/;
-    if (!phoneNumberRegex.test(phoneNumber)) {
-      Alert.alert("Oops! 📱", "Please enter a valid phone number");
-      return;
-    }
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(lowerCaseEmail, lowerCasePassword)
+      .then((userCredential) => {
+        // Signed in successfully
+        const user = userCredential.user
+        Globals.currentUserID = user.uid
 
-    // Search for users with the matching phone number in Firestore
-    const usersRef = firebase.firestore().collection("users");
-    const querySnapshot = await usersRef
-      .where("phoneNumber", "==", phoneNumber)
-      .get();
-
-    if (!querySnapshot.empty) {
-      // If a user with the same phone number is found, show an error alert
-      Alert.alert("Error", "A user with this phone number already exists.");
-      return;
-    }
-
-    // Search for users with the matching email in Firestore
-    const emailQuerySnapshot = await usersRef
-      .where("email", "==", email.toLowerCase())
-      .get();
-
-    // If a user with the same email is found, show an error alert
-    if (!emailQuerySnapshot.empty) {
-      Alert.alert("Error", "A user with this email address already exists.");
-      return;
-    }
-
-    // Sign up the user using Firebase Authentication
-    const lowerCaseEmail = email.toLowerCase();
-    const lowerCasePassword = password.toLowerCase();
-
-    setLoading(true);
-
-    try {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(lowerCaseEmail, lowerCasePassword)
-        .then((userCredential) => {
-          // User successfully signed up
-          const user = userCredential.user;
-          Globals.currentUserID = user.uid;
-          Globals.fullName = fullName;
-
-          // Save full name and phone number to Firestore
-          return firebase
-            .firestore()
-            .collection("users")
-            .doc(user.uid)
-            .set({
-              fullName: fullName,
-              phoneNumber: phoneNumber,
-              email: lowerCaseEmail, // Storing email for later searching
-              profilePhoto: 1, // Default to stock image
-              location: { latitude: null, longitude: null }, // Default to null
-              beaconOn: false, // Default to false (beacon is off)
-              friends: [], // Empty list of friends
-              friendRequests: [], // Empty list of friend requests
-              status: "Offline", // Default status
-              statusMessage: "", // Default status message
-            })
-            .then(() => {
-              setLoading(false);
-              navigation.navigate("Today");
-            });
-        })
-        .catch((error) => {
-          // Handle sign up errors (e.g., show error message)
-          console.error(error.message);
-          Alert.alert("Sign Up Failed", errorMessage);
-        });
-    } catch (error) {
-      console.error(error.message);
-      Alert.alert("Sign Up Failed", errorMessage);
-    }
+        // Get the user's document from Firestore
+        firebase
+          .firestore()
+          .collection('users')
+          .doc(user.uid)
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              // Set the full name in Globals
+              Globals.fullName = doc.data().fullName
+              Globals.email = doc.data().email
+              Globals.profileImageUrl = doc.data().profileImageUrl || ''
+              Globals.phoneNumber = doc.data().phoneNumber || ''
+            } else {
+              console.log('No such document!')
+            }
+            // Navigate to the Map screen after retrieving the full name
+            navigation.navigate('Map')
+          })
+          .catch((error) => {
+            console.error('Error getting document:', error)
+          })
+      })
+      .catch((error) => {
+        // Handle login error
+        const errorMessage = error.message;
+        console.log(errorMessage);
+        // Show an alert to the user with a friendly error message
+        Alert.alert(
+          'Oops! 🙈',
+          'It looks like there was a typo in your login. Please double-check your email and password. 🌟'
+        );
+      })
   };
 
   return (
@@ -131,11 +103,6 @@ const Login = () => {
         <View style={[styles.frameParent, styles.parentFlexBox]}>
           {loading ? <ActivityIndicator size="small" color="white" /> : null}
           <View style={styles.beaconContainer}>
-            <Image
-              style={styles.beaconlogo51Icon}
-              resizeMode="cover"
-              source={require("../assets/beaconlogo.png")}
-            />
             <Text
               style={[styles.beacon, styles.loginTypo, { color: "#FF6422" }]}
             >
@@ -191,21 +158,21 @@ const Login = () => {
             ]}
             locations={[0, 1]}
             colors={
-              SignupPressed ? ["#cc501b", "#cc8353"] : ["#ff6422", "#ffa266"]
+              loginPressed ? ["#cc501b", "#cc8353"] : ["#ff6422", "#ffa266"]
             }
           >
             <Pressable
               style={[styles.pressable]}
-              onPress={handleSignup} // Invoke the handleSignup function when the button is pressed
-              onPressIn={() => setSignupPressed(true)} // Set "pressed" state to true when the button is pressed
-              onPressOut={() => setSignupPressed(false)} // Set "pressed" state to false when the button is released
+              onPress={handleLogin} // Invoke the handleSignup function when the button is pressed
+              onPressIn={() => setLoginPressed(true)} // Set "pressed" state to true when the button is pressed
+              onPressOut={() => setLoginPressed(false)} // Set "pressed" state to false when the button is released
             >
-              <Text style={[styles.signup, styles.signupTypo]}>Signup</Text>
+              <Text style={[styles.signup, styles.signupTypo]}>Login</Text>
             </Pressable>
           </LinearGradient>
           <Pressable
             style={styles.goBackToContainer}
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => navigation.navigate("Signup")}
           >
             <Text style={[styles.text, styles.textLayout]}>
               {`Go back to `}
@@ -351,3 +318,5 @@ const styles = StyleSheet.create({
 });
 
 export default Login;
+
+

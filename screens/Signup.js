@@ -30,7 +30,7 @@ const Signup = () => {
 
   useEffect(() => {
     if (checkAuthState()) {
-      navigation.navigate("Map");
+      navigation.navigate("Today");
     }
   }, []);
 
@@ -126,6 +126,7 @@ const Signup = () => {
       console.error(error.message);
       Alert.alert("Sign Up Failed", errorMessage);
     }
+    
   };
   return (
     <SafeAreaView style={styles.container}>
