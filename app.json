@@ -30,5 +30,6 @@
       "config": "metro.config.js",
       "sourceExts": ["ts", "tsx", "js", "jsx", "json", "wasm", "svg"]
     }
+
   }
 }
