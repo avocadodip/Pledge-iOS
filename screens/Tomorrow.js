@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
+import OnboardingPopup from "../components/OnboardingPopup";
 
 const Tomorrow = () => {
   const { todos, setTodos } = useBottomSheet();
@@ -84,6 +85,10 @@ const Tomorrow = () => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
+      <OnboardingPopup
+        texts={['This is the Tomorrow page.', 'Plug in your 3 tasks to be completed tomorrow and how much you will be fined if you fail them.','Be careful! If you forget to input 3 tasks each day, you’ll be fined!','Give this a go, now! We’ve added your dreams as tags to get you started.']}
+        buttonTitle="Will do!"
+      />
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Tmrw</Text>
         <Text style={styles.headerSubtitle}>Locks @ 9:00 PM</Text>

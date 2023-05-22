@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
+import OnboardingPopup from "../components/OnboardingPopup";
 
 const Today = () => {
   const todos = [
@@ -73,6 +74,10 @@ const Today = () => {
   };
   return (
     <SafeAreaView style={styles.pageContainer}>
+      <OnboardingPopup
+        texts={['This is the Today page.', 'Your three tasks planned the night before will show up here.','Your only mission is to check them off before the day ends!']}
+        buttonTitle="Cool, what's next?"
+      />
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Today</Text>
         <Text style={styles.headerSubtitle}>Ends @ 9:00 PM</Text>

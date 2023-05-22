@@ -16,6 +16,7 @@ import Billing from "./screens/Billing";
 import Account from "./screens/Account";
 import Stats from "./screens/Stats";
 import TodoBottomSheet from "./components/TodoBottomSheet";
+import OnboardingPopup from "./components/OnboardingPopup";
 import { Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 // import { MenuProvider } from "react-native-popup-menu";
@@ -53,7 +54,7 @@ const TodayStack = () => (
     <Stack.Screen
       name="TodayScreen"
       // component={Today} <-- Re-add when onboarding is done
-      component={Onboard2}
+      component={Today}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

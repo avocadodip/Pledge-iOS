@@ -4,6 +4,8 @@ import React from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
 import TimeButton from "../components/TimeButton";
+import NextButton from "../components/NextButton";
+import OnboardingPopup from "../components/OnboardingPopup";
 
 const Today = () => {
   return (
@@ -19,9 +21,7 @@ const Today = () => {
         <Text style={styles.preferenceTitle}> Day End </Text>
         <TimeButton defaultTime="11:00 PM" />
       </View>
-      <TouchableOpacity style={styles.nextButton}>
-        <Text style={styles.nextButtonTitle}>Ready to go!</Text>
-      </TouchableOpacity>
+      <NextButton title="Ready to go!" />
       </View>
     </SafeAreaView>
   );
