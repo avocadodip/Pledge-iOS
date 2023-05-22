@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import { Input as RNKTextInput } from '@ui-kitten/components'
 import {
   StyleSheet,
   Text,
@@ -12,32 +11,23 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { Color } from "../GlobalStyles";
 import Globals from "../Globals";
-import { checkAuthState, handleGoogleLogin } from "../utils/authHelper";
 import { auth, db } from "../database/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import GoogleLogoIcon from "../assets/icons/google-logo.svg";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
 import MailIcon from "../assets/icons/mail-icon.svg";
 
 const Signup = () => {
-  const [firstLastName, setFirstLastName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginPressed, setLoginPressed] = useState(false);
-  const [forgotPressed, setForgotPressed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
-
-  useEffect(() => {
-    if (checkAuthState()) {
-      navigation.navigate("Today");
-    }
-  }, []);
 
   const handleSignup = async () => {
     // Check if the inputPhoneNumber field is empty or invalid
     // Check if all fields are filled
-    if (!fullName || !email || !phoneNumber || !password) {
+    if (!fullName || !email || !password) {
       Alert.alert("Oops! 🙈", "Please fill in all fields");
       return;
     }
@@ -49,34 +39,14 @@ const Signup = () => {
       return;
     }
 
-    // Validate phone number
-    const phoneNumberRegex = /^\+?[1-9]\d{1,14}$/;
-    if (!phoneNumberRegex.test(phoneNumber)) {
-      Alert.alert("Oops! 📱", "Please enter a valid phone number");
-      return;
-    }
-
-    // Search for users with the matching phone number in Firestore
-    const usersRef = firebase.firestore().collection("users");
-    const querySnapshot = await usersRef
-      .where("phoneNumber", "==", phoneNumber)
-      .get();
-
-    if (!querySnapshot.empty) {
-      // If a user with the same phone number is found, show an error alert
-      Alert.alert("Error", "A user with this phone number already exists.");
-      return;
-    }
-
-    // Search for users with the matching email in Firestore
-    const emailQuerySnapshot = await usersRef
-      .where("email", "==", email.toLowerCase())
-      .get();
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("email", "==", email.toLowerCase()));
+    const querySnapshot = await getDocs(q);
 
     // If a user with the same email is found, show an error alert
-    if (!emailQuerySnapshot.empty) {
-      Alert.alert("Error", "A user with this email address already exists.");
-      return;
+    if (!querySnapshot.empty) {
+        Alert.alert("Error", "A user with this email address already exists.");
+        return;
     }
 
     // Sign up the user using Firebase Authentication
@@ -86,57 +56,47 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(lowerCaseEmail, lowerCasePassword)
-        .then((userCredential) => {
-          // User successfully signed up
-          const user = userCredential.user;
-          Globals.currentUserID = user.uid;
-          Globals.fullName = fullName;
+        const userCredential = await createUserWithEmailAndPassword(auth, lowerCaseEmail, lowerCasePassword);
+        // User successfully signed up
+        const user = userCredential.user;
+        Globals.currentUserID = user.uid;
+        Globals.fullName = fullName;
 
-          // Save full name and phone number to Firestore
-          return firebase
-            .firestore()
-            .collection("users")
-            .doc(user.uid)
-            .set({
-              fullName: fullName,
-              phoneNumber: phoneNumber,
-              email: lowerCaseEmail, // Storing email for later searching
-              profilePhoto: 1, // Default to stock image
-              location: { latitude: null, longitude: null }, // Default to null
-              beaconOn: false, // Default to false (beacon is off)
-              friends: [], // Empty list of friends
-              friendRequests: [], // Empty list of friend requests
-              status: "Offline", // Default status
-              statusMessage: "", // Default status message
-            })
-            .then(() => {
-              setLoading(false);
-              navigation.navigate("Today");
-            });
-        })
-        .catch((error) => {
-          // Handle sign up errors (e.g., show error message)
-          console.error(error.message);
-          Alert.alert("Sign Up Failed", errorMessage);
+        // Save full name and email to Firestore
+        await setDoc(doc(db, "users", user.uid), {
+            fullName: fullName,
+            email: lowerCaseEmail,
+            profilePhoto: 1,
+            todos: [],
+            tags: [],
+
         });
+        setLoading(false);
     } catch (error) {
-      console.error(error.message);
-      Alert.alert("Sign Up Failed", errorMessage);
+        // Handle sign up errors (e.g., show error message)
+        console.error(error.message);
+        Alert.alert("Sign Up Failed", error.message);
     }
-    
   };
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
         {/* replace with app logo */}
-        <GoogleLogoIcon />
         <Text style={styles.appNameText}>Fervo</Text>
       </View>
 
       <View style={styles.buttonContainer}>
+        <TextInput
+          style={styles.inputField}
+          placeholder="Full name"
+          onChangeText={setFullName}
+          value={fullName}
+          placeholderTextColor="#fff"
+          // textStyle={styles.frameTextInputText}
+          autoCorrect={false} // Disable auto-correction
+          autoCapitalize="none" // Disable auto-capitalization
+        />
         <TextInput
           style={styles.inputField}
           placeholder="Email"
@@ -166,7 +126,7 @@ const Signup = () => {
         </TouchableOpacity> */}
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
           <MailIcon width={24} height={24} color={`${Color.fervo_red}`} />
-          <Text style={styles.buttonText}>Sign up with email</Text>
+          <Text style={styles.buttonText}>Sign up</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

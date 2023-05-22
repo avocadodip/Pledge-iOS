@@ -8,11 +8,20 @@ import CreditCardIcon from "../assets/icons/credit-card.svg";
 
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { auth } from "../database/firebase";
 
 const Settings = ({ navigation }) => {
   const handlePress = (screenName) => {
     navigation.navigate(screenName);
   };
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.error("Sign out error", error);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.pageContainer}>
@@ -71,6 +80,26 @@ const Settings = ({ navigation }) => {
               color={Color.white}
             />
             <Text style={styles.buttonTitle}> Billing </Text> 
+          </View>
+          <RightChevronIcon
+              width={24}
+              height={24}
+              color={Color.white}
+            />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.settingsButtonContainer}>
+	      <TouchableOpacity 
+						style={styles.settingsButton}
+						onPress={handleLogout}
+				>
+          <View style={styles.leftSettingsButton}>
+            <CreditCardIcon
+              width={24}
+              height={24}
+              color={Color.white}
+            />
+            <Text style={styles.buttonTitle}>Logout</Text> 
           </View>
           <RightChevronIcon
               width={24}
