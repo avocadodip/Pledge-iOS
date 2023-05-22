@@ -125,7 +125,8 @@ export default function App() {
     return null;
   }
 
-  const userLoggedIn = checkAuthState(); // Set this based on your authentication logic
+  const userLoggedIn = 1;
+  // checkAuthState(); // Set this based on your authentication logic
 
   return (
     <BottomSheetProvider>

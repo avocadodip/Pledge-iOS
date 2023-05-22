@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Alert,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { Alert, View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import CheckIcon from "../assets/icons/check-icon.svg";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
@@ -24,8 +17,7 @@ const Todo = ({
 }) => {
   const [isTodoLocked, setIsTodoLocked] = useState(isLocked);
 
-  const { setIsBottomSheetOpen, setSelectedTodo, setIsBottomSheetEditable } =
-    useBottomSheet();
+  const { setIsBottomSheetOpen, setSelectedTodo, setIsBottomSheetEditable } = useBottomSheet();
 
   const handleOpenBottomSheet = () => {
     setSelectedTodo({
@@ -89,10 +81,7 @@ const Todo = ({
   // 1. number [tmrw page]
   if (componentType == "number") {
     return (
-      <TouchableOpacity
-        style={styles.numberContainer}
-        onPress={handleNewTodoPress}
-      >
+      <TouchableOpacity style={styles.numberContainer} onPress={handleNewTodoPress}>
         <Text style={styles.numberText}>{todoNumber}</Text>
       </TouchableOpacity>
     );
@@ -110,10 +99,7 @@ const Todo = ({
   else if (componentType == "info") {
     return (
       <View style={styles.infoContainer}>
-        <TouchableOpacity
-          style={styles.leftContainer}
-          onPress={handleOpenBottomSheet}
-        >
+        <TouchableOpacity style={styles.leftContainer} onPress={handleOpenBottomSheet}>
           <View style={styles.upperHalfContainer}>
             <View style={styles.numberTitleContainer}>
               <Text style={styles.todoNumber}>{todoNumber}</Text>
@@ -122,25 +108,27 @@ const Todo = ({
           </View>
           <View style={styles.lowerHalfContainer}>
             <View style={styles.tagDescriptionContainer}>
-              <View style={styles.tagContainer}>
-                <View style={styles.tagBackground}>
-                  <Text style={styles.todoTag}>{tag}</Text>
+              {tag && (
+                <View style={styles.tagContainer}>
+                  <View style={styles.tagBackground}>
+                    <Text style={styles.todoTag}>{tag}</Text>
+                  </View>
                 </View>
-              </View>
-              <View style={styles.descriptionContainer}>
-                <DescriptLinesIcon />
-                <Text
-                  style={styles.todoDescription}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {description}
-                </Text>
-              </View>
+              )}
+              {description && (
+                <View style={styles.descriptionContainer}>
+                  <DescriptLinesIcon />
+                  <Text style={styles.todoDescription} numberOfLines={1} ellipsizeMode="tail">
+                    {description}
+                  </Text>
+                </View>
+              )}
             </View>
-            <View style={styles.amountContainer}>
-              <Text style={styles.todoAmount}>${amount}</Text>
-            </View>
+            {amount && (
+              <View style={styles.amountContainer}>
+                <Text style={styles.todoAmount}>${amount}</Text>
+              </View>
+            )}
           </View>
         </TouchableOpacity>
         {isTodoLocked === true ? (
@@ -153,10 +141,7 @@ const Todo = ({
             <LockIcon />
           </View>
         ) : isTodoLocked === false ? (
-          <TouchableOpacity
-            style={styles.rightContainer}
-            onPress={handleLockTodo}
-          >
+          <TouchableOpacity style={styles.rightContainer} onPress={handleLockTodo}>
             <UnlockIcon />
           </TouchableOpacity>
         ) : (
@@ -171,9 +156,9 @@ const Todo = ({
 
 const styles = StyleSheet.create({
   numberContainer: {
-    flexDirection: "col",
-    width: "100%", // Edit together
-    height: "25%", // Edit together
+    flexDirection: "column",
+    width: "100%",
+    height: "25%",
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
@@ -182,9 +167,9 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   finedContainer: {
-    flexDirection: "col",
-    width: "100%", // Edit together
-    height: "25%", // Edit together
+    flexDirection: "column",
+    width: "100%",
+    height: "25%",
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
@@ -194,8 +179,8 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flexDirection: "row",
-    width: "100%", // Edit together
-    height: "25%", // Edit together
+    width: "100%",
+    height: "25%",
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -218,7 +203,6 @@ const styles = StyleSheet.create({
   },
   upperHalfContainer: {
     flex: 4,
-    // justifyContent: "center", //commented out this to shift number/title to the top
   },
   numberTitleContainer: {
     flexDirection: "row",
@@ -234,7 +218,7 @@ const styles = StyleSheet.create({
   },
   tagDescriptionContainer: {
     flex: 1,
-    flexDirection: "col",
+    flexDirection: "column",
     gap: 4,
     justifyContent: "flex-start",
   },
@@ -260,7 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 4,
     maxWidth: 80,
-    alignSelf: "stretch", // Added alignSelf to stretch the container
+    alignSelf: "stretch",
   },
   todoNumber: {
     color: "white",
