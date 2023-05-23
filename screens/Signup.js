@@ -7,6 +7,7 @@ import {
   View,
   SafeAreaView,
   Alert,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Color } from "../GlobalStyles";
@@ -15,6 +16,7 @@ import { auth, db } from "../database/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
 import MailIcon from "../assets/icons/mail-icon.svg";
+import FervoWhite from "../assets/FervoWhite.png";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -87,6 +89,10 @@ const Signup = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
         {/* replace with app logo */}
+        <Image
+          source={require('../assets/FervoWhite.png')}
+          style={{ width: 150, height: 150, }}
+        />
         <Text style={styles.appNameText}>Fervo</Text>
       </View>
 
@@ -128,8 +134,9 @@ const Signup = () => {
           <GoogleLogoIcon />
           <Text style={styles.buttonText}>Continue with Google</Text>
         </TouchableOpacity> */}
+
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <MailIcon width={24} height={24} color={`${Color.fervo_red}`} />
+          {/* <MailIcon width={24} height={24} color={`${Color.fervo_red}`} /> */}
           <Text style={styles.buttonText}>Sign up</Text>
         </TouchableOpacity>
 
@@ -162,21 +169,23 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: "center",
     marginBottom: 20,
+    // borderColor:'black', 
+    // borderWidth: 1
   },
   appNameText: {
-    fontSize: 69,
-    color: "white",
-    marginTop: 11,
+    fontSize: 60,
+    color: Color.white,
+    marginTop: 0,
+    fontWeight: "bold",
   },
   inputField: {
     height: 40,
     width: "100%",
-    borderColor: "gray",
+    borderColor: Color.white,
     borderWidth: 1,
     paddingLeft: 10,
-    marginBottom: 15,
     borderRadius: 5,
-    color: "white",
+    color: Color.white,
     backgroundColor: Color.fervo_red,
   },
   buttonContainer: {
@@ -189,8 +198,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
-    gap: 10,
+    backgroundColor: Color.white,
+    gap: 15,
     height: 52,
     borderRadius: 17,
     width: "100%",

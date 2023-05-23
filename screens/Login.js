@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import {
   StyleSheet,
   View,
-  Pressable,
+  TouchableOpacity,
   Text,
   TextInput,
   Image,
+  SafeAreaView,
   KeyboardAvoidingView,
   ActivityIndicator,
 } from "react-native";
@@ -88,72 +89,57 @@ const Login = () => {
   };
 
   return (
-    <KeyboardAvoidingView
+    <SafeAreaView style={styles.container}>
+    {/* <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
-    >
-      <View style={styles.signups}>
-        <View style={[styles.image2]} />
-        <View style={[styles.frameParent, styles.parentFlexBox]}>
+    > */}
+      <View style={styles.logoContainer}>
+          <Image
+            source={require('../assets/FervoWhite.png')}
+            style={{ width: 150, height: 150, }}
+          />
+          <Text style={styles.appNameText}>Fervo</Text>
+      </View>
+        <View style={[styles.buttonContainer]}>
           {loading ? <ActivityIndicator size="small" color="white" /> : null}
-          <View style={styles.beaconContainer}>
-            <Text
-              style={[styles.beacon, styles.loginTypo, { color: "#FF6422" }]}
-            >
-              Fervo
-            </Text>
             <TextInput
-              style={[styles.frameItem, styles.frameSpaceBlock]}
+              style={[styles.inputField]}
               placeholder="Email" // Email input field
+              placeholderTextColor={Color.white}
               value={email}
               onChangeText={setEmail}
-              placeholderTextColor="#000"
-              textStyle={styles.frameTextInput1Text}
               autoCorrect={false} // Disable auto-correction
               autoCapitalize="none" // Disable auto-capitalization
             />
             <TextInput
-              style={[styles.frameItem, styles.frameSpaceBlock]}
+              style={[styles.inputField]}
               placeholder="Password"
+              placeholderTextColor={Color.white}
               value={password}
               onChangeText={setPassword}
-              placeholderTextColor="#000"
-              textStyle={styles.frameTextInput2Text}
               autoCorrect={false} // Disable auto-correction
               autoCapitalize="none" // Disable auto-capitalization
               secureTextEntry={true} // Mask password input
             />
-          </View>
-          <LinearGradient
-            style={[
-              styles.wrapper,
-              { borderRadius: 50, marginBottom: 20 }, // Apply borderRadius to LinearGradient
-            ]}
-            locations={[0, 1]}
-            colors={
-              loginPressed ? ["#cc501b", "#cc8353"] : ["#ff6422", "#ffa266"]
-            }
-          >
-            <Pressable
-              style={[styles.pressable]}
+                        <TouchableOpacity
+              style={[styles.button]}
               onPress={handleLogin} // Invoke the handleSignup function when the button is pressed
               onPressIn={() => setLoginPressed(true)} // Set "pressed" state to true when the button is pressed
               onPressOut={() => setLoginPressed(false)} // Set "pressed" state to false when the button is released
             >
-              <Text style={[styles.signup, styles.signupTypo]}>Login</Text>
-            </Pressable>
-          </LinearGradient>
-          <Pressable
-            style={styles.goBackToContainer}
-            onPress={() => navigation.navigate("Signup")}
-          >
-            <Text style={[styles.text, styles.textLayout]}>
-              {`Go back to `}
-              <Text style={styles.login}>Signup</Text>
-            </Text>
-          </Pressable>
-        </View>
-      </View>
+              <Text style={[styles.buttonText, styles.signupTypo]}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.goBackToContainer}
+              onPress={() => navigation.navigate("Signup")}
+            >
+              <Text style={[styles.text, styles.textLayout]}>
+                {`Go back to `}
+                <Text style={styles.login}>Signup</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
       {loading && (
         <View
           style={{
@@ -170,17 +156,32 @@ const Login = () => {
           <ActivityIndicator size="large" color="white" />
         </View>
       )}
-    </KeyboardAvoidingView>
+    {/* </KeyboardAvoidingView> */}
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  beaconContainer: {
-    alignItems: "center", // Center contents horizontally
-    // marginTop: -150, // Move container up by 50 pixels
+  appNameText: {
+    fontSize: 60,
+    color: Color.white,
+    marginTop: 0,
+    fontWeight: "bold",
+  },
+  inputField: {
+    height: 40,
+    width: "100%",
+    borderColor: Color.white,
+    borderWidth: 1,
+    paddingLeft: 10,
+    borderRadius: 5,
+    color: Color.white,
+    backgroundColor: Color.fervo_red,
   },
   frameTextInputText: {
     color: "#000",
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: "500",
     fontFamily: FontFamily.epilogueMedium,
-    color: Color.black,
+    color: Color.white,
     textAlign: "left",
   },
   goBackToContainer: {
@@ -266,15 +267,11 @@ const styles = StyleSheet.create({
     width: 132,
     height: 135,
   },
-  beacon: {
-    fontSize: FontSize.size_31xl,
-    lineHeight: 69,
-    width: 195,
-    marginTop: 11,
-    textAlign: "left",
-    fontFamily: FontFamily.epilogueBold,
-    fontWeight: "700",
-    textAlign: "left",
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+    // borderColor:'black', 
+    // borderWidth: 1
   },
   beaconlogo51Parent: {
     alignItems: "center",
@@ -287,6 +284,26 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center", // Center child components vertically
     alignItems: "center", // Center child components horizontally
+  },
+  buttonContainer: {
+    alignItems: "center",
+    flexDirection: "col",
+    gap: 15,
+    width: "90%",
+  },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Color.white,
+    gap: 15,
+    height: 52,
+    borderRadius: 17,
+    width: "100%",
+  },
+  buttonText: {
+    color: Color.fervo_red,
+    fontSize: 18,
   },
 });
 
