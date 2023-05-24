@@ -5,7 +5,7 @@ import { db } from "../database/firebase";
 export const SettingsContext = createContext();
 
 export const SettingsProvider = ({ children }) => {
-  const [settings, setSettings] = useState({ dayStart: null, dayEnd: null });
+  const [settings, setSettings] = useState(null);
   const [currentUserID, setCurrentUserID] = useState(null);
 
   useEffect(() => {

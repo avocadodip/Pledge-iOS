@@ -12,9 +12,11 @@ import { useBottomSheet } from "../hooks/BottomSheetContext";
 import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
 import LockIcon from "../assets/icons/lock-icon.svg";
 import UnlockIcon from "../assets/icons/unlock-icon.svg";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc } from "firebase/firestore";
 import { db } from "../database/firebase";
 import { formatDayEnd, formatDayStart, getTmrwDate, getTodayDateTime } from "../utils/currentDate";
+import { useSettings } from "../hooks/SettingsContext";
+import Globals from "../Globals";
 
 const Todo = ({
   todoNumber,
@@ -26,9 +28,9 @@ const Todo = ({
   isLocked,
 }) => {
   const [isTodoLocked, setIsTodoLocked] = useState(isLocked);
-
+  const { settings } = useSettings(); // To access dayStart and dayEnd for todo creation
   const { setIsBottomSheetOpen, setSelectedTodo, setIsBottomSheetEditable } =
-    useBottomSheet();
+    useBottomSheet(); // To open bottom sheet when todo is pressed
 
   const handleOpenBottomSheet = () => {
     setSelectedTodo({
@@ -75,22 +77,26 @@ const Todo = ({
     const floatAmount = parseFloat(amount);
 
     // Adds doc to 'todos' containing new task info
-    await addDoc(collection(db, "todos"), {
+    const userDocRef = doc(db, "users", Globals.currentUserID);
+    const todosCollectionRef = collection(userDocRef, "todos");
+    await addDoc(todosCollectionRef, {
       title: title,
       description: description,
       tag: tag,
       amount: floatAmount,
       // set: currentSetNum,
       createdAt: getTodayDateTime(),
-      opensAt: formatDayStart(dayStart),
-      closesAt: formatDayEnd(dayEnd),
+      opensAt: formatDayStart(settings.dayStart),
+      closesAt: formatDayEnd(settings.dayEnd),
       dayActive: getTmrwDate(),
       isComplete: false,
       order: todoNumber,
     });
+    console.log("success!");
 
     setIsTodoLocked(true);
   };
+
 
   const showMissingFieldAlert = (missingField) => {
     let message;

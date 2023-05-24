@@ -112,17 +112,14 @@ const theme = {
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [initializing, setInitializing] = useState(true);
-  const { setCurrentUserID } = useSettings();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsSignedIn(true);
-        setCurrentUserID(user.uid);
         if (initializing) setInitializing(false);
       } else {
         setIsSignedIn(false);
-        setCurrentUserID(null);
         if (initializing) setInitializing(false);
       }
     });
@@ -131,7 +128,6 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  const [hideSplashScreen, setHideSplashScreen] = useState(true);
   const [fontsLoaded, error] = useFonts({
     Epilogue_regular: require("./assets/fonts/Epilogue_regular.ttf"),
     Epilogue_medium: require("./assets/fonts/Epilogue_medium.ttf"),
@@ -149,12 +145,6 @@ export default function App() {
   const userLoggedIn = 1;
   // checkAuthState(); // Set this based on your authentication logic
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setHideSplashScreen(true);
-  //   }, 2000);
-  // }, []);
-
   if (initializing) {
     return null;
   }
@@ -162,90 +152,116 @@ export default function App() {
   return (
     <SettingsProvider>
       <BottomSheetProvider>
-        <View style={{ flex: 1 }}>
-          <StatusBar style="light" backgroundColor={Color.white} />
-          <NavigationContainer theme={theme}>
-            {hideSplashScreen ? (
-              isSignedIn ? (
-                <Tab.Navigator
-                  screenOptions={{
-                    headerShown: false,
-                    tabBarStyle: styles.tabBar,
-                    tabBarShowLabel: false,
-                  }}
-                >
-                  <Tab.Screen
-                    name="Today"
-                    component={TodayStack}
-                    options={{
-                      tabBarIcon: ({ focused }) =>
-                        focused ? (
-                          <TodayActiveIcon
-                            width={40}
-                            height={40}
-                            color={"white"}
-                          />
-                        ) : (
-                          <TodayInactiveIcon
-                            width={40}
-                            height={40}
-                            color={"white"}
-                          />
-                        ),
-                    }}
-                  />
-                  <Tab.Screen
-                    name="Tomorrow"
-                    component={TomorrowStack}
-                    options={{
-                      tabBarIcon: ({ focused }) =>
-                        focused ? (
-                          <TomorrowActiveIcon
-                            width={40}
-                            height={40}
-                            color={"white"}
-                          />
-                        ) : (
-                          <TomorrowInactiveIcon
-                            width={40}
-                            height={40}
-                            color={"white"}
-                          />
-                        ),
-                    }}
-                  />
-                  <Tab.Screen
-                    name="Settings"
-                    component={SettingsStack}
-                    options={{
-                      tabBarIcon: ({ focused }) =>
-                        focused ? (
-                          <SettingsActiveIcon
-                            width={40}
-                            height={40}
-                            color={"white"}
-                          />
-                        ) : (
-                          <SettingsInactiveIcon
-                            width={40}
-                            height={40}
-                            color={"white"}
-                          />
-                        ),
-                    }}
-                  />
-                </Tab.Navigator>
-              ) : (
-                <AuthStack />
-              )
-            ) : (
-              <Splash />
-            )}
-          </NavigationContainer>
-          <TodoBottomSheet />
-        </View>
+        <AppContent isSignedIn={isSignedIn} />
       </BottomSheetProvider>
     </SettingsProvider>
+  );
+}
+
+function AppContent({ isSignedIn }) {
+  const [hideSplashScreen, setHideSplashScreen] = useState(true);
+    // useEffect(() => {
+  //   setTimeout(() => {
+  //     setHideSplashScreen(true);
+  //   }, 2000);
+  // }, []);
+
+  const { setCurrentUserID } = useSettings();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      const user = auth.currentUser;
+      if (user) {
+        setCurrentUserID(user.uid);
+      }
+    } else {
+      setCurrentUserID(null);
+    }
+  }, [isSignedIn, setCurrentUserID]);
+
+  return (
+    <View style={{ flex: 1 }}>
+    <StatusBar style="light" backgroundColor={Color.white} />
+    <NavigationContainer theme={theme}>
+      {hideSplashScreen ? (
+        isSignedIn ? (
+          <Tab.Navigator
+            screenOptions={{
+              headerShown: false,
+              tabBarStyle: styles.tabBar,
+              tabBarShowLabel: false,
+            }}
+          >
+            <Tab.Screen
+              name="Today"
+              component={TodayStack}
+              options={{
+                tabBarIcon: ({ focused }) =>
+                  focused ? (
+                    <TodayActiveIcon
+                      width={40}
+                      height={40}
+                      color={"white"}
+                    />
+                  ) : (
+                    <TodayInactiveIcon
+                      width={40}
+                      height={40}
+                      color={"white"}
+                    />
+                  ),
+              }}
+            />
+            <Tab.Screen
+              name="Tomorrow"
+              component={TomorrowStack}
+              options={{
+                tabBarIcon: ({ focused }) =>
+                  focused ? (
+                    <TomorrowActiveIcon
+                      width={40}
+                      height={40}
+                      color={"white"}
+                    />
+                  ) : (
+                    <TomorrowInactiveIcon
+                      width={40}
+                      height={40}
+                      color={"white"}
+                    />
+                  ),
+              }}
+            />
+            <Tab.Screen
+              name="Settings"
+              component={SettingsStack}
+              options={{
+                tabBarIcon: ({ focused }) =>
+                  focused ? (
+                    <SettingsActiveIcon
+                      width={40}
+                      height={40}
+                      color={"white"}
+                    />
+                  ) : (
+                    <SettingsInactiveIcon
+                      width={40}
+                      height={40}
+                      color={"white"}
+                    />
+                  ),
+              }}
+            />
+          </Tab.Navigator>
+        ) : (
+          <AuthStack />
+        )
+      ) : (
+        <Splash />
+      )}
+    </NavigationContainer>
+    <TodoBottomSheet />
+  </View>
   );
 }
 
