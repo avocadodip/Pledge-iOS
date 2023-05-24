@@ -7,6 +7,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import ToggleButtons from "../components/ToggleButtons";
 import DaysActiveToggle from "../components/DaysActiveToggle";
 import TimeButton from "../components/TimeButton";
+import OnboardingPopup from "../components/OnboardingPopup";
 
 const Account = ({ navigation }) => {
   const handlePress = (screenName) => {
@@ -15,6 +16,11 @@ const Account = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
+      <OnboardingPopup
+        texts={['Are you sure you want to delete your account?', 'Progress takes time and failure is a vital part of the process!','If you are struggling to complete tasks, try setting smaller tasks each day. It will pay off over time!']}
+        buttonTitle="Let's give this one more go!"
+        secondButtonTitle="Yes, delete my account."
+      />
       <View style={styles.headerContainer}>
         <TouchableOpacity	onPress={() => handlePress("SettingsScreen")}>
           <LeftArrowIcon
@@ -75,6 +81,11 @@ const Account = ({ navigation }) => {
             buttonTexts={['Classic', 'Light', 'Dark']}
           />
         </View>   
+      </View>
+      <View style={styles.preferenceContainer}>
+        <TouchableOpacity> 
+        <Text style={[styles.preferenceTitle, {textDecorationLine:'underline'}]}>Delete account.</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   )

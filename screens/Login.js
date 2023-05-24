@@ -201,8 +201,8 @@ const styles = StyleSheet.create({
     borderRadius: Border.br_8xs,
   },
   signupTypo: {
-    fontFamily: FontFamily.epilogueBold,
-    fontWeight: "700",
+    // fontFamily: FontFamily.epilogueBold,
+    // fontWeight: "700",
     textAlign: "left",
   },
   textLayout: {
@@ -257,8 +257,8 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
   text: {
-    fontWeight: "500",
-    fontFamily: FontFamily.epilogueMedium,
+    // fontWeight: "500",
+    // fontFamily: FontFamily.epilogueMedium,
     color: Color.white,
     textAlign: "left",
   },

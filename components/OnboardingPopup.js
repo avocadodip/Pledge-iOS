@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Color } from '../GlobalStyles';
 import NextButton from './NextButton';
 
-const OnboardingPopup = ({ texts, buttonTitle }) => {
+const OnboardingPopup = ({ texts, buttonTitle, secondButtonTitle }) => {
   return (
     <View style={styles.overlay}>
       <View style={styles.frame}>
@@ -15,7 +15,21 @@ const OnboardingPopup = ({ texts, buttonTitle }) => {
             {text}
           </Text>
         ))}
-        <NextButton title={buttonTitle} />
+        <View style={styles.buttonContainer}>
+          <NextButton title={buttonTitle} />
+          {secondButtonTitle && (
+            <TouchableOpacity
+              style={styles.secondButton}
+              title={secondButtonTitle}
+            >
+              <Text
+                style={[styles.text, { textDecorationLine: 'underline' }]}
+              >
+              {secondButtonTitle}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -36,8 +50,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 40,
     gap: 30,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: 'column', // Change to column direction
+    alignItems: 'flex-start', // Align left
   },
   text: {
     fontSize: 20,
@@ -47,6 +61,10 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: 'bold',
+  },
+  buttonContainer: {
+    marginTop: 20,
+    gap: 10,
   },
 });
 
