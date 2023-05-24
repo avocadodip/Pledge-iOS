@@ -1,10 +1,20 @@
 import React, { useState } from "react";
-import { Alert, View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  Alert,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import CheckIcon from "../assets/icons/check-icon.svg";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
 import LockIcon from "../assets/icons/lock-icon.svg";
 import UnlockIcon from "../assets/icons/unlock-icon.svg";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../database/firebase";
+import { formatDayEnd, formatDayStart, getTmrwDate, getTodayDateTime } from "../utils/currentDate";
 
 const Todo = ({
   todoNumber,
@@ -17,7 +27,8 @@ const Todo = ({
 }) => {
   const [isTodoLocked, setIsTodoLocked] = useState(isLocked);
 
-  const { setIsBottomSheetOpen, setSelectedTodo, setIsBottomSheetEditable } = useBottomSheet();
+  const { setIsBottomSheetOpen, setSelectedTodo, setIsBottomSheetEditable } =
+    useBottomSheet();
 
   const handleOpenBottomSheet = () => {
     setSelectedTodo({
@@ -48,7 +59,40 @@ const Todo = ({
     });
   };
 
-  const showAlert = (missingField) => {
+  const handleLockTodo = async () => {
+    // Validation: missing fields
+    if (title == "") {
+      showMissingFieldAlert("title");
+      return;
+    }
+
+    if (amount == "") {
+      showMissingFieldAlert("amount");
+      return;
+    }
+
+    // Convert string to float
+    const floatAmount = parseFloat(amount);
+
+    // Adds doc to 'todos' containing new task info
+    await addDoc(collection(db, "todos"), {
+      title: title,
+      description: description,
+      tag: tag,
+      amount: floatAmount,
+      // set: currentSetNum,
+      createdAt: getTodayDateTime(),
+      opensAt: formatDayStart(dayStart),
+      closesAt: formatDayEnd(dayEnd),
+      dayActive: getTmrwDate(),
+      isComplete: false,
+      order: todoNumber,
+    });
+
+    setIsTodoLocked(true);
+  };
+
+  const showMissingFieldAlert = (missingField) => {
     let message;
     if (missingField === "title") {
       message = "Fill in a name for the task to lock it!";
@@ -63,25 +107,13 @@ const Todo = ({
     );
   };
 
-  const handleLockTodo = () => {
-    if (title == "") {
-      showAlert("title");
-      return;
-    }
-
-    if (amount == "") {
-      showAlert("amount");
-      return;
-    }
-
-    // convert amount to number before saving to database
-    setIsTodoLocked(true);
-  };
-
   // 1. number [tmrw page]
   if (componentType == "number") {
     return (
-      <TouchableOpacity style={styles.numberContainer} onPress={handleNewTodoPress}>
+      <TouchableOpacity
+        style={styles.numberContainer}
+        onPress={handleNewTodoPress}
+      >
         <Text style={styles.numberText}>{todoNumber}</Text>
       </TouchableOpacity>
     );
@@ -99,7 +131,10 @@ const Todo = ({
   else if (componentType == "info") {
     return (
       <View style={styles.infoContainer}>
-        <TouchableOpacity style={styles.leftContainer} onPress={handleOpenBottomSheet}>
+        <TouchableOpacity
+          style={styles.leftContainer}
+          onPress={handleOpenBottomSheet}
+        >
           <View style={styles.upperHalfContainer}>
             <View style={styles.numberTitleContainer}>
               <Text style={styles.todoNumber}>{todoNumber}</Text>
@@ -118,7 +153,11 @@ const Todo = ({
               {description && (
                 <View style={styles.descriptionContainer}>
                   <DescriptLinesIcon />
-                  <Text style={styles.todoDescription} numberOfLines={1} ellipsizeMode="tail">
+                  <Text
+                    style={styles.todoDescription}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
                     {description}
                   </Text>
                 </View>
@@ -141,7 +180,10 @@ const Todo = ({
             <LockIcon />
           </View>
         ) : isTodoLocked === false ? (
-          <TouchableOpacity style={styles.rightContainer} onPress={handleLockTodo}>
+          <TouchableOpacity
+            style={styles.rightContainer}
+            onPress={handleLockTodo}
+          >
             <UnlockIcon />
           </TouchableOpacity>
         ) : (
@@ -151,20 +193,22 @@ const Todo = ({
         )}
       </View>
     );
-  }
-  else if (componentType == "onboard") {
+  } else if (componentType == "onboard") {
     return (
       <View style={[styles.infoContainer, { height: 86 }]}>
         <View style={styles.leftContainer}>
           <View style={styles.upperHalfContainer}>
             <View style={styles.numberTitleContainer}>
               <Text style={styles.todoNumber}>{todoNumber}</Text>
-              <TextInput 
+              <TextInput
                 autoCorrect={false}
                 multiline={true}
                 numberOfLines={2}
-                style={[styles.todoTitle, { flexGrow: 1, flexShrink: 1, lineHeight: 24 }]}
-                placeholder={'Write a screenplay'}
+                style={[
+                  styles.todoTitle,
+                  { flexGrow: 1, flexShrink: 1, lineHeight: 24 },
+                ]}
+                placeholder={"Write a screenplay"}
                 placeholderTextColor="rgba(243, 243, 243, 0.5)"
                 maxLength={40}
                 // borderWidth={1}
@@ -183,7 +227,10 @@ const Todo = ({
             <LockIcon />
           </View>
         ) : isTodoLocked === false ? (
-          <TouchableOpacity style={styles.rightContainer} onPress={handleLockTodo}>
+          <TouchableOpacity
+            style={styles.rightContainer}
+            onPress={handleLockTodo}
+          >
             <UnlockIcon />
           </TouchableOpacity>
         ) : (

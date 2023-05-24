@@ -14,9 +14,18 @@ import { Color } from "../GlobalStyles";
 import Globals from "../Globals";
 import { auth, db } from "../database/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import MailIcon from "../assets/icons/mail-icon.svg";
 import FervoWhite from "../assets/FervoWhite.png";
+import { getTodayDateTime } from "../utils/currentDate";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -47,8 +56,8 @@ const Signup = () => {
 
     // If a user with the same email is found, show an error alert
     if (!querySnapshot.empty) {
-        Alert.alert("Error", "A user with this email address already exists.");
-        return;
+      Alert.alert("Error", "A user with this email address already exists.");
+      return;
     }
 
     // Sign up the user using Firebase Authentication
@@ -58,40 +67,53 @@ const Signup = () => {
     setLoading(true);
 
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, lowerCaseEmail, lowerCasePassword);
-        // User successfully signed up
-        const user = userCredential.user;
-        Globals.currentUserID = user.uid;
-        Globals.fullName = fullName;
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        lowerCaseEmail,
+        lowerCasePassword
+      );
+      // User successfully signed up
+      const user = userCredential.user;
+      Globals.currentUserID = user.uid;
+      Globals.fullName = fullName;
 
-        // Save full name and email to Firestore
-        await setDoc(doc(db, "users", user.uid), {
-            fullName: fullName,
-            email: lowerCaseEmail,
-            profilePhoto: 1,
-            todos: [],
-            tags: [],
-            dayStart: '07:30',
-            dayEnd: '9:30',
-            daysOff: [],
-            vacationMode: false,
-            theme: 'Classic'
-        });
-        setLoading(false);
+      // Save full name and email to Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        fullName: fullName,
+        email: lowerCaseEmail,
+        profilePhoto: 1,
+        dayStart: "7:30",
+        dayEnd: "9:00",
+        dayStartEndLastUpdated: getTodayDateTime(),
+        daysActive: {
+          Sunday: true,
+          Monday: true,
+          Tuesday: true,
+          Wednesday: true,
+          Thursday: true,
+          Friday: true,
+          Saturday: true,
+        },
+        vacationMode: false,
+        theme: "Classic",
+        missedTaskFine: 1,
+        totalAmountDue: 0,
+      });
+      setLoading(false);
     } catch (error) {
-        // Handle sign up errors (e.g., show error message)
-        console.error(error.message);
-        Alert.alert("Sign Up Failed", error.message);
+      // Handle sign up errors (e.g., show error message)
+      console.error(error.message);
+      Alert.alert("Sign Up Failed", error.message);
     }
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
         {/* replace with app logo */}
         <Image
-          source={require('../assets/FervoWhite.png')}
-          style={{ width: 150, height: 150, }}
+          source={require("../assets/FervoWhite.png")}
+          style={{ width: 150, height: 150 }}
         />
         <Text style={styles.appNameText}>Fervo</Text>
       </View>
@@ -169,7 +191,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: "center",
     marginBottom: 20,
-    // borderColor:'black', 
+    // borderColor:'black',
     // borderWidth: 1
   },
   appNameText: {
