@@ -5,6 +5,8 @@ import RightChevronIcon from "../assets/icons/right-chevron.svg";
 import UserCircleIcon from "../assets/icons/user-profile-circle.svg";
 import LibraryIcon from "../assets/icons/library-outline.svg";
 import CreditCardIcon from "../assets/icons/credit-card.svg";
+import LogoutIcon from "../assets/icons/logout.svg";
+import OnboardingPopup from "../components/OnboardingPopup";
 
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -25,6 +27,11 @@ const Settings = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
+      <OnboardingPopup
+        texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
+        buttonTitle="Back to settings."
+        secondButtonTitle="Log me out."
+      />
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Settings</Text>
       </View>
@@ -94,7 +101,7 @@ const Settings = ({ navigation }) => {
 						onPress={handleLogout}
 				>
           <View style={styles.leftSettingsButton}>
-            <CreditCardIcon
+            <LogoutIcon
               width={24}
               height={24}
               color={Color.white}
