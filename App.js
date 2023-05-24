@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, SafeAreaView, Image } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
@@ -9,8 +9,8 @@ import Onboard1 from "./screens/Onboard1";
 import Onboard2 from "./screens/Onboard2";
 import Tomorrow from "./screens/Tomorrow";
 import Settings from "./screens/Settings";
-import Login from "./screens/Login";
 import Signup from "./screens/Signup";
+import Login from "./screens/Login";
 import Splash from "./screens/Splash";
 import Billing from "./screens/Billing";
 import Account from "./screens/Account";
@@ -30,6 +30,8 @@ import SettingsInactiveIcon from "./assets/icons/settings-inactive-icon.svg";
 import { checkAuthState } from "./utils/authHelper";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { auth } from "./database/firebase";
+import { onAuthStateChanged } from "@firebase/auth";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,13 +39,13 @@ const Tab = createBottomTabNavigator();
 const AuthStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen
-      name="Login"
-      component={Login}
+      name="Signup"
+      component={Signup}
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="Signup"
-      component={Signup}
+      name="Login"
+      component={Login}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
@@ -108,6 +110,24 @@ const theme = {
 };
 
 export default function App() {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [initializing, setInitializing] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsSignedIn(true);
+        if (initializing) setInitializing(false);
+      } else {
+        setIsSignedIn(false);
+        if (initializing) setInitializing(false);
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
   const [hideSplashScreen, setHideSplashScreen] = useState(true);
   const [fontsLoaded, error] = useFonts({
     Epilogue_regular: require("./assets/fonts/Epilogue_regular.ttf"),
@@ -118,13 +138,7 @@ export default function App() {
     Inter_semibold: require("./assets/fonts/Inter_semibold.ttf"),
     Inter_bold: require("./assets/fonts/Inter_bold.ttf"),
   });
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      setHideSplashScreen(true);
-    }, 2000);
-  }, []);
-
+  
   if (!fontsLoaded && !error) {
     return null;
   }
@@ -132,13 +146,23 @@ export default function App() {
   const userLoggedIn = 1;
   // checkAuthState(); // Set this based on your authentication logic
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setHideSplashScreen(true);
+  //   }, 2000);
+  // }, []);
+
+  if (initializing) {
+    return null;
+  }
+
   return (
     <BottomSheetProvider>
       <View style={{ flex: 1 }}>
         <StatusBar style="light" backgroundColor={Color.white} />
         <NavigationContainer theme={theme}>
           {hideSplashScreen ? (
-            userLoggedIn ? (
+            isSignedIn ? (
               <Tab.Navigator
                 screenOptions={{
                   headerShown: false,

@@ -1,353 +1,231 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
-  View,
-  Pressable,
   Text,
   TextInput,
+  TouchableOpacity,
+  View,
+  SafeAreaView,
+  Alert,
   Image,
-  KeyboardAvoidingView,
-  ActivityIndicator,
-} from 'react-native'
-import { Alert } from 'react-native'
-// import { Input as RNKTextInput } from '@ui-kitten/components'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useNavigation } from '@react-navigation/native'
-import { Padding, Border, FontFamily, FontSize, Color } from '../GlobalStyles'
-import firebase from '../database/firebase'
-import 'firebase/firestore'
-import Globals from '../Globals'
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Color } from "../GlobalStyles";
+import Globals from "../Globals";
+import { auth, db } from "../database/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
+import MailIcon from "../assets/icons/mail-icon.svg";
+import FervoWhite from "../assets/FervoWhite.png";
 
 const Signup = () => {
-  const [fullName, setFullName] = useState()
-  const [email, setEmail] = useState() // New state for email input
-  const [phoneNumber, setPhoneNumber] = useState()
-  const [password, setPassword] = useState()
-  const [loading, setLoading] = useState(false)
-  const [SignupPressed, setSignupPressed] = useState(false) // Add this state to handle the button pressed state
-  const navigation = useNavigation()
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigation = useNavigation();
 
   const handleSignup = async () => {
     // Check if the inputPhoneNumber field is empty or invalid
     // Check if all fields are filled
-    if (!fullName || !email || !phoneNumber || !password) {
-      Alert.alert('Oops! 🙈', 'Please fill in all fields')
-      return
+    if (!fullName || !email || !password) {
+      Alert.alert("Oops! 🙈", "Please fill in all fields");
+      return;
     }
 
     // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert('Uh-oh! 📧', 'Please enter a valid email address')
-      return
+      Alert.alert("Uh-oh! 📧", "Please enter a valid email address");
+      return;
     }
 
-    // Validate phone number
-    const phoneNumberRegex = /^\+?[1-9]\d{1,14}$/
-    if (!phoneNumberRegex.test(phoneNumber)) {
-      Alert.alert('Oops! 📱', 'Please enter a valid phone number')
-      return
-    }
-
-    // Search for users with the matching phone number in Firestore
-    const usersRef = firebase.firestore().collection('users')
-    const querySnapshot = await usersRef
-      .where('phoneNumber', '==', phoneNumber)
-      .get()
-
-    if (!querySnapshot.empty) {
-      // If a user with the same phone number is found, show an error alert
-      Alert.alert('Error', 'A user with this phone number already exists.')
-      return
-    }
-
-    // Search for users with the matching email in Firestore
-    const emailQuerySnapshot = await usersRef
-      .where('email', '==', email.toLowerCase())
-      .get()
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("email", "==", email.toLowerCase()));
+    const querySnapshot = await getDocs(q);
 
     // If a user with the same email is found, show an error alert
-    if (!emailQuerySnapshot.empty) {
-      Alert.alert('Error', 'A user with this email address already exists.')
-      return
+    if (!querySnapshot.empty) {
+        Alert.alert("Error", "A user with this email address already exists.");
+        return;
     }
 
     // Sign up the user using Firebase Authentication
-    const lowerCaseEmail = email.toLowerCase()
-    const lowerCasePassword = password.toLowerCase()
+    const lowerCaseEmail = email.toLowerCase();
+    const lowerCasePassword = password.toLowerCase();
 
-    setLoading(true)
+    setLoading(true);
 
     try {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(lowerCaseEmail, lowerCasePassword)
-        .then((userCredential) => {
-          // User successfully signed up
-          const user = userCredential.user
-          Globals.currentUserID = user.uid
-          Globals.fullName = fullName
+        const userCredential = await createUserWithEmailAndPassword(auth, lowerCaseEmail, lowerCasePassword);
+        // User successfully signed up
+        const user = userCredential.user;
+        Globals.currentUserID = user.uid;
+        Globals.fullName = fullName;
 
-          // Save full name and phone number to Firestore
-          return firebase
-            .firestore()
-            .collection('users')
-            .doc(user.uid)
-            .set({
-              fullName: fullName,
-              phoneNumber: phoneNumber,
-              email: lowerCaseEmail, // Storing email for later searching
-              profilePhoto: 1, // Default to stock image
-              location: { latitude: null, longitude: null }, // Default to null
-              beaconOn: false, // Default to false (beacon is off)
-              friends: [], // Empty list of friends
-              friendRequests: [], // Empty list of friend requests
-              status: 'Offline', // Default status
-              statusMessage: '', // Default status message
-            })
-            .then(() => {
-              setLoading(false)
-              navigation.navigate('Today')
-            })
-        })
-        .catch((error) => {
-          // Handle sign up errors (e.g., show error message)
-          console.error(error.message)
-          Alert.alert('Sign Up Failed', errorMessage)
-        })
+        // Save full name and email to Firestore
+        await setDoc(doc(db, "users", user.uid), {
+            fullName: fullName,
+            email: lowerCaseEmail,
+            profilePhoto: 1,
+            todos: [],
+            tags: [],
+            dayStart: '07:30',
+            dayEnd: '9:30',
+            daysOff: [],
+            vacationMode: false,
+            theme: 'Classic'
+        });
+        setLoading(false);
     } catch (error) {
-      console.error(error.message)
-      Alert.alert('Sign Up Failed', errorMessage)
+        // Handle sign up errors (e.g., show error message)
+        console.error(error.message);
+        Alert.alert("Sign Up Failed", error.message);
     }
-  }
-
+  };
+  
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <View style={styles.signups}>
-        <View style={[styles.image2]} />
-        <View style={[styles.frameParent, styles.parentFlexBox]}>
-          {loading ? <ActivityIndicator size="small" color="white" /> : null}
-          <View style={styles.beaconContainer}>
-            <Image
-              style={styles.beaconlogo51Icon}
-              resizeMode="cover"
-              source={require('../assets/beaconlogo.png')}
-            />
-            <Text
-              style={[styles.beacon, styles.loginTypo, { color: '#FF6422' }]}
-            >
-              Beacon
-            </Text>
-            <TextInput
-              style={[styles.frameChild, styles.frameSpaceBlock]}
-              placeholder="Full name"
-              value={fullName}
-              onChangeText={setFullName}
-              placeholderTextColor="#000"
-              textStyle={styles.frameTextInputText}
-              autoCorrect={false} // Disable auto-correction
-              autoCapitalize="none" // Disable auto-capitalization
-            />
-            <TextInput
-              style={[styles.frameItem, styles.frameSpaceBlock]}
-              placeholder="Email" // Email input field
-              value={email}
-              onChangeText={setEmail}
-              placeholderTextColor="#000"
-              textStyle={styles.frameTextInput1Text}
-              autoCorrect={false} // Disable auto-correction
-              autoCapitalize="none" // Disable auto-capitalization
-            />
-            <TextInput
-              style={[styles.frameItem, styles.frameSpaceBlock]}
-              placeholder="Phone number"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-              placeholderTextColor="#000"
-              textStyle={styles.frameTextInput1Text}
-              autoCorrect={false} // Disable auto-correction
-              autoCapitalize="none" // Disable auto-capitalization
-              keyboardType="phone-pad" // Set the keyboard to show phone number input
-            />
-            <TextInput
-              style={[styles.frameItem, styles.frameSpaceBlock]}
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              placeholderTextColor="#000"
-              textStyle={styles.frameTextInput2Text}
-              autoCorrect={false} // Disable auto-correction
-              autoCapitalize="none" // Disable auto-capitalization
-              secureTextEntry={true} // Mask password input
-            />
-          </View>
-          <LinearGradient
-            style={[
-              styles.wrapper,
-              { borderRadius: 50, marginBottom: 20 }, // Apply borderRadius to LinearGradient
-            ]}
-            locations={[0, 1]}
-            colors={
-              SignupPressed ? ['#cc501b', '#cc8353'] : ['#ff6422', '#ffa266']
-            }
-          >
-            <Pressable
-              style={[styles.pressable]}
-              onPress={handleSignup} // Invoke the handleSignup function when the button is pressed
-              onPressIn={() => setSignupPressed(true)} // Set "pressed" state to true when the button is pressed
-              onPressOut={() => setSignupPressed(false)} // Set "pressed" state to false when the button is released
-            >
-              <Text style={[styles.signup, styles.signupTypo]}>Signup</Text>
-            </Pressable>
-          </LinearGradient>
-          <Pressable
-            style={styles.goBackToContainer}
-            onPress={() => navigation.navigate('Login')}
-          >
-            <Text style={[styles.text, styles.textLayout]}>
-              {`Go back to `}
-              <Text style={styles.login}>Login</Text>
-            </Text>
-          </Pressable>
-        </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.logoContainer}>
+        {/* replace with app logo */}
+        <Image
+          source={require('../assets/FervoWhite.png')}
+          style={{ width: 150, height: 150, }}
+        />
+        <Text style={styles.appNameText}>Fervo</Text>
       </View>
-      {loading && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional: semi-transparent background
-          }}
+
+      <View style={styles.buttonContainer}>
+        <TextInput
+          style={styles.inputField}
+          placeholder="Full name"
+          onChangeText={setFullName}
+          value={fullName}
+          placeholderTextColor="#fff"
+          // textStyle={styles.frameTextInputText}
+          autoCorrect={false} // Disable auto-correction
+          autoCapitalize="none" // Disable auto-capitalization
+        />
+        <TextInput
+          style={styles.inputField}
+          placeholder="Email"
+          onChangeText={setEmail}
+          value={email}
+          keyboardType="email-address"
+          placeholderTextColor="#fff"
+          // textStyle={styles.frameTextInputText}
+          autoCorrect={false} // Disable auto-correction
+          autoCapitalize="none" // Disable auto-capitalization
+        />
+        <TextInput
+          style={styles.inputField}
+          placeholder="Password"
+          placeholderTextColor="#fff"
+          onChangeText={setPassword}
+          value={password}
+          secureTextEntry={true}
+          textStyle={styles.frameTextInput1Text}
+          autoCorrect={false} // Disable auto-correction
+          autoCapitalize="none" // Disable auto-capitalization
+        />
+
+        {/* <TouchableOpacity style={styles.button} onPress={handleGoogleLogin}>
+          <GoogleLogoIcon />
+          <Text style={styles.buttonText}>Continue with Google</Text>
+        </TouchableOpacity> */}
+
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          {/* <MailIcon width={24} height={24} color={`${Color.fervo_red}`} /> */}
+          <Text style={styles.buttonText}>Sign up</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.button,
+            {
+              backgroundColor: "transparent",
+              borderWidth: 2,
+              borderColor: "rgba(255, 255, 255, 0.7)",
+            },
+          ]}
+          onPress={() => navigation.navigate("Login")}
         >
-          <ActivityIndicator size="large" color="white" />
-        </View>
-      )}
-    </KeyboardAvoidingView>
-  )
-}
+          <Text style={[styles.buttonText, { color: Color.white }]}>
+            Log in
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  beaconContainer: {
-    alignItems: 'center', // Center contents horizontally
-    // marginTop: -150, // Move container up by 50 pixels
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+    // borderColor:'black', 
+    // borderWidth: 1
   },
-  frameTextInputText: {
-    color: '#000',
-  },
-  frameTextInput1Text: {
-    color: '#000',
-  },
-  frameTextInput2Text: {
-    color: '#000',
-  },
-  parentFlexBox: {
-    alignItems: 'center',
-  },
-  frameSpaceBlock: {
-    borderRadius: Border.br_8xs,
-  },
-  signupTypo: {
-    fontFamily: FontFamily.epilogueBold,
-    fontWeight: '700',
-    textAlign: 'left',
-  },
-  textLayout: {
-    fontSize: FontSize.size_lg,
-  },
-  image2: {
-    transform: [
-      {
-        rotate: '-90deg',
-      },
-    ],
-  },
-  frameChild: {
-    width: 322,
-    borderWidth: 1,
-    borderColor: '#c1c1c1',
-    borderStyle: 'solid',
-    borderRadius: Border.br_8xs,
-  },
-  frameItem: {
-    marginTop: 10,
-    width: 322,
-    borderWidth: 1,
-    borderColor: '#c1c1c1',
-    borderStyle: 'solid',
-    flexDirection: 'row',
-    borderRadius: Border.br_8xs,
-  },
-  signup: {
+  appNameText: {
+    fontSize: 60,
     color: Color.white,
-    textAlign: 'left',
-    lineHeight: 25,
-    fontSize: FontSize.size_lg,
+    marginTop: 0,
+    fontWeight: "bold",
   },
-  pressable: {
-    justifyContent: 'center',
-    backgroundColor: Color.papaya,
-    paddingHorizontal: Padding.p_xl,
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    height: 40, // Height for the button to look good
+  inputField: {
+    height: 40,
+    width: "100%",
+    borderColor: Color.white,
+    borderWidth: 1,
+    paddingLeft: 10,
+    borderRadius: 5,
+    color: Color.white,
+    backgroundColor: Color.fervo_red,
   },
-  wrapper: {
-    marginTop: 20,
-    width: 322,
+  buttonContainer: {
+    alignItems: "center",
+    flexDirection: "col",
+    gap: 15,
+    width: "90%",
   },
-  frameParent: {
-    alignItems: 'center',
-  },
-  login: {
-    textDecorationLine: 'underline',
-  },
-  text: {
-    fontWeight: '500',
-    fontFamily: FontFamily.epilogueMedium,
-    color: Color.black,
-    textAlign: 'left',
-  },
-  goBackToContainer: {
-    alignSelf: 'center', // Center the text within the parent view
-  },
-  beaconlogo51Icon: {
-    width: 132,
-    height: 135,
-  },
-  beacon: {
-    fontSize: FontSize.size_31xl,
-    lineHeight: 69,
-    width: 195,
-    marginTop: 11,
-    textAlign: 'left',
-    fontFamily: FontFamily.epilogueBold,
-    fontWeight: '700',
-    textAlign: 'left',
-  },
-  beaconlogo51Parent: {
-    alignItems: 'center',
-  },
-  signups: {
-    borderRadius: Border.br_11xl,
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: Color.white,
-    flex: 1,
-    overflow: 'hidden',
-    width: '100%',
-    justifyContent: 'center', // Center child components vertically
-    alignItems: 'center', // Center child components horizontally
+    gap: 15,
+    height: 52,
+    borderRadius: 17,
+    width: "100%",
   },
-})
+  buttonText: {
+    color: Color.fervo_red,
+    fontSize: 18,
+    fontWeight: 600,
+  },
+  // alternativeButton: {
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   backgroundColor: "transparent",
+  //   gap: 10,
+  //   height: 45,
+  //   borderRadius: 50,
+  //   width: 322,
+  //   borderWidth: 3, // Set the border width
+  //   borderColor: "#fff", // Set the border color
+  // },
+  // alternativeButtonText: {
+  //   color: "white",
+  //   fontSize: 16,
+  //   fontWeight: 700,
+  // },
+});
 
-export default Signup
+export default Signup;
