@@ -14,6 +14,7 @@ export default function TodoBottomSheet() {
     isBottomSheetEditable,
     selectedTodo,
     updateTodo,
+    isOnboard,
   } = useBottomSheet();
   const bottomSheetRef = useRef(null);
   const snapPoints = ["75%"];
@@ -194,9 +195,11 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     gap: 23,
-    marginVertical: 18,
+    // marginVertical: 18,
+    // borderWidth: 1,
+    // borderColor: 'black',
   },
   number: {
     color: "white",
@@ -213,14 +216,15 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "500",
-    lineHeight: 25,
+    lineHeight: 18,
     width: "80%",
+    paddingVertical: 15,
   },
   textInput: {
     color: "white",
     fontSize: 16,
     fontWeight: "500",
-    lineHeight: 25,
+    lineHeight: 18,
     width: "80%",
     paddingVertical: 15,
     // paddingHorizontal: 10,

@@ -5,6 +5,8 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import Today from "./screens/Today";
+import Onboard1 from "./screens/Onboard1";
+import Onboard2 from "./screens/Onboard2";
 import Tomorrow from "./screens/Tomorrow";
 import Settings from "./screens/Settings";
 import Signup from "./screens/Signup";
@@ -14,6 +16,7 @@ import Billing from "./screens/Billing";
 import Account from "./screens/Account";
 import Stats from "./screens/Stats";
 import TodoBottomSheet from "./components/TodoBottomSheet";
+import OnboardingPopup from "./components/OnboardingPopup";
 import { Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 // import { MenuProvider } from "react-native-popup-menu";
@@ -52,6 +55,7 @@ const TodayStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen
       name="TodayScreen"
+      // component={Today} <-- Re-add when onboarding is done
       component={Today}
       options={{ headerShown: false }}
     />
@@ -138,6 +142,9 @@ export default function App() {
   if (!fontsLoaded && !error) {
     return null;
   }
+
+  const userLoggedIn = 1;
+  // checkAuthState(); // Set this based on your authentication logic
 
   // useEffect(() => {
   //   setTimeout(() => {

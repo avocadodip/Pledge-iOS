@@ -3,30 +3,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
-import OnboardingPopup from "../components/OnboardingPopup";
 
 const Today = () => {
   const todos = [
     {
       id: 1,
       title: "Learn to juggle",
-      description: "Practice juggling with three oranges",
-      amount: "3",
-      tag: "Fitness",
     },
-    // {
-    //   id: 2,
-    //   title: "Create a silly dance",
-    //   description: "Choreograph a funny dance routine",
-    //   amount: "$5",
-    //   tag: "Entertainment",
-    // },
+    {
+      id: 2,
+      title: "Create a silly dance",
+    },
     {
       id: 3,
-      title: "Build a blanket fort",
-      description: "Construct a cozy fort using blankets and pillows",
-      amount: "2",
-      tag: "Cozy",
+      title: "Build a blanket fort Build a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fort",
     },
   ];
 
@@ -50,7 +40,7 @@ const Today = () => {
             description={todo.description}
             amount={todo.amount}
             tag={todo.tag}
-            componentType="info"
+            componentType="onboard"
             isLocked={null}
           />
         );
@@ -74,13 +64,10 @@ const Today = () => {
   };
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <OnboardingPopup
-        texts={['This is the Today page.', 'Your three tasks planned the night before will show up here.','Your only mission is to check them off before the day ends!']}
-        buttonTitle="Cool, what's next?"
-      />
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Today</Text>
-        <Text style={styles.headerSubtitle}>Ends @ 9:00 PM</Text>
+        <Text style={styles.headerTitle}>Welcome to Fervo!</Text>
+        <Text style={styles.descTitle}>We'll take you on a quick walkthrough of the platform.</Text>
+        <Text style={styles.descTitle}>But first, what are some huge, spectacular dreams you want to achieve? Think big, anything is possible!</Text>
       </View>
       <View style={styles.todoContainer}>{renderTodos()}</View>
     </SafeAreaView>
@@ -94,20 +81,24 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   headerContainer: {
-    marginTop: 10,
+    paddingTop: 20,
+    paddingLeft: 20,
     width: "100%",
     flexDirection: "col",
+    marginBottom: 20,
+    gap: 20,
+    // borderWidth: 1,
+    // borderColor: 'black',
   },
   headerTitle: {
-    color: "white",
-    fontSize: 50,
+    color: Color.white,
+    fontSize: 30,
     fontWeight: "bold",
   },
-  headerSubtitle: {
-    color: "white",
-    fontSize: 25,
-    fontWeight: "bold",
-    marginTop: 5,
+  descTitle: {
+    color: Color.white,
+    fontSize: 26,
+    lineHeight: 44,
   },
   todoContainer: {
     marginTop: 20,
