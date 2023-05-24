@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   View,
@@ -27,12 +27,19 @@ const Todo = ({
   componentType,
   isLocked,
 }) => {
-  const [isTodoLocked, setIsTodoLocked] = useState(isLocked);
+  const [isTodoLocked, setIsTodoLocked] = useState(null);
+
+  useEffect(() => {
+    setIsTodoLocked(isLocked);
+  }, [isLocked]);
+
+
   const { settings } = useSettings(); // To access dayStart and dayEnd for todo creation
   const { setIsBottomSheetOpen, setSelectedTodo, setIsBottomSheetEditable } =
     useBottomSheet(); // To open bottom sheet when todo is pressed
 
   const handleOpenBottomSheet = () => {
+
     setSelectedTodo({
       todoNumber,
       title,
@@ -124,6 +131,7 @@ const Todo = ({
       </TouchableOpacity>
     );
   }
+
   // 2. fined [today page]
   else if (componentType == "fined") {
     return (

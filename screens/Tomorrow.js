@@ -85,10 +85,10 @@ const Tomorrow = () => {
             todoNumber={index + 1}
             title={todo.title}
             description={todo.description}
-            amount={todo.amount}
+            amount={todo.amount.toString()}
             tag={todo.tag}
             componentType="info"
-            isLocked={todo.isLocked}
+            isLocked={todo.isLocked || todo.isTodoLocked}
           />
         );
       } else {

@@ -1,34 +1,102 @@
 import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
 import OnboardingPopup from "../components/OnboardingPopup";
+import { useBottomSheet } from "../hooks/BottomSheetContext";
+import { useSettings } from "../hooks/SettingsContext";
+import { currentOrNextDayStart, nextDayEnd, withinTimeWindow } from "../utils/currentDate";
+import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../database/firebase";
+import Globals from "../Globals";
 
 const Today = () => {
-  const todos = [
-    {
-      id: 1,
-      title: "Learn to juggle",
-      description: "Practice juggling with three oranges",
-      amount: "3",
-      tag: "Fitness",
-    },
-    // {
-    //   id: 2,
-    //   title: "Create a silly dance",
-    //   description: "Choreograph a funny dance routine",
-    //   amount: "$5",
-    //   tag: "Entertainment",
-    // },
-    {
-      id: 3,
-      title: "Build a blanket fort",
-      description: "Construct a cozy fort using blankets and pillows",
-      amount: "2",
-      tag: "Cozy",
-    },
-  ];
+  const [ headerMessage, setHeaderMessage ] = useState("");
+  const { todos, setTodos } = useBottomSheet();
+  const { settings } = useSettings();
+
+  // const todos = [
+  //   {
+  //     id: 1,
+  //     title: "Learn to juggle",
+  //     description: "Practice juggling with three oranges",
+  //     amount: "3",
+  //     tag: "Fitness",
+  //   },
+  //   // {
+  //   //   id: 2,
+  //   //   title: "Create a silly dance",
+  //   //   description: "Choreograph a funny dance routine",
+  //   //   amount: "$5",
+  //   //   tag: "Entertainment",
+  //   // },
+  //   {
+  //     id: 3,
+  //     title: "Build a blanket fort",
+  //     description: "Construct a cozy fort using blankets and pillows",
+  //     amount: "2",
+  //     tag: "Cozy",
+  //   },
+  // ];
+
+  useEffect(() => {
+    // 1. FETCH AND SET TODOS
+    const fetchTodos = async () => {
+      let fetchedTodos = [{}, {}, {}];
+      const todoRef = collection(db, 'users', Globals.currentUserID, 'todos');
+      let todoQuery;
+      
+      try {
+        if (withinTimeWindow(settings.dayStart, settings.dayEnd)) {
+          todoQuery = query(
+            todoRef,
+            where('opensAt', '>=', currentOrNextDayStart(settings.dayStart, settings.dayEnd)),
+            where('opensAt', '<', nextDayEnd(settings.dayEnd))
+          );
+  
+          onSnapshot(todoQuery, (snapshot) => {
+            snapshot.forEach((doc) => {
+              const todoData = doc.data();
+              fetchedTodos[todoData.todoNumber - 1] = todoData;            
+            });
+            setTodos(fetchedTodos);
+            fetchedTodos = [{}, {}, {}];
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching todos: ", error);
+      }
+  
+      // Fill in non-inputted todos with empty data
+      for (let i = 0; i < 3; i++) {
+        if (Object.keys(fetchedTodos[i]).length === 0) {
+          fetchedTodos[i] = {
+            todoNumber: i + 1,
+            title: "",
+            description: "",
+            amount: "",
+            tag: "",
+            isLocked: false,
+          };
+        }
+      }
+  
+      setTodos(fetchedTodos);
+
+      // 2. SET HEADER MESSAGE
+			if (withinTimeWindow(settings.dayStart, settings.dayEnd)) {
+				setHeaderMessage('Ends @ ' + settings.dayEnd + ' PM');
+			} else {
+				setHeaderMessage('Opens @ ' + settings.dayStart + ' AM');
+			}
+    };
+
+    // 3. SET SCREENTYPE BASED ON VACATION MODE
+
+  
+    fetchTodos();
+  }, []);
 
   const renderTodos = () => {
     // Prepare the todos array
@@ -48,7 +116,7 @@ const Today = () => {
             todoNumber={i + 1}
             title={todo.title}
             description={todo.description}
-            amount={todo.amount}
+            amount={todo.amount.toString()}
             tag={todo.tag}
             componentType="info"
             isLocked={null}
@@ -80,7 +148,7 @@ const Today = () => {
       /> */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Today</Text>
-        <Text style={styles.headerSubtitle}>Ends @ 9:00 PM</Text>
+        <Text style={styles.headerSubtitle}>{headerMessage}</Text>
       </View>
       <View style={styles.todoContainer}>{renderTodos()}</View>
     </SafeAreaView>
