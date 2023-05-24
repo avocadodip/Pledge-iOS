@@ -90,9 +90,9 @@ const Todo = ({
       closesAt: formatDayEnd(settings.dayEnd),
       dayActive: getTmrwDate(),
       isComplete: false,
-      order: todoNumber,
+      isLocked: true,
+      todoNumber: todoNumber,
     });
-    console.log("success!");
 
     setIsTodoLocked(true);
   };

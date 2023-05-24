@@ -74,10 +74,10 @@ const Today = () => {
   };
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <OnboardingPopup
+      {/* <OnboardingPopup
         texts={['This is the Today page.', 'Your three tasks planned the night before will show up here.','Your only mission is to check them off before the day ends!']}
         buttonTitle="Cool, what's next?"
-      />
+      /> */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Today</Text>
         <Text style={styles.headerSubtitle}>Ends @ 9:00 PM</Text>

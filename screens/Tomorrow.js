@@ -4,30 +4,54 @@ import React, { useEffect, useRef, useState } from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
+import { useSettings } from "../hooks/SettingsContext";
 import OnboardingPopup from "../components/OnboardingPopup";
 import { db } from "../database/firebase";
-import { query, collection, getDocs } from "firebase/firestore";
+import { query, collection, getDocs, where } from "firebase/firestore";
+import Globals from "../Globals";
+import { getTodayDateTime, lastDayEnd, lastDayStart, withinTimeWindow } from "../utils/currentDate";
 
 const Tomorrow = () => {
+  const [ headerMessage, setHeaderMessage ] = useState("");
   const { todos, setTodos } = useBottomSheet();
+  const { settings } = useSettings();
 
   useEffect(() => {
-    // An async function to fetch the data
+    // 1. FETCH AND SET TODOS
     const fetchTodos = async () => {
-      let fetchedTodos = [];
+      let fetchedTodos = [{}, {}, {}];
+      const todoRef = collection(db, 'users', Globals.currentUserID, 'todos');
+      let todoQuery;
+      
+      try {
+        // if in time window, locked todos = anything created from dayStart to now
+        if (withinTimeWindow(settings.dayStart, settings.dayEnd)) {
+          todoQuery = query(
+            todoRef,
+            where('createdAt', '>=', lastDayStart(settings.dayStart)),
+            where('createdAt', '<', getTodayDateTime())
+          );
+          // if not in time window, locked todos should be anything created from lastDayStart to lastDayEnd
+        } else {
+          todoQuery = query(
+            todoRef,
+            where('createdAt', '>=', lastDayStart(settings.dayStart)),
+            where('createdAt', '<', lastDayEnd(settings.dayEnd))
+          );
+        }
+        const querySnapshot = await getDocs(todoQuery);
 
-      // Fetch locked todos from Firestore
-      const todosQuery = query(collection(db, "todos"));
-      const snapshot = await getDocs(todosQuery);
-
-      snapshot.docs.forEach((doc) => {
-        const todoData = doc.data();
-        fetchedTodos[todoData.todoNumber - 1] = todoData;
-      });
-
+        querySnapshot.docs.forEach((doc) => {
+          const todoData = doc.data();
+          fetchedTodos[todoData.todoNumber - 1] = todoData;
+        });
+      } catch (error) {
+        console.error("Error fetching todos: ", error);
+      }
+  
       // Fill in non-inputted todos with empty data
       for (let i = 0; i < 3; i++) {
-        if (!fetchedTodos[i]) {
+        if (Object.keys(fetchedTodos[i]).length === 0) {
           fetchedTodos[i] = {
             todoNumber: i + 1,
             title: "",
@@ -38,21 +62,23 @@ const Tomorrow = () => {
           };
         }
       }
-
+  
       setTodos(fetchedTodos);
-    };
 
+      // 2. SET HEADER MESSAGE
+			if (withinTimeWindow(settings.dayStart, settings.dayEnd)) {
+				setHeaderMessage('Locks @ ' + settings.dayEnd + ' PM');
+			} else {
+				setHeaderMessage('Opens @ ' + settings.dayStart + ' AM');
+			}
+    };
+  
     fetchTodos();
   }, []);
-
+  
   const renderTodos = () => {
     return todos.map((todo, index) => {
-      if (
-        todo.title !== "" ||
-        todo.description !== "" ||
-        todo.amount !== "" ||
-        todo.tag !== ""
-      ) {
+      if (todo.title !== "") {
         return (
           <Todo
             key={index + 1}
@@ -90,7 +116,7 @@ const Tomorrow = () => {
       /> */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Tmrw</Text>
-        <Text style={styles.headerSubtitle}>Locks @ 9:00 PM</Text>
+        <Text style={styles.headerSubtitle}>{headerMessage}</Text>
       </View>
       <View style={styles.todoContainer}>{renderTodos()}</View>
     </SafeAreaView>
