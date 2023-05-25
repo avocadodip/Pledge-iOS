@@ -14,7 +14,12 @@ import LockIcon from "../assets/icons/lock-icon.svg";
 import UnlockIcon from "../assets/icons/unlock-icon.svg";
 import { addDoc, collection, doc } from "firebase/firestore";
 import { db } from "../database/firebase";
-import { formatDayEnd, formatDayStart, getTmrwDate, getTodayDateTime } from "../utils/currentDate";
+import {
+  formatDayEnd,
+  formatDayStart,
+  getTmrwDate,
+  getTodayDateTime,
+} from "../utils/currentDate";
 import { useSettings } from "../hooks/SettingsContext";
 import Globals from "../Globals";
 
@@ -33,13 +38,15 @@ const Todo = ({
     setIsTodoLocked(isLocked);
   }, [isLocked]);
 
-
   const { settings } = useSettings(); // To access dayStart and dayEnd for todo creation
-  const { setIsBottomSheetOpen, setSelectedTodo, setIsBottomSheetEditable } =
-    useBottomSheet(); // To open bottom sheet when todo is pressed
+  const {
+    isBottomSheetOpen,
+    setIsBottomSheetOpen,
+    setSelectedTodo,
+    setIsBottomSheetEditable,
+  } = useBottomSheet(); // To open bottom sheet when todo is pressed
 
   const handleOpenBottomSheet = () => {
-
     setSelectedTodo({
       todoNumber,
       title,
@@ -58,6 +65,7 @@ const Todo = ({
   const handleNewTodoPress = () => {
     setIsBottomSheetEditable(true);
     setIsBottomSheetOpen(true);
+    console.log(isBottomSheetOpen);
     setSelectedTodo({
       todoNumber,
       title,
@@ -103,7 +111,6 @@ const Todo = ({
 
     setIsTodoLocked(true);
   };
-
 
   const showMissingFieldAlert = (missingField) => {
     let message;

@@ -27,11 +27,11 @@ const Settings = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <OnboardingPopup
+      {/* <OnboardingPopup
         texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
         buttonTitle="Back to settings."
         secondButtonTitle="Log me out."
-      />
+      /> */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Settings</Text>
       </View>
@@ -108,11 +108,6 @@ const Settings = ({ navigation }) => {
             />
             <Text style={styles.buttonTitle}>Logout</Text> 
           </View>
-          <RightChevronIcon
-              width={24}
-              height={24}
-              color={Color.white}
-            />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

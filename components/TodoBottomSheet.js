@@ -21,6 +21,11 @@ export default function TodoBottomSheet() {
   const [todo, setTodo] = useState(selectedTodo || {});
 
   useEffect(() => {
+    console.log("isbottomsheetopen:");
+    console.log(isBottomSheetOpen);
+  }, [isBottomSheetOpen]);
+
+  useEffect(() => {
     setTodo(selectedTodo || {});
   }, [selectedTodo]);
 

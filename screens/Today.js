@@ -16,30 +16,6 @@ const Today = () => {
   const { todos, setTodos } = useBottomSheet();
   const { settings } = useSettings();
 
-  // const todos = [
-  //   {
-  //     id: 1,
-  //     title: "Learn to juggle",
-  //     description: "Practice juggling with three oranges",
-  //     amount: "3",
-  //     tag: "Fitness",
-  //   },
-  //   // {
-  //   //   id: 2,
-  //   //   title: "Create a silly dance",
-  //   //   description: "Choreograph a funny dance routine",
-  //   //   amount: "$5",
-  //   //   tag: "Entertainment",
-  //   // },
-  //   {
-  //     id: 3,
-  //     title: "Build a blanket fort",
-  //     description: "Construct a cozy fort using blankets and pillows",
-  //     amount: "2",
-  //     tag: "Cozy",
-  //   },
-  // ];
-
   useEffect(() => {
     // 1. FETCH AND SET TODOS
     const fetchTodos = async () => {
