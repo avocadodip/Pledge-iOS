@@ -1,12 +1,53 @@
-import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Color } from "../GlobalStyles";
 
-const ToggleButtons = ({ buttonCount, buttonTexts }) => {
+import { ThemeContext } from "../ThemeContext";
+import { classicTheme, darkTheme, lightTheme } from "../Themes";
+import React, { useContext, useState } from "react";
+
+const ToggleButtons = ({ buttonCount, buttonTexts, onButtonPress}) => {
+  const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
+
+  const getStyles = () => {
+    return StyleSheet.create({
+      container: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      button: {
+        width: 70,
+        height: 36,
+        backgroundColor: chosenTheme.faintPrimary,
+        alignItems: "center",
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingHorizontal: 7,
+        borderRadius: 10,
+        marginRight: 8,
+      },
+      selectedButton: {
+        backgroundColor: chosenTheme.primary,
+      },
+      buttonText: {
+        fontSize: 16,
+        lineHeight: 15,
+        textAlignVertical: 'bottom',
+        color: chosenTheme.primary,
+      },
+      selectedButtonText: {
+        color: chosenTheme.accent,
+      },
+    })
+  };
+
+  const styles = getStyles();  
+
   const [selectedButton, setSelectedButton] = useState(0);
 
   const handleButtonPress = (index) => {
     setSelectedButton(index);
+    onButtonPress(index);
   };
 
   return (
@@ -33,36 +74,5 @@ const ToggleButtons = ({ buttonCount, buttonTexts }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    width: 70,
-    height: 36,
-    backgroundColor: "rgba(243,243,243,0.1)",
-    alignItems: "center",
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingHorizontal: 7,
-    borderRadius: 10,
-    marginRight: 8,
-  },
-  selectedButton: {
-    backgroundColor: Color.white,
-  },
-  buttonText: {
-    fontSize: 16,
-    lineHeight: 15,
-    textAlignVertical: 'bottom',
-    color: Color.white,
-  },
-  selectedButtonText: {
-    color: Color.fervo_red,
-  },
-});
 
 export default ToggleButtons;

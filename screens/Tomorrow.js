@@ -1,6 +1,5 @@
 import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useEffect, useRef, useState } from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
@@ -16,7 +15,52 @@ import {
   withinTimeWindow,
 } from "../utils/currentDate";
 
+import { ThemeContext } from "../ThemeContext";
+import { classicTheme, darkTheme, lightTheme } from "../Themes";
+import React, { useContext, useRef, useEffect, useState } from "react";
+
 const Tomorrow = () => {
+  const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
+
+  const getStyles = () => {
+    return StyleSheet.create({
+      bottomSheet: {
+        backgroundColor: chosenTheme.accent,
+        width: "100%",
+        height: "100%",
+      },
+      pageContainer: {
+        flex: 1,
+        alignItems: "center",
+        paddingHorizontal: 20,
+        backgroundColor: chosenTheme.accent,
+      },
+      headerContainer: {
+        marginTop: 10,
+        width: "100%",
+        flexDirection: "col",
+      },
+      headerTitle: {
+        color: chosenTheme.primary,
+        fontSize: 50,
+        fontWeight: "bold",
+      },
+      headerSubtitle: {
+        color: chosenTheme.primary,
+        fontSize: 25,
+        fontWeight: "bold",
+        marginTop: 5,
+      },
+      todoContainer: {
+        marginTop: 20,
+        gap: 22,
+        width: "100%",
+      },
+    })
+  };
+
+  const styles = getStyles();  
+
   // Day Start
   let zaa = "10:00";
   // Day End
@@ -162,39 +206,5 @@ const Tomorrow = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  bottomSheet: {
-    backgroundColor: "red",
-    width: "100%",
-    height: "100%",
-  },
-  pageContainer: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 20,
-  },
-  headerContainer: {
-    marginTop: 10,
-    width: "100%",
-    flexDirection: "col",
-  },
-  headerTitle: {
-    color: "white",
-    fontSize: 50,
-    fontWeight: "bold",
-  },
-  headerSubtitle: {
-    color: "white",
-    fontSize: 25,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-  todoContainer: {
-    marginTop: 20,
-    gap: 22,
-    width: "100%",
-  },
-});
 
 export default Tomorrow;
