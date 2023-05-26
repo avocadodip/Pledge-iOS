@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -24,10 +23,6 @@ import {
 import { useSettings } from "../hooks/SettingsContext";
 import Globals from "../Globals";
 
-import { ThemeContext } from "../ThemeContext";
-import { classicTheme, darkTheme, lightTheme } from "../Themes";
-import React, { useContext, useState } from "react";
-
 const Todo = ({
   todoNumber,
   title,
@@ -37,149 +32,6 @@ const Todo = ({
   componentType,
   isLocked,
 }) => {
-  const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
-
-  const getStyles = () => {
-    return StyleSheet.create({
-      numberContainer: {
-        flexDirection: "column",
-        width: "100%",
-        height: "25%",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 20,
-        borderRadius: 16,
-        backgroundColor: chosenTheme.lightPrimary,
-        padding: 15,
-      },
-      finedContainer: {
-        flexDirection: "column",
-        width: "100%",
-        height: "25%",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 20,
-        borderRadius: 16,
-        backgroundColor: chosenTheme.faintPrimary,
-        padding: 15,
-      },
-      infoContainer: {
-        flexDirection: "row",
-        width: "100%",
-        height: "25%",
-        justifyContent: "space-between",
-        alignItems: "center",
-      },
-      leftContainer: {
-        borderTopLeftRadius: 16,
-        borderBottomLeftRadius: 16,
-        backgroundColor: chosenTheme.faintPrimary,
-        flex: 8,
-        height: "100%",
-        padding: 15,
-      },
-      rightContainer: {
-        borderTopRightRadius: 16,
-        borderBottomRightRadius: 16,
-        backgroundColor: chosenTheme.lightPrimary,
-        flex: 2,
-        height: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-      },
-      upperHalfContainer: {
-        flex: 4,
-      },
-      numberTitleContainer: {
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        gap: 15,
-        // borderWidth: 1,
-        // borderColor: 'black',
-        height: "100%",
-        overflow: "hidden",
-      },
-      lowerHalfContainer: {
-        flex: 5,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-      },
-      tagDescriptionContainer: {
-        flex: 1,
-        flexDirection: "column",
-        gap: 4,
-        justifyContent: "flex-start",
-      },
-      tagContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        alignSelf: "flex-start",
-      },
-      tagBackground: {
-        backgroundColor: chosenTheme.faintPrimary,
-        borderRadius: 10,
-        paddingVertical: 5,
-        paddingHorizontal: 13,
-      },
-      amountContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: chosenTheme.faintPrimary,
-        borderRadius: 10,
-        paddingVertical: 4,
-        maxWidth: 80,
-        alignSelf: "stretch",
-      },
-      todoNumber: {
-        color: chosenTheme.primary,
-        fontSize: 30,
-        fontWeight: "bold",
-      },
-      todoTitle: {
-        color: chosenTheme.primary,
-        fontSize: 22,
-        fontWeight: "700",
-      },
-      todoTag: {
-        color: chosenTheme.primary,
-        fontWeight: "500",
-      },
-      descriptionContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 4,
-      },
-      todoDescription: {
-        color: chosenTheme.primary,
-        maxWidth: "80%",
-        fontWeight: "500",
-      },
-      todoAmount: {
-        color: chosenTheme.primary,
-        fontSize: 30,
-        fontWeight: "bold",
-      },
-      numberText: {
-        color: chosenTheme.primary,
-        fontSize: 80,
-        fontWeight: "700",
-      },
-      finedText: {
-        color: chosenTheme.primary,
-        opacity: 0.7,
-        fontSize: 22,
-        fontWeight: "bold",
-      },
-    })
-  };
-
-  const styles = getStyles();  
-
-
   const [isTodoLocked, setIsTodoLocked] = useState(null);
 
   useEffect(() => {
@@ -321,9 +173,7 @@ const Todo = ({
               )}
               {description && (
                 <View style={styles.descriptionContainer}>
-                  <DescriptLinesIcon 
-                    color={chosenTheme.primary}
-                  />
+                  <DescriptLinesIcon />
                   <Text
                     style={styles.todoDescription}
                     numberOfLines={1}
@@ -345,27 +195,21 @@ const Todo = ({
           <View
             style={{
               ...styles.rightContainer,
-              backgroundColor: chosenTheme.faintPrimary,
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
             }}
           >
-            <LockIcon 
-              color={chosenTheme.primary}
-            />
+            <LockIcon />
           </View>
         ) : isTodoLocked === false ? (
           <TouchableOpacity
             style={styles.rightContainer}
             onPress={handleLockTodo}
           >
-            <UnlockIcon 
-              color={chosenTheme.primary}
-            />
+            <UnlockIcon />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.rightContainer}>
-            <CheckIcon 
-              color={chosenTheme.primary}
-            />
+            <CheckIcon />
           </TouchableOpacity>
         )}
       </View>
@@ -398,32 +242,164 @@ const Todo = ({
           <View
             style={{
               ...styles.rightContainer,
-              backgroundColor: chosenTheme.faintPrimary,
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
             }}
           >
-            <LockIcon 
-              color={chosenTheme.primary}
-            />
+            <LockIcon />
           </View>
         ) : isTodoLocked === false ? (
           <TouchableOpacity
             style={styles.rightContainer}
             onPress={handleLockTodo}
           >
-            <UnlockIcon 
-              color={chosenTheme.primary}
-            />
+            <UnlockIcon />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.rightContainer}>
-            <CheckIcon 
-                color={chosenTheme.primary}
-            />
+            <CheckIcon />
           </TouchableOpacity>
         )}
       </View>
     );
   }
 };
+
+const styles = StyleSheet.create({
+  numberContainer: {
+    flexDirection: "column",
+    width: "100%",
+    height: "25%",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
+    borderRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    padding: 15,
+  },
+  finedContainer: {
+    flexDirection: "column",
+    width: "100%",
+    height: "25%",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
+    borderRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    padding: 15,
+  },
+  infoContainer: {
+    flexDirection: "row",
+    width: "100%",
+    height: "25%",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  leftContainer: {
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    flex: 8,
+    height: "100%",
+    padding: 15,
+  },
+  rightContainer: {
+    borderTopRightRadius: 16,
+    borderBottomRightRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    flex: 2,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  upperHalfContainer: {
+    flex: 4,
+  },
+  numberTitleContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: 15,
+    // borderWidth: 1,
+    // borderColor: 'black',
+    height: "100%",
+    overflow: "hidden",
+  },
+  lowerHalfContainer: {
+    flex: 5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  tagDescriptionContainer: {
+    flex: 1,
+    flexDirection: "column",
+    gap: 4,
+    justifyContent: "flex-start",
+  },
+  tagContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "flex-start",
+  },
+  tagBackground: {
+    backgroundColor:
+      "linear-gradient(0deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)), rgba(255, 255, 255, 0.07)",
+    borderRadius: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 13,
+  },
+  amountContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor:
+      "linear-gradient(0deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)), rgba(255, 255, 255, 0.07)",
+    borderRadius: 10,
+    paddingVertical: 4,
+    maxWidth: 80,
+    alignSelf: "stretch",
+  },
+  todoNumber: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "bold",
+  },
+  todoTitle: {
+    color: "white",
+    fontSize: 22,
+    fontWeight: "700",
+  },
+  todoTag: {
+    color: "white",
+    fontWeight: "500",
+  },
+  descriptionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  todoDescription: {
+    color: "white",
+    maxWidth: "80%",
+    fontWeight: "500",
+  },
+  todoAmount: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "bold",
+  },
+  numberText: {
+    color: "white",
+    fontSize: 80,
+    fontWeight: "700",
+  },
+  finedText: {
+    color: "white",
+    opacity: 0.7,
+    fontSize: 22,
+    fontWeight: "bold",
+  },
+});
 
 export default Todo;

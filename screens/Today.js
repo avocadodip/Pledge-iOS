@@ -21,70 +21,7 @@ import {
 import { db } from "../database/firebase";
 import Globals from "../Globals";
 
-import { ThemeContext } from "../ThemeContext";
-import { classicTheme, darkTheme, lightTheme } from "../Themes";
-import React, { useContext, useEffect, useState } from "react";
-
 const Today = () => {
-  const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
-
-  const getStyles = () => {
-    return StyleSheet.create({
-      pageContainer: {
-        backgroundColor: chosenTheme.accent,
-        flex: 1,
-        alignItems: "center",
-        paddingHorizontal: 20,
-      },
-      headerContainer: {
-        marginTop: 10,
-        width: "100%",
-        flexDirection: "col",
-      },
-      headerTitle: {
-        color: chosenTheme.primary,
-        fontSize: 50,
-        fontWeight: "bold",
-      },
-      headerSubtitle: {
-        color: chosenTheme.primary,
-        fontSize: 25,
-        fontWeight: "bold",
-        marginTop: 5,
-      },
-      todoContainer: {
-        marginTop: 20,
-        gap: 22,
-        width: "100%",
-      },
-    })
-  };
-
-  const styles = getStyles();  
-
-  const todos = [
-    {
-      id: 1,
-      title: "Learn to juggle",
-      description: "Practice juggling with three oranges",
-      amount: "3",
-      tag: "Fitness",
-    },
-    // {
-    //   id: 2,
-    //   title: "Create a silly dance",
-    //   description: "Choreograph a funny dance routine",
-    //   amount: "$5",
-    //   tag: "Entertainment",
-    // },
-    {
-      id: 3,
-      title: "Build a blanket fort",
-      description: "Construct a cozy fort using blankets and pillows",
-      amount: "2",
-      tag: "Cozy",
-    },
-  ];
   const [headerMessage, setHeaderMessage] = useState("");
   const { todayTodos, setTodayTodos } = useBottomSheet();
   const { settings } = useSettings();
@@ -200,5 +137,34 @@ const Today = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  pageContainer: {
+    flex: 1,
+    alignItems: "center",
+    marginHorizontal: 20,
+  },
+  headerContainer: {
+    marginTop: 10,
+    width: "100%",
+    flexDirection: "col",
+  },
+  headerTitle: {
+    color: "white",
+    fontSize: 50,
+    fontWeight: "bold",
+  },
+  headerSubtitle: {
+    color: "white",
+    fontSize: 25,
+    fontWeight: "bold",
+    marginTop: 5,
+  },
+  todoContainer: {
+    marginTop: 20,
+    gap: 22,
+    width: "100%",
+  },
+});
 
 export default Today;

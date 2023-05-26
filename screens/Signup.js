@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -26,10 +27,6 @@ import MailIcon from "../assets/icons/mail-icon.svg";
 import FervoWhite from "../assets/FervoWhite.png";
 import { getTodayDateTime } from "../utils/currentDate";
 
-import { ThemeContext } from "../ThemeContext";
-import { classicTheme, darkTheme, lightTheme } from "../Themes";
-import React, { useContext, useEffect, useState } from "react";
-
 const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,64 +34,6 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
-
-  const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
-
-  const getStyles = () => {
-    return StyleSheet.create({
-      container: {
-        flex: 1,
-        backgroundColor: chosenTheme.accent,
-        justifyContent: "center",
-        alignItems: "center",
-      },
-      logoContainer: {
-        alignItems: "center",
-        marginBottom: 20,
-        // borderColor:'black',
-        // borderWidth: 1
-      },
-      appNameText: {
-        fontSize: 60,
-        color: chosenTheme.primary,
-        marginTop: 0,
-        fontWeight: "bold",
-      },
-      inputField: {
-        height: 40,
-        width: "100%",
-        borderColor: chosenTheme.primary,
-        borderWidth: 1,
-        paddingLeft: 10,
-        borderRadius: 5,
-        color: chosenTheme.primary,
-        backgroundColor: chosenTheme.accent,
-      },
-      buttonContainer: {
-        alignItems: "center",
-        flexDirection: "col",
-        gap: 15,
-        width: "90%",
-      },
-      button: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: chosenTheme.primary,
-        gap: 15,
-        height: 52,
-        borderRadius: 17,
-        width: "100%",
-      },
-      buttonText: {
-        color: chosenTheme.accent,
-        fontSize: 18,
-        fontWeight: 600,
-      },
-    })
-  };
-
-  const styles = getStyles();  
 
   const handleSignup = async () => {
     // Check if the inputPhoneNumber field is empty or invalid
@@ -171,9 +110,10 @@ const Signup = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
+        {/* replace with app logo */}
         <Image
           source={require("../assets/FervoWhite.png")}
-          style={{ width: 150, height: 150, tintColor: chosenTheme.logo.tintColor}}
+          style={{ width: 150, height: 150 }}
         />
         <Text style={styles.appNameText}>Fervo</Text>
       </View>
@@ -184,7 +124,7 @@ const Signup = () => {
           placeholder="Full name"
           onChangeText={setFullName}
           value={fullName}
-          placeholderTextColor={chosenTheme.primary}
+          placeholderTextColor="#fff"
           // textStyle={styles.frameTextInputText}
           autoCorrect={false} // Disable auto-correction
           autoCapitalize="none" // Disable auto-capitalization
@@ -195,7 +135,7 @@ const Signup = () => {
           onChangeText={setEmail}
           value={email}
           keyboardType="email-address"
-          placeholderTextColor={chosenTheme.primary}
+          placeholderTextColor="#fff"
           // textStyle={styles.frameTextInputText}
           autoCorrect={false} // Disable auto-correction
           autoCapitalize="none" // Disable auto-capitalization
@@ -203,7 +143,7 @@ const Signup = () => {
         <TextInput
           style={styles.inputField}
           placeholder="Password"
-          placeholderTextColor={chosenTheme.primary}
+          placeholderTextColor="#fff"
           onChangeText={setPassword}
           value={password}
           secureTextEntry={true}
@@ -218,7 +158,7 @@ const Signup = () => {
         </TouchableOpacity> */}
 
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          {/* <MailIcon width={24} height={24} color={`${chosenTheme.accent}`} /> */}
+          {/* <MailIcon width={24} height={24} color={`${Color.fervo_red}`} /> */}
           <Text style={styles.buttonText}>Sign up</Text>
         </TouchableOpacity>
 
@@ -228,12 +168,12 @@ const Signup = () => {
             {
               backgroundColor: "transparent",
               borderWidth: 2,
-              borderColor: chosenTheme.primary,
+              borderColor: "rgba(255, 255, 255, 0.7)",
             },
           ]}
           onPress={() => navigation.navigate("Login")}
         >
-          <Text style={[styles.buttonText, { color: chosenTheme.primary }]}>
+          <Text style={[styles.buttonText, { color: Color.white }]}>
             Log in
           </Text>
         </TouchableOpacity>
@@ -241,5 +181,73 @@ const Signup = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+    // borderColor:'black',
+    // borderWidth: 1
+  },
+  appNameText: {
+    fontSize: 60,
+    color: Color.white,
+    marginTop: 0,
+    fontWeight: "bold",
+  },
+  inputField: {
+    height: 40,
+    width: "100%",
+    borderColor: Color.white,
+    borderWidth: 1,
+    paddingLeft: 10,
+    borderRadius: 5,
+    color: Color.white,
+    backgroundColor: Color.fervo_red,
+  },
+  buttonContainer: {
+    alignItems: "center",
+    flexDirection: "col",
+    gap: 15,
+    width: "90%",
+  },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Color.white,
+    gap: 15,
+    height: 52,
+    borderRadius: 17,
+    width: "100%",
+  },
+  buttonText: {
+    color: Color.fervo_red,
+    fontSize: 18,
+    fontWeight: 600,
+  },
+  // alternativeButton: {
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   backgroundColor: "transparent",
+  //   gap: 10,
+  //   height: 45,
+  //   borderRadius: 50,
+  //   width: 322,
+  //   borderWidth: 3, // Set the border width
+  //   borderColor: "#fff", // Set the border color
+  // },
+  // alternativeButtonText: {
+  //   color: "white",
+  //   fontSize: 16,
+  //   fontWeight: 700,
+  // },
+});
 
 export default Signup;
