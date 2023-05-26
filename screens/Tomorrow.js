@@ -17,10 +17,11 @@ import {
 } from "../utils/currentDate";
 
 const Tomorrow = () => {
+  // If today is Friday
   // Day Start
-  let zaa = "10:00";
+  let zaa = "7:00";
   // Day End
-  let zbb = "2:00";
+  let zbb = "9:00";
 
   const [headerMessage, setHeaderMessage] = useState("");
   const { tmrwTodos, setTmrwTodos } = useBottomSheet();
@@ -155,7 +156,10 @@ const Tomorrow = () => {
         buttonTitle="Will do!"
       /> */}
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Tmrw</Text>
+        <View style={styles.headerTitleContainer}>
+          <Text style={styles.headerTitle}>Tmrw</Text>
+          <Text style={styles.headerDayOfWeek}>Thursday</Text>
+        </View>
         <Text style={styles.headerSubtitle}>{headerMessage}</Text>
       </View>
       <View style={styles.todoContainer}>{renderTodos()}</View>
@@ -179,10 +183,22 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "col",
   },
+  headerTitleContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 15
+  },
   headerTitle: {
     color: "white",
     fontSize: 50,
     fontWeight: "bold",
+  },
+  headerDayOfWeek: {
+    color: "white",
+    fontSize: 25,
+    fontWeight: "bold",
+    paddingBottom: 7
   },
   headerSubtitle: {
     color: "white",
