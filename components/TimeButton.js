@@ -15,7 +15,7 @@ const TimeButton = ({ defaultTime }) => {
       button: {
         width: 120,
         height: 36,
-        backgroundColor: "rgba(243,243,243,0.1)",
+        backgroundColor: chosenTheme.faintPrimary,
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 10,

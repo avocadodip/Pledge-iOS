@@ -162,7 +162,7 @@ export default function TodoBottomSheet() {
               placeholder="New task"
               value={todo.title}
               onChangeText={(text) => handleInputChange("title", text)}
-              placeholderTextColor="rgba(243, 243, 243, 0.8)"
+              placeholderTextColor= {chosenTheme.overlayPrimary}
               textStyle={styles.text}
               autoCorrect={false}
               autoCapitalize="none"
@@ -170,14 +170,16 @@ export default function TodoBottomSheet() {
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.amountFolderContainer}>
-            <PledgeDollarIcon />
+            <PledgeDollarIcon 
+              color={chosenTheme.primary}
+            />
             <TextInput
               style={styles.textInput}
               placeholder="Add pledge"
               value={todo.amount}
               onChangeText={(text) => handleInputChange("amount", text)}
               keyboardType="numeric"
-              placeholderTextColor="rgba(243, 243, 243, 0.8)"
+              placeholderTextColor= {chosenTheme.overlayPrimary}
               textStyle={styles.text}
               autoCorrect={false}
               autoCapitalize="none"
@@ -185,13 +187,15 @@ export default function TodoBottomSheet() {
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.amountFolderContainer}>
-            <FolderIcon />
+            <FolderIcon 
+              color={chosenTheme.primary}
+            />
             <TextInput
               style={styles.textInput}
               placeholder="Add tag"
               value={todo.tag}
               onChangeText={(text) => handleInputChange("tag", text)}
-              placeholderTextColor="rgba(243, 243, 243, 0.8)"
+              placeholderTextColor= {chosenTheme.overlayPrimary}
               textStyle={styles.text}
               autoCorrect={false}
               autoCapitalize="none"
@@ -199,13 +203,15 @@ export default function TodoBottomSheet() {
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.descriptionContainer}>
-            <DescriptLinesIcon />
+            <DescriptLinesIcon 
+              color={chosenTheme.primary}
+            />
             <TextInput
               style={styles.textInput}
               placeholder="Add description"
               value={todo.description}
               onChangeText={(text) => handleInputChange("description", text)}
-              placeholderTextColor="rgba(243, 243, 243, 0.8)"
+              placeholderTextColor= {chosenTheme.overlayPrimary}
               textStyle={styles.text}
               autoCorrect={false}
               autoCapitalize="none"
@@ -221,17 +227,23 @@ export default function TodoBottomSheet() {
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.amountFolderContainer}>
-            <PledgeDollarIcon />
+            <PledgeDollarIcon 
+              color={chosenTheme.primary}
+            />
             <Text style={styles.text}>{selectedTodo.amount}</Text>
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.amountFolderContainer}>
-            <FolderIcon />
+            <FolderIcon 
+              color={chosenTheme.primary}
+            />
             <Text style={styles.text}>{selectedTodo.tag}</Text>
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.descriptionContainer}>
-            <DescriptLinesIcon />
+            <DescriptLinesIcon 
+              color={chosenTheme.primary}
+            />
             <Text style={styles.text}>{selectedTodo.description}</Text>
           </View>
         </View>

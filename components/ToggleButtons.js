@@ -18,7 +18,7 @@ const ToggleButtons = ({ buttonCount, buttonTexts, onButtonPress}) => {
       button: {
         width: 70,
         height: 36,
-        backgroundColor: "rgba(243,243,243,0.1)",
+        backgroundColor: chosenTheme.faintPrimary,
         alignItems: "center",
         paddingTop: 10,
         paddingBottom: 10,

@@ -18,7 +18,7 @@ const DaysActiveToggle = ({ buttonCount, buttonTexts }) => {
       button: {
         width: 28,
         height: 36,
-        backgroundColor: "rgba(243,243,243,0.1)",
+        backgroundColor: chosenTheme.faintPrimary,
         alignItems: "center",
         paddingTop: 10,
         paddingBottom: 10,

@@ -42,7 +42,7 @@ const Todo = ({
         alignItems: "center",
         gap: 20,
         borderRadius: 16,
-        backgroundColor: "rgba(255, 255, 255, 0.2)",
+        backgroundColor: chosenTheme.lightPrimary,
         padding: 15,
       },
       finedContainer: {
@@ -53,7 +53,7 @@ const Todo = ({
         alignItems: "center",
         gap: 20,
         borderRadius: 16,
-        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        backgroundColor: chosenTheme.faintPrimary,
         padding: 15,
       },
       infoContainer: {
@@ -66,7 +66,7 @@ const Todo = ({
       leftContainer: {
         borderTopLeftRadius: 16,
         borderBottomLeftRadius: 16,
-        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        backgroundColor: chosenTheme.faintPrimary,
         flex: 8,
         height: "100%",
         padding: 15,
@@ -74,7 +74,7 @@ const Todo = ({
       rightContainer: {
         borderTopRightRadius: 16,
         borderBottomRightRadius: 16,
-        backgroundColor: "rgba(255, 255, 255, 0.2)",
+        backgroundColor: chosenTheme.lightPrimary,
         flex: 2,
         height: "100%",
         justifyContent: "center",
@@ -112,8 +112,7 @@ const Todo = ({
         alignSelf: "flex-start",
       },
       tagBackground: {
-        backgroundColor:
-          "linear-gradient(0deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)), rgba(255, 255, 255, 0.07)",
+        backgroundColor: chosenTheme.faintPrimary,
         borderRadius: 10,
         paddingVertical: 5,
         paddingHorizontal: 13,
@@ -122,8 +121,7 @@ const Todo = ({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor:
-          "linear-gradient(0deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)), rgba(255, 255, 255, 0.07)",
+        backgroundColor: chosenTheme.faintPrimary,
         borderRadius: 10,
         paddingVertical: 4,
         maxWidth: 80,
@@ -305,7 +303,9 @@ const Todo = ({
               )}
               {description && (
                 <View style={styles.descriptionContainer}>
-                  <DescriptLinesIcon />
+                  <DescriptLinesIcon 
+                    color={chosenTheme.primary}
+                  />
                   <Text
                     style={styles.todoDescription}
                     numberOfLines={1}
@@ -327,21 +327,27 @@ const Todo = ({
           <View
             style={{
               ...styles.rightContainer,
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              backgroundColor: chosenTheme.faintPrimary,
             }}
           >
-            <LockIcon />
+            <LockIcon 
+              color={chosenTheme.primary}
+            />
           </View>
         ) : isTodoLocked === false ? (
           <TouchableOpacity
             style={styles.rightContainer}
             onPress={handleLockTodo}
           >
-            <UnlockIcon />
+            <UnlockIcon 
+              color={chosenTheme.primary}
+            />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.rightContainer}>
-            <CheckIcon />
+            <CheckIcon 
+              color={chosenTheme.primary}
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -374,21 +380,27 @@ const Todo = ({
           <View
             style={{
               ...styles.rightContainer,
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              backgroundColor: chosenTheme.faintPrimary,
             }}
           >
-            <LockIcon />
+            <LockIcon 
+              color={chosenTheme.primary}
+            />
           </View>
         ) : isTodoLocked === false ? (
           <TouchableOpacity
             style={styles.rightContainer}
             onPress={handleLockTodo}
           >
-            <UnlockIcon />
+            <UnlockIcon 
+              color={chosenTheme.primary}
+            />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.rightContainer}>
-            <CheckIcon />
+            <CheckIcon 
+                color={chosenTheme.primary}
+            />
           </TouchableOpacity>
         )}
       </View>
