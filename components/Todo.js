@@ -42,7 +42,7 @@ const Todo = ({
         alignItems: "center",
         gap: 20,
         borderRadius: 16,
-        backgroundColor: chosenTheme.lightPrimary,
+        backgroundColor: chosenTheme.faintPrimary,
         padding: 15,
       },
       finedContainer: {
@@ -399,7 +399,7 @@ const Todo = ({
         ) : (
           <TouchableOpacity style={styles.rightContainer}>
             <CheckIcon 
-                color={chosenTheme.primary}
+              color={chosenTheme.accent}
             />
           </TouchableOpacity>
         )}
