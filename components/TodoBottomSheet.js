@@ -106,6 +106,10 @@ export default function TodoBottomSheet() {
   const styles = getStyles();  
 
   useEffect(() => {
+    console.log(isBottomSheetOpen);
+  }, [isBottomSheetOpen]);
+
+  useEffect(() => {
     setTodo(selectedTodo || {});
   }, [selectedTodo]);
 

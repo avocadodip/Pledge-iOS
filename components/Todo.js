@@ -1,3 +1,5 @@
+
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   View,
@@ -13,7 +15,12 @@ import LockIcon from "../assets/icons/lock-icon.svg";
 import UnlockIcon from "../assets/icons/unlock-icon.svg";
 import { addDoc, collection, doc } from "firebase/firestore";
 import { db } from "../database/firebase";
-import { formatDayEnd, formatDayStart, getTmrwDate, getTodayDateTime } from "../utils/currentDate";
+import {
+  formatDayEnd,
+  formatDayStart,
+  getTmrwDate,
+  getTodayDateTime,
+} from "../utils/currentDate";
 import { useSettings } from "../hooks/SettingsContext";
 import Globals from "../Globals";
 
@@ -172,10 +179,20 @@ const Todo = ({
 
   const styles = getStyles();  
 
-  const [isTodoLocked, setIsTodoLocked] = useState(isLocked);
+
+  const [isTodoLocked, setIsTodoLocked] = useState(null);
+
+  useEffect(() => {
+    setIsTodoLocked(isLocked);
+  }, [isLocked]);
+
   const { settings } = useSettings(); // To access dayStart and dayEnd for todo creation
-  const { setIsBottomSheetOpen, setSelectedTodo, setIsBottomSheetEditable } =
-    useBottomSheet(); // To open bottom sheet when todo is pressed
+  const {
+    isBottomSheetOpen,
+    setIsBottomSheetOpen,
+    setSelectedTodo,
+    setIsBottomSheetEditable,
+  } = useBottomSheet(); // To open bottom sheet when todo is pressed
 
   const handleOpenBottomSheet = () => {
     setSelectedTodo({
@@ -196,6 +213,7 @@ const Todo = ({
   const handleNewTodoPress = () => {
     setIsBottomSheetEditable(true);
     setIsBottomSheetOpen(true);
+    console.log(isBottomSheetOpen);
     setSelectedTodo({
       todoNumber,
       title,
@@ -235,13 +253,12 @@ const Todo = ({
       closesAt: formatDayEnd(settings.dayEnd),
       dayActive: getTmrwDate(),
       isComplete: false,
-      order: todoNumber,
+      isLocked: true,
+      todoNumber: todoNumber,
     });
-    console.log("success!");
 
     setIsTodoLocked(true);
   };
-
 
   const showMissingFieldAlert = (missingField) => {
     let message;
@@ -269,6 +286,7 @@ const Todo = ({
       </TouchableOpacity>
     );
   }
+
   // 2. fined [today page]
   else if (componentType == "fined") {
     return (

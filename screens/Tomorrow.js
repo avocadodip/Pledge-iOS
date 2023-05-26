@@ -3,9 +3,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
+import { useSettings } from "../hooks/SettingsContext";
 import OnboardingPopup from "../components/OnboardingPopup";
 import { db } from "../database/firebase";
-import { query, collection, getDocs } from "firebase/firestore";
+import { query, collection, getDocs, where } from "firebase/firestore";
+import Globals from "../Globals";
+import {
+  getTodayDateTime,
+  lastDayEnd,
+  lastDayStart,
+  withinTimeWindow,
+} from "../utils/currentDate";
 
 import { ThemeContext } from "../ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
@@ -52,25 +60,66 @@ const Tomorrow = () => {
   };
 
   const styles = getStyles();  
-  const { todos, setTodos } = useBottomSheet();
 
+  // Day Start
+  let zaa = "10:00";
+  // Day End
+  let zbb = "2:00";
+
+  const [headerMessage, setHeaderMessage] = useState("");
+  const { tmrwTodos, setTmrwTodos } = useBottomSheet();
+  const { settings } = useSettings();
+
+  // Realtime state of whether its day or not
+  const [isDay, setIsDay] = useState(withinTimeWindow(zaa, zbb));
+
+  // Start a timer that updates whether its day every second
   useEffect(() => {
-    // An async function to fetch the data
+    const timerId = setInterval(() => {
+      setIsDay(withinTimeWindow(zaa, zbb));
+    }, 1000);
+
+    // Clear interval when the component is unmounted or before the next effect runs
+    return () => clearInterval(timerId);
+  }, []);
+
+  // Fetches todos for current time window and re-fetches whenever isDay changes
+  useEffect(() => {
+    // 1. FETCH AND SET TODOS
     const fetchTodos = async () => {
-      let fetchedTodos = [];
+      let fetchedTodos = [{}, {}, {}];
+      const todoRef = collection(db, "users", Globals.currentUserID, "todos");
+      let todoQuery;
 
-      // Fetch locked todos from Firestore
-      const todosQuery = query(collection(db, "todos"));
-      const snapshot = await getDocs(todosQuery);
+      try {
+        // if in time window, locked todos = anything created from dayStart to now
+        if (withinTimeWindow(zaa, zbb)) {
+          todoQuery = query(
+            todoRef,
+            where("createdAt", ">=", lastDayStart(zaa)),
+            where("createdAt", "<", getTodayDateTime())
+          );
+          // if not in time window, locked todos should be anything created from lastDayStart to lastDayEnd
+        } else {
+          todoQuery = query(
+            todoRef,
+            where("createdAt", ">=", lastDayStart(zaa)),
+            where("createdAt", "<", lastDayEnd(zbb))
+          );
+        }
+        const querySnapshot = await getDocs(todoQuery);
 
-      snapshot.docs.forEach((doc) => {
-        const todoData = doc.data();
-        fetchedTodos[todoData.todoNumber - 1] = todoData;
-      });
+        querySnapshot.docs.forEach((doc) => {
+          const todoData = doc.data();
+          fetchedTodos[todoData.todoNumber - 1] = todoData;
+        });
+      } catch (error) {
+        console.error("Error fetching todos: ", error);
+      }
 
       // Fill in non-inputted todos with empty data
       for (let i = 0; i < 3; i++) {
-        if (!fetchedTodos[i]) {
+        if (Object.keys(fetchedTodos[i]).length === 0) {
           fetchedTodos[i] = {
             todoNumber: i + 1,
             title: "",
@@ -82,33 +131,38 @@ const Tomorrow = () => {
         }
       }
 
-      setTodos(fetchedTodos);
+      // Set state
+      setTmrwTodos(fetchedTodos);
+      console.log(tmrwTodos);
+
+      // 2. SET HEADER MESSAGE
+      if (withinTimeWindow(zaa, zbb)) {
+        setHeaderMessage("Locks @ " + zbb + " PM");
+      } else {
+        setHeaderMessage("Opens @ " + zaa + " AM");
+      }
     };
 
     fetchTodos();
-  }, []);
+  }, [isDay]); // This effect runs whenever isDay changes
 
   const renderTodos = () => {
-    return todos.map((todo, index) => {
-      if (
-        todo.title !== "" ||
-        todo.description !== "" ||
-        todo.amount !== "" ||
-        todo.tag !== ""
-      ) {
+    return tmrwTodos.map((todo, index) => {
+      if (todo.title !== "") {
+        // Locked todo
         return (
           <Todo
             key={index + 1}
             todoNumber={index + 1}
             title={todo.title}
             description={todo.description}
-            amount={todo.amount}
+            amount={todo.amount.toString()}
             tag={todo.tag}
             componentType="info"
-            isLocked={todo.isLocked}
+            isLocked={todo.isLocked || todo.isTodoLocked}
           />
         );
-      } else {
+      } else if (isDay) {
         return (
           <Todo
             key={index + 1}
@@ -119,6 +173,19 @@ const Tomorrow = () => {
             amount=""
             tag=""
             isLocked={false}
+          />
+        );
+      } else if (!isDay) {
+        return (
+          <Todo
+            key={index + 1}
+            todoNumber=""
+            title=""
+            description=""
+            amount=""
+            tag=""
+            componentType="fined"
+            isLocked={null}
           />
         );
       }
@@ -133,7 +200,7 @@ const Tomorrow = () => {
       /> */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Tmrw</Text>
-        <Text style={styles.headerSubtitle}>Locks @ 9:00 PM</Text>
+        <Text style={styles.headerSubtitle}>{headerMessage}</Text>
       </View>
       <View style={styles.todoContainer}>{renderTodos()}</View>
     </SafeAreaView>
