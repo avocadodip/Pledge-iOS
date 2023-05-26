@@ -7,7 +7,7 @@ import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 import React, { useContext, useState } from "react";
 
-const TimeButton = ({ defaultTime }) => {
+const TimeButton = ({ defaultTime, amOnly }) => {
   const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
 
   const getStyles = () => {
@@ -41,13 +41,35 @@ const TimeButton = ({ defaultTime }) => {
   };
 
   const handleTimeConfirm = (date) => {
+    if (amOnly) {
+      if (moment(date).format('A') === 'PM') {
+        // Adjust the time to the first available AM option
+        date = moment(date).startOf('day').add(8, 'hours').toDate();
+      }
+    } else {
+      if (moment(date).format('A') === 'AM') {
+        // Adjust the time to the first available PM option
+        date = moment(date).startOf('day').add(12, 'hours').toDate();
+      }
+    }
+  
     setSelectedTime(date);
     hideTimePicker();
   };
+  
 
   const formatTime = (value) => {
-    return moment(value).format('h:mm A');
+    let formattedTime = moment(value).format('h:mm');
+  
+    if (amOnly) {
+      formattedTime += ' AM';
+    } else {
+      formattedTime += ' ' + moment(value).format('A');
+    }
+  
+    return formattedTime;
   };
+  
 
   return (
     <>

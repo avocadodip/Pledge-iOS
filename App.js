@@ -19,7 +19,7 @@ import TodoBottomSheet from "./components/TodoBottomSheet";
 import OnboardingPopup from "./components/OnboardingPopup";
 import { Color } from "./GlobalStyles";
 
-import { ThemeContext } from "./ThemeContext";
+import { ThemeContext } from "./hooks/ThemeContext";
 import { classicTheme, lightTheme, darkTheme } from './Themes';    
 
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";

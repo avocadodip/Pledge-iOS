@@ -15,7 +15,7 @@ import {
   withinTimeWindow,
 } from "../utils/currentDate";
 
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 import React, { useContext, useRef, useEffect, useState } from "react";
 

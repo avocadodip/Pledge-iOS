@@ -6,7 +6,7 @@ import FolderIcon from "../assets/icons/amount-folder-icon.svg";
 import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
 import { Color } from "../GlobalStyles";
 
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 import React, { useCallback, useEffect, useRef, useState, useContext } from "react";
 

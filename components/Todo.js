@@ -1,5 +1,3 @@
-
-import React, { useEffect, useState } from "react";
 import {
   Alert,
   View,
@@ -26,7 +24,7 @@ import Globals from "../Globals";
 
 import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 const Todo = ({
   todoNumber,

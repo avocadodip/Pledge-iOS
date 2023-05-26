@@ -8,7 +8,7 @@ import CreditCardIcon from "../assets/icons/credit-card.svg";
 import LogoutIcon from "../assets/icons/logout.svg";
 import OnboardingPopup from "../components/OnboardingPopup";
 
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 import React, { useContext, useState } from "react";
 

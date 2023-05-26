@@ -26,7 +26,7 @@ import MailIcon from "../assets/icons/mail-icon.svg";
 import FervoWhite from "../assets/FervoWhite.png";
 import { getTodayDateTime } from "../utils/currentDate";
 
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 import React, { useContext, useEffect, useState } from "react";
 

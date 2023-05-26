@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
 import OnboardingPopup from "../components/OnboardingPopup";
@@ -21,9 +21,8 @@ import {
 import { db } from "../database/firebase";
 import Globals from "../Globals";
 
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
-import React, { useContext, useEffect, useState } from "react";
 
 const Today = () => {
   const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
