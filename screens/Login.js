@@ -223,7 +223,7 @@ const Login = () => {
       <View style={styles.logoContainer}>
         <Image
           source={require("../assets/FervoWhite.png")}
-          style={{ width: 150, height: 150 }}
+          style={{ width: 150, height: 150, tintColor: chosenTheme.logo.tintColor}}
         />
         <Text style={styles.appNameText}>Fervo</Text>
       </View>

@@ -7,6 +7,9 @@ export const classicTheme = {
     halfPrimary: Color.white50,
     lightPrimary: Color.white20,
     faintPrimary: Color.white10,
+    logo: {
+        tintColor: 'rgba(255, 255, 255, 1)',
+    },
 };
 
 export const darkTheme = {
@@ -16,6 +19,9 @@ export const darkTheme = {
     halfPrimary: Color.white50,
     lightPrimary: Color.white20,
     faintPrimary: Color.white10,
+    logo: {
+        tintColor: 'rgba(255, 255, 255, 1)',
+    },
 };
 
 export const lightTheme = {
@@ -25,4 +31,7 @@ export const lightTheme = {
     halfPrimary: Color.black35,
     lightPrimary: Color.black16,
     faintPrimary: Color.black8,
+    logo: {
+        tintColor: 'rgba(0, 0, 0, 1)',
+    },
 };

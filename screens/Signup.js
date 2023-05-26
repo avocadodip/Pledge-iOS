@@ -171,10 +171,9 @@ const Signup = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
-        {/* replace with app logo */}
         <Image
           source={require("../assets/FervoWhite.png")}
-          style={{ width: 150, height: 150 }}
+          style={{ width: 150, height: 150, tintColor: chosenTheme.logo.tintColor}}
         />
         <Text style={styles.appNameText}>Fervo</Text>
       </View>
@@ -185,7 +184,7 @@ const Signup = () => {
           placeholder="Full name"
           onChangeText={setFullName}
           value={fullName}
-          placeholderTextColor="#fff"
+          placeholderTextColor={chosenTheme.primary}
           // textStyle={styles.frameTextInputText}
           autoCorrect={false} // Disable auto-correction
           autoCapitalize="none" // Disable auto-capitalization
@@ -196,7 +195,7 @@ const Signup = () => {
           onChangeText={setEmail}
           value={email}
           keyboardType="email-address"
-          placeholderTextColor="#fff"
+          placeholderTextColor={chosenTheme.primary}
           // textStyle={styles.frameTextInputText}
           autoCorrect={false} // Disable auto-correction
           autoCapitalize="none" // Disable auto-capitalization
@@ -204,7 +203,7 @@ const Signup = () => {
         <TextInput
           style={styles.inputField}
           placeholder="Password"
-          placeholderTextColor="#fff"
+          placeholderTextColor={chosenTheme.primary}
           onChangeText={setPassword}
           value={password}
           secureTextEntry={true}
@@ -229,7 +228,7 @@ const Signup = () => {
             {
               backgroundColor: "transparent",
               borderWidth: 2,
-              borderColor: "rgba(255, 255, 255, 0.7)",
+              borderColor: chosenTheme.primary,
             },
           ]}
           onPress={() => navigation.navigate("Login")}
