@@ -16,11 +16,11 @@ const Account = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <OnboardingPopup
+      {/* <OnboardingPopup
         texts={['Are you sure you want to delete your account?', 'Progress takes time and failure is a vital part of the process!','If you are struggling to complete tasks, try setting smaller tasks each day. It will pay off over time!']}
         buttonTitle="Let's give this one more go!"
         secondButtonTitle="Yes, delete my account."
-      />
+      /> */}
       <View style={styles.headerContainer}>
         <TouchableOpacity	onPress={() => handlePress("SettingsScreen")}>
           <LeftArrowIcon
