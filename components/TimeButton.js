@@ -3,7 +3,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import { Color } from "../GlobalStyles";
 
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 import React, { useContext, useState } from "react";
 

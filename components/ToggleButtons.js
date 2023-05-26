@@ -1,7 +1,7 @@
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Color } from "../GlobalStyles";
 
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 import React, { useContext, useState } from "react";
 

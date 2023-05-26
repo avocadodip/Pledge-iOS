@@ -17,7 +17,7 @@ import { formatDayEnd, formatDayStart, getTmrwDate, getTodayDateTime } from "../
 import { useSettings } from "../hooks/SettingsContext";
 import Globals from "../Globals";
 
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 import React, { useContext, useState } from "react";
 

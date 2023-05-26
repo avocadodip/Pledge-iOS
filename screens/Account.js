@@ -8,7 +8,7 @@ import ToggleButtons from "../components/ToggleButtons";
 import DaysActiveToggle from "../components/DaysActiveToggle";
 import TimeButton from "../components/TimeButton";
 import OnboardingPopup from "../components/OnboardingPopup";
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 
 const Account = ({ navigation }) => {

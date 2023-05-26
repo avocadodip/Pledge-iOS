@@ -20,7 +20,7 @@ import Globals from "../Globals";
 import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "@firebase/auth";
 
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 import React, { useContext, useEffect, useState } from "react";
 
