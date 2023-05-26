@@ -17,11 +17,7 @@ import Account from "./screens/Account";
 import Stats from "./screens/Stats";
 import TodoBottomSheet from "./components/TodoBottomSheet";
 import OnboardingPopup from "./components/OnboardingPopup";
-import { Color } from "./GlobalStyles";
-
-import { ThemeContext } from "./ThemeContext";
-import { classicTheme, lightTheme, darkTheme } from './Themes';    
-
+import { Color } from "./GlobalStyles";                             
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 // import { MenuProvider } from "react-native-popup-menu";
@@ -101,11 +97,21 @@ const SettingsStack = () => (
   </Stack.Navigator>
 );
 
+const theme = {
+  dark: false,
+  colors: {
+    primary: "rgb(255, 45, 85)",
+    background: "#DD4F4F",
+    card: "rgb(255, 255, 255)",
+    text: "rgb(28, 28, 30)",
+    border: "rgb(199, 199, 204)",
+    notification: "rgb(255, 69, 58)",
+  },
+};
+
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [initializing, setInitializing] = useState(true);
-
-  const [chosenTheme, setChosenTheme] = useState(classicTheme);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -144,35 +150,15 @@ export default function App() {
   }
 
   return (
-    <ThemeContext.Provider value={{ chosenTheme, setChosenTheme }}>
-      <SettingsProvider>
-        <BottomSheetProvider>
-          <AppContent isSignedIn={isSignedIn} />
-        </BottomSheetProvider>
-      </SettingsProvider>
-    </ThemeContext.Provider>
+    <SettingsProvider>
+      <BottomSheetProvider>
+        <AppContent isSignedIn={isSignedIn} />
+      </BottomSheetProvider>
+    </SettingsProvider>
   );
 }
 
 function AppContent({ isSignedIn }) {
-  const { chosenTheme } = useContext(ThemeContext);
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: chosenTheme.accent,
-    },
-    tabBar: {
-      backgroundColor: "transparent",
-      borderTopWidth: 0,
-      position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      height: 100,
-    },
-  });
-
   const [hideSplashScreen, setHideSplashScreen] = useState(true);
     // useEffect(() => {
   //   setTimeout(() => {
@@ -194,9 +180,9 @@ function AppContent({ isSignedIn }) {
   }, [isSignedIn, setCurrentUserID]);
 
   return (
-    <View style={styles.container}>
-    <StatusBar style="light" backgroundColor={chosenTheme.primary} />
-    <NavigationContainer>
+    <View style={{ flex: 1 }}>
+    <StatusBar style="light" backgroundColor={Color.white} />
+    <NavigationContainer theme={theme}>
       {hideSplashScreen ? (
         isSignedIn ? (
           <Tab.Navigator
@@ -215,13 +201,13 @@ function AppContent({ isSignedIn }) {
                     <TodayActiveIcon
                       width={40}
                       height={40}
-                      color={chosenTheme.primary}
+                      color={"white"}
                     />
                   ) : (
                     <TodayInactiveIcon
                       width={40}
                       height={40}
-                      color={chosenTheme.primary}
+                      color={"white"}
                     />
                   ),
               }}
@@ -235,13 +221,13 @@ function AppContent({ isSignedIn }) {
                     <TomorrowActiveIcon
                       width={40}
                       height={40}
-                      color={chosenTheme.primary}
+                      color={"white"}
                     />
                   ) : (
                     <TomorrowInactiveIcon
                       width={40}
                       height={40}
-                      color={chosenTheme.primary}
+                      color={"white"}
                     />
                   ),
               }}
@@ -255,13 +241,13 @@ function AppContent({ isSignedIn }) {
                     <SettingsActiveIcon
                       width={40}
                       height={40}
-                      color={chosenTheme.primary}
+                      color={"white"}
                     />
                   ) : (
                     <SettingsInactiveIcon
                       width={40}
                       height={40}
-                      color={chosenTheme.primary}
+                      color={"white"}
                     />
                   ),
               }}
@@ -278,3 +264,15 @@ function AppContent({ isSignedIn }) {
   </View>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: "transparent",
+    borderTopWidth: 0,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 100,
+  },
+});

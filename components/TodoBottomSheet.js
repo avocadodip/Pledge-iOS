@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
@@ -5,10 +6,6 @@ import PledgeDollarIcon from "../assets/icons/pledge-dollar-icon.svg";
 import FolderIcon from "../assets/icons/amount-folder-icon.svg";
 import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
 import { Color } from "../GlobalStyles";
-
-import { ThemeContext } from "../ThemeContext";
-import { classicTheme, darkTheme, lightTheme } from "../Themes";
-import React, { useCallback, useEffect, useRef, useState, useContext } from "react";
 
 export default function TodoBottomSheet() {
   const {
@@ -22,88 +19,6 @@ export default function TodoBottomSheet() {
   const bottomSheetRef = useRef(null);
   const snapPoints = ["75%"];
   const [todo, setTodo] = useState(selectedTodo || {});
-
-  const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
-
-  const getStyles = () => {
-    return StyleSheet.create({
-      bottomSheetContainer: {
-        backgroundColor: chosenTheme.accent,
-        flex: 1,
-        flexDirection: "col",
-        paddingHorizontal: 20,
-      },
-      bottomSheetTabBar: {
-        backgroundColor: chosenTheme.accent,
-      },
-      dragHandleContainer: {
-        alignSelf: "center",
-      },
-      dragHandle: {
-        width: 45,
-        height: 4,
-        borderRadius: 3,
-        backgroundColor: chosenTheme.primary,
-        marginTop: 15,
-      },
-      horizontalDivider: {
-        borderBottomColor: chosenTheme.primary,
-        opacity: 0.3,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-      },
-      numberTitleContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginTop: 45,
-        marginBottom: 20,
-        gap: 23,
-      },
-      amountFolderContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 23,
-        marginVertical: 4,
-      },
-      descriptionContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 23,
-        // marginVertical: 18,
-        // borderWidth: 1,
-        // borderColor: 'black',
-      },
-      number: {
-        color: chosenTheme.primary,
-        fontSize: 40,
-        fontWeight: "bold",
-      },
-      title: {
-        color: chosenTheme.primary,
-        fontSize: 30,
-        fontWeight: "bold",
-        width: "80%",
-      },
-      text: {
-        color: chosenTheme.primary,
-        fontSize: 16,
-        fontWeight: "500",
-        lineHeight: 18,
-        width: "80%",
-        paddingVertical: 15,
-      },
-      textInput: {
-        color: chosenTheme.primary,
-        fontSize: 16,
-        fontWeight: "500",
-        lineHeight: 18,
-        width: "80%",
-        paddingVertical: 15,
-        // paddingHorizontal: 10,
-      },
-    })
-  };
-
-  const styles = getStyles();  
 
   useEffect(() => {
     console.log(isBottomSheetOpen);
@@ -148,7 +63,7 @@ export default function TodoBottomSheet() {
       snapPoints={snapPoints}
       enablePanDownToClose={true}
       onChange={handleSheetChanges}
-      backgroundStyle={{ backgroundColor: chosenTheme.accent }}
+      backgroundStyle={{ backgroundColor: Color.fervo_red }}
       backdropComponent={renderBackdrop}
       handleComponent={() => (
         <View style={styles.dragHandleContainer}>
@@ -166,7 +81,7 @@ export default function TodoBottomSheet() {
               placeholder="New task"
               value={todo.title}
               onChangeText={(text) => handleInputChange("title", text)}
-              placeholderTextColor= {chosenTheme.overlayPrimary}
+              placeholderTextColor="rgba(243, 243, 243, 0.8)"
               textStyle={styles.text}
               autoCorrect={false}
               autoCapitalize="none"
@@ -174,16 +89,14 @@ export default function TodoBottomSheet() {
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.amountFolderContainer}>
-            <PledgeDollarIcon 
-              color={chosenTheme.primary}
-            />
+            <PledgeDollarIcon />
             <TextInput
               style={styles.textInput}
               placeholder="Add pledge"
               value={todo.amount}
               onChangeText={(text) => handleInputChange("amount", text)}
               keyboardType="numeric"
-              placeholderTextColor= {chosenTheme.overlayPrimary}
+              placeholderTextColor="rgba(243, 243, 243, 0.8)"
               textStyle={styles.text}
               autoCorrect={false}
               autoCapitalize="none"
@@ -191,15 +104,13 @@ export default function TodoBottomSheet() {
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.amountFolderContainer}>
-            <FolderIcon 
-              color={chosenTheme.primary}
-            />
+            <FolderIcon />
             <TextInput
               style={styles.textInput}
               placeholder="Add tag"
               value={todo.tag}
               onChangeText={(text) => handleInputChange("tag", text)}
-              placeholderTextColor= {chosenTheme.overlayPrimary}
+              placeholderTextColor="rgba(243, 243, 243, 0.8)"
               textStyle={styles.text}
               autoCorrect={false}
               autoCapitalize="none"
@@ -207,15 +118,13 @@ export default function TodoBottomSheet() {
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.descriptionContainer}>
-            <DescriptLinesIcon 
-              color={chosenTheme.primary}
-            />
+            <DescriptLinesIcon />
             <TextInput
               style={styles.textInput}
               placeholder="Add description"
               value={todo.description}
               onChangeText={(text) => handleInputChange("description", text)}
-              placeholderTextColor= {chosenTheme.overlayPrimary}
+              placeholderTextColor="rgba(243, 243, 243, 0.8)"
               textStyle={styles.text}
               autoCorrect={false}
               autoCapitalize="none"
@@ -231,23 +140,17 @@ export default function TodoBottomSheet() {
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.amountFolderContainer}>
-            <PledgeDollarIcon 
-              color={chosenTheme.primary}
-            />
+            <PledgeDollarIcon />
             <Text style={styles.text}>{selectedTodo.amount}</Text>
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.amountFolderContainer}>
-            <FolderIcon 
-              color={chosenTheme.primary}
-            />
+            <FolderIcon />
             <Text style={styles.text}>{selectedTodo.tag}</Text>
           </View>
           <View style={styles.horizontalDivider} />
           <View style={styles.descriptionContainer}>
-            <DescriptLinesIcon 
-              color={chosenTheme.primary}
-            />
+            <DescriptLinesIcon />
             <Text style={styles.text}>{selectedTodo.description}</Text>
           </View>
         </View>
@@ -255,3 +158,79 @@ export default function TodoBottomSheet() {
     </BottomSheet>
   ) : null;
 }
+
+const styles = StyleSheet.create({
+  bottomSheetContainer: {
+    backgroundColor: Color.fervo_red,
+    flex: 1,
+    flexDirection: "col",
+    paddingHorizontal: 20,
+  },
+  bottomSheetTabBar: {
+    backgroundColor: Color.fervo_red,
+  },
+  dragHandleContainer: {
+    alignSelf: "center",
+  },
+  dragHandle: {
+    width: 45,
+    height: 4,
+    borderRadius: 3,
+    backgroundColor: "white",
+    marginTop: 15,
+  },
+  horizontalDivider: {
+    borderBottomColor: "white",
+    opacity: 0.3,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  numberTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 45,
+    marginBottom: 20,
+    gap: 23,
+  },
+  amountFolderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 23,
+    marginVertical: 4,
+  },
+  descriptionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 23,
+    // marginVertical: 18,
+    // borderWidth: 1,
+    // borderColor: 'black',
+  },
+  number: {
+    color: "white",
+    fontSize: 40,
+    fontWeight: "bold",
+  },
+  title: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "bold",
+    width: "80%",
+  },
+  text: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "500",
+    lineHeight: 18,
+    width: "80%",
+    paddingVertical: 15,
+  },
+  textInput: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "500",
+    lineHeight: 18,
+    width: "80%",
+    paddingVertical: 15,
+    // paddingHorizontal: 10,
+  },
+});

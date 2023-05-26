@@ -1,88 +1,18 @@
-import React, { useContext, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Color } from "../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState } from 'react'
 import LeftArrowIcon from "../assets/icons/arrow-left.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ToggleButtons from "../components/ToggleButtons";
 import DaysActiveToggle from "../components/DaysActiveToggle";
 import TimeButton from "../components/TimeButton";
 import OnboardingPopup from "../components/OnboardingPopup";
-import { ThemeContext } from "../ThemeContext";
-import { classicTheme, darkTheme, lightTheme } from "../Themes";
 
 const Account = ({ navigation }) => {
   const handlePress = (screenName) => {
     navigation.navigate(screenName);
   };
-
-  const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
-
-  const handleThemeButtonPress = (index) => {
-    switch (index) {
-      case 0:
-        setChosenTheme(classicTheme);
-        break;
-      case 1:
-        setChosenTheme(lightTheme);
-        break;
-      case 2:
-        setChosenTheme(darkTheme);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const getStyles = () => {
-    return StyleSheet.create({
-      pageContainer: {
-        flex: 1,
-        alignItems: "center",
-        paddingHorizontal: 20,
-        backgroundColor: chosenTheme.accent,
-      },
-      headerContainer: {
-        paddingTop: 20,
-        paddingLeft: 20,
-        width: "100%",
-        flexDirection: "row",
-        marginBottom: 20,
-      },
-      headerTitle: {
-        color: chosenTheme.primary,
-        fontSize: 20,
-        marginLeft: 24,
-      },
-      preferenceContainer: {
-        paddingLeft: 10,
-        paddingTop: 20,
-        width: "100%",
-        flexDirection: "row",
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      },
-      preferenceRightContainer: {
-        width: 250,
-        flexDirection: "row",
-      },
-      preferenceTitle: {
-        color: chosenTheme.primary,
-        fontSize: 16,
-      },
-      preferenceInput: {
-        color: chosenTheme.primary,
-        fontSize: 16,
-        borderWidth: 1,
-        width: 250,
-        borderColor: chosenTheme.primary,
-        padding: 10,
-        borderRadius: 10,
-      },
-    });
-  };
-  
-  const styles = getStyles();  
 
   return (
     <SafeAreaView style={styles.pageContainer}>
@@ -96,23 +26,22 @@ const Account = ({ navigation }) => {
           <LeftArrowIcon
             width={24}
               height={24}
-              // color={Color.white}
-              color={chosenTheme.primary}
+              color={Color.white}
           />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Account</Text>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Name </Text>
-        <TextInput style={styles.preferenceInput} placeholder="First Last" placeholderTextColor={chosenTheme.halfPrimary} autoCorrect={false} autoCapitalize="none"></TextInput>
+        <TextInput style={styles.preferenceInput} placeholder="First Last" placeholderTextColor={Color.faint_white} autoCorrect={false} autoCapitalize="none"></TextInput>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Email </Text>
-        <TextInput style={styles.preferenceInput} placeholder="email@domain.com" placeholderTextColor={chosenTheme.halfPrimary} autoCorrect={false} autoCapitalize="none"></TextInput>
+        <TextInput style={styles.preferenceInput} placeholder="email@domain.com" placeholderTextColor={Color.faint_white} autoCorrect={false} autoCapitalize="none"></TextInput>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Time Zone </Text>
-        <TextInput style={styles.preferenceInput} placeholder="America/Chicago" placeholderTextColor={chosenTheme.halfPrimary} autoCorrect={false} autoCapitalize="none"></TextInput>
+        <TextInput style={styles.preferenceInput} placeholder="America/Chicago" placeholderTextColor={Color.faint_white} autoCorrect={false} autoCapitalize="none"></TextInput>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Day Start </Text>
@@ -150,7 +79,6 @@ const Account = ({ navigation }) => {
           <ToggleButtons
             buttonCount={3}
             buttonTexts={['Classic', 'Light', 'Dark']}
-            onButtonPress={handleThemeButtonPress}
           />
         </View>   
       </View>
@@ -164,3 +92,56 @@ const Account = ({ navigation }) => {
 }
 
 export default Account
+
+const styles = StyleSheet.create({
+  pageContainer: {
+    flex: 1,
+    alignItems: "center",
+    marginHorizontal: 20,
+    // borderWidth: 1,
+    // borderColor: 'black',
+  },
+  headerContainer: {
+    paddingTop: 20,
+    paddingLeft: 20,
+    width: "100%",
+    flexDirection: "row",
+    marginBottom: 20,
+    // borderWidth: 1,
+    // borderColor: 'black',
+  },
+  headerTitle: {
+    color: Color.white,
+    fontSize: 20,
+    marginLeft: 24,
+    // borderWidth: 1,
+    // borderColor: 'black',
+  },
+  preferenceContainer: {
+    paddingLeft: 10,
+    paddingTop: 20,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    // borderWidth: 1,
+    // borderColor: 'black',
+  },
+  preferenceRightContainer: {
+    width: 250,
+    flexDirection: "row",
+  },
+  preferenceTitle: {
+    color: Color.white,
+    fontSize: 16,
+  },
+  preferenceInput: {
+    color: Color.white,
+    fontSize: 16,
+    borderWidth: 1,
+    width: 250,
+    borderColor: Color.white,
+    padding: 10,
+    borderRadius: 10,
+  },
+})
