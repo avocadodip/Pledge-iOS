@@ -7,7 +7,7 @@ import { ThemeContext } from "../hooks/ThemeContext";
 import { classicTheme, darkTheme, lightTheme } from "../Themes";
 import React, { useContext, useState } from "react";
 
-const TimeButton = ({ defaultTime, amOnly }) => {
+const TimeButton = ({ defaultTime, amOnly, pmOnly }) => {
   const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
 
   const getStyles = () => {
@@ -41,20 +41,16 @@ const TimeButton = ({ defaultTime, amOnly }) => {
   };
 
   const handleTimeConfirm = (date) => {
-    if (amOnly) {
-      if (moment(date).format('A') === 'PM') {
-        // Adjust the time to the first available AM option
-        date = moment(date).startOf('day').add(8, 'hours').toDate();
-      }
-    } else {
-      if (moment(date).format('A') === 'AM') {
-        // Adjust the time to the first available PM option
-        date = moment(date).startOf('day').add(12, 'hours').toDate();
-      }
-    }
-  
-    setSelectedTime(date);
-    hideTimePicker();
+  if (amOnly && moment(date).format('A') === 'PM') {
+    // Adjust the time to the first available AM option
+    date = moment(date).startOf('day').add(9, 'hours').toDate();
+  } else if (pmOnly && moment(date).format('A') === 'AM') {
+    // Adjust the time to the first available PM option
+    date = moment(date).startOf('day').add(11, 'hours').toDate();
+  }
+
+  setSelectedTime(date);
+  hideTimePicker();
   };
   
 
@@ -63,12 +59,15 @@ const TimeButton = ({ defaultTime, amOnly }) => {
   
     if (amOnly) {
       formattedTime += ' AM';
+    } else if (pmOnly) {
+      formattedTime += ' PM';
     } else {
       formattedTime += ' ' + moment(value).format('A');
     }
   
     return formattedTime;
   };
+  
   
 
   return (

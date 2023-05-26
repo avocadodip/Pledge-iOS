@@ -117,13 +117,13 @@ const Account = ({ navigation }) => {
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Day Start </Text>
         <View style={styles.preferenceRightContainer}>
-        <TimeButton defaultTime="9:00 AM" />
+        <TimeButton defaultTime="9:00 AM" amOnly={true}/>
         </View>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Day End </Text>
         <View style={styles.preferenceRightContainer}>
-        <TimeButton defaultTime="11:00 PM" />
+        <TimeButton defaultTime="11:00 PM" pmOnly={true}/>
         </View>
       </View>
       <View style={styles.preferenceContainer}>
