@@ -8,11 +8,65 @@ import CreditCardIcon from "../assets/icons/credit-card.svg";
 import LogoutIcon from "../assets/icons/logout.svg";
 import OnboardingPopup from "../components/OnboardingPopup";
 
-import React from "react";
+import { ThemeContext } from "../ThemeContext";
+import { classicTheme, darkTheme, lightTheme } from "../Themes";
+import React, { useContext, useState } from "react";
+
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { auth } from "../database/firebase";
 
 const Settings = ({ navigation }) => {
+  const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
+
+  const getStyles = () => {
+    return StyleSheet.create({
+      pageContainer: {
+        flex: 1,
+        alignItems: "center",
+        paddingHorizontal: 20,
+        backgroundColor: chosenTheme.accent,
+        // borderWidth: 1,
+        // borderColor: 'black',
+      },
+      headerContainer: {
+        paddingTop: 20,
+        paddingLeft: 20,
+        width: "100%",
+        flexDirection: "col",
+        marginBottom: 20,
+        // borderWidth: 1,
+        // borderColor: 'black',
+      },
+      settingsButtonContainer: {
+        width: "100%",
+        borderTopWidth: 1,
+        borderColor: Color.border_white,
+        marginBottom: 20,
+      },
+      settingsButton: {
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        flexDirection: "row",
+        justifyContent: 'space-between',
+      },
+      leftSettingsButton: {
+        flexDirection: "row",
+      },
+      headerTitle: {
+        color: chosenTheme.primary,
+        fontSize: 30,
+        fontWeight: "bold",
+      },
+      buttonTitle: {
+        color: chosenTheme.primary,
+        fontSize: 20,
+        marginLeft: 24,
+      },
+    })
+  };
+
+  const styles = getStyles();  
+
   const handlePress = (screenName) => {
     navigation.navigate(screenName);
   };
@@ -27,11 +81,11 @@ const Settings = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <OnboardingPopup
+      {/* <OnboardingPopup
         texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
         buttonTitle="Back to settings."
         secondButtonTitle="Log me out."
-      />
+      /> */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Settings</Text>
       </View>
@@ -44,14 +98,14 @@ const Settings = ({ navigation }) => {
             <UserCircleIcon
               width={24}
               height={24}
-              color={Color.white}
+              color={chosenTheme.primary}
             />
             <Text style={styles.buttonTitle}> Account </Text> 
           </View>
           <RightChevronIcon
               width={24}
               height={24}
-              color={Color.white}
+              color={chosenTheme.primary}
             />
         </TouchableOpacity>
       </View>
@@ -64,14 +118,14 @@ const Settings = ({ navigation }) => {
             <LibraryIcon
               width={24}
               height={24}
-              color={Color.white}
+              color={chosenTheme.primary}
             />
             <Text style={styles.buttonTitle}> Stats </Text> 
           </View>
           <RightChevronIcon
               width={24}
               height={24}
-              color={Color.white}
+              color={chosenTheme.primary}
           />
         </TouchableOpacity>
       </View>
@@ -84,14 +138,14 @@ const Settings = ({ navigation }) => {
             <CreditCardIcon
               width={24}
               height={24}
-              color={Color.white}
+              color={chosenTheme.primary}
             />
             <Text style={styles.buttonTitle}> Billing </Text> 
           </View>
           <RightChevronIcon
               width={24}
               height={24}
-              color={Color.white}
+              color={chosenTheme.primary}
             />
         </TouchableOpacity>
       </View>
@@ -104,14 +158,14 @@ const Settings = ({ navigation }) => {
             <LogoutIcon
               width={24}
               height={24}
-              color={Color.white}
+              color={chosenTheme.primary}
             />
             <Text style={styles.buttonTitle}>Logout</Text> 
           </View>
           <RightChevronIcon
               width={24}
               height={24}
-              color={Color.white}
+              color={chosenTheme.primary}
             />
         </TouchableOpacity>
       </View>
@@ -120,47 +174,3 @@ const Settings = ({ navigation }) => {
 };
 
 export default Settings;
-
-const styles = StyleSheet.create({
-  pageContainer: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 20,
-    // borderWidth: 1,
-    // borderColor: 'black',
-  },
-  headerContainer: {
-    paddingTop: 20,
-    paddingLeft: 20,
-    width: "100%",
-    flexDirection: "col",
-    marginBottom: 20,
-    // borderWidth: 1,
-    // borderColor: 'black',
-  },
-  settingsButtonContainer: {
-    width: "100%",
-    borderTopWidth: 1,
-    borderColor: Color.border_white,
-    marginBottom: 20,
-  },
-  settingsButton: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    flexDirection: "row",
-    justifyContent: 'space-between',
-  },
-  leftSettingsButton: {
-    flexDirection: "row",
-  },
-  headerTitle: {
-    color: Color.white,
-    fontSize: 30,
-    fontWeight: "bold",
-  },
-  buttonTitle: {
-    color: Color.white,
-    fontSize: 20,
-    marginLeft: 24,
-  },
-});

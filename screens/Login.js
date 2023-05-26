@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -21,6 +20,10 @@ import Globals from "../Globals";
 import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "@firebase/auth";
 
+import { ThemeContext } from "../ThemeContext";
+import { classicTheme, darkTheme, lightTheme } from "../Themes";
+import React, { useContext, useEffect, useState } from "react";
+
 const Login = () => {
   const [fullName, setFullName] = useState();
   const [email, setEmail] = useState(); // New state for email input
@@ -29,6 +32,128 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [loginPressed, setLoginPressed] = useState(false); // Add this state to handle the button pressed state
   const navigation = useNavigation();
+
+  const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
+
+  const getStyles = () => {
+    return StyleSheet.create({
+      container: {
+        flex: 1,
+        backgroundColor: chosenTheme.accent,
+        justifyContent: "center",
+        alignItems: "center",
+      },
+      appNameText: {
+        fontSize: 60,
+        color: chosenTheme.primary,
+        marginTop: 0,
+        fontWeight: "bold",
+      },
+      inputField: {
+        height: 40,
+        width: "100%",
+        borderColor: chosenTheme.primary,
+        borderWidth: 1,
+        paddingLeft: 10,
+        borderRadius: 5,
+        color: chosenTheme.primary,
+        backgroundColor: chosenTheme.accent,
+      },
+      parentFlexBox: {
+        alignItems: "center",
+      },
+      signupTypo: {
+        // fontFamily: FontFamily.epilogueBold,
+        // fontWeight: "700",
+        textAlign: "left",
+      },
+      textLayout: {
+        fontSize: FontSize.size_lg,
+      },
+      image2: {
+        transform: [
+          {
+            rotate: "-90deg",
+          },
+        ],
+      },
+      signup: {
+        color: chosenTheme.primary,
+        textAlign: "left",
+        lineHeight: 25,
+        fontSize: FontSize.size_lg,
+      },
+      pressable: {
+        justifyContent: "center",
+        backgroundColor: Color.papaya,
+        paddingHorizontal: Padding.p_xl,
+        flexDirection: "row",
+        alignItems: "center",
+        width: "100%",
+        height: 40, // Height for the button to look good
+      },
+      wrapper: {
+        marginTop: 20,
+        width: 322,
+      },
+      login: {
+        textDecorationLine: "underline",
+      },
+      text: {
+        // fontWeight: "500",
+        // fontFamily: FontFamily.epilogueMedium,
+        color: chosenTheme.primary,
+        textAlign: "left",
+      },
+      goBackToContainer: {
+        alignSelf: "center", // Center the text within the parent view
+      },
+      beaconlogo51Icon: {
+        width: 132,
+        height: 135,
+      },
+      logoContainer: {
+        alignItems: "center",
+        marginBottom: 20,
+        // borderColor:'black',
+        // borderWidth: 1
+      },
+      beaconlogo51Parent: {
+        alignItems: "center",
+      },
+      signups: {
+        borderRadius: Border.br_11xl,
+        backgroundColor: chosenTheme.primary,
+        flex: 1,
+        overflow: "hidden",
+        width: "100%",
+        justifyContent: "center", // Center child components vertically
+        alignItems: "center", // Center child components horizontally
+      },
+      buttonContainer: {
+        alignItems: "center",
+        flexDirection: "col",
+        gap: 15,
+        width: "90%",
+      },
+      button: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: chosenTheme.primary,
+        gap: 15,
+        height: 52,
+        borderRadius: 17,
+        width: "100%",
+      },
+      buttonText: {
+        color: chosenTheme.accent,
+        fontSize: 18,
+      },
+    })
+  };
+
+  const styles = getStyles();  
 
   const handleLogin = async () => {
     let lowerCaseEmail = email.trim().toLowerCase();
@@ -103,11 +228,11 @@ const Login = () => {
         <Text style={styles.appNameText}>Fervo</Text>
       </View>
       <View style={[styles.buttonContainer]}>
-        {loading ? <ActivityIndicator size="small" color="white" /> : null}
+        {loading ? <ActivityIndicator size="small" style={{ color: chosenTheme.primary }} /> : null}
         <TextInput
           style={[styles.inputField]}
           placeholder="Email" // Email input field
-          placeholderTextColor={Color.white}
+          placeholderTextColor={chosenTheme.primary}
           keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
@@ -117,7 +242,7 @@ const Login = () => {
         <TextInput
           style={[styles.inputField]}
           placeholder="Password"
-          placeholderTextColor={Color.white}
+          placeholderTextColor={chosenTheme.primary}
           value={password}
           onChangeText={setPassword}
           autoCorrect={false} // Disable auto-correction
@@ -155,158 +280,13 @@ const Login = () => {
             backgroundColor: "rgba(0, 0, 0, 0.5)", // Optional: semi-transparent background
           }}
         >
-          <ActivityIndicator size="large" color="white" />
+        <ActivityIndicator size="large" style={{ color: chosenTheme.primary }} />
+
         </View>
       )}
       {/* </KeyboardAvoidingView> */}
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  appNameText: {
-    fontSize: 60,
-    color: Color.white,
-    marginTop: 0,
-    fontWeight: "bold",
-  },
-  inputField: {
-    height: 40,
-    width: "100%",
-    borderColor: Color.white,
-    borderWidth: 1,
-    paddingLeft: 10,
-    borderRadius: 5,
-    color: Color.white,
-    backgroundColor: Color.fervo_red,
-  },
-  frameTextInputText: {
-    color: "#000",
-  },
-  frameTextInput1Text: {
-    color: "#000",
-  },
-  frameTextInput2Text: {
-    color: "#000",
-  },
-  parentFlexBox: {
-    alignItems: "center",
-  },
-  frameSpaceBlock: {
-    borderRadius: Border.br_8xs,
-  },
-  signupTypo: {
-    // fontFamily: FontFamily.epilogueBold,
-    // fontWeight: "700",
-    textAlign: "left",
-  },
-  textLayout: {
-    fontSize: FontSize.size_lg,
-  },
-  image2: {
-    transform: [
-      {
-        rotate: "-90deg",
-      },
-    ],
-  },
-  frameChild: {
-    width: 322,
-    borderWidth: 1,
-    borderColor: "#c1c1c1",
-    borderStyle: "solid",
-    borderRadius: Border.br_8xs,
-  },
-  frameItem: {
-    marginTop: 10,
-    width: 322,
-    borderWidth: 1,
-    borderColor: "#c1c1c1",
-    borderStyle: "solid",
-    flexDirection: "row",
-    borderRadius: Border.br_8xs,
-  },
-  signup: {
-    color: Color.white,
-    textAlign: "left",
-    lineHeight: 25,
-    fontSize: FontSize.size_lg,
-  },
-  pressable: {
-    justifyContent: "center",
-    backgroundColor: Color.papaya,
-    paddingHorizontal: Padding.p_xl,
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    height: 40, // Height for the button to look good
-  },
-  wrapper: {
-    marginTop: 20,
-    width: 322,
-  },
-  frameParent: {
-    alignItems: "center",
-  },
-  login: {
-    textDecorationLine: "underline",
-  },
-  text: {
-    // fontWeight: "500",
-    // fontFamily: FontFamily.epilogueMedium,
-    color: Color.white,
-    textAlign: "left",
-  },
-  goBackToContainer: {
-    alignSelf: "center", // Center the text within the parent view
-  },
-  beaconlogo51Icon: {
-    width: 132,
-    height: 135,
-  },
-  logoContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-    // borderColor:'black',
-    // borderWidth: 1
-  },
-  beaconlogo51Parent: {
-    alignItems: "center",
-  },
-  signups: {
-    borderRadius: Border.br_11xl,
-    backgroundColor: Color.white,
-    flex: 1,
-    overflow: "hidden",
-    width: "100%",
-    justifyContent: "center", // Center child components vertically
-    alignItems: "center", // Center child components horizontally
-  },
-  buttonContainer: {
-    alignItems: "center",
-    flexDirection: "col",
-    gap: 15,
-    width: "90%",
-  },
-  button: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Color.white,
-    gap: 15,
-    height: 52,
-    borderRadius: 17,
-    width: "100%",
-  },
-  buttonText: {
-    color: Color.fervo_red,
-    fontSize: 18,
-  },
-});
 
 export default Login;

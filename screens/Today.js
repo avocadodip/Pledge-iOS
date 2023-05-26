@@ -1,11 +1,50 @@
 import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
 import OnboardingPopup from "../components/OnboardingPopup";
 
+import { ThemeContext } from "../ThemeContext";
+import { classicTheme, darkTheme, lightTheme } from "../Themes";
+import React, { useContext, useEffect, useState } from "react";
+
 const Today = () => {
+  const { chosenTheme, setChosenTheme } = useContext(ThemeContext);
+
+  const getStyles = () => {
+    return StyleSheet.create({
+      pageContainer: {
+        backgroundColor: chosenTheme.accent,
+        flex: 1,
+        alignItems: "center",
+        paddingHorizontal: 20,
+      },
+      headerContainer: {
+        marginTop: 10,
+        width: "100%",
+        flexDirection: "col",
+      },
+      headerTitle: {
+        color: chosenTheme.primary,
+        fontSize: 50,
+        fontWeight: "bold",
+      },
+      headerSubtitle: {
+        color: chosenTheme.primary,
+        fontSize: 25,
+        fontWeight: "bold",
+        marginTop: 5,
+      },
+      todoContainer: {
+        marginTop: 20,
+        gap: 22,
+        width: "100%",
+      },
+    })
+  };
+
+  const styles = getStyles();  
+
   const todos = [
     {
       id: 1,
@@ -86,34 +125,5 @@ const Today = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  pageContainer: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 20,
-  },
-  headerContainer: {
-    marginTop: 10,
-    width: "100%",
-    flexDirection: "col",
-  },
-  headerTitle: {
-    color: "white",
-    fontSize: 50,
-    fontWeight: "bold",
-  },
-  headerSubtitle: {
-    color: "white",
-    fontSize: 25,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-  todoContainer: {
-    marginTop: 20,
-    gap: 22,
-    width: "100%",
-  },
-});
 
 export default Today;
