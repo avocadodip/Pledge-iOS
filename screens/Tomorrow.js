@@ -1,112 +1,35 @@
 import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
 import OnboardingPopup from "../components/OnboardingPopup";
-import { db } from "../database/firebase";
-import { query, collection, getDocs, where } from "firebase/firestore";
-import Globals from "../Globals";
-import {
-  getTodayDateTime,
-  lastDayEnd,
-  lastDayStart,
-  withinTimeWindow,
-} from "../utils/currentDate";
+import { useDayTimeStatus } from "../hooks/useDayStatus";
+import { useTmrwTodos } from "../hooks/useTmrwTodos";
+import { useActiveDay } from "../hooks/useActiveDay";
 
 const Tomorrow = () => {
-  // If today is Friday
-  // Day Start
-  let zaa = "7:00";
-  // Day End
-  let zbb = "9:00";
+  const { tmrwTodos } = useBottomSheet();
+  const {
+    settings: { dayStart, dayEnd, vacationModeOn, daysActive },
+  } = useSettings();
 
-  const [headerMessage, setHeaderMessage] = useState("");
-  const { tmrwTodos, setTmrwTodos } = useBottomSheet();
-  const { settings } = useSettings();
+  // console.log('dayStart', dayStart, 'dayEnd', dayEnd);
 
-  // Realtime state of whether its day or not
-  const [isDay, setIsDay] = useState(withinTimeWindow(zaa, zbb));
+  const isDay = useDayTimeStatus(dayStart, dayEnd);
+  const { headerMessage } = useTmrwTodos(isDay, dayStart, dayEnd);
+  const { nextDay, isTmrwActiveDay, tmrwInactiveMessage } = useActiveDay(
+    dayStart,
+    dayEnd,
+    daysActive
+  );
 
-  // Start a timer that updates whether its day every second
-  useEffect(() => {
-    const timerId = setInterval(() => {
-      setIsDay(withinTimeWindow(zaa, zbb));
-    }, 1000);
-
-    // Clear interval when the component is unmounted or before the next effect runs
-    return () => clearInterval(timerId);
-  }, []);
-
-  // Fetches todos for current time window and re-fetches whenever isDay changes
-  useEffect(() => {
-    // 1. FETCH AND SET TODOS
-    const fetchTodos = async () => {
-      let fetchedTodos = [{}, {}, {}];
-      const todoRef = collection(db, "users", Globals.currentUserID, "todos");
-      let todoQuery;
-
-      try {
-        // if in time window, locked todos = anything created from dayStart to now
-        if (withinTimeWindow(zaa, zbb)) {
-          todoQuery = query(
-            todoRef,
-            where("createdAt", ">=", lastDayStart(zaa)),
-            where("createdAt", "<", getTodayDateTime())
-          );
-          // if not in time window, locked todos should be anything created from lastDayStart to lastDayEnd
-        } else {
-          todoQuery = query(
-            todoRef,
-            where("createdAt", ">=", lastDayStart(zaa)),
-            where("createdAt", "<", lastDayEnd(zbb))
-          );
-        }
-        const querySnapshot = await getDocs(todoQuery);
-
-        querySnapshot.docs.forEach((doc) => {
-          const todoData = doc.data();
-          fetchedTodos[todoData.todoNumber - 1] = todoData;
-        });
-      } catch (error) {
-        console.error("Error fetching todos: ", error);
-      }
-
-      // Fill in non-inputted todos with empty data
-      for (let i = 0; i < 3; i++) {
-        if (Object.keys(fetchedTodos[i]).length === 0) {
-          fetchedTodos[i] = {
-            todoNumber: i + 1,
-            title: "",
-            description: "",
-            amount: "",
-            tag: "",
-            isLocked: false,
-          };
-        }
-      }
-
-      // Set state
-      setTmrwTodos(fetchedTodos);
-      console.log(tmrwTodos);
-
-      // 2. SET HEADER MESSAGE
-      if (withinTimeWindow(zaa, zbb)) {
-        setHeaderMessage("Locks @ " + zbb + " PM");
-      } else {
-        setHeaderMessage("Opens @ " + zaa + " AM");
-      }
-    };
-
-    fetchTodos();
-  }, [isDay]); // This effect runs whenever isDay changes
-
-  const renderTodos = () => {
+  const renderTodos = useCallback(() => {
     return tmrwTodos.map((todo, index) => {
       if (todo.title !== "") {
-        // Locked todo
+        // return locked todo
         return (
           <Todo
             key={index + 1}
@@ -120,6 +43,7 @@ const Tomorrow = () => {
           />
         );
       } else if (isDay) {
+        // return new todo
         return (
           <Todo
             key={index + 1}
@@ -133,6 +57,7 @@ const Tomorrow = () => {
           />
         );
       } else if (!isDay) {
+        // return fined todo (for not inputting)
         return (
           <Todo
             key={index + 1}
@@ -147,7 +72,7 @@ const Tomorrow = () => {
         );
       }
     });
-  };
+  }, [tmrwTodos, isDay]);
 
   return (
     <SafeAreaView style={styles.pageContainer}>
@@ -158,11 +83,19 @@ const Tomorrow = () => {
       <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Tmrw</Text>
-          <Text style={styles.headerDayOfWeek}>Thursday</Text>
+          <Text style={styles.headerDayOfWeek}>{nextDay}</Text>
         </View>
-        <Text style={styles.headerSubtitle}>{headerMessage}</Text>
+        {vacationModeOn ? (
+          <Text>Vacation mode on. Visit settings to turn it off.</Text>
+        ) : !isTmrwActiveDay ? (
+          <Text>{tmrwInactiveMessage}</Text>
+        ) : (
+          <Text style={styles.headerSubtitle}>{headerMessage}</Text>
+        )}
       </View>
-      <View style={styles.todoContainer}>{renderTodos()}</View>
+      {vacationModeOn || !isTmrwActiveDay ? null : (
+        <View style={styles.todoContainer}>{renderTodos()}</View>
+      )}
     </SafeAreaView>
   );
 };
@@ -187,7 +120,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "flex-end",
-    gap: 15
+    gap: 15,
   },
   headerTitle: {
     color: "white",
@@ -198,7 +131,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 25,
     fontWeight: "bold",
-    paddingBottom: 7
+    paddingBottom: 6,
   },
   headerSubtitle: {
     color: "white",

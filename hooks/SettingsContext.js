@@ -1,4 +1,4 @@
-import { doc, getDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { db } from "../database/firebase";
 
@@ -9,25 +9,23 @@ export const SettingsProvider = ({ children }) => {
   const [currentUserID, setCurrentUserID] = useState(null);
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      if (currentUserID) {
-        try {
-          const userDoc = doc(db, "users", currentUserID);
-          const userDocSnapshot = await getDoc(userDoc);
+    if (currentUserID) {
+      const userDoc = doc(db, "users", currentUserID);
 
-          if (userDocSnapshot.exists()) {
-            const userSettings = userDocSnapshot.data();
-            setSettings(userSettings);
-          } else {
-            // Handle the case where the user does not exist or has no settings
-          }
-        } catch (error) {
-          console.error("Error fetching user settings: ", error);
+      const unsubscribe = onSnapshot(userDoc, (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const userSettings = docSnapshot.data();
+          setSettings(userSettings);
+        } else {
+          // Handle the case where the user does not exist or has no settings
         }
-      }
-    };
+      }, (error) => {
+        console.error("Error fetching user settings: ", error);
+      });
 
-    fetchSettings();
+      // Clean up listener when component is unmounted or userID changes
+      return () => unsubscribe();
+    }
   }, [currentUserID]);
 
   return (
@@ -38,4 +36,3 @@ export const SettingsProvider = ({ children }) => {
 };
 
 export const useSettings = () => useContext(SettingsContext);
-

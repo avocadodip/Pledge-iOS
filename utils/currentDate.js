@@ -7,6 +7,28 @@
 // 7. formatDayStart()
 // 8. formatDayEnd()
 
+// Array of week days
+export const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+
+// Tmrw page inactive message
+export const getNextActiveDay = (nextDay, days) => {
+	let startChecking = false;
+
+	for (let i = 0; i < daysOfWeek.length * 2; i++) {
+		// loop twice to handle week cycle
+		const day = daysOfWeek[i % daysOfWeek.length];
+
+		if (day === nextDay) {
+			startChecking = true; // start checking from the next day
+		} else if (startChecking && days[day]) {
+			return day; // return next 'true' day
+		}
+	}
+
+	return null; // return null if no active day is found
+};
+
 // 1 - returns "12/25/2022 @ 15:42:53"
 export const getTodayDateTime = () => {
   const now = new Date();
@@ -191,6 +213,30 @@ export const lastDayEnd = (dayEnd) => {
       ":00";
   }
   return dateTime;
+};
+
+// Function to return the day of the week for the next time period
+export const getDayOfNextPeriod = (dayStart, dayEnd) => {
+  const now = new Date();
+  
+  // Format dayStart
+  if (dayStart.length == 4) dayStart = "0" + dayStart;
+
+  // Format dayEnd
+  const militaryTimeHour = parseInt(dayEnd.split(":")[0]) + 12;
+  dayEnd = militaryTimeHour + ":" + dayEnd.split(":")[1];
+
+  // Get current time as HH:MM
+  let nowHourMinute = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2);
+
+  // Compare current time with dayStart and dayEnd
+  if (nowHourMinute < dayStart || nowHourMinute >= dayEnd) {
+    // If current time is before dayStart or after dayEnd, it's the same day
+    return daysOfWeek[now.getDay()];
+  } else {
+    // If current time is within dayStart and dayEnd, it's the next day
+    return daysOfWeek[(now.getDay() + 1) % 7];
+  }
 };
 
 // 8 - used in stats.svelte to query failed/completed tasks (but not upcoming or in progress)

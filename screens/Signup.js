@@ -94,7 +94,7 @@ const Signup = () => {
           Friday: true,
           Saturday: true,
         },
-        vacationMode: false,
+        vacationModeOn: false,
         theme: "Classic",
         missedTaskFine: 1,
         totalAmountDue: 0,
