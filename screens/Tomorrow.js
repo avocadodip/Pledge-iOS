@@ -1,7 +1,6 @@
 import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Color } from "../GlobalStyles";
 import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
@@ -65,8 +64,9 @@ const Tomorrow = () => {
     dayEnd,
     daysActive
   );
-
+ 
   const renderTodos = useCallback(() => {
+    // Map through three todos and render them based on their content
     return tmrwTodos.map((todo, index) => {
       if (todo.title !== "") {
         return renderLockedTodo(todo, index);
