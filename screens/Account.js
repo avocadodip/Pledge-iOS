@@ -1,15 +1,20 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Color } from "../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import LeftArrowIcon from "../assets/icons/arrow-left.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ToggleButtons from "../components/ToggleButtons";
 import DaysActiveToggle from "../components/DaysActiveToggle";
 import TimeButton from "../components/TimeButton";
 import OnboardingPopup from "../components/OnboardingPopup";
+import { useSettings } from "../hooks/SettingsContext";
 
 const Account = ({ navigation }) => {
+  const {
+    currentUserFullName,
+  } = useSettings();
+
   const handlePress = (screenName) => {
     navigation.navigate(screenName);
   };
@@ -22,37 +27,51 @@ const Account = ({ navigation }) => {
         secondButtonTitle="Yes, delete my account."
       /> */}
       <View style={styles.headerContainer}>
-        <TouchableOpacity	onPress={() => handlePress("SettingsScreen")}>
-          <LeftArrowIcon
-            width={24}
-              height={24}
-              color={Color.white}
-          />
+        <TouchableOpacity onPress={() => handlePress("SettingsScreen")}>
+          <LeftArrowIcon width={24} height={24} color={Color.white} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Account</Text>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Name </Text>
-        <TextInput style={styles.preferenceInput} placeholder="First Last" placeholderTextColor={Color.faint_white} autoCorrect={false} autoCapitalize="none"></TextInput>
+        <TextInput
+          style={styles.preferenceInput}
+          placeholder="First Last"
+          placeholderTextColor={Color.faint_white}
+          autoCorrect={false}
+          autoCapitalize="none"
+        ></TextInput>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Email </Text>
-        <TextInput style={styles.preferenceInput} placeholder="email@domain.com" placeholderTextColor={Color.faint_white} autoCorrect={false} autoCapitalize="none"></TextInput>
+        <TextInput
+          style={styles.preferenceInput}
+          placeholder="email@domain.com"
+          placeholderTextColor={Color.faint_white}
+          autoCorrect={false}
+          autoCapitalize="none"
+        ></TextInput>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Time Zone </Text>
-        <TextInput style={styles.preferenceInput} placeholder="America/Chicago" placeholderTextColor={Color.faint_white} autoCorrect={false} autoCapitalize="none"></TextInput>
+        <TextInput
+          style={styles.preferenceInput}
+          placeholder="America/Chicago"
+          placeholderTextColor={Color.faint_white}
+          autoCorrect={false}
+          autoCapitalize="none"
+        ></TextInput>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Day Start </Text>
         <View style={styles.preferenceRightContainer}>
-        <TimeButton defaultTime="9:00 AM" />
+          <TimeButton defaultTime="9:00 AM" />
         </View>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Day End </Text>
         <View style={styles.preferenceRightContainer}>
-        <TimeButton defaultTime="11:00 PM" />
+          <TimeButton defaultTime="11:00 PM" />
         </View>
       </View>
       <View style={styles.preferenceContainer}>
@@ -60,38 +79,42 @@ const Account = ({ navigation }) => {
         <View style={styles.preferenceRightContainer}>
           <DaysActiveToggle
             buttonCount={2}
-            buttonTexts={['S', 'M', 'T', 'W', 'T','F','S']}
+            buttonTexts={["S", "M", "T", "W", "T", "F", "S"]}
           />
         </View>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Vacation </Text>
         <View style={styles.preferenceRightContainer}>
-          <ToggleButtons
-            buttonCount={2}
-            buttonTexts={['On', 'Off']}
-          />
+          <ToggleButtons buttonCount={2} buttonTexts={["On", "Off"]} />
         </View>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Theme </Text>
-        <View style={styles.preferenceRightContainer}>     
+        <View style={styles.preferenceRightContainer}>
           <ToggleButtons
             buttonCount={3}
-            buttonTexts={['Classic', 'Light', 'Dark']}
+            buttonTexts={["Classic", "Light", "Dark"]}
           />
-        </View>   
+        </View>
       </View>
       <View style={styles.preferenceContainer}>
-        <TouchableOpacity> 
-        <Text style={[styles.preferenceTitle, {textDecorationLine:'underline'}]}>Delete account.</Text>
+        <TouchableOpacity>
+          <Text
+            style={[
+              styles.preferenceTitle,
+              { textDecorationLine: "underline" },
+            ]}
+          >
+            Delete account.
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Account
+export default Account;
 
 const styles = StyleSheet.create({
   pageContainer: {
@@ -122,8 +145,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     width: "100%",
     flexDirection: "row",
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: "space-between",
+    alignItems: "center",
     // borderWidth: 1,
     // borderColor: 'black',
   },
@@ -144,4 +167,4 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
-})
+});

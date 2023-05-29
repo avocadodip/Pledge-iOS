@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import { Color } from "../GlobalStyles";
-import Todo from "../components/Todo";
+import Todo from "../components/todo/Todo";
 import TimeButton from "../components/TimeButton";
 import NextButton from "../components/NextButton";
 import OnboardingPopup from "../components/OnboardingPopup";

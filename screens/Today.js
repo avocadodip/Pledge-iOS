@@ -2,7 +2,7 @@ import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
 import { Color } from "../GlobalStyles";
-import Todo from "../components/Todo";
+import Todo from "../components/todo/Todo";
 import OnboardingPopup from "../components/OnboardingPopup";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
@@ -19,7 +19,6 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../database/firebase";
-import Globals from "../Globals";
 
 const Today = () => {
   const [headerMessage, setHeaderMessage] = useState("");
@@ -30,7 +29,7 @@ const Today = () => {
     // 1. FETCH AND SET TODOS
     const fetchTodos = async () => {
       let fetchedTodos = [{}, {}, {}];
-      const todoRef = collection(db, "users", Globals.currentUserID, "todos");
+      const todoRef = collection(db, "users", settings.currentUserID, "todos");
       let todoQuery;
 
       try {

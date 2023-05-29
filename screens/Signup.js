@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Color } from "../GlobalStyles";
-import Globals from "../Globals";
 import { auth, db } from "../database/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import {
@@ -26,12 +25,14 @@ import {
 import MailIcon from "../assets/icons/mail-icon.svg";
 import FervoWhite from "../assets/FervoWhite.png";
 import { getTodayDateTime } from "../utils/currentDate";
+import { useSettings } from "../hooks/SettingsContext";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setCurrentUserID, setCurrentUserFullName } = useSettings();
 
   const navigation = useNavigation();
 
@@ -74,8 +75,8 @@ const Signup = () => {
       );
       // User successfully signed up
       const user = userCredential.user;
-      Globals.currentUserID = user.uid;
-      Globals.fullName = fullName;
+      setCurrentUserID(user.uid);
+      setCurrentUserFullName(fullName);
 
       // Save full name and email to Firestore
       await setDoc(doc(db, "users", user.uid), {

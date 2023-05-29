@@ -28,8 +28,6 @@ import TomorrowActiveIcon from "./assets/icons/add-active-icon.svg";
 import TomorrowInactiveIcon from "./assets/icons/add-inactive-icon.svg";
 import SettingsActiveIcon from "./assets/icons/settings-active-icon.svg";
 import SettingsInactiveIcon from "./assets/icons/settings-inactive-icon.svg";
-import { checkAuthState } from "./utils/authHelper";
-
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { auth } from "./database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";

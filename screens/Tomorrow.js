@@ -2,7 +2,7 @@ import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Color } from "../GlobalStyles";
-import Todo from "../components/Todo";
+import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
 import OnboardingPopup from "../components/OnboardingPopup";
@@ -10,16 +10,56 @@ import { useDayTimeStatus } from "../hooks/useDayStatus";
 import { useTmrwTodos } from "../hooks/useTmrwTodos";
 import { useActiveDay } from "../hooks/useActiveDay";
 
+const renderLockedTodo = (
+  { title, description, amount, tag, isLocked, isTodoLocked, id },
+  index
+) => (
+  <Todo
+    key={id} // replace with unique id
+    todoNumber={index + 1}
+    title={title}
+    description={description}
+    amount={amount.toString()}
+    tag={tag}
+    componentType="info"
+    isLocked={isLocked || isTodoLocked}
+  />
+);
+
+const renderNewTodo = (index) => (
+  <Todo
+    key={index + 1} // replace with unique id
+    todoNumber={index + 1}
+    componentType="number"
+    title=""
+    description=""
+    amount=""
+    tag=""
+    isLocked={false}
+  />
+);
+
+const renderFinedTodo = (index) => (
+  <Todo
+    key={index + 1} // replace with unique id
+    todoNumber=""
+    title=""
+    description=""
+    amount=""
+    tag=""
+    componentType="fined"
+    isLocked={null}
+  />
+);
+
 const Tomorrow = () => {
   const { tmrwTodos } = useBottomSheet();
   const {
     settings: { dayStart, dayEnd, vacationModeOn, daysActive },
   } = useSettings();
 
-  // console.log('dayStart', dayStart, 'dayEnd', dayEnd);
-
   const isDay = useDayTimeStatus(dayStart, dayEnd);
-  const { headerMessage } = useTmrwTodos(isDay, dayStart, dayEnd);
+  const headerMessage = useTmrwTodos(isDay, dayStart, dayEnd);
   const { nextDay, isTmrwActiveDay, tmrwInactiveMessage } = useActiveDay(
     dayStart,
     dayEnd,
@@ -29,47 +69,11 @@ const Tomorrow = () => {
   const renderTodos = useCallback(() => {
     return tmrwTodos.map((todo, index) => {
       if (todo.title !== "") {
-        // return locked todo
-        return (
-          <Todo
-            key={index + 1}
-            todoNumber={index + 1}
-            title={todo.title}
-            description={todo.description}
-            amount={todo.amount.toString()}
-            tag={todo.tag}
-            componentType="info"
-            isLocked={todo.isLocked || todo.isTodoLocked}
-          />
-        );
+        return renderLockedTodo(todo, index);
       } else if (isDay) {
-        // return new todo
-        return (
-          <Todo
-            key={index + 1}
-            todoNumber={index + 1}
-            componentType="number"
-            title=""
-            description=""
-            amount=""
-            tag=""
-            isLocked={false}
-          />
-        );
-      } else if (!isDay) {
-        // return fined todo (for not inputting)
-        return (
-          <Todo
-            key={index + 1}
-            todoNumber=""
-            title=""
-            description=""
-            amount=""
-            tag=""
-            componentType="fined"
-            isLocked={null}
-          />
-        );
+        return renderNewTodo(index);
+      } else {
+        return renderFinedTodo(index);
       }
     });
   }, [tmrwTodos, isDay]);

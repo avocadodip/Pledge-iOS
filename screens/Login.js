@@ -17,9 +17,9 @@ import { useNavigation } from "@react-navigation/native";
 import { Padding, Border, FontFamily, FontSize, Color } from "../GlobalStyles";
 import firebase, { auth, db } from "../database/firebase";
 import "firebase/firestore";
-import Globals from "../Globals";
 import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "@firebase/auth";
+import { useSettings } from "../hooks/SettingsContext";
 
 const Login = () => {
   const [fullName, setFullName] = useState();
@@ -28,6 +28,7 @@ const Login = () => {
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
   const [loginPressed, setLoginPressed] = useState(false); // Add this state to handle the button pressed state
+  const { setCurrentUserID, setCurrentUserFullName, setCurrentUserEmail } = useSettings();
   const navigation = useNavigation();
 
   const handleLogin = async () => {
@@ -57,7 +58,7 @@ const Login = () => {
       .then((userCredential) => {
         // Signed in successfully
         const user = userCredential.user;
-        Globals.currentUserID = user.uid;
+        setCurrentUserID(user.uid);
 
         // Get the user's document from Firestore
         const userDoc = doc(db, "users", user.uid);
@@ -65,10 +66,9 @@ const Login = () => {
         getDoc(userDoc)
           .then((docSnap) => {
             if (docSnap.exists()) {
-              // Set the full name in Globals
-              Globals.fullName = docSnap.data().fullName;
-              Globals.email = docSnap.data().email;
-              Globals.profileImageUrl = docSnap.data().profileImageUrl || "";
+              // Set the full name in settings context
+              setCurrentUserFullName(docSnap.data().fullName);
+              setCurrentUserEmail(docSnap.data().email);
             } else {
               console.log("No such document!");
             }
