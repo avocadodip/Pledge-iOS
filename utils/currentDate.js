@@ -8,87 +8,77 @@
 // 8. formatDayEnd()
 
 // Array of week days
-export const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
+export const daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 // Tmrw page inactive message
 export const getNextActiveDay = (nextDay, days) => {
-	let startChecking = false;
+  let startChecking = false;
 
-	for (let i = 0; i < daysOfWeek.length * 2; i++) {
-		// loop twice to handle week cycle
-		const day = daysOfWeek[i % daysOfWeek.length];
+  for (let i = 0; i < daysOfWeek.length * 2; i++) {
+    // loop twice to handle week cycle
+    const day = daysOfWeek[i % daysOfWeek.length];
 
-		if (day === nextDay) {
-			startChecking = true; // start checking from the next day
-		} else if (startChecking && days[day]) {
-			return day; // return next 'true' day
-		}
-	}
+    if (day === nextDay) {
+      startChecking = true; // start checking from the next day
+    } else if (startChecking && days[day]) {
+      return day; // return next 'true' day
+    }
+  }
 
-	return null; // return null if no active day is found
+  return null; // return null if no active day is found
 };
 
-// 1 - returns "12/25/2022 @ 15:42:53"
+// 1 - returns "20221225214213" for December 25, 2022, at 9:42:13 PM
 export const getTodayDateTime = () => {
   const now = new Date();
-  let hour;
-  // Adds 0 before hours if it's less than 2 digits (ex. 9am originally gives 9; we want 09)
-  if (now.getHours().length == 1) {
-    hour = "0" + now.getHours();
-  } else hour = now.getHours();
   const dateTime =
-    ("0" + (now.getMonth() + 1)).slice(-2) +
-    "/" +
-    ("0" + now.getDate()).slice(-2) +
-    "/" +
     now.getFullYear() +
-    " @ " +
-    hour +
-    ":" +
+    ("0" + (now.getMonth() + 1)).slice(-2) +
+    ("0" + now.getDate()).slice(-2) +
+    ("0" + now.getHours()).slice(-2) +
     ("0" + now.getMinutes()).slice(-2) +
-    ":" +
     ("0" + now.getSeconds()).slice(-2);
   return dateTime;
 };
 
-// 2 - returns "12/25/2022"
+// returns "20221225" if today is Dec 25, 2022
 export const getTodayDate = () => {
   const now = new Date();
   const dateTime =
+    now.getFullYear() +
     ("0" + (now.getMonth() + 1)).slice(-2) +
-    "/" +
-    ("0" + now.getDate()).slice(-2) +
-    "/" +
-    now.getFullYear();
+    ("0" + now.getDate()).slice(-2);
   return dateTime;
 };
 
-// 3 - returns "01/01/2023" if today is "12/31/2022"
+// 3 - returns "20230101" if today is Dec 31, 2022
 export const getTmrwDate = () => {
-  const todayDate = new Date();
-  const tmrwDate = new Date();
-  tmrwDate.setDate(todayDate.getDate() + 1);
-  const dateTime =
-    ("0" + (tmrwDate.getMonth() + 1)).slice(-2) +
-    "/" +
-    ("0" + tmrwDate.getDate()).slice(-2) +
-    "/" +
-    tmrwDate.getFullYear();
-  return dateTime;
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  return (
+    date.getFullYear().toString() +
+    (date.getMonth() + 1).toString().padStart(2, "0") +
+    date.getDate().toString().padStart(2, "0")
+  );
 };
 
-// 3 - returns "12/31/2023" if today is "01/01/2022"
+// 3 - returns "20221231" if today is January 1, 2023
 export const getYesterdayDate = () => {
   const todayDate = new Date();
   const yesterDate = new Date();
   yesterDate.setDate(todayDate.getDate() - 1);
   const dateTime =
+    yesterDate.getFullYear() +
     ("0" + (yesterDate.getMonth() + 1)).slice(-2) +
-    "/" +
-    ("0" + yesterDate.getDate()).slice(-2) +
-    "/" +
-    yesterDate.getFullYear();
+    ("0" + yesterDate.getDate()).slice(-2);
   return dateTime;
 };
 
@@ -97,15 +87,20 @@ export const getYesterdayDate = () => {
 export const withinTimeWindow = (dayStart, dayEnd) => {
   let now = getTodayDateTime();
 
-  if (dayStart.length == 4) dayStart = "0" + dayStart; // Format dayStart
+  // Convert dayStart to 24 hour format
+  let dayStartHour = parseInt(dayStart.split(":")[0]);
+  let dayStartMinute = dayStart.split(":")[1];
+  if (dayStartHour < 10) dayStartHour = "0" + dayStartHour; // add leading zero if hour is less than 10
+  dayStart = dayStartHour + dayStartMinute;
 
-  // Format dayEnd
-  const militaryTimeHour = parseInt(dayEnd.split(":")[0]) + 12;
-  dayEnd = militaryTimeHour + ":" + dayEnd.split(":")[1];
+  // Convert dayEnd to 24 hour format, adding 12 to convert PM times to 24 hour format
+  let dayEndHour = (parseInt(dayEnd.split(":")[0]) + 12).toString();
+  let dayEndMinute = dayEnd.split(":")[1];
+  if (dayEndHour.length == 1) dayEndHour = "0" + dayEndHour; // add leading zero if hour is less than 10
+  dayEnd = dayEndHour + dayEndMinute;
 
-  let nowHourMinute = now.slice(-8, -3);
-  // console.log("currentTime " + nowHourMinute + " | dayStart: " + dayStart  + " | dayEnd: " + dayEnd );
-	// console.log("result " + nowHourMinute >= dayStart && nowHourMinute < dayEnd)
+  let nowHourMinute = now.slice(-6, -4) + now.slice(-4, -2); // extract hour and minute from current time
+
   if (nowHourMinute >= dayStart && nowHourMinute < dayEnd) {
     return true;
   } else return false;
@@ -218,7 +213,7 @@ export const lastDayEnd = (dayEnd) => {
 // Function to return the day of the week for the next time period
 export const getDayOfNextPeriod = (dayStart, dayEnd) => {
   const now = new Date();
-  
+
   // Format dayStart
   if (dayStart.length == 4) dayStart = "0" + dayStart;
 
@@ -227,7 +222,8 @@ export const getDayOfNextPeriod = (dayStart, dayEnd) => {
   dayEnd = militaryTimeHour + ":" + dayEnd.split(":")[1];
 
   // Get current time as HH:MM
-  let nowHourMinute = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2);
+  let nowHourMinute =
+    ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2);
 
   // Compare current time with dayStart and dayEnd
   if (nowHourMinute < dayStart || nowHourMinute >= dayEnd) {
@@ -274,30 +270,28 @@ export const getDayOfNextPeriod = (dayStart, dayEnd) => {
 // 	return dateTime;
 // };
 
-// 9 - used in TaskInput.svelte
-// Input: "[5-11]:00" (AM)
-// Output: "[next day]/2022 @ [05-11]:00:00"
+// 9 - return 073000 for 7:30
 export const formatDayStart = (originalString) => {
-  let formattedTime;
-  // Add '0' so we have "07:00"
-  if (originalString.length == 4) {
-    formattedTime = "0" + originalString;
-  }
-  formattedTime += ":00";
-  const dateTime = getTmrwDate() + " @ " + formattedTime;
-  return dateTime;
+  // Add '0' to the start if we have "7:00" to make it "07:00"
+  let formattedTime =
+    originalString.length == 4 ? "0" + originalString : originalString;
+
+  // Remove the colon
+  formattedTime = formattedTime.replace(":", "") + "00";
+
+  return formattedTime;
 };
 
 // 10 - used in TaskInput.svelte
 // Input: "00:00" (PM)
-// Output: "[next day]/2022 @ [17-23]:00:00"
+// Output: "[17-23]00:00"
 export const formatDayEnd = (originalString) => {
   // Format original String (add milliseconds; convert to military time)
   const militaryTimeHour = parseInt(originalString.split(":")[0]) + 12;
   const formattedTime =
-    militaryTimeHour + ":" + originalString.split(":")[1] + ":00";
+    militaryTimeHour.toString().padStart(2, "0") +
+    originalString.split(":")[1] +
+    ":00";
 
-  const dateTime = getTmrwDate() + " @ " + formattedTime;
-
-  return dateTime;
+  return formattedTime.replace(":", "");
 };

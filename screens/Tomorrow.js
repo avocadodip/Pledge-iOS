@@ -10,11 +10,11 @@ import { useTmrwTodos } from "../hooks/useTmrwTodos";
 import { useActiveDay } from "../hooks/useActiveDay";
 
 const renderLockedTodo = (
-  { title, description, amount, tag, isLocked, isTodoLocked, id },
+  { title, description, amount, tag, isLocked, isTodoLocked },
   index
 ) => (
   <Todo
-    key={id} // replace with unique id
+    key={index + 1} 
     todoNumber={index + 1}
     title={title}
     description={description}
@@ -27,7 +27,7 @@ const renderLockedTodo = (
 
 const renderNewTodo = (index) => (
   <Todo
-    key={index + 1} // replace with unique id
+    key={index + 1} 
     todoNumber={index + 1}
     componentType="number"
     title=""
@@ -40,7 +40,7 @@ const renderNewTodo = (index) => (
 
 const renderFinedTodo = (index) => (
   <Todo
-    key={index + 1} // replace with unique id
+    key={index + 1} 
     todoNumber=""
     title=""
     description=""

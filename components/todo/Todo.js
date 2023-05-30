@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
-import { addDoc, collection } from "firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  increment,
+  runTransaction,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../database/firebase";
 import {
   formatDayEnd,
@@ -31,7 +40,8 @@ const Todo = ({
   }, [isLocked]);
 
   const {
-    settings: { dayStart, dayEnd }, currentUserID
+    settings: { dayStart, dayEnd },
+    currentUserID,
   } = useSettings();
   const {
     isBottomSheetOpen,
@@ -40,6 +50,22 @@ const Todo = ({
     setIsBottomSheetEditable,
   } = useBottomSheet(); // To open bottom sheet when todo is pressed
 
+  // When new todo pressed
+  const handleNewTodoPress = () => {
+    setIsBottomSheetEditable(true);
+    setIsBottomSheetOpen(true);
+    console.log(isBottomSheetOpen);
+    setSelectedTodo({
+      todoNumber,
+      title,
+      description,
+      amount,
+      tag,
+      isTodoLocked,
+    });
+  };
+
+  // When left side pressed
   const handleOpenBottomSheet = () => {
     setSelectedTodo({
       todoNumber,
@@ -56,20 +82,7 @@ const Todo = ({
     } else setIsBottomSheetEditable(true);
   };
 
-  const handleNewTodoPress = () => {
-    setIsBottomSheetEditable(true);
-    setIsBottomSheetOpen(true);
-    console.log(isBottomSheetOpen);
-    setSelectedTodo({
-      todoNumber,
-      title,
-      description,
-      amount,
-      tag,
-      isTodoLocked,
-    });
-  };
-
+  // When right side lock pressed
   const handleLockTodo = async () => {
     // Validation: missing fields
     if (title == "") {
@@ -85,23 +98,49 @@ const Todo = ({
     // Convert string to float
     const floatAmount = parseFloat(amount);
 
-    // Adds doc to 'todos' containing new task info
-    const todosRef = collection(db, "users", currentUserID, "todos");
-    await addDoc(todosRef, {
+    const newTodo = {
       title: title,
       description: description,
       tag: tag,
       amount: floatAmount,
-      // set: currentSetNum,
       createdAt: getTodayDateTime(),
       opensAt: formatDayStart(dayStart),
       closesAt: formatDayEnd(dayEnd),
-      dayActive: getTmrwDate(),
       isComplete: false,
       isLocked: true,
       todoNumber: todoNumber,
-    });
+    };
 
+    // Adds doc to 'todos' containing new task info
+    const todosRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
+
+    runTransaction(db, async (transaction) => {
+      const todoDoc = await transaction.get(todosRef);
+
+      if (!todoDoc.exists()) {
+        // If the document does not exist, create it
+        transaction.set(todosRef, {
+          todos: [newTodo],
+          totalTodos: 1,
+          totalFine: 0
+        });
+      } else {
+        // If the document exists, update it
+        transaction.update(todosRef, {
+          todos: arrayUnion(newTodo),
+          totalTodos: increment(1),
+          totalFine: 0
+        });
+      }
+    })
+      .then(() => {
+        console.log("Todo added successfully");
+      })
+      .catch((error) => {
+        console.error("Error adding Todo: ", error);
+      });
+
+    // Update icon
     setIsTodoLocked(true);
   };
 

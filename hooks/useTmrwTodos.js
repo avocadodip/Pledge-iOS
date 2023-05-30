@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { db } from "../database/firebase";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { query, collection, where, getDoc, doc } from "firebase/firestore";
 import {
+  getTmrwDate,
   getTodayDateTime,
   lastDayEnd,
   lastDayStart,
@@ -17,40 +18,30 @@ export const useTmrwTodos = (isDay, dayStart, dayEnd) => {
 
   useEffect(() => {
     const fetchTodos = async () => {
-      let fetchedTodos = [{}, {}, {}];
-      const todoRef = collection(db, "users", currentUserID, "todos");
-      let todoQuery;
+      const fetchedTodos = [null, null, null];
+      const todoRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
 
       try {
-        // if in time window, locked todos = anything created from dayStart to now
-        if (withinTimeWindow(dayStart, dayEnd)) {
-          todoQuery = query(
-            todoRef,
-            where("createdAt", ">=", lastDayStart(dayStart)),
-            where("createdAt", "<", getTodayDateTime())
-          );
-          // if not in time window, locked todos should be anything created from lastDayStart to lastDayEnd
-        } else {
-          todoQuery = query(
-            todoRef,
-            where("createdAt", ">=", lastDayStart(dayStart)),
-            where("createdAt", "<", lastDayEnd(dayEnd))
-          );
-        }
-        const querySnapshot = await getDocs(todoQuery);
+        const docSnapshot = await getDoc(todoRef);
+        if (docSnapshot.exists()) {
+          const todoData = docSnapshot.data().todos;
+          console.log("Todo data:", todoData);
 
-        querySnapshot.docs.forEach((doc) => {
-          const todoData = doc.data();
-          todoData.id = doc.id;
-          fetchedTodos[todoData.todoNumber - 1] = todoData;
-        });
+          // Here we merge fetched todos with our predefined array
+          // This will overwrite the empty slots with actual todo data
+          for (let i = 0; i < todoData.length; i++) {
+            fetchedTodos[todoData[i].todoNumber - 1] = todoData[i];
+          }
+        } else {
+          console.log("Todo document does not exist.");
+        }
       } catch (error) {
         console.error("Error fetching todos: ", error);
       }
 
       // Fill in non-inputted todos with empty data
       for (let i = 0; i < 3; i++) {
-        if (Object.keys(fetchedTodos[i]).length === 0) {
+        if (fetchedTodos[i] === null) {
           fetchedTodos[i] = {
             id: i,
             todoNumber: i + 1,

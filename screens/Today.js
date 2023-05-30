@@ -20,6 +20,35 @@ import {
 } from "firebase/firestore";
 import { db } from "../database/firebase";
 
+const renderTodo = (
+  { title, description, amount, tag, isLocked, isTodoLocked },
+  index
+) => (
+  <Todo
+    key={index + 1} 
+    todoNumber={index + 1}
+    title={title}
+    description={description}
+    amount={amount.toString()}
+    tag={tag}
+    componentType="info"
+    isLocked={isLocked || isTodoLocked}
+  />
+);
+
+const renderFinedTodo = (index) => (
+  <Todo
+    key={index + 1} 
+    todoNumber=""
+    title=""
+    description=""
+    amount=""
+    tag=""
+    componentType="fined"
+    isLocked={null}
+  />
+);
+
 const Today = () => {
   const [headerMessage, setHeaderMessage] = useState("");
   const { todayTodos, setTodayTodos } = useBottomSheet();
