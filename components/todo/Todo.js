@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
 import {
-  addDoc,
   arrayUnion,
-  collection,
   doc,
+  getDoc,
   increment,
   runTransaction,
-  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../database/firebase";
@@ -16,6 +14,7 @@ import {
   formatDayEnd,
   formatDayStart,
   getTmrwDate,
+  getTodayDate,
   getTodayDateTime,
 } from "../../utils/currentDate";
 import { useSettings } from "../../hooks/SettingsContext";
@@ -32,29 +31,32 @@ const Todo = ({
   tag,
   componentType,
   isLocked,
+  isComplete,
 }) => {
+  // Initialize local lock/check state
   const [isTodoLocked, setIsTodoLocked] = useState(null);
+  const [isTodoComplete, setIsTodoComplete] = useState(null);
 
   useEffect(() => {
     setIsTodoLocked(isLocked);
-  }, [isLocked]);
+    setIsTodoComplete(isComplete);
+  }, [isLocked, isComplete]);
 
+  // Get global variables
   const {
     settings: { dayStart, dayEnd },
     currentUserID,
   } = useSettings();
   const {
-    isBottomSheetOpen,
     setIsBottomSheetOpen,
     setSelectedTodo,
     setIsBottomSheetEditable,
-  } = useBottomSheet(); // To open bottom sheet when todo is pressed
+  } = useBottomSheet();
 
   // When new todo pressed
   const handleNewTodoPress = () => {
     setIsBottomSheetEditable(true);
     setIsBottomSheetOpen(true);
-    console.log(isBottomSheetOpen);
     setSelectedTodo({
       todoNumber,
       title,
@@ -122,14 +124,14 @@ const Todo = ({
         transaction.set(todosRef, {
           todos: [newTodo],
           totalTodos: 1,
-          totalFine: 0
+          totalFine: 0,
         });
       } else {
         // If the document exists, update it
         transaction.update(todosRef, {
           todos: arrayUnion(newTodo),
           totalTodos: increment(1),
-          totalFine: 0
+          totalFine: 0,
         });
       }
     })
@@ -144,6 +146,7 @@ const Todo = ({
     setIsTodoLocked(true);
   };
 
+  // Show alert and open bottom sheet
   const showMissingFieldAlert = (missingField) => {
     let message;
     if (missingField === "title") {
@@ -157,6 +160,30 @@ const Todo = ({
       [{ text: "OK", onPress: () => setIsBottomSheetOpen(true) }],
       { cancelable: true }
     );
+  };
+
+  // When right side check pressed (costs read + write)
+  const handleCheckTodo = async (todoNumber, currentBoolean) => {
+    const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());
+    const docSnap = await getDoc(todoRef);
+
+    if (docSnap.exists()) {
+      let data = docSnap.data();
+      let todos = data.todos;
+
+      // Find the index of the todo to update
+      let index = todos.findIndex((todo) => todo.todoNumber === todoNumber);
+      todos[index].isComplete = !currentBoolean;
+
+      // Update the document with the updated todos array
+      await updateDoc(todoRef, {
+        todos: todos,
+      });
+    } else {
+      console.log("No such document!");
+    }
+
+    setIsTodoComplete(!currentBoolean);
   };
 
   // Render todo based on component type
@@ -179,8 +206,10 @@ const Todo = ({
           amount={amount}
           tag={tag}
           isTodoLocked={isTodoLocked}
+          isTodoComplete={isTodoComplete}
           handleOpenBottomSheet={handleOpenBottomSheet}
           handleLockTodo={handleLockTodo}
+          handleCheckTodo={handleCheckTodo}
         />
       );
     case "onboard":

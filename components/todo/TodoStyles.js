@@ -125,11 +125,7 @@ export const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
   },
-  numberText: {
-    color: "white",
-    fontSize: 80,
-    fontWeight: "700",
-  },
+
   finedText: {
     color: "white",
     opacity: 0.7,

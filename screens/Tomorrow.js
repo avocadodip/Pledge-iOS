@@ -53,9 +53,7 @@ const renderFinedTodo = (index) => (
 
 const Tomorrow = () => {
   const { tmrwTodos } = useBottomSheet();
-  const {
-    settings: { dayStart, dayEnd, vacationModeOn, daysActive },
-  } = useSettings();
+  const { dayStart, dayEnd, vacationModeOn, daysActive } = useSettings().settings;
 
   const isDay = useDayTimeStatus(dayStart, dayEnd);
   const headerMessage = useTmrwTodos(isDay, dayStart, dayEnd);
