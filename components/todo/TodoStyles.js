@@ -12,6 +12,11 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     padding: 15,
   },
+  numberText: {
+    color: "white",
+    fontSize: 70,
+    fontWeight: "bold",
+  },
   finedContainer: {
     flexDirection: "column",
     width: "100%",
@@ -29,24 +34,62 @@ export const styles = StyleSheet.create({
     height: "25%",
     justifyContent: "space-between",
     alignItems: "center",
+    borderRadius: 16,
+    overflow: "hidden"
+  },
+  animatedLeftContainer: {
+
   },
   leftContainer: {
     borderTopLeftRadius: 16,
     borderBottomLeftRadius: 16,
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     flex: 8,
+    // width: "80%",
+
     height: "100%",
-    padding: 15,
+  },
+  animatedRightContainer: {
+
   },
   rightContainer: {
     borderTopRightRadius: 16,
     borderBottomRightRadius: 16,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     flex: 2,
+    // width: "20%",
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
+    overflow: "hidden",
+
   },
+  // infoContainer: {
+  //   flexDirection: "row",
+  //   width: "100%",
+  //   height: "25%",
+  //   justifyContent: "space-between",
+  //   alignItems: "center",
+  // },
+  // leftContainer: {
+  //   borderTopLeftRadius: 16,
+  //   borderBottomLeftRadius: 16,
+  //   backgroundColor: "rgba(255, 255, 255, 0.1)",
+  //   // flex: 8,
+  //   width: "80%",
+  //   height: "100%",
+  //   padding: 15,
+  // },
+  // rightContainer: {
+  //   borderTopRightRadius: 16,
+  //   borderBottomRightRadius: 16,
+  //   backgroundColor: "rgba(255, 255, 255, 0.2)",
+  //   // flex: 2,
+  //   width: "20%",
+  //   height: "100%",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  // },
   upperHalfContainer: {
     flex: 4,
   },

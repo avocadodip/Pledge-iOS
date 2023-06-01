@@ -19,7 +19,7 @@ const renderActiveTodo = (
     description={description}
     amount={amount.toString()}
     tag={tag}
-    componentType="info"
+    componentType="check"
     isLocked={null} // null allows check
     isComplete={isComplete}
   />
@@ -40,7 +40,10 @@ const renderFinedTodo = (index) => (
 
 const Today = () => {
   const { todayTodos } = useBottomSheet();
-
+  let vacationModeOn;
+  let daysActive;
+  let isTodayActiveDay = true;
+  let todayInactiveMessage = "today is rest day";
   const { loading, settings } = useSettings();
   let isDay = null;
   let headerMessage = "";
@@ -55,6 +58,8 @@ const Today = () => {
 
   if (settings) {
     const { dayStart, dayEnd } = settings;
+    vacationModeOn = settings.vacationModeOn;
+    daysActive = settings.daysActive;
     isDay = useDayTimeStatus(dayStart, dayEnd);
     headerMessage = useTodayTodos(isDay, dayStart, dayEnd);
   }
@@ -69,7 +74,7 @@ const Today = () => {
       }
     });
   }, [todayTodos, isDay]);
-
+ 
   return (
     <SafeAreaView style={styles.pageContainer}>
       {/* <OnboardingPopup
@@ -77,11 +82,21 @@ const Today = () => {
         buttonTitle="Cool, what's next?"
       /> */}
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Today</Text>
-        <Text style={styles.headerSubtitle}>{headerMessage}</Text>
+        <View style={styles.headerTitleContainer}>
+          <Text style={styles.headerTitle}>Today</Text>
+          <Text style={styles.headerDayOfWeek}>Wed.</Text>
+        </View>
+        {vacationModeOn ? (
+          <Text>Vacation mode on. Visit settings to turn it off.</Text>
+        ) : !isTodayActiveDay ? (
+          <Text>{todayInactiveMessage}</Text>
+        ) : (
+          <Text style={styles.headerSubtitle}>{headerMessage}</Text>
+        )}
       </View>
-
-      <View style={styles.todoContainer}>{renderTodos()}</View>
+      {vacationModeOn || !isTodayActiveDay ? null : (
+        <View style={styles.todoContainer}>{renderTodos()}</View>
+      )}
     </SafeAreaView>
   );
 };
@@ -97,10 +112,22 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "col",
   },
+  headerTitleContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 15,
+  },
   headerTitle: {
     color: "white",
     fontSize: 50,
     fontWeight: "bold",
+  },
+  headerDayOfWeek: {
+    color: "white",
+    fontSize: 25,
+    fontWeight: "bold",
+    paddingBottom: 6,
   },
   headerSubtitle: {
     color: "white",

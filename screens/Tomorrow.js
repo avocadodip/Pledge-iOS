@@ -20,7 +20,7 @@ const renderLockedTodo = (
     description={description}
     amount={amount.toString()}
     tag={tag}
-    componentType="info"
+    componentType="lock"
     isLocked={isLocked || isTodoLocked}
   />
 );
@@ -62,7 +62,7 @@ const Tomorrow = () => {
     dayEnd,
     daysActive
   );
- 
+  
   const renderTodos = useCallback(() => {
     // Map through three todos and render them based on their content
     return tmrwTodos.map((todo, index) => {

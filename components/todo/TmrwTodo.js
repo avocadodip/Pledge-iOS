@@ -1,41 +1,32 @@
 import { Text, TouchableOpacity, View } from "react-native";
-import { useEffect, useState } from "react";
 import { styles } from "./TodoStyles";
 import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
 import RenderLockStatus from "./RenderLockStatus";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
 
-const InfoTodo = ({
+const TmrwTodo = ({
   todoNumber,
   title,
   description,
   amount,
   tag,
   isTodoLocked,
-  isTodoComplete,
   handleOpenBottomSheet,
   handleLockTodo,
-  handleCheckTodo,
 }) => {
-
   // JSX
   return (
-    <View style={styles.infoContainer}>
+    <View style={[styles.infoContainer]}>
       <TouchableOpacity
-        style={[styles.leftContainer]}
         onPress={handleOpenBottomSheet}
+        style={styles.leftContainer}
       >
-        <View style={styles.upperHalfContainer}>
+        <View style={[styles.upperHalfContainer, { margin: 15 }]}>
           <View style={styles.numberTitleContainer}>
             <Text style={styles.todoNumber}>{todoNumber}</Text>
             <Text style={styles.todoTitle}>{title}</Text>
           </View>
         </View>
-        <View style={styles.lowerHalfContainer}>
+        <View style={[styles.lowerHalfContainer, { margin: 15 }]}>
           <View style={styles.tagDescriptionContainer}>
             {tag && (
               <View style={styles.tagContainer}>
@@ -66,12 +57,10 @@ const InfoTodo = ({
       </TouchableOpacity>
       <RenderLockStatus
         isTodoLocked={isTodoLocked}
-        isTodoComplete={isTodoComplete}
         handleLockTodo={handleLockTodo}
-        handleCheckTodo={handleCheckTodo}
         todoNumber={todoNumber}
       />
     </View>
   );
 };
-export default InfoTodo;
+export default TmrwTodo;

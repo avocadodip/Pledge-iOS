@@ -20,8 +20,10 @@ import {
 import { useSettings } from "../../hooks/SettingsContext";
 import NumberTodo from "./NumberTodo";
 import FinedTodo from "./FinedTodo";
-import InfoTodo from "./InfoTodo";
+import InfoTodo from "./TodayTodo";
 import OnboardTodo from "./OnboardTodo";
+import TodayTodo from "./TodayTodo";
+import TmrwTodo from "./TmrwTodo";
 
 const Todo = ({
   todoNumber,
@@ -197,19 +199,30 @@ const Todo = ({
       );
     case "fined":
       return <FinedTodo />;
-    case "info":
+    case "check":
       return (
-        <InfoTodo
+        <TodayTodo
+          todoNumber={todoNumber}
+          title={title}
+          description={description}
+          amount={amount}
+          tag={tag}
+          isTodoComplete={isTodoComplete}
+          handleOpenBottomSheet={handleOpenBottomSheet}
+          handleCheckTodo={handleCheckTodo}
+        />
+      );
+    case "lock":
+      return (
+        <TmrwTodo
           todoNumber={todoNumber}
           title={title}
           description={description}
           amount={amount}
           tag={tag}
           isTodoLocked={isTodoLocked}
-          isTodoComplete={isTodoComplete}
           handleOpenBottomSheet={handleOpenBottomSheet}
           handleLockTodo={handleLockTodo}
-          handleCheckTodo={handleCheckTodo}
         />
       );
     case "onboard":

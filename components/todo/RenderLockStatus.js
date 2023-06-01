@@ -1,9 +1,9 @@
 import { View, TouchableOpacity } from "react-native";
 import React from "react";
-import CheckIcon from "../../assets/icons/check-icon.svg";
 import LockIcon from "../../assets/icons/lock-icon.svg";
 import UnlockIcon from "../../assets/icons/unlock-icon.svg";
 import { styles } from "./TodoStyles";
+import Animated from "react-native-reanimated";
 
 const RenderLockStatus = ({
   isTodoLocked,
@@ -11,11 +11,11 @@ const RenderLockStatus = ({
   handleLockTodo,
   handleCheckTodo,
   todoNumber,
-  rightStyle
+  rightStyle,
 }) => {
   // Lock icon: Todo is locked
   if (isTodoLocked === true) {
-    return (
+    return ( 
       <View
         style={{
           ...styles.rightContainer,
@@ -36,7 +36,7 @@ const RenderLockStatus = ({
   } else if (isTodoComplete === true) {
     return (
       <TouchableOpacity
-        style={styles.rightContainer}
+        style={[styles.rightContainer, rightStyle]}
         onPress={() => {
           handleCheckTodo(todoNumber, isTodoComplete);
         }}
@@ -47,14 +47,16 @@ const RenderLockStatus = ({
     // Check icon: Todo is NOT complete
   } else if (isTodoComplete === false) {
     return (
-      <TouchableOpacity
-      style={[styles.rightContainer]}
-      onPress={() => {
-          handleCheckTodo(todoNumber, isTodoComplete);
-        }}
-      >
-        <CheckIcon />
-      </TouchableOpacity>
+      <Animated.View style={[styles.rightContainer, rightStyle]}>
+        <TouchableOpacity
+        
+          onPress={() => {
+            handleCheckTodo(todoNumber, isTodoComplete);
+          }}
+        >
+          <CheckIcon />
+        </TouchableOpacity>
+      </Animated.View>
     );
   }
 };
