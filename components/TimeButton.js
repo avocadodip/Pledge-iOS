@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import moment from 'moment';
+import React, { useState } from "react";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import moment from "moment";
 import { Color } from "../GlobalStyles";
 
-const TimeButton = ({ defaultTime }) => {
+const TimeButton = ({ time, onTimeChange }) => {
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-  const [selectedTime, setSelectedTime] = useState(moment(defaultTime, 'h:mm A').toDate());
+  const [selectedTime, setSelectedTime] = useState(
+    moment(time, "h:mm A").toDate()
+  );
 
   const showTimePicker = () => {
     setTimePickerVisibility(true);
@@ -17,20 +19,20 @@ const TimeButton = ({ defaultTime }) => {
   };
 
   const handleTimeConfirm = (date) => {
+    const formattedTime = moment(date).format("hh:mm");
     setSelectedTime(date);
     hideTimePicker();
+    onTimeChange && onTimeChange(formattedTime); // Notify parent component
   };
 
   const formatTime = (value) => {
-    return moment(value).format('h:mm A');
+    return moment(value).format("h:mm A");
   };
 
   return (
     <>
       <TouchableOpacity style={styles.button} onPress={showTimePicker}>
-        <Text style={styles.timeText}>
-          {formatTime(selectedTime)}
-        </Text>
+        <Text style={styles.timeText}>{formatTime(selectedTime)}</Text>
       </TouchableOpacity>
 
       <DateTimePickerModal

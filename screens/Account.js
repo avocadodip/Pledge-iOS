@@ -9,14 +9,37 @@ import DaysActiveToggle from "../components/DaysActiveToggle";
 import TimeButton from "../components/TimeButton";
 import OnboardingPopup from "../components/OnboardingPopup";
 import { useSettings } from "../hooks/SettingsContext";
+import { db } from "../database/firebase";
+import { doc, updateDoc } from "firebase/firestore";
 
 const Account = ({ navigation }) => {
-  const {
-    currentUserFullName,
-  } = useSettings();
+  const { currentUserID, currentUserFullName, currentUserEmail, settings: {dayStart, dayEnd} } =
+    useSettings();
 
   const handlePress = (screenName) => {
     navigation.navigate(screenName);
+  };
+
+  const timeToDate = (timeString) => {
+    const [hour, minute] = timeString.split(':');
+    const date = new Date();
+    date.setHours(hour);
+    date.setMinutes(minute);
+    return date;
+}
+
+  const handleDayStartChange = async (time) => {
+    const userRef = doc(db, "users", currentUserID);
+    await updateDoc(userRef, {
+      dayStart: time,
+    });
+  };
+
+  const handleDayEndChange = async (time) => {
+    const userRef = doc(db, "users", currentUserID);
+    await updateDoc(userRef, {
+      dayEnd: time,
+    });
   };
 
   return (
@@ -40,11 +63,13 @@ const Account = ({ navigation }) => {
           placeholderTextColor={Color.faint_white}
           autoCorrect={false}
           autoCapitalize="none"
+          value={currentUserFullName}
         ></TextInput>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Email </Text>
         <TextInput
+          value={currentUserEmail}
           style={styles.preferenceInput}
           placeholder="email@domain.com"
           placeholderTextColor={Color.faint_white}
@@ -55,6 +80,7 @@ const Account = ({ navigation }) => {
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Time Zone </Text>
         <TextInput
+          value={Intl.DateTimeFormat().resolvedOptions().timeZone}
           style={styles.preferenceInput}
           placeholder="America/Chicago"
           placeholderTextColor={Color.faint_white}
@@ -65,13 +91,19 @@ const Account = ({ navigation }) => {
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Day Start </Text>
         <View style={styles.preferenceRightContainer}>
-          <TimeButton defaultTime="9:00 AM" />
+          <TimeButton
+            time={timeToDate(`${dayStart} AM`)}
+            onTimeChange={handleDayStartChange}
+          />
         </View>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Day End </Text>
         <View style={styles.preferenceRightContainer}>
-          <TimeButton defaultTime="11:00 PM" />
+          <TimeButton
+            time={timeToDate(`${dayEnd} PM`)}
+            onTimeChange={handleDayEndChange}
+          />
         </View>
       </View>
       <View style={styles.preferenceContainer}>

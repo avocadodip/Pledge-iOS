@@ -6,7 +6,7 @@ const DaysActiveToggle = ({ buttonCount, buttonTexts }) => {
   const [selectedButtons, setSelectedButtons] = useState(
     Array(buttonCount).fill(false)
   );
-
+ 
   const handleButtonPress = (index) => {
     setSelectedButtons((prevSelectedButtons) => {
       const newSelectedButtons = [...prevSelectedButtons];

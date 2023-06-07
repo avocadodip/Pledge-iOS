@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
 import { db } from "../database/firebase";
-import { query, collection, where, getDoc, doc } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import {
   getTmrwDate,
-  getTodayDateTime,
-  lastDayEnd,
-  lastDayStart,
   withinTimeWindow,
 } from "../utils/currentDate";
 import { useBottomSheet } from "./BottomSheetContext";
@@ -25,7 +22,6 @@ export const useTmrwTodos = (isDay, dayStart, dayEnd) => {
         const docSnapshot = await getDoc(todoRef);
         if (docSnapshot.exists()) {
           const todoData = docSnapshot.data().todos;
-          console.log("Todo data:", todoData);
 
           // Here we merge fetched todos with our predefined array
           // This will overwrite the empty slots with actual todo data
