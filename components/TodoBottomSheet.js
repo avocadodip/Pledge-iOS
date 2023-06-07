@@ -92,11 +92,11 @@ export default function TodoBottomSheet() {
             <PledgeDollarIcon />
             <TextInput
               style={styles.textInput}
-              placeholder="Add pledge"
+              // placeholder="Add pledge"
               value={todo.amount}
               onChangeText={(text) => handleInputChange("amount", text)}
               keyboardType="numeric"
-              placeholderTextColor="rgba(243, 243, 243, 0.8)"
+              // placeholderTextColor="rgba(243, 243, 243, 0.8)"
               textStyle={styles.text}
               autoCorrect={false}
               autoCapitalize="none"

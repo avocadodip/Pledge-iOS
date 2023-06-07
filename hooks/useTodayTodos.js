@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { db } from "../database/firebase";
 import { getDoc, doc } from "firebase/firestore";
 import {
+  getTmrwDate,
   getTodayDate,
   withinTimeWindow,
 } from "../utils/currentDate";
@@ -16,7 +17,7 @@ export const useTodayTodos = (isDay, dayStart, dayEnd) => {
   useEffect(() => {
     const fetchTodos = async () => {
       const fetchedTodos = [null, null, null];
-      const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());
+      const todoRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
 
       try {
         const docSnapshot = await getDoc(todoRef);

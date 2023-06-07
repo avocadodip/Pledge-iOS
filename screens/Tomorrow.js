@@ -32,7 +32,7 @@ const renderNewTodo = (index) => (
     componentType="number"
     title=""
     description=""
-    amount=""
+    amount="3"
     tag=""
     isLocked={false}
   />

@@ -110,6 +110,7 @@ const TodayTodo = ({
       {/* Right side */}
       <Animated.View style={rightStyle}>
         <TouchableOpacity
+          activeOpacity={0.6}
           style={animatedStyles.rightButtonContainer}
           onPress={() => {
             handleCheckTodo(todoNumber, isTodoComplete);

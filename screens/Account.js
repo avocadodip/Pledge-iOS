@@ -4,29 +4,35 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
 import LeftArrowIcon from "../assets/icons/arrow-left.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import ToggleButtons from "../components/ToggleButtons";
 import DaysActiveToggle from "../components/DaysActiveToggle";
 import TimeButton from "../components/TimeButton";
 import OnboardingPopup from "../components/OnboardingPopup";
 import { useSettings } from "../hooks/SettingsContext";
 import { db } from "../database/firebase";
 import { doc, updateDoc } from "firebase/firestore";
+import VacationToggle from "../components/VacationToggle";
+import ThemeToggle from "../components/ThemeToggle";
+import DeleteAccountButton from "../components/DeleteAccountButton"
 
 const Account = ({ navigation }) => {
-  const { currentUserID, currentUserFullName, currentUserEmail, settings: {dayStart, dayEnd} } =
-    useSettings();
+  const {
+    currentUserID,
+    currentUserFullName,
+    currentUserEmail,
+    settings: { dayStart, dayEnd, vacationModeOn, theme, daysActive },
+  } = useSettings();
 
   const handlePress = (screenName) => {
     navigation.navigate(screenName);
   };
 
   const timeToDate = (timeString) => {
-    const [hour, minute] = timeString.split(':');
+    const [hour, minute] = timeString.split(":");
     const date = new Date();
     date.setHours(hour);
     date.setMinutes(minute);
     return date;
-}
+  };
 
   const handleDayStartChange = async (time) => {
     const userRef = doc(db, "users", currentUserID);
@@ -110,37 +116,28 @@ const Account = ({ navigation }) => {
         <Text style={styles.preferenceTitle}> Days Active </Text>
         <View style={styles.preferenceRightContainer}>
           <DaysActiveToggle
-            buttonCount={2}
-            buttonTexts={["S", "M", "T", "W", "T", "F", "S"]}
+            currentUserID={currentUserID}
+            daysActive={daysActive}
           />
         </View>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Vacation </Text>
         <View style={styles.preferenceRightContainer}>
-          <ToggleButtons buttonCount={2} buttonTexts={["On", "Off"]} />
+          <VacationToggle
+            currentUserID={currentUserID}
+            vacationModeOn={vacationModeOn}
+          />
         </View>
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Theme </Text>
         <View style={styles.preferenceRightContainer}>
-          <ToggleButtons
-            buttonCount={3}
-            buttonTexts={["Classic", "Light", "Dark"]}
-          />
+          <ThemeToggle currentUserID={currentUserID} theme={theme} />
         </View>
       </View>
       <View style={styles.preferenceContainer}>
-        <TouchableOpacity>
-          <Text
-            style={[
-              styles.preferenceTitle,
-              { textDecorationLine: "underline" },
-            ]}
-          >
-            Delete account.
-          </Text>
-        </TouchableOpacity>
+        <DeleteAccountButton currentUserID={currentUserID} />
       </View>
     </SafeAreaView>
   );

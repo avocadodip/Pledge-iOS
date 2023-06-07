@@ -4,55 +4,53 @@ import { Color } from "../GlobalStyles";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../database/firebase";
 
-const DaysActiveToggle = ({ currentUserID, daysActive }) => {
-  const dayKeys = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const buttonTexts = ["S", "M", "T", "W", "T", "F", "S"];
- 
-  const handleDayToggle = async (index) => {
-    const dayKey = dayKeys[index];
-    const newValue = !daysActive[dayKey];
-    
+const VacationToggle = ({ currentUserID, vacationModeOn }) => {
+
+  const handleVacationToggle = async (value) => {
     const userRef = doc(db, "users", currentUserID);
     try {
       await updateDoc(userRef, {
-        [`daysActive.${dayKey}`]: newValue,
+        vacationModeOn: value,
       });
     } catch (error) {
-      console.error("Error updating document: ", error.message);
-    } 
-
-    daysActive[dayKey] = newValue;
+      console.error("Error updating document: ", error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      {buttonTexts.map((text, index) => (
         <TouchableOpacity
-          key={index}
           style={[
             styles.button,
-            daysActive[dayKeys[index]] ? styles.selectedButton : null,
+            vacationModeOn ? styles.selectedButton : null,
           ]}
-          onPress={() => handleDayToggle(index)}
+          onPress={() => handleVacationToggle(true)}
         >
           <Text
             style={[
               styles.buttonText,
-              daysActive[dayKeys[index]] ? styles.selectedButtonText : null,
+              vacationModeOn ? styles.selectedButtonText : null,
             ]}
           >
-            {text}
+            On
           </Text>
         </TouchableOpacity>
-      ))}
+        <TouchableOpacity
+          style={[
+            styles.button,
+            !vacationModeOn ? styles.selectedButton : null,
+          ]}
+          onPress={() => handleVacationToggle(false)}
+        >
+          <Text
+            style={[
+              styles.buttonText,
+              !vacationModeOn ? styles.selectedButtonText : null,
+            ]}
+          >
+            Off
+          </Text>
+        </TouchableOpacity>
     </View>
   );
 };
@@ -64,7 +62,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    width: 28,
+    width: 70,
     height: 36,
     backgroundColor: "rgba(243,243,243,0.1)",
     alignItems: "center",
@@ -88,4 +86,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DaysActiveToggle;
+export default VacationToggle;

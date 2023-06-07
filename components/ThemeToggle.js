@@ -4,52 +4,40 @@ import { Color } from "../GlobalStyles";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../database/firebase";
 
-const DaysActiveToggle = ({ currentUserID, daysActive }) => {
-  const dayKeys = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const buttonTexts = ["S", "M", "T", "W", "T", "F", "S"];
- 
-  const handleDayToggle = async (index) => {
-    const dayKey = dayKeys[index];
-    const newValue = !daysActive[dayKey];
-    
+const ThemeToggle = ({ currentUserID, theme }) => {
+  const [selectedTheme, setSelectedTheme] = useState(theme);
+  const themes = ["Classic", "Light", "Dark"];
+
+  const handleThemeToggle = async (selectedTheme) => {
+    setSelectedTheme(selectedTheme);
     const userRef = doc(db, "users", currentUserID);
     try {
       await updateDoc(userRef, {
-        [`daysActive.${dayKey}`]: newValue,
+        theme: selectedTheme,
       });
     } catch (error) {
-      console.error("Error updating document: ", error.message);
-    } 
-
-    daysActive[dayKey] = newValue;
+      console.error("Error updating document: ", error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      {buttonTexts.map((text, index) => (
+      {themes.map((theme, index) => (
         <TouchableOpacity
           key={index}
           style={[
             styles.button,
-            daysActive[dayKeys[index]] ? styles.selectedButton : null,
+            selectedTheme === theme ? styles.selectedButton : null,
           ]}
-          onPress={() => handleDayToggle(index)}
+          onPress={() => handleThemeToggle(theme)}
         >
           <Text
             style={[
               styles.buttonText,
-              daysActive[dayKeys[index]] ? styles.selectedButtonText : null,
+              selectedTheme === theme ? styles.selectedButtonText : null,
             ]}
           >
-            {text}
+            {theme}
           </Text>
         </TouchableOpacity>
       ))}
@@ -64,7 +52,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    width: 28,
+    width: 70,
     height: 36,
     backgroundColor: "rgba(243,243,243,0.1)",
     alignItems: "center",
@@ -88,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DaysActiveToggle;
+export default ThemeToggle;
