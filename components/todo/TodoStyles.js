@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   numberContainer: {
     flexDirection: "column",
     width: "100%",
-    height: "25%",
+    height: "27%",
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
   finedContainer: {
     flexDirection: "column",
     width: "100%",
-    height: "25%",
+    height: "27%",
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
@@ -28,10 +28,21 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     padding: 15,
   },
+  oneContainer: {
+    flexDirection: "column",
+    width: "100%",
+    height: "27%",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 28,
+    borderRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    padding: 15,
+  },
   infoContainer: {
     flexDirection: "row",
     width: "100%",
-    height: "25%",
+    height: "27%",
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 16,
@@ -175,4 +186,34 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
   },
+
+  infoText: {
+    color: "white",
+    opacity: 1,
+    fontSize: 20,
+    fontWeight: "bold",
+    lineHeight: 20,
+    // borderColor: "black",
+    // borderWidth: 1,
+  },
+
+  todoButton: {
+    flexDirection: "row",
+    gap: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: "center",
+    borderRadius: 10,
+    // borderWidth: 1,
+    // borderColor: "black",
+  },
+
+  todoButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 20,
+    // borderWidth: 1,
+    // borderColor: "black",
+  }
 });
