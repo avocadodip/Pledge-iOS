@@ -26,6 +26,7 @@ import TodayTodo from "./TodayTodo";
 import TmrwTodo from "./TmrwTodo";
 import VacationTodo from "./VacationTodo";
 import DaysOffTodo from "./DaysOffTodo";
+import ReminderTodo from "./ReminderTodo";
 
 const Todo = ({
   todoNumber,
@@ -203,7 +204,7 @@ const Todo = ({
       return <FinedTodo />;
     case "check":
       return (
-        <DaysOffTodo/>
+        <ReminderTodo/>
         // <TodayTodo
         //   todoNumber={todoNumber}
         //   title={title}
