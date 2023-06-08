@@ -17,7 +17,7 @@ export const useTmrwTodos = (isDay, dayStart, dayEnd) => {
   useEffect(() => {
     const fetchTodos = async () => {
       const fetchedTodos = [null, null, null];
-      const todoRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
+      const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());
 
       try {
         const docSnapshot = await getDoc(todoRef);

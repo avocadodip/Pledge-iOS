@@ -8,6 +8,7 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
+import Ripple from 'react-native-material-ripple';
 
 // Animation constants
 const OPEN_DURATION = 100;
@@ -63,7 +64,7 @@ const TodayTodo = ({
     <View style={[styles.infoContainer]}>
       {/* Left side */}
       <Animated.View style={leftStyle}>
-        <TouchableOpacity
+        <Ripple
           onPress={handleOpenBottomSheet}
           style={[animatedStyles.leftButtonContainer]}
         >
@@ -105,19 +106,18 @@ const TodayTodo = ({
               </View>
             </>
           )}
-        </TouchableOpacity>
+        </Ripple>
       </Animated.View>
       {/* Right side */}
       <Animated.View style={rightStyle}>
-        <TouchableOpacity
-          activeOpacity={0.6}
+        <Ripple
           style={animatedStyles.rightButtonContainer}
           onPress={() => {
-            handleCheckTodo(todoNumber, isTodoComplete);
+            handleCheckTodo(todoNumber, isTodoComplete); 
           }}
         >
           <CheckIcon />
-        </TouchableOpacity>
+        </Ripple>
       </Animated.View>
     </View>
   );
