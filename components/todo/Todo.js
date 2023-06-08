@@ -24,6 +24,8 @@ import InfoTodo from "./TodayTodo";
 import OnboardTodo from "./OnboardTodo";
 import TodayTodo from "./TodayTodo";
 import TmrwTodo from "./TmrwTodo";
+import VacationTodo from "./VacationTodo";
+import DaysOffTodo from "./DaysOffTodo";
 
 const Todo = ({
   todoNumber,
@@ -201,16 +203,17 @@ const Todo = ({
       return <FinedTodo />;
     case "check":
       return (
-        <TodayTodo
-          todoNumber={todoNumber}
-          title={title}
-          description={description}
-          amount={amount}
-          tag={tag}
-          isTodoComplete={isTodoComplete}
-          handleOpenBottomSheet={handleOpenBottomSheet}
-          handleCheckTodo={handleCheckTodo}
-        />
+        <DaysOffTodo/>
+        // <TodayTodo
+        //   todoNumber={todoNumber}
+        //   title={title}
+        //   description={description}
+        //   amount={amount}
+        //   tag={tag}
+        //   isTodoComplete={isTodoComplete}
+        //   handleOpenBottomSheet={handleOpenBottomSheet}
+        //   handleCheckTodo={handleCheckTodo}
+        // />
       );
     case "lock":
       return (
