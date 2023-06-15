@@ -3,14 +3,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Color } from "../GlobalStyles";
 import RightChevronIcon from "../assets/icons/right-chevron.svg";
 import UserCircleIcon from "../assets/icons/user-profile-circle.svg";
-import LibraryIcon from "../assets/icons/library-outline.svg";
+import HistoryIcon from "../assets/icons/history-icon.svg";
 import CreditCardIcon from "../assets/icons/credit-card.svg";
 import LogoutIcon from "../assets/icons/logout.svg";
-import OnboardingPopup from "../components/OnboardingPopup";
+import SunThemeIcon from "../assets/icons/sun-theme-icon.svg";
 
+import OnboardingPopup from "../components/OnboardingPopup";
+import TouchableRipple from "../components/TouchableRipple";
 import React from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { auth } from "../database/firebase";
+import ThemeToggle from "../components/ThemeToggle";
 
 const Settings = ({ navigation }) => {
   const handlePress = (screenName) => {
@@ -23,7 +25,7 @@ const Settings = ({ navigation }) => {
     } catch (error) {
       console.error("Sign out error", error);
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.pageContainer}>
@@ -35,80 +37,61 @@ const Settings = ({ navigation }) => {
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Settings</Text>
       </View>
-      <View style={styles.settingsButtonContainer}>
-        <TouchableOpacity 
-						style={styles.settingsButton}
-						onPress={() => handlePress("Account")}
-				>
+
+      <View style={styles.mainContainer}>
+        <TouchableRipple
+          style={styles.button}
+          onPress={() => handlePress("Account")}
+        >
           <View style={styles.leftSettingsButton}>
-            <UserCircleIcon
-              width={24}
-              height={24}
-              color={Color.white}
-            />
-            <Text style={styles.buttonTitle}> Account </Text> 
+            <UserCircleIcon width={24} height={24} color={Color.white} />
+            <Text style={styles.buttonTitle}>Account</Text>
           </View>
-          <RightChevronIcon
-              width={24}
-              height={24}
-              color={Color.white}
-            />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.settingsButtonContainer}>
-	      <TouchableOpacity 
-					style={styles.settingsButton}
-					onPress={() => handlePress("Stats")}
-				>
+          <View style={styles.chevronContainer}>
+            <RightChevronIcon width={24} height={24} color={Color.white} />
+          </View>
+        </TouchableRipple>
+        <TouchableRipple
+          style={styles.button}
+          onPress={() => handlePress("Stats")}
+        >
           <View style={styles.leftSettingsButton}>
-            <LibraryIcon
-              width={24}
-              height={24}
-              color={Color.white}
-            />
-            <Text style={styles.buttonTitle}> Stats </Text> 
+            <HistoryIcon width={24} height={24} color={Color.white} />
+            <Text style={styles.buttonTitle}>Past Bets</Text>
           </View>
-          <RightChevronIcon
-              width={24}
-              height={24}
-              color={Color.white}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.settingsButtonContainer}>
-	      <TouchableOpacity 
-						style={styles.settingsButton}
-						onPress={() => handlePress("Billing")}
-				>
+          <View style={styles.chevronContainer}>
+            <RightChevronIcon width={24} height={24} color={Color.white} />
+          </View>
+        </TouchableRipple>
+        <TouchableRipple
+          style={styles.button}
+          onPress={() => handlePress("Billing")}
+        >
           <View style={styles.leftSettingsButton}>
-            <CreditCardIcon
-              width={24}
-              height={24}
-              color={Color.white}
-            />
-            <Text style={styles.buttonTitle}> Billing </Text> 
+            <CreditCardIcon width={24} height={24} color={Color.white} />
+            <Text style={styles.buttonTitle}>Billing</Text>
           </View>
-          <RightChevronIcon
-              width={24}
-              height={24}
-              color={Color.white}
-            />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.settingsButtonContainer}>
-	      <TouchableOpacity 
-						style={styles.settingsButton}
-						onPress={handleLogout}
-				>
+          <View style={styles.chevronContainer}>
+            <RightChevronIcon width={24} height={24} color={Color.white} />
+          </View>
+        </TouchableRipple>
+        {/* THEME */}
+        <View style={styles.button}>
           <View style={styles.leftSettingsButton}>
-            <LogoutIcon
-              width={24}
-              height={24}
-              color={Color.white}
-            />
-            <Text style={styles.buttonTitle}>Logout</Text> 
+            <SunThemeIcon width={25} height={25} color={Color.white} />
+            <Text style={styles.buttonTitle}>Theme</Text>
           </View>
-        </TouchableOpacity>
+          <View style={styles.rightSettingsButton}>
+            <ThemeToggle />
+          </View>
+        </View>
+        {/* LOGOUT */}
+        <TouchableRipple style={styles.button} onPress={handleLogout}>
+          <View style={styles.leftSettingsButton}>
+            <LogoutIcon width={24} height={24} color={Color.white} />
+            <Text style={styles.buttonTitle}>Logout</Text>
+          </View>
+        </TouchableRipple>
       </View>
     </SafeAreaView>
   );
@@ -130,23 +113,27 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "col",
     marginBottom: 20,
-    // borderWidth: 1,
-    // borderColor: 'black',
   },
-  settingsButtonContainer: {
+  mainContainer: {
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    borderRadius: 16,
     width: "100%",
-    borderTopWidth: 1,
-    borderColor: Color.border_white,
-    marginBottom: 20,
+    overflow: "hidden",
   },
-  settingsButton: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
+  chevronContainer: {
+    marginRight: 7
+  },
+  button: {
+    paddingLeft: 21,
+    paddingRight: 15,
+    height: 60,
     flexDirection: "row",
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   leftSettingsButton: {
     flexDirection: "row",
+    alignItems: "center",
   },
   headerTitle: {
     color: Color.white,
@@ -155,7 +142,8 @@ const styles = StyleSheet.create({
   },
   buttonTitle: {
     color: Color.white,
-    fontSize: 20,
+    fontSize: 18,
     marginLeft: 24,
+    fontWeight: 500,
   },
 });

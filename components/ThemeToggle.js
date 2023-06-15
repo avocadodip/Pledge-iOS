@@ -1,79 +1,117 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import ThreeDotsIcon from "../assets/icons/three-dots.svg";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Color } from "../GlobalStyles";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../database/firebase";
 
-const ThemeToggle = ({ currentUserID, theme }) => {
-  const [selectedTheme, setSelectedTheme] = useState(theme);
-  const themes = ["Classic", "Light", "Dark"];
+const ThemeToggle = () => {
+  const [currentTheme, setCurrentTheme] = useState(null);
 
-  const handleThemeToggle = async (selectedTheme) => {
-    setSelectedTheme(selectedTheme);
-    const userRef = doc(db, "users", currentUserID);
-    try {
-      await updateDoc(userRef, {
-        theme: selectedTheme,
-      });
-    } catch (error) {
-      console.error("Error updating document: ", error);
-    }
+  useEffect(() => {
+    // Fetch the theme from async storage when the component mounts
+    fetchTheme();
+  }, []);
+
+  const fetchTheme = async () => {
+    const storedTheme = await AsyncStorage.getItem("theme");
+    setCurrentTheme(storedTheme);
+  };
+
+  const handleThemeSave = async (theme) => {
+    // Store the theme in async storage
+    await AsyncStorage.setItem("theme", theme);
+    // Update the current theme
+    setCurrentTheme(theme);
   };
 
   return (
-    <View style={styles.container}>
-      {themes.map((theme, index) => (
-        <TouchableOpacity
-          key={index}
-          style={[
-            styles.button,
-            selectedTheme === theme ? styles.selectedButton : null,
-          ]}
-          onPress={() => handleThemeToggle(theme)}
-        >
-          <Text
-            style={[
-              styles.buttonText,
-              selectedTheme === theme ? styles.selectedButtonText : null,
-            ]}
-          >
-            {theme}
-          </Text>
-        </TouchableOpacity>
-      ))}
+    <View style={styles.rightSettingsButton}>
+      <Text style={styles.currentThemeText}>{currentTheme}</Text>
+      <View style={{ borderRadius: 10, overflow: "hidden" }}>
+        <Menu>
+          <MenuTrigger>
+            <View style={styles.threeDotsButton}>
+              <ThreeDotsIcon width={22} height={22} color={Color.white} />
+            </View>
+          </MenuTrigger>
+          <MenuOptions customStyles={menuOptionsStyles}>
+            <MenuOption
+              style={currentTheme === "Classic" ? styles.selectedOption : {}}
+              onSelect={() => handleThemeSave("Classic")}
+              text="Classic"
+            />
+            <MenuOption
+              style={currentTheme === "Light" ? styles.selectedOption : {}}
+              onSelect={() => handleThemeSave("Light")}
+              text="Light"
+            />
+            <MenuOption
+              style={currentTheme === "Dark" ? styles.selectedOption : {}}
+              onSelect={() => handleThemeSave("Dark")}
+              text="Dark"
+            />
+            <MenuOption
+              style={currentTheme === "Auto" ? styles.selectedOption : {}}
+              onSelect={() => handleThemeSave("Auto")}
+              text="Auto"
+            />
+          </MenuOptions>
+        </Menu>
+      </View>
     </View>
   );
 };
 
+export default ThemeToggle;
+
 const styles = StyleSheet.create({
-  container: {
+  rightSettingsButton: {
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
+    gap: 15,
   },
-  button: {
-    width: 70,
-    height: 36,
-    backgroundColor: "rgba(243,243,243,0.1)",
-    alignItems: "center",
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingHorizontal: 7,
-    borderRadius: 10,
-    marginRight: 8,
-  },
-  selectedButton: {
-    backgroundColor: Color.white,
-  },
-  buttonText: {
-    fontSize: 16,
-    lineHeight: 15,
-    textAlignVertical: "bottom",
+  currentThemeText: {
+    fontSize: 17,
     color: Color.white,
+    opacity: 0.8,
   },
-  selectedButtonText: {
-    color: Color.fervo_red,
+  threeDotsButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    height: 44,
+    width: 44,
+  },
+  selectedOption: {
+    backgroundColor: "rgba(0,0,0,0.2)",
   },
 });
 
-export default ThemeToggle;
+const menuOptionsStyles = {
+  optionsContainer: {
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "white",
+    paddingVertical: 7,
+    width: 120,
+  },
+  // optionsWrapper: {
+  //   backgroundColor: "purple",
+  // },
+  optionWrapper: {
+    paddingLeft: 20,
+    // backgroundColor: "yellow",
+  },
+
+  optionText: {
+    paddingVertical: 10,
+    fontSize: 16,
+    color: "black",
+  },
+};

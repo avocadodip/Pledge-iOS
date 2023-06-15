@@ -3,49 +3,28 @@ import { Color } from "../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
 import LeftArrowIcon from "../assets/icons/arrow-left.svg";
+
 import { TouchableOpacity } from "react-native-gesture-handler";
 import DaysActiveToggle from "../components/DaysActiveToggle";
-import TimeButton from "../components/TimeButton";
 import OnboardingPopup from "../components/OnboardingPopup";
 import { useSettings } from "../hooks/SettingsContext";
-import { db } from "../database/firebase";
-import { doc, updateDoc } from "firebase/firestore";
 import VacationToggle from "../components/VacationToggle";
 import ThemeToggle from "../components/ThemeToggle";
-import DeleteAccountButton from "../components/DeleteAccountButton"
+import TimezoneSelector from "../components/TimezoneSelector";
+import DeleteAccountButton from "../components/DeleteAccountButton";
 
 const Account = ({ navigation }) => {
   const {
     currentUserID,
     currentUserFullName,
     currentUserEmail,
-    settings: { dayStart, dayEnd, vacationModeOn, theme, daysActive },
+    settings: { dayStart, dayEnd, vacationModeOn, theme, daysActive, timezone },
   } = useSettings();
+
+
 
   const handlePress = (screenName) => {
     navigation.navigate(screenName);
-  };
-
-  const timeToDate = (timeString) => {
-    const [hour, minute] = timeString.split(":");
-    const date = new Date();
-    date.setHours(hour);
-    date.setMinutes(minute);
-    return date;
-  };
-
-  const handleDayStartChange = async (time) => {
-    const userRef = doc(db, "users", currentUserID);
-    await updateDoc(userRef, {
-      dayStart: time,
-    });
-  };
-
-  const handleDayEndChange = async (time) => {
-    const userRef = doc(db, "users", currentUserID);
-    await updateDoc(userRef, {
-      dayEnd: time,
-    });
   };
 
   return (
@@ -61,7 +40,7 @@ const Account = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Account</Text>
       </View>
-      <View style={styles.preferenceContainer}>
+      {/* <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Name </Text>
         <TextInput
           style={styles.preferenceInput}
@@ -71,7 +50,7 @@ const Account = ({ navigation }) => {
           autoCapitalize="none"
           value={currentUserFullName}
         ></TextInput>
-      </View>
+      </View> */}
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Email </Text>
         <TextInput
@@ -85,33 +64,17 @@ const Account = ({ navigation }) => {
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Time Zone </Text>
-        <TextInput
+        {/* <TextInput
           value={Intl.DateTimeFormat().resolvedOptions().timeZone}
           style={styles.preferenceInput}
           placeholder="America/Chicago"
           placeholderTextColor={Color.faint_white}
           autoCorrect={false}
           autoCapitalize="none"
-        ></TextInput>
+        ></TextInput> */}
+        <TimezoneSelector timezone={timezone} />
       </View>
-      <View style={styles.preferenceContainer}>
-        <Text style={styles.preferenceTitle}> Day Start </Text>
-        <View style={styles.preferenceRightContainer}>
-          <TimeButton
-            time={timeToDate(`${dayStart} AM`)}
-            onTimeChange={handleDayStartChange}
-          />
-        </View>
-      </View>
-      <View style={styles.preferenceContainer}>
-        <Text style={styles.preferenceTitle}> Day End </Text>
-        <View style={styles.preferenceRightContainer}>
-          <TimeButton
-            time={timeToDate(`${dayEnd} PM`)}
-            onTimeChange={handleDayEndChange}
-          />
-        </View>
-      </View>
+
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Days Active </Text>
         <View style={styles.preferenceRightContainer}>
@@ -128,12 +91,6 @@ const Account = ({ navigation }) => {
             currentUserID={currentUserID}
             vacationModeOn={vacationModeOn}
           />
-        </View>
-      </View>
-      <View style={styles.preferenceContainer}>
-        <Text style={styles.preferenceTitle}> Theme </Text>
-        <View style={styles.preferenceRightContainer}>
-          <ThemeToggle currentUserID={currentUserID} theme={theme} />
         </View>
       </View>
       <View style={styles.preferenceContainer}>

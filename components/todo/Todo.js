@@ -24,8 +24,6 @@ import InfoTodo from "./TodayTodo";
 import OnboardTodo from "./OnboardTodo";
 import TodayTodo from "./TodayTodo";
 import TmrwTodo from "./TmrwTodo";
-import VacationTodo from "./VacationTodo";
-import DaysOffTodo from "./DaysOffTodo";
 
 const Todo = ({
   todoNumber,
@@ -37,16 +35,8 @@ const Todo = ({
   isLocked,
   isComplete,
 }) => {
-  // Initialize local lock/check state
   const [isTodoLocked, setIsTodoLocked] = useState(null);
   const [isTodoComplete, setIsTodoComplete] = useState(null);
-
-  useEffect(() => {
-    setIsTodoLocked(isLocked);
-    setIsTodoComplete(isComplete);
-  }, [isLocked, isComplete]);
-
-  // Get global variables
   const {
     settings: { dayStart, dayEnd },
     currentUserID,
@@ -54,25 +44,18 @@ const Todo = ({
   const {
     setIsBottomSheetOpen,
     setSelectedTodo,
+    isBottomSheetEditable,
     setIsBottomSheetEditable,
   } = useBottomSheet();
 
-  // When new todo pressed
-  const handleNewTodoPress = () => {
-    setIsBottomSheetEditable(true);
-    setIsBottomSheetOpen(true);
-    setSelectedTodo({
-      todoNumber,
-      title,
-      description,
-      amount,
-      tag,
-      isTodoLocked,
-    });
-  };
+  useEffect(() => {
+    setIsTodoLocked(isLocked);
+    setIsTodoComplete(isComplete);
+  }, [isLocked, isComplete]);
 
-  // When left side pressed
-  const handleOpenBottomSheet = () => {
+  // When todo pressed
+  const openBottomSheet = () => {
+    // Set todo info for sheet
     setSelectedTodo({
       todoNumber,
       title,
@@ -81,11 +64,14 @@ const Todo = ({
       tag,
       isTodoLocked,
     });
-    setIsBottomSheetOpen(true);
+    // Set sheet editable and open
     if (isTodoLocked == null || isTodoLocked == true) {
       // (isLocked == null on today page)
       setIsBottomSheetEditable(false);
-    } else setIsBottomSheetEditable(true);
+    } else {
+      setIsBottomSheetEditable(true);
+    }
+    setIsBottomSheetOpen(true);
   };
 
   // When right side lock pressed
@@ -110,8 +96,6 @@ const Todo = ({
       tag: tag,
       amount: floatAmount,
       createdAt: getTodayDateTime(),
-      opensAt: formatDayStart(dayStart),
-      closesAt: formatDayEnd(dayEnd),
       isComplete: false,
       isLocked: true,
       todoNumber: todoNumber,
@@ -129,6 +113,8 @@ const Todo = ({
           todos: [newTodo],
           totalTodos: 1,
           totalFine: 0,
+          opensAt: formatDayStart(dayStart),
+          closesAt: formatDayEnd(dayEnd),
         });
       } else {
         // If the document exists, update it
@@ -136,6 +122,8 @@ const Todo = ({
           todos: arrayUnion(newTodo),
           totalTodos: increment(1),
           totalFine: 0,
+          opensAt: formatDayStart(dayStart),
+          closesAt: formatDayEnd(dayEnd),
         });
       }
     })
@@ -196,24 +184,23 @@ const Todo = ({
       return (
         <NumberTodo
           todoNumber={todoNumber}
-          handleNewTodoPress={handleNewTodoPress}
+          handleNewTodoPress={openBottomSheet}
         />
       );
     case "fined":
       return <FinedTodo />;
     case "check":
       return (
-        <DaysOffTodo/>
-        // <TodayTodo
-        //   todoNumber={todoNumber}
-        //   title={title}
-        //   description={description}
-        //   amount={amount}
-        //   tag={tag}
-        //   isTodoComplete={isTodoComplete}
-        //   handleOpenBottomSheet={handleOpenBottomSheet}
-        //   handleCheckTodo={handleCheckTodo}
-        // />
+        <TodayTodo
+          todoNumber={todoNumber}
+          title={title}
+          description={description}
+          amount={amount}
+          tag={tag}
+          isTodoComplete={isTodoComplete}
+          handleOpenBottomSheet={openBottomSheet}
+          handleCheckTodo={handleCheckTodo}
+        />
       );
     case "lock":
       return (
@@ -224,7 +211,7 @@ const Todo = ({
           amount={amount}
           tag={tag}
           isTodoLocked={isTodoLocked}
-          handleOpenBottomSheet={handleOpenBottomSheet}
+          handleOpenBottomSheet={openBottomSheet}
           handleLockTodo={handleLockTodo}
         />
       );

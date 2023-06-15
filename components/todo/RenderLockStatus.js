@@ -4,6 +4,7 @@ import LockIcon from "../../assets/icons/lock-icon.svg";
 import UnlockIcon from "../../assets/icons/unlock-icon.svg";
 import { styles } from "./TodoStyles";
 import Animated from "react-native-reanimated";
+import TouchableRipple from "../TouchableRipple";
 
 const RenderLockStatus = ({
   isTodoLocked,
@@ -28,9 +29,9 @@ const RenderLockStatus = ({
     // Unlock icon: Todo is NOT locked
   } else if (isTodoLocked === false) {
     return (
-      <TouchableOpacity style={styles.rightContainer} onPress={handleLockTodo}>
+      <TouchableRipple style={styles.rightContainer} onPress={handleLockTodo}>
         <UnlockIcon />
-      </TouchableOpacity>
+      </TouchableRipple>
     );
     // Check icon: Todo is complete
   } else if (isTodoComplete === true) {

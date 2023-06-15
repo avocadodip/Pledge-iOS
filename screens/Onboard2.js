@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/todo/Todo";
-import TimeButton from "../components/TimeButton";
+// import TimeButton from "../components/TimeButton";
 import NextButton from "../components/NextButton";
 import OnboardingPopup from "../components/OnboardingPopup";
 
@@ -15,11 +15,11 @@ const Today = () => {
         <Text style={styles.descTitle}>Now, adjust your preferences so Fervo works best for you!</Text>
         <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Day Start </Text>
-        <TimeButton defaultTime="9:00 AM" />
+        {/* <TimeButton defaultTime="9:00 AM" /> */}
       </View>
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Day End </Text>
-        <TimeButton defaultTime="11:00 PM" />
+        {/* <TimeButton defaultTime="11:00 PM" /> */}
       </View>
       <NextButton title="Ready to go!" />
       </View>

@@ -10,8 +10,8 @@ import { Color } from "../GlobalStyles";
 export default function TodoBottomSheet() {
   const {
     isBottomSheetOpen,
-    setIsBottomSheetOpen,
     isBottomSheetEditable,
+    setIsBottomSheetOpen,
     selectedTodo,
     updateTodo,
     isOnboard,
@@ -19,15 +19,18 @@ export default function TodoBottomSheet() {
   const bottomSheetRef = useRef(null);
   const snapPoints = ["75%"];
   const [todo, setTodo] = useState(selectedTodo || {});
+  const todoRef = useRef(todo);
 
-  useEffect(() => {
-    console.log(isBottomSheetOpen);
-  }, [isBottomSheetOpen]);
-
+  // Set initial todo object
   useEffect(() => {
     setTodo(selectedTodo || {});
   }, [selectedTodo]);
 
+  useEffect(() => {
+    todoRef.current = todo; // Update the mutable ref when todo changes because todo value inside renderBackdrop callback is its initial value when the component is rendered.
+  }, [todo]);
+
+  // Updates todo object when a field is edited
   const handleInputChange = (field, value) => {
     setTodo({
       ...todo,
@@ -35,25 +38,24 @@ export default function TodoBottomSheet() {
     });
   };
 
-  const handleSheetChanges = (index) => {
-    if (index === -1) {
-      setIsBottomSheetOpen(false);
-      if (isBottomSheetEditable) {
-        updateTodo(todo);
-      }
-    }
-  };
-
-  // renders
+  // Backdrop - when pressed, updates global todo array and closes sheet
   const renderBackdrop = useCallback(
     (props) => (
       <BottomSheetBackdrop
         {...props}
         disappearsOnIndex={-1}
         appearsOnIndex={0}
+        onPress={() => {
+          if (isBottomSheetEditable) {
+            updateTodo(todoRef.current);
+          }
+          setTimeout(() => {
+            setIsBottomSheetOpen(false);
+          }, 100); // Need to wait for animation to finish
+        }}
       />
     ),
-    []
+    [isBottomSheetEditable]
   );
 
   return isBottomSheetOpen ? (
@@ -62,7 +64,6 @@ export default function TodoBottomSheet() {
       index={isBottomSheetOpen ? 0 : -1}
       snapPoints={snapPoints}
       enablePanDownToClose={true}
-      onChange={handleSheetChanges}
       backgroundStyle={{ backgroundColor: Color.fervo_red }}
       backdropComponent={renderBackdrop}
       handleComponent={() => (

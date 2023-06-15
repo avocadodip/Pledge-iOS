@@ -8,11 +8,16 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
+<<<<<<< Updated upstream
 import Ripple from 'react-native-material-ripple';
 
+=======
+import TouchableRipple from "../TouchableRipple";
+ 
+>>>>>>> Stashed changes
 // Animation constants
 const OPEN_DURATION = 100;
-const CLOSE_DURATION = 250;
+const CLOSE_DURATION = 150;
 
 const TodayTodo = ({
   todoNumber,
@@ -64,7 +69,11 @@ const TodayTodo = ({
     <View style={[styles.infoContainer]}>
       {/* Left side */}
       <Animated.View style={leftStyle}>
+<<<<<<< Updated upstream
         <Ripple
+=======
+        <TouchableRipple
+>>>>>>> Stashed changes
           onPress={handleOpenBottomSheet}
           style={[animatedStyles.leftButtonContainer]}
         >
@@ -106,18 +115,31 @@ const TodayTodo = ({
               </View>
             </>
           )}
+<<<<<<< Updated upstream
         </Ripple>
       </Animated.View>
       {/* Right side */}
       <Animated.View style={rightStyle}>
         <Ripple
           style={animatedStyles.rightButtonContainer}
+=======
+        </TouchableRipple>
+      </Animated.View>
+      {/* Right side */}
+      <Animated.View style={rightStyle}>
+        <TouchableRipple
+>>>>>>> Stashed changes
           onPress={() => {
             handleCheckTodo(todoNumber, isTodoComplete); 
           }}
+          style={animatedStyles.rightButtonContainer}
         >
           <CheckIcon />
+<<<<<<< Updated upstream
         </Ripple>
+=======
+        </TouchableRipple>
+>>>>>>> Stashed changes
       </Animated.View>
     </View>
   );

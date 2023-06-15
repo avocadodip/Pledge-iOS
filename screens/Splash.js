@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
 import { FontSize, FontFamily, Border, Color } from "../GlobalStyles";
-
+ 
 const Splash = () => {
   return (
     <View style={styles.splash}>

@@ -1,8 +1,16 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, SafeAreaView, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { MenuProvider } from "react-native-popup-menu";
 import { useFonts } from "expo-font";
 import Today from "./screens/Today";
 import Onboard1 from "./screens/Onboard1";
@@ -17,7 +25,7 @@ import Account from "./screens/Account";
 import Stats from "./screens/Stats";
 import TodoBottomSheet from "./components/TodoBottomSheet";
 import OnboardingPopup from "./components/OnboardingPopup";
-import { Color } from "./GlobalStyles";                             
+import { Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 // import { MenuProvider } from "react-native-popup-menu";
@@ -31,6 +39,8 @@ import SettingsInactiveIcon from "./assets/icons/settings-inactive-icon.svg";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { auth } from "./database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
+import TouchableRipple from "./components/TouchableRipple";
+import useUpdateTimezoneOnAppActive from "./hooks/useUpdateTimezoneOnAppActive";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -121,7 +131,7 @@ export default function App() {
         if (initializing) setInitializing(false);
       }
     });
-  
+
     // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
@@ -140,126 +150,139 @@ export default function App() {
     return null;
   }
 
-  const userLoggedIn = 1;
-  // checkAuthState(); // Set this based on your authentication logic
-
   if (initializing) {
     return null;
   }
 
   return (
-    <SettingsProvider>
-      <BottomSheetProvider>
-        <AppContent isSignedIn={isSignedIn} />
-      </BottomSheetProvider>
-    </SettingsProvider>
+    <MenuProvider>
+      <SettingsProvider>
+        <BottomSheetProvider>
+          <AppContent isSignedIn={isSignedIn} />
+        </BottomSheetProvider>
+      </SettingsProvider>
+    </MenuProvider>
   );
 }
 
 function AppContent({ isSignedIn }) {
   const [hideSplashScreen, setHideSplashScreen] = useState(true);
-    // useEffect(() => {
+  // useEffect(() => {
   //   setTimeout(() => {
   //     setHideSplashScreen(true);
   //   }, 2000);
   // }, []);
 
-  const { setCurrentUserID } = useSettings();
+  const { currentUserID, setCurrentUserID } = useSettings();
 
   useEffect(() => {
     if (isSignedIn) {
       const user = auth.currentUser;
       if (user) {
+        console.log("current user: " + user.uid);
         setCurrentUserID(user.uid);
       }
     } else {
+      console.log("current user: none");
+
       setCurrentUserID(null);
     }
   }, [isSignedIn, setCurrentUserID]);
 
+  // If app state becomes active, update firebase timezone if user is in new timezone
+  useUpdateTimezoneOnAppActive(currentUserID); 
+
   return (
     <View style={{ flex: 1 }}>
-    <StatusBar style="light" backgroundColor={Color.white} />
-    <NavigationContainer theme={theme}>
-      {hideSplashScreen ? (
-        isSignedIn ? (
-          <Tab.Navigator
-            screenOptions={{
-              headerShown: false,
-              tabBarStyle: styles.tabBar,
-              tabBarShowLabel: false,
-            }}
-          >
-            <Tab.Screen
-              name="Today"
-              component={TodayStack}
-              options={{
-                tabBarIcon: ({ focused }) =>
-                  focused ? (
-                    <TodayActiveIcon
-                      width={40}
-                      height={40}
-                      color={"white"}
-                    />
-                  ) : (
-                    <TodayInactiveIcon
-                      width={40}
-                      height={40}
-                      color={"white"}
-                    />
-                  ),
+      <StatusBar style="light" backgroundColor={Color.white} />
+      <NavigationContainer theme={theme}>
+        {hideSplashScreen ? (
+          isSignedIn ? (
+            <Tab.Navigator
+              screenOptions={{
+                headerShown: false,
+                tabBarStyle: styles.tabBar,
+                tabBarShowLabel: false,
               }}
-            />
-            <Tab.Screen
-              name="Tomorrow"
-              component={TomorrowStack}
-              options={{
-                tabBarIcon: ({ focused }) =>
-                  focused ? (
-                    <TomorrowActiveIcon
-                      width={40}
-                      height={40}
-                      color={"white"}
-                    />
-                  ) : (
-                    <TomorrowInactiveIcon
-                      width={40}
-                      height={40}
-                      color={"white"}
-                    />
+            >
+              <Tab.Screen
+                name="Today"
+                component={TodayStack}
+                options={{
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <TodayActiveIcon width={40} height={40} color={"white"} />
+                    ) : (
+                      <TodayInactiveIcon
+                        width={40}
+                        height={40}
+                        color={"white"}
+                      />
+                    ),
+
+                  tabBarButton: (props) => (
+                    <TouchableRipple {...props}>
+                      {props.children}
+                    </TouchableRipple>
                   ),
-              }}
-            />
-            <Tab.Screen
-              name="Settings"
-              component={SettingsStack}
-              options={{
-                tabBarIcon: ({ focused }) =>
-                  focused ? (
-                    <SettingsActiveIcon
-                      width={40}
-                      height={40}
-                      color={"white"}
-                    />
-                  ) : (
-                    <SettingsInactiveIcon
-                      width={40}
-                      height={40}
-                      color={"white"}
-                    />
+                }}
+              />
+              <Tab.Screen
+                name="Tomorrow"
+                component={TomorrowStack}
+                options={{
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <TomorrowActiveIcon
+                        width={40}
+                        height={40}
+                        color={"white"}
+                      />
+                    ) : (
+                      <TomorrowInactiveIcon
+                        width={40}
+                        height={40}
+                        color={"white"}
+                      />
+                    ),
+
+                  tabBarButton: (props) => (
+                    <TouchableRipple {...props}>
+                      {props.children}
+                    </TouchableRipple>
                   ),
-              }}
-            />
-          </Tab.Navigator>
+                }}
+              />
+              <Tab.Screen
+                name="Settings"
+                component={SettingsStack}
+                options={{
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <SettingsActiveIcon
+                        width={40}
+                        height={40}
+                        color={"white"}
+                      />
+                    ) : (
+                      <SettingsInactiveIcon
+                        width={40}
+                        height={40}
+                        color={"white"}
+                      />
+                    ),
+                }}
+              />
+            </Tab.Navigator>
+          ) : (
+            <AuthStack />
+          )
         ) : (
-          <AuthStack />
-        )
-      ) : (
-        <Splash />
-      )}
-    </NavigationContainer>
-    <TodoBottomSheet />
-  </View>
+          <Splash />
+        )}
+      </NavigationContainer>
+      <TodoBottomSheet />
+    </View>
   );
 }
 

@@ -2,6 +2,8 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./TodoStyles";
 import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
 import RenderLockStatus from "./RenderLockStatus";
+import TouchableRipple from "../TouchableRipple";
+
 
 const TmrwTodo = ({
   todoNumber,
@@ -16,7 +18,7 @@ const TmrwTodo = ({
   // JSX
   return (
     <View style={[styles.infoContainer]}>
-      <TouchableOpacity
+      <TouchableRipple
         onPress={handleOpenBottomSheet}
         style={styles.leftContainer}
       >
@@ -54,7 +56,7 @@ const TmrwTodo = ({
             </View>
           )}
         </View>
-      </TouchableOpacity>
+      </TouchableRipple>
       <RenderLockStatus
         isTodoLocked={isTodoLocked}
         handleLockTodo={handleLockTodo}

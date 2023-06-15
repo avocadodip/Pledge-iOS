@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -20,6 +20,7 @@ import "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "@firebase/auth";
 import { useSettings } from "../hooks/SettingsContext";
+import TouchableRipple from "../components/TouchableRipple";
 
 const Login = () => {
   const [fullName, setFullName] = useState();
@@ -28,21 +29,22 @@ const Login = () => {
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
   const [loginPressed, setLoginPressed] = useState(false); // Add this state to handle the button pressed state
-  const { setCurrentUserID, setCurrentUserFullName, setCurrentUserEmail } = useSettings();
+  const { setCurrentUserID, setCurrentUserFullName, setCurrentUserEmail } =
+    useSettings();
   const navigation = useNavigation();
 
   const handleLogin = async () => {
-    let lowerCaseEmail = email.trim().toLowerCase();
-    let lowerCasePassword = password.trim().toLowerCase();
+  // Check if email and password variables are defined
+  if (!email?.trim() || !password?.trim()) {
+    Alert.alert(
+      "🤔 Whoops!",
+      "Email and password are needed to login. Try again!"
+    );
+    return;
+  }
 
-    // Validate email and password inputs
-    if (!lowerCaseEmail || !lowerCasePassword) {
-      Alert.alert(
-        "🤔 Whoops!",
-        "Email and password are needed to login. Try again!"
-      );
-      return;
-    }
+  let lowerCaseEmail = email.trim().toLowerCase();
+  let lowerCasePassword = password.trim().toLowerCase();
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -71,7 +73,7 @@ const Login = () => {
               setCurrentUserEmail(docSnap.data().email);
             } else {
               console.log("No such document!");
-            }
+            } 
           })
           .catch((error) => {
             console.error("Error getting document:", error);
@@ -80,7 +82,8 @@ const Login = () => {
       .catch((error) => {
         // Handle login error
         const errorMessage = error.message;
-        console.log(errorMessage);
+        console.log("Login error:" + errorMessage);
+
         // Show an alert to the user with a friendly error message
         Alert.alert(
           "Oops! 🙈",
@@ -90,7 +93,10 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       {/* <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
@@ -98,7 +104,7 @@ const Login = () => {
       <View style={styles.logoContainer}>
         <Image
           source={require("../assets/FervoWhite.png")}
-          style={{ width: 150, height: 150 }}
+          style={{ width: 100, height: 100 }}
         />
         <Text style={styles.appNameText}>Fervo</Text>
       </View>
@@ -124,15 +130,15 @@ const Login = () => {
           autoCapitalize="none" // Disable auto-capitalization
           secureTextEntry={true} // Mask password input
         />
-        <TouchableOpacity
+        <TouchableRipple
           style={[styles.button]}
           onPress={handleLogin} // Invoke the handleSignup function when the button is pressed
           onPressIn={() => setLoginPressed(true)} // Set "pressed" state to true when the button is pressed
           onPressOut={() => setLoginPressed(false)} // Set "pressed" state to false when the button is released
         >
           <Text style={[styles.buttonText, styles.signupTypo]}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </TouchableRipple>
+        <TouchableRipple
           style={styles.goBackToContainer}
           onPress={() => navigation.navigate("Signup")}
         >
@@ -140,7 +146,7 @@ const Login = () => {
             {`Go back to `}
             <Text style={styles.login}>Signup</Text>
           </Text>
-        </TouchableOpacity>
+        </TouchableRipple>
       </View>
       {loading && (
         <View
@@ -159,7 +165,7 @@ const Login = () => {
         </View>
       )}
       {/* </KeyboardAvoidingView> */}
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -170,7 +176,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   appNameText: {
-    fontSize: 60,
+    fontSize: 50,
     color: Color.white,
     marginTop: 0,
     fontWeight: "bold",
@@ -302,6 +308,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 17,
     width: "100%",
+    overflow: "hidden"
   },
   buttonText: {
     color: Color.fervo_red,

@@ -18,7 +18,39 @@ export const daysOfWeek = [
   "Saturday",
 ];
 
-// Tmrw page inactive message
+export const abbreviatedDaysOfWeek = [
+  "Sun.",
+  "Mon.",
+  "Tues.",
+  "Wed.",
+  "Thurs.",
+  "Fri.",
+  "Sat.",
+];
+
+export function getTodayDOW() {
+  const currentDate = new Date();
+  return daysOfWeek[currentDate.getDay()];
+}
+
+export const getTodayAbbrevDOW = () => {
+  const currentDate = new Date();
+  return abbreviatedDaysOfWeek[currentDate.getDay()];
+};
+
+export function getTmrwDOW() {
+  const tmrwDate = new Date();
+  tmrwDate.setDate(tmrwDate.getDate() + 1);
+  return daysOfWeek[tmrwDate.getDay()];
+}
+
+export const getTmrwAbbrevDOW = () => {
+  const currentDate = new Date();
+  const tmrwDayIndex = (currentDate.getDay() + 1) % 7; // get tomorrow's day index, wrap around at the end of the week
+  return abbreviatedDaysOfWeek[tmrwDayIndex];
+};
+
+// Helper function to get next active day
 export const getNextActiveDay = (nextDay, days) => {
   let startChecking = false;
 
@@ -82,28 +114,29 @@ export const getYesterdayDate = () => {
   return dateTime;
 };
 
-// 4 - today.svelte
-// return true if current time is between dayStart and dayEnd
-export const withinTimeWindow = (dayStart, dayEnd) => {
-  let now = getTodayDateTime();
+export const getTimeStatus = (dayStart, dayEnd) => {
+  const now = new Date();
+  const currentHours = now.getHours();
+  const currentMinutes = now.getMinutes();
+  const [startHours, startMinutes] = dayStart.split(":").map(Number);
 
-  // Convert dayStart to 24 hour format
-  let dayStartHour = parseInt(dayStart.split(":")[0]);
-  let dayStartMinute = dayStart.split(":")[1];
-  if (dayStartHour < 10) dayStartHour = "0" + dayStartHour; // add leading zero if hour is less than 10
-  dayStart = dayStartHour + dayStartMinute;
+  // convert endHours to 24-hour format if it's meant to be PM
+  let [endHours, endMinutes] = dayEnd.split(":").map(Number);
+  endHours = endHours < 12 ? endHours + 12 : endHours;
 
-  // Convert dayEnd to 24 hour format, adding 12 to convert PM times to 24 hour format
-  let dayEndHour = (parseInt(dayEnd.split(":")[0]) + 12).toString();
-  let dayEndMinute = dayEnd.split(":")[1];
-  if (dayEndHour.length == 1) dayEndHour = "0" + dayEndHour; // add leading zero if hour is less than 10
-  dayEnd = dayEndHour + dayEndMinute;
-
-  let nowHourMinute = now.slice(-6, -4) + now.slice(-4, -2); // extract hour and minute from current time
-
-  if (nowHourMinute >= dayStart && nowHourMinute < dayEnd) {
-    return true;
-  } else return false;
+  if (
+    currentHours < startHours ||
+    (currentHours === startHours && currentMinutes < startMinutes)
+  ) {
+    return 0; // before day start
+  } else if (
+    currentHours < endHours ||
+    (currentHours === endHours && currentMinutes < endMinutes)
+  ) {
+    return 1; // between day start and day end
+  } else {
+    return 2; // after day end
+  }
 };
 
 // 5 - today.svelte

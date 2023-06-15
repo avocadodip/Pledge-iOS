@@ -1,20 +1,23 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
 import OnboardingPopup from "../components/OnboardingPopup";
-import { useDayTimeStatus } from "../hooks/useDayStatus";
+import { useDayStatus } from "../hooks/useDayStatus";
 import { useTmrwTodos } from "../hooks/useTmrwTodos";
-import { useActiveDay } from "../hooks/useActiveDay";
+import VacationMessage from "../components/VacationMessage";
+import RestDayMessage from "../components/RestDayMessage";
+import TouchableRipple from "../components/TouchableRipple";
+import TmrwTimePicker from "../components/TmrwTimePicker";
 
 const renderLockedTodo = (
   { title, description, amount, tag, isLocked, isTodoLocked },
   index
 ) => (
   <Todo
-    key={index + 1} 
+    key={index + 1}
     todoNumber={index + 1}
     title={title}
     description={description}
@@ -27,7 +30,7 @@ const renderLockedTodo = (
 
 const renderNewTodo = (index) => (
   <Todo
-    key={index + 1} 
+    key={index + 1}
     todoNumber={index + 1}
     componentType="number"
     title=""
@@ -40,7 +43,7 @@ const renderNewTodo = (index) => (
 
 const renderFinedTodo = (index) => (
   <Todo
-    key={index + 1} 
+    key={index + 1}
     todoNumber=""
     title=""
     description=""
@@ -53,28 +56,36 @@ const renderFinedTodo = (index) => (
 
 const Tomorrow = () => {
   const { tmrwTodos } = useBottomSheet();
-  const { dayStart, dayEnd, vacationModeOn, daysActive } = useSettings().settings;
+  const {
+    settings: { dayStart, dayEnd, vacationModeOn, daysActive },
+    currentUserID,
+  } = useSettings();
 
-  const isDay = useDayTimeStatus(dayStart, dayEnd);
-  const headerMessage = useTmrwTodos(isDay, dayStart, dayEnd);
-  const { nextDay, isTmrwActiveDay, tmrwInactiveMessage } = useActiveDay(
+  // Realtime detection of if it's 12am, and if it's before, during, after day window
+  const { tmrwHeaderSubtitleMessage, dayChanged, timeStatus } = useDayStatus(
     dayStart,
-    dayEnd,
+    dayEnd
+  );
+
+  // Re-fetches and sets tmrwTodos, and processes daysActive
+  const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay } = useTmrwTodos(
+    dayChanged,
     daysActive
   );
-  
+
   const renderTodos = useCallback(() => {
     // Map through three todos and render them based on their content
     return tmrwTodos.map((todo, index) => {
       if (todo.title !== "") {
         return renderLockedTodo(todo, index);
-      } else if (isDay) {
+      } else if (todo.title == "") {
+        // edit
         return renderNewTodo(index);
       } else {
         return renderFinedTodo(index);
       }
     });
-  }, [tmrwTodos, isDay]);
+  }, [tmrwTodos, dayChanged, timeStatus]);
 
   return (
     <SafeAreaView style={styles.pageContainer}>
@@ -85,17 +96,27 @@ const Tomorrow = () => {
       <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Tmrw</Text>
-          <Text style={styles.headerDayOfWeek}>{nextDay}</Text>
+          <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
         </View>
-        {vacationModeOn ? (
-          <Text>Vacation mode on. Visit settings to turn it off.</Text>
-        ) : !isTmrwActiveDay ? (
-          <Text>{tmrwInactiveMessage}</Text>
-        ) : (
-          <Text style={styles.headerSubtitle}>{headerMessage}</Text>
+        {!vacationModeOn && isTmrwActiveDay && (
+          <View>
+            <Text style={styles.headerSubtitle}>
+              {tmrwHeaderSubtitleMessage}
+            </Text>
+            <TmrwTimePicker
+              currentUserID={currentUserID}
+              dayStart={dayStart}
+              dayEnd={dayEnd}
+            />
+          </View>
         )}
       </View>
-      {vacationModeOn || !isTmrwActiveDay ? null : (
+
+      {vacationModeOn ? (
+        <VacationMessage />
+      ) : !isTmrwActiveDay ? (
+        <RestDayMessage />
+      ) : (
         <View style={styles.todoContainer}>{renderTodos()}</View>
       )}
     </SafeAreaView>
@@ -114,7 +135,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   headerContainer: {
-    marginTop: 10,
+    marginTop: 5,
     width: "100%",
     flexDirection: "col",
   },
@@ -126,24 +147,24 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: "white",
-    fontSize: 50,
+    fontSize: 45,
     fontWeight: "bold",
   },
   headerDayOfWeek: {
     color: "white",
-    fontSize: 25,
+    fontSize: 23,
     fontWeight: "bold",
     paddingBottom: 6,
+    opacity: 0.7,
   },
   headerSubtitle: {
     color: "white",
-    fontSize: 25,
+    fontSize: 23,
     fontWeight: "bold",
-    marginTop: 5,
   },
   todoContainer: {
     marginTop: 20,
-    gap: 22,
+    gap: 18,
     width: "100%",
   },
 });

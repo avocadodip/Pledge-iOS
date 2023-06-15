@@ -4,13 +4,14 @@ export const styles = StyleSheet.create({
   numberContainer: {
     flexDirection: "column",
     width: "100%",
-    height: "27%",
+    height: "26%",
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
     borderRadius: 16,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     padding: 15,
+    overflow: 'hidden'
   },
   numberText: {
     color: "white",

@@ -5,8 +5,11 @@ import Todo from "../components/todo/Todo";
 import OnboardingPopup from "../components/OnboardingPopup";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
-import { useDayTimeStatus } from "../hooks/useDayStatus";
+import { useDayStatus } from "../hooks/useDayStatus";
 import { useTodayTodos } from "../hooks/useTodayTodos";
+import VacationMessage from "../components/VacationMessage";
+import RestDayMessage from "../components/RestDayMessage";
+import Loading from "../components/Loading";
 
 const renderActiveTodo = (
   { title, description, amount, tag, isComplete },
@@ -40,32 +43,32 @@ const renderFinedTodo = (index) => (
 
 const Today = () => {
   const { todayTodos } = useBottomSheet();
-  let vacationModeOn;
-  let daysActive;
-  let isTodayActiveDay = true;
-  let todayInactiveMessage = "today is rest day";
   const { loading, settings } = useSettings();
-  let isDay = null;
-  let headerMessage = "";
+  const [dayStart, setDayStart] = useState("");
+  const [dayEnd, setDayEnd] = useState("");
+  const [vacationModeOn, setVacationModeOn] = useState(false);
+  const [daysActive, setDaysActive] = useState([]);
 
-  if (loading) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  const { todayHeaderSubtitleMessage, timeStatus, dayChanged } = useDayStatus(
+    dayStart,
+    dayEnd
+  );
 
-  if (settings) {
-    const { dayStart, dayEnd } = settings;
-    vacationModeOn = settings.vacationModeOn;
-    daysActive = settings.daysActive;
-    isDay = useDayTimeStatus(dayStart, dayEnd);
-    headerMessage = useTodayTodos(isDay, dayStart, dayEnd);
-  }
+  // Re-fetch and set todayTodos at 12am
+  const { todayDOWAbbrev, isTodayActiveDay } = useTodayTodos(dayChanged);
 
+  // Fetch settings
+  useEffect(() => {
+    if (!loading && settings) {
+      setDayStart(settings.dayStart);
+      setDayEnd(settings.dayEnd);
+      setVacationModeOn(settings.vacationModeOn);
+      setDaysActive(settings.daysActive);
+    }
+  }, [loading, settings]);
+
+  // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
   const renderTodos = useCallback(() => {
-    // Map through three todos and render them based on their content
     return todayTodos.map((todo, index) => {
       if (todo.title !== "") {
         return renderActiveTodo(todo, index);
@@ -73,8 +76,13 @@ const Today = () => {
         return renderFinedTodo(index);
       }
     });
-  }, [todayTodos, isDay]);
- 
+  }, [todayTodos, dayChanged]);
+
+  // Loading indicator (replace with skeleton ui, also add in transitions)
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <SafeAreaView style={styles.pageContainer}>
       {/* <OnboardingPopup
@@ -84,17 +92,21 @@ const Today = () => {
       <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Today</Text>
-          <Text style={styles.headerDayOfWeek}>Wed.</Text>
+          <Text style={styles.headerDayOfWeek}>{todayDOWAbbrev}</Text>
         </View>
-        {vacationModeOn ? (
-          <Text>Vacation mode on. Visit settings to turn it off.</Text>
-        ) : !isTodayActiveDay ? (
-          <Text>{todayInactiveMessage}</Text>
-        ) : (
-          <Text style={styles.headerSubtitle}>{headerMessage}</Text>
+
+        {!vacationModeOn && isTodayActiveDay && (
+          <Text style={styles.headerSubtitle}>
+            {todayHeaderSubtitleMessage}
+          </Text>
         )}
       </View>
-      {vacationModeOn || !isTodayActiveDay ? null : (
+
+      {vacationModeOn ? (
+        <VacationMessage />
+      ) : !isTodayActiveDay ? (
+        <RestDayMessage />
+      ) : (
         <View style={styles.todoContainer}>{renderTodos()}</View>
       )}
     </SafeAreaView>
@@ -108,7 +120,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   headerContainer: {
-    marginTop: 10,
+    marginTop: 5,
     width: "100%",
     flexDirection: "col",
   },

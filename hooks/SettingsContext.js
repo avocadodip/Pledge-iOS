@@ -16,12 +16,13 @@ export const SettingsProvider = ({ children }) => {
     if (currentUserID) {
       const userDoc = doc(db, "users", currentUserID);
 
-      const unsubscribe = onSnapshot(
+      const unsubscribe = onSnapshot( 
         userDoc,
         (docSnapshot) => {
           if (docSnapshot.exists()) {
             const userSettings = docSnapshot.data();
             setSettings(userSettings);
+
           } else {
             // Handle the case where the user does not exist or has no settings
           }
@@ -36,6 +37,7 @@ export const SettingsProvider = ({ children }) => {
       return () => unsubscribe();
     }
   }, [currentUserID]);
+
 
   return (
     <SettingsContext.Provider value={{ settings, currentUserID, setCurrentUserID, currentUserFullName, setCurrentUserFullName, currentUserEmail, setCurrentUserEmail, loading }}>

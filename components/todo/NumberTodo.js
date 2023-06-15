@@ -1,11 +1,12 @@
 import React from "react";
 import { Text, TouchableOpacity } from "react-native";
 import { styles } from "./TodoStyles";
+import TouchableRipple from "../TouchableRipple";
 
 const NumberTodo = ({ todoNumber, handleNewTodoPress }) => (
-  <TouchableOpacity style={styles.numberContainer} onPress={handleNewTodoPress}>
+  <TouchableRipple style={styles.numberContainer} onPress={handleNewTodoPress}>
     <Text style={styles.numberText}>{todoNumber}</Text>
-  </TouchableOpacity>
+  </TouchableRipple>
 );
 
 export default NumberTodo;

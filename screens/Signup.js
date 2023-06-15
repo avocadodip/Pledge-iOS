@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Alert,
   Image,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Color } from "../GlobalStyles";
@@ -26,6 +27,7 @@ import MailIcon from "../assets/icons/mail-icon.svg";
 import FervoWhite from "../assets/FervoWhite.png";
 import { getTodayDateTime } from "../utils/currentDate";
 import { useSettings } from "../hooks/SettingsContext";
+import TouchableRipple from "../components/TouchableRipple";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -78,6 +80,9 @@ const Signup = () => {
       setCurrentUserID(user.uid);
       setCurrentUserFullName(fullName);
 
+      // get user's local timezone
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
       // Save full name and email to Firestore
       await setDoc(doc(db, "users", user.uid), {
         fullName: fullName,
@@ -99,6 +104,7 @@ const Signup = () => {
         theme: "Classic",
         missedTaskFine: 1,
         totalAmountDue: 0,
+        timezone: timeZone,
       });
       setLoading(false);
     } catch (error) {
@@ -109,12 +115,15 @@ const Signup = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <View style={styles.logoContainer}>
         {/* replace with app logo */}
         <Image
           source={require("../assets/FervoWhite.png")}
-          style={{ width: 150, height: 150 }}
+          style={{ width: 100, height: 100 }}
         />
         <Text style={styles.appNameText}>Fervo</Text>
       </View>
@@ -157,13 +166,12 @@ const Signup = () => {
           <GoogleLogoIcon />
           <Text style={styles.buttonText}>Continue with Google</Text>
         </TouchableOpacity> */}
-
-        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+        <TouchableRipple style={styles.button} onPress={handleSignup}>
           {/* <MailIcon width={24} height={24} color={`${Color.fervo_red}`} /> */}
           <Text style={styles.buttonText}>Sign up</Text>
-        </TouchableOpacity>
+        </TouchableRipple>
 
-        <TouchableOpacity
+        <TouchableRipple
           style={[
             styles.button,
             {
@@ -177,9 +185,9 @@ const Signup = () => {
           <Text style={[styles.buttonText, { color: Color.white }]}>
             Log in
           </Text>
-        </TouchableOpacity>
+        </TouchableRipple>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -196,7 +204,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1
   },
   appNameText: {
-    fontSize: 60,
+    fontSize: 50,
     color: Color.white,
     marginTop: 0,
     fontWeight: "bold",
@@ -226,6 +234,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 17,
     width: "100%",
+    overflow: "hidden",
   },
   buttonText: {
     color: Color.fervo_red,
