@@ -25,14 +25,8 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
 
   // Re-run when it hits 12am or daysActive changes
   useEffect(() => {
-<<<<<<< Updated upstream
-    const fetchTodos = async () => {
-      const fetchedTodos = [null, null, null];
-      const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());
-=======
     // 1. Get and sets todos to global tmrwTodos variable
     getAndSetTodos();
->>>>>>> Stashed changes
 
     // Set whether tmrw is active, to be returned
     setIsTmrwActiveDay(daysActive[getTmrwDOW()]);
