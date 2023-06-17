@@ -7,17 +7,23 @@
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "test": "jest"
   },
   "engines": {
     "node": "18"
   },
   "main": "index.js",
   "dependencies": {
-    "firebase-admin": "^11.8.0",
-    "firebase-functions": "^4.3.1"
+    "firebase-admin": "^11.9.0",
+    "firebase-functions": "^4.4.1",
+    "jest": "^29.5.0",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
+    "stripe": "^12.9.0"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.2",
     "eslint": "^8.15.0",
     "eslint-config-google": "^0.14.0",
     "firebase-functions-test": "^3.1.0"

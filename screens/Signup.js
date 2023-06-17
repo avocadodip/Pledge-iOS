@@ -90,7 +90,6 @@ const Signup = () => {
         profilePhoto: 1,
         dayStart: "7:30",
         dayEnd: "9:00",
-        dayStartEndLastUpdated: getTodayDateTime(),
         daysActive: {
           Sunday: true,
           Monday: true,
@@ -103,8 +102,10 @@ const Signup = () => {
         vacationModeOn: false,
         theme: "Classic",
         missedTaskFine: 1,
-        totalAmountDue: 0,
         timezone: timeZone,
+        isActiveUser: true,
+        currency: "usd",
+        stripeCustomerId: null
       });
       setLoading(false);
     } catch (error) {

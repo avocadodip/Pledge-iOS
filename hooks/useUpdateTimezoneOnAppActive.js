@@ -11,6 +11,7 @@ export default function useUpdateTimezoneOnAppActive(currentUserID) {
     if (nextAppState === 'active') {
       const newTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+      // If new time zone
       if (newTimezone !== timezone) {
         setTimezone(newTimezone);
 
@@ -19,6 +20,8 @@ export default function useUpdateTimezoneOnAppActive(currentUserID) {
           const userDoc = doc(db, "users", currentUserID);
           await setDoc(userDoc, { timezone: newTimezone }, { merge: true });
         }
+
+        // To add: update dayStart/dayEnd
       }
     }
   };

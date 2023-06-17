@@ -11,6 +11,7 @@ import {
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MenuProvider } from "react-native-popup-menu";
+import { StripeProvider } from '@stripe/stripe-react-native';
 import { useFonts } from "expo-font";
 import Today from "./screens/Today";
 import Onboard1 from "./screens/Onboard1";
@@ -153,15 +154,17 @@ export default function App() {
   if (initializing) {
     return null;
   }
-
+ 
   return (
-    <MenuProvider>
-      <SettingsProvider>
-        <BottomSheetProvider>
-          <AppContent isSignedIn={isSignedIn} />
-        </BottomSheetProvider>
-      </SettingsProvider>
-    </MenuProvider>
+    <StripeProvider publishableKey="pk_test_51Lulh6CNzspyvGyfbvbpkGnt3C12jmuRiUZssraQSUhxWBmdaHvcCwI9jD3JVAY5HEHX10XEUGflGluiscNywvxD002YXGYWyT">
+      <MenuProvider>
+        <SettingsProvider>
+          <BottomSheetProvider>
+            <AppContent isSignedIn={isSignedIn} />
+          </BottomSheetProvider>
+        </SettingsProvider>
+      </MenuProvider>
+    </StripeProvider>
   );
 }
 
