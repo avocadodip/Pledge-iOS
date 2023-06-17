@@ -9,6 +9,10 @@ const Billing = ({navigation}) => {
     navigation.navigate(screenName);
   };
 
+  const handleSaveCard = async () => {
+    
+  };
+
   return (
     <SafeAreaView style={styles.pageContainer}>
       <View style={styles.headerContainer}>

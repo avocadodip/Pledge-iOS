@@ -22,7 +22,6 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
     getNextActiveDay(getTmrwDOW(), daysActive)
   );
 
-
   // Re-run when it hits 12am or daysActive changes
   useEffect(() => {
     // 1. Get and sets todos to global tmrwTodos variable
@@ -82,7 +81,7 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
         };
       }
     }
-
+ 
     // Set state
     setTmrwTodos(fetchedTodos);
   };

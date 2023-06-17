@@ -9,34 +9,39 @@ export const useTodayTodos = (dayChanged) => {
   const { setTodayTodos } = useBottomSheet();
   const { currentUserID } = useSettings();
   const [todayDOWAbbrev, setTodayDOWAbbrev] = useState(getTodayAbbrevDOW());
+  const [dayStart, setDayStart] = useState("");
+  const [dayEnd, setDayEnd] = useState("");
   const [isTodayActiveDay, setIsTodayActiveDay] = useState(true);
+  const [isTodayVacation, setIsTodayVacation] = useState(false);
 
   // Re-run when it hits 12am
   useEffect(() => {
     getAndSetTodos(); 
     setTodayDOWAbbrev(getTodayAbbrevDOW());
   }, [dayChanged]);
-
+ 
   // Function to fetch todos and set global todayTodos object
   const getAndSetTodos = async () => {
     const fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());
+    const todayDoc = await getDoc(todoRef);
 
-    try {
-      const docSnapshot = await getDoc(todoRef);
-      if (docSnapshot.exists()) {
-        const todoData = docSnapshot.data().todos;
-
-        // Here we merge fetched todos with our predefined array
-        // This will overwrite the empty slots with actual todo data
-        for (let i = 0; i < todoData.length; i++) {
-          fetchedTodos[todoData[i].todoNumber - 1] = todoData[i];
+    if (todayDoc.exists()) {
+      // Set data for export
+      const { opensAt, closesAt, isActive, isVacation, todos } = todayDoc.data();
+      setIsTodayActiveDay(isActive);
+      setIsTodayVacation(isVacation); 
+      setDayStart(opensAt);
+      setDayEnd(closesAt);
+      
+      if (todos) {
+        // Merge fetched todos with predefined array
+        for (let i = 0; i < todos.length; i++) {
+          fetchedTodos[todos[i].todoNumber - 1] = todos[i];
         }
-      } else {
-        console.log("Todo document does not exist.");
       }
-    } catch (error) {
-      console.error("Error fetching todos: ", error);
+    } else {
+      console.log("Todo document does not exist.");
     }
 
     // Fill in non-inputted todos with empty data
@@ -58,5 +63,5 @@ export const useTodayTodos = (dayChanged) => {
     setTodayTodos(fetchedTodos);
   };
 
-  return { todayDOWAbbrev, isTodayActiveDay };
+  return { todayDOWAbbrev, dayStart, dayEnd, isTodayActiveDay, isTodayVacation };
 };

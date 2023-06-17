@@ -8,7 +8,7 @@ export const useDayStatus = (dayStart, dayEnd) => {
     useState("");
   const [todayHeaderSubtitleMessage, setTodayHeaderSubtitleMessage] =
     useState("");
-
+ 
   // Set dayChanged to true if new day and update timeStatus
   useEffect(() => {
     const checkDayChange = () => {
