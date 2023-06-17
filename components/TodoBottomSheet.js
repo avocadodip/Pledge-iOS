@@ -38,6 +38,12 @@ export default function TodoBottomSheet() {
     });
   };
 
+  const handleSheetChange = (index) => {
+    if (index === -1) {
+      setIsBottomSheetOpen(false);
+    }
+  }
+
   // Backdrop - when pressed, updates global todo array and closes sheet
   const renderBackdrop = useCallback(
     (props) => (
@@ -66,6 +72,7 @@ export default function TodoBottomSheet() {
       enablePanDownToClose={true}
       backgroundStyle={{ backgroundColor: Color.fervo_red }}
       backdropComponent={renderBackdrop}
+      onChange={handleSheetChange}
       handleComponent={() => (
         <View style={styles.dragHandleContainer}>
           <View style={styles.dragHandle}></View>

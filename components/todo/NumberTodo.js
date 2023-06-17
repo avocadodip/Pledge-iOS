@@ -3,8 +3,8 @@ import { Text, TouchableOpacity } from "react-native";
 import { styles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 
-const NumberTodo = ({ todoNumber, handleNewTodoPress }) => (
-  <TouchableRipple style={styles.numberContainer} onPress={handleNewTodoPress}>
+const NumberTodo = ({ todoNumber, openBottomSheet }) => (
+  <TouchableRipple style={styles.numberContainer} onPress={openBottomSheet}>
     <Text style={styles.numberText}>{todoNumber}</Text>
   </TouchableRipple>
 );

@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import Todo from "../components/todo/Todo";
 import OnboardingPopup from "../components/OnboardingPopup";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
-import { useSettings } from "../hooks/SettingsContext";
 import { useDayStatus } from "../hooks/useDayStatus";
 import { useTodayTodos } from "../hooks/useTodayTodos";
 import VacationMessage from "../components/VacationMessage";
@@ -15,7 +14,7 @@ const renderActiveTodo = (
   { title, description, amount, tag, isComplete },
   index
 ) => (
-  <Todo
+  <Todo 
     key={index + 1}
     todoNumber={index + 1}
     title={title}
@@ -43,10 +42,7 @@ const renderFinedTodo = (index) => (
 
 const Today = () => {
   const { todayTodos } = useBottomSheet();
-
-  // Re-fetch and set todayTodos at 12am
   const { todayDOWAbbrev, dayStart, dayEnd, isTodayActiveDay, isTodayVacation } = useTodayTodos(dayChanged);
-
   const { todayHeaderSubtitleMessage, timeStatus, dayChanged } = useDayStatus(
     dayStart,
     dayEnd

@@ -184,7 +184,7 @@ const Todo = ({
       return (
         <NumberTodo
           todoNumber={todoNumber}
-          handleNewTodoPress={openBottomSheet}
+          openBottomSheet={openBottomSheet}
         />
       );
     case "fined":
