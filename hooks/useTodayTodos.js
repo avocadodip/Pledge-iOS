@@ -13,13 +13,17 @@ export const useTodayTodos = (dayChanged) => {
   const [dayEnd, setDayEnd] = useState("");
   const [isTodayActiveDay, setIsTodayActiveDay] = useState(true);
   const [isTodayVacation, setIsTodayVacation] = useState(false);
+  const [isTodoArrayEmpty, setIsTodoArrayEmpty] = useState(true);
 
   // Re-run when it hits 12am
   useEffect(() => {
-    getAndSetTodos(); 
+    if (currentUserID) {
+      // only runs when currentUserID is defined
+      getAndSetTodos();
+    }
     setTodayDOWAbbrev(getTodayAbbrevDOW());
-  }, [dayChanged]);
- 
+  }, [dayChanged, currentUserID]);
+
   // Function to fetch todos and set global todayTodos object
   const getAndSetTodos = async () => {
     const fetchedTodos = [null, null, null];
@@ -28,12 +32,13 @@ export const useTodayTodos = (dayChanged) => {
 
     if (todayDoc.exists()) {
       // Set data for export
-      const { opensAt, closesAt, isActive, isVacation, todos } = todayDoc.data();
+      const { opensAt, closesAt, isActive, isVacation, todos } =
+        todayDoc.data();
       setIsTodayActiveDay(isActive);
-      setIsTodayVacation(isVacation); 
+      setIsTodayVacation(isVacation);
       setDayStart(opensAt);
       setDayEnd(closesAt);
-      
+
       if (todos) {
         // Merge fetched todos with predefined array
         for (let i = 0; i < todos.length; i++) {
@@ -56,6 +61,15 @@ export const useTodayTodos = (dayChanged) => {
           tag: "",
           isLocked: false,
         };
+      } else {
+        // If any todo has non-empty title, description or amount, set isTodoArrayEmpty to false
+        if (
+          fetchedTodos[i].title !== "" ||
+          fetchedTodos[i].description !== "" ||
+          fetchedTodos[i].amount !== ""
+        ) {
+          setIsTodoArrayEmpty(false);
+        }
       }
     }
 
@@ -63,5 +77,12 @@ export const useTodayTodos = (dayChanged) => {
     setTodayTodos(fetchedTodos);
   };
 
-  return { todayDOWAbbrev, dayStart, dayEnd, isTodayActiveDay, isTodayVacation };
+  return {
+    todayDOWAbbrev,
+    dayStart,
+    dayEnd,
+    isTodayActiveDay,
+    isTodayVacation,
+    isTodoArrayEmpty
+  };
 };

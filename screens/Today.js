@@ -9,41 +9,40 @@ import { useTodayTodos } from "../hooks/useTodayTodos";
 import VacationMessage from "../components/VacationMessage";
 import RestDayMessage from "../components/RestDayMessage";
 import Loading from "../components/Loading";
+import { useSettings } from "../hooks/SettingsContext";
+import { useDayChange } from "../hooks/useDayChange";
 
-const renderActiveTodo = (
+const renderTodo = (
   { title, description, amount, tag, isComplete },
-  index
+  index,
+  timeStatus
 ) => (
-  <Todo 
+  <Todo
     key={index + 1}
     todoNumber={index + 1}
     title={title}
     description={description}
     amount={amount.toString()}
     tag={tag}
-    componentType="check"
+    componentType="today"
     isLocked={null} // null allows check
     isComplete={isComplete}
-  />
-);
-
-const renderFinedTodo = (index) => (
-  <Todo
-    key={index + 1}
-    todoNumber=""
-    title=""
-    description=""
-    amount=""
-    tag=""
-    componentType="fined"
-    isLocked={null}
+    timeStatus={timeStatus}
   />
 );
 
 const Today = () => {
   const { todayTodos } = useBottomSheet();
-  const { todayDOWAbbrev, dayStart, dayEnd, isTodayActiveDay, isTodayVacation } = useTodayTodos(dayChanged);
-  const { todayHeaderSubtitleMessage, timeStatus, dayChanged } = useDayStatus(
+  const { dayChanged } = useDayChange();
+  const {
+    todayDOWAbbrev,
+    dayStart,
+    dayEnd,
+    isTodayActiveDay,
+    isTodayVacation,
+    isTodoArrayEmpty,
+  } = useTodayTodos(dayChanged);
+  const { todayHeaderSubtitleMessage, timeStatus } = useDayStatus(
     dayStart,
     dayEnd
   );
@@ -51,18 +50,9 @@ const Today = () => {
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
   const renderTodos = useCallback(() => {
     return todayTodos.map((todo, index) => {
-      if (todo.title !== "") {
-        return renderActiveTodo(todo, index);
-      } else {
-        return renderFinedTodo(index);
-      }
+      return renderTodo(todo, index, timeStatus);
     });
-  }, [todayTodos, dayChanged]);
-
-  // Loading indicator (replace with skeleton ui, also add in transitions)
-  // if (loading) {
-  //   return <Loading />;
-  // }
+  }, [todayTodos, timeStatus]);
 
   return (
     <SafeAreaView style={styles.pageContainer}>
@@ -76,7 +66,7 @@ const Today = () => {
           <Text style={styles.headerDayOfWeek}>{todayDOWAbbrev}</Text>
         </View>
 
-        {!isTodayVacation && isTodayActiveDay && (
+        {!isTodayVacation && isTodayActiveDay && !isTodoArrayEmpty && (
           <Text style={styles.headerSubtitle}>
             {todayHeaderSubtitleMessage}
           </Text>

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { styles } from "./TodoStyles";
-import { renderLockStatus } from "./RenderLockStatus";
+// import { renderLockStatus } from "./RenderLockStatus";
 
 const OnboardTodo = ({ todoNumber, isTodoLocked, handleLockTodo }) => {
   <View style={[styles.infoContainer, { height: 86 }]}>
@@ -26,10 +26,10 @@ const OnboardTodo = ({ todoNumber, isTodoLocked, handleLockTodo }) => {
         </View>
       </View>
     </View>
-    <RenderLockStatus
+    {/* <RenderLockStatus
       isTodoLocked={isTodoLocked}
       handleLockTodo={handleLockTodo}
-    />
+    /> */}
   </View>;
 };
 export default OnboardTodo;

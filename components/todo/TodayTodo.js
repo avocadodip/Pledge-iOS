@@ -11,7 +11,7 @@ import Animated, {
 import TouchableRipple from "../TouchableRipple";
  
 // Animation constants
-const OPEN_DURATION = 100;
+const OPEN_DURATION = 100; 
 const CLOSE_DURATION = 150;
 
 const TodayTodo = ({
@@ -23,6 +23,7 @@ const TodayTodo = ({
   isTodoComplete,
   handleOpenBottomSheet,
   handleCheckTodo,
+  timeStatus
 }) => {
   const leftFlex = useSharedValue(8);
   const rightFlex = useSharedValue(2);
@@ -59,7 +60,11 @@ const TodayTodo = ({
     flex: withTiming(rightFlex.value, { duration: OPEN_DURATION }),
   }));
 
-  // JSX
+  // Before day, show disabled today todos with moon icon
+
+  // After day, show disabled check state OR disabled failed todo with info icon
+
+  // During day, show the following:
   return (
     <View style={[styles.infoContainer]}>
       {/* Left side */}

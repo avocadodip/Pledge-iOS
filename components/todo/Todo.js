@@ -11,8 +11,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../../database/firebase";
 import {
-  formatDayEnd,
-  formatDayStart,
   getTmrwDate,
   getTodayDate,
   getTodayDateTime,
@@ -20,7 +18,6 @@ import {
 import { useSettings } from "../../hooks/SettingsContext";
 import NumberTodo from "./NumberTodo";
 import FinedTodo from "./FinedTodo";
-import InfoTodo from "./TodayTodo";
 import OnboardTodo from "./OnboardTodo";
 import TodayTodo from "./TodayTodo";
 import TmrwTodo from "./TmrwTodo";
@@ -31,16 +28,14 @@ const Todo = ({
   description,
   amount,
   tag,
-  componentType,
   isLocked,
   isComplete,
+  timeStatus,
+  componentType,
 }) => {
-  const [isTodoLocked, setIsTodoLocked] = useState(null);
+  const [updatedIsLocked, setUpdatedIsLocked] = useState(null);
   const [isTodoComplete, setIsTodoComplete] = useState(null);
-  const {
-    settings: { dayStart, dayEnd },
-    currentUserID,
-  } = useSettings();
+  const { currentUserID } = useSettings();
   const {
     setIsBottomSheetOpen,
     setSelectedTodo,
@@ -49,7 +44,7 @@ const Todo = ({
   } = useBottomSheet();
 
   useEffect(() => {
-    setIsTodoLocked(isLocked);
+    setUpdatedIsLocked(isLocked);
     setIsTodoComplete(isComplete);
   }, [isLocked, isComplete]);
 
@@ -62,10 +57,10 @@ const Todo = ({
       description,
       amount,
       tag,
-      isTodoLocked,
+      // updatedIsTodoComplete,
     });
     // Set sheet editable and open
-    if (isTodoLocked == null || isTodoLocked == true) {
+    if (updatedIsLocked == true) {
       // (isLocked == null on today page)
       setIsBottomSheetEditable(false);
     } else {
@@ -113,8 +108,6 @@ const Todo = ({
           todos: [newTodo],
           totalTodos: 1,
           totalFine: 0,
-          opensAt: formatDayStart(dayStart),
-          closesAt: formatDayEnd(dayEnd),
         });
       } else {
         // If the document exists, update it
@@ -122,8 +115,6 @@ const Todo = ({
           todos: arrayUnion(newTodo),
           totalTodos: increment(1),
           totalFine: 0,
-          opensAt: formatDayStart(dayStart),
-          closesAt: formatDayEnd(dayEnd),
         });
       }
     })
@@ -135,7 +126,7 @@ const Todo = ({
       });
 
     // Update icon
-    setIsTodoLocked(true);
+    setUpdatedIsLocked(true);
   };
 
   // Show alert and open bottom sheet
@@ -180,49 +171,63 @@ const Todo = ({
 
   // Render todo based on component type
   switch (componentType) {
-    case "number":
-      return (
-        <NumberTodo
-          todoNumber={todoNumber}
-          openBottomSheet={openBottomSheet}
-        />
-      );
-    case "fined":
-      return <FinedTodo />;
-    case "check":
-      return (
-        <TodayTodo
-          todoNumber={todoNumber}
-          title={title}
-          description={description}
-          amount={amount}
-          tag={tag}
-          isTodoComplete={isTodoComplete}
-          handleOpenBottomSheet={openBottomSheet}
-          handleCheckTodo={handleCheckTodo}
-        />
-      );
-    case "lock":
-      return (
-        <TmrwTodo
-          todoNumber={todoNumber}
-          title={title}
-          description={description}
-          amount={amount}
-          tag={tag}
-          isTodoLocked={isTodoLocked}
-          handleOpenBottomSheet={openBottomSheet}
-          handleLockTodo={handleLockTodo}
-        />
-      );
-    case "onboard":
-      return (
-        <OnboardTodo
-          todoNumber={todoNumber}
-          isTodoLocked={isTodoLocked}
-          handleLockTodo={handleLockTodo}
-        />
-      );
+    case "today":
+      if (title === "") {
+        return <FinedTodo />;
+      } else {
+        return (
+          <TodayTodo
+            todoNumber={todoNumber}
+            title={title}
+            description={description}
+            amount={amount}
+            tag={tag}
+            isTodoComplete={isTodoComplete}
+            handleOpenBottomSheet={openBottomSheet}
+            handleCheckTodo={handleCheckTodo}
+            timeStatus={timeStatus}
+          />
+        );
+      }
+    case "tmrw":
+      if (title === "") {
+        if (timeStatus == 0 || timeStatus == 1) {
+          // before or during day
+          return (
+            <NumberTodo
+              todoNumber={todoNumber}
+              openBottomSheet={openBottomSheet}
+              timeStatus={timeStatus}
+            />
+          );
+        } else if (timeStatus == 2) {
+          // after day
+          return <FinedTodo />;
+        }
+      } else {
+        return (
+          <TmrwTodo
+            todoNumber={todoNumber}
+            title={title}
+            description={description}
+            amount={amount}
+            tag={tag}
+            isLocked={updatedIsLocked}
+            handleOpenBottomSheet={openBottomSheet}
+            handleLockTodo={handleLockTodo}
+            timeStatus={timeStatus}
+          />
+        );
+      }
+
+    // case "onboard":
+    //   return (
+    //     <OnboardTodo
+    //       todoNumber={todoNumber}
+    //       isTodoLocked={isTodoLocked}
+    //       handleLockTodo={handleLockTodo}
+    //     />
+    //   );
     default:
       return null;
   }

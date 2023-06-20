@@ -103,41 +103,16 @@ export const getTmrwDate = () => {
 };
 
 // 3 - returns "20221231" if today is January 1, 2023
-export const getYesterdayDate = () => {
-  const todayDate = new Date();
-  const yesterDate = new Date();
-  yesterDate.setDate(todayDate.getDate() - 1);
-  const dateTime =
-    yesterDate.getFullYear() +
-    ("0" + (yesterDate.getMonth() + 1)).slice(-2) +
-    ("0" + yesterDate.getDate()).slice(-2);
-  return dateTime;
-};
-
-export const getTimeStatus = (dayStart, dayEnd) => {
-  const now = new Date();
-  const currentHours = now.getHours();
-  const currentMinutes = now.getMinutes();
-  const [startHours, startMinutes] = dayStart.split(":").map(Number);
-
-  // convert endHours to 24-hour format if it's meant to be PM
-  let [endHours, endMinutes] = dayEnd.split(":").map(Number);
-  endHours = endHours < 12 ? endHours + 12 : endHours;
-
-  if (
-    currentHours < startHours ||
-    (currentHours === startHours && currentMinutes < startMinutes)
-  ) {
-    return 0; // before day start
-  } else if (
-    currentHours < endHours ||
-    (currentHours === endHours && currentMinutes < endMinutes)
-  ) {
-    return 1; // between day start and day end
-  } else {
-    return 2; // after day end
-  }
-};
+// export const getYesterdayDate = () => {
+//   const todayDate = new Date();
+//   const yesterDate = new Date();
+//   yesterDate.setDate(todayDate.getDate() - 1);
+//   const dateTime =
+//     yesterDate.getFullYear() +
+//     ("0" + (yesterDate.getMonth() + 1)).slice(-2) +
+//     ("0" + yesterDate.getDate()).slice(-2);
+//   return dateTime;
+// };
 
 // 5 - today.svelte
 // given "10:00"(pm), returns timestamp of next @ 10pm (could be today or tmrw)

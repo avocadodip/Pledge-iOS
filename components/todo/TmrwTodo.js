@@ -1,21 +1,24 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 import { styles } from "./TodoStyles";
 import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
-import RenderLockStatus from "./RenderLockStatus";
+import RenderTmrwLock from "./RenderTmrwLock.js";
 import TouchableRipple from "../TouchableRipple";
 
 
 const TmrwTodo = ({
   todoNumber,
   title,
-  description,
+  description, 
   amount,
   tag,
-  isTodoLocked,
+  isLocked,
   handleOpenBottomSheet,
   handleLockTodo,
+  timeStatus
 }) => {
-  // JSX
+  // After day end, show disabled locked todos:
+
+  // During day: Show editable locked or unlocked tmrw todo:
   return (
     <View style={[styles.infoContainer]}>
       <TouchableRipple
@@ -57,8 +60,8 @@ const TmrwTodo = ({
           )}
         </View>
       </TouchableRipple>
-      <RenderLockStatus
-        isTodoLocked={isTodoLocked}
+      <RenderTmrwLock
+        isLocked={isLocked}
         handleLockTodo={handleLockTodo}
         todoNumber={todoNumber}
       />

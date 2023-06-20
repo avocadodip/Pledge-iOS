@@ -61,7 +61,7 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
   // Get time zones where current time is between 11:45pm and 12:00am
   const desiredTimeZones = timeZones.filter((tz) => {
     const currentTime = moment().tz(tz).format("HH:mm");
-    return (currentTime >= "12:00" && currentTime <= "13:00");
+    return (currentTime >= "10:00" && currentTime <= "24:00");
   });
 
   const db = admin.firestore();

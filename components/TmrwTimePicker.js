@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
@@ -10,23 +10,28 @@ import { db } from "../database/firebase";
 const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
 
-const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd }) => {
+const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd, altMessage }) => {
   const [isModalVisible, setModalVisible] = useState({
     start: false,
     end: false,
   });
-
   const [selectedTime, setSelectedTime] = useState({
     start: dayStart,
     end: dayEnd,
   });
+
+  useEffect(() => {
+    if (dayStart && dayEnd) {
+      setSelectedTime({ start: dayStart, end: dayEnd });
+    }
+  }, [dayStart, dayEnd]); // won't show on intial load otherwise
+
   const [tempTime, setTempTime] = useState({
     startHour: dayStart.split(":")[0],
     startMinute: dayStart.split(":")[1],
     endHour: dayEnd.split(":")[0],
     endMinute: dayEnd.split(":")[1],
   });
-  2;
 
   const toggleModal = (period) => {
     setModalVisible((prev) => ({ ...prev, [period]: !prev[period] }));
@@ -48,7 +53,11 @@ const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd }) => {
     <View>
       {/* HEADER MESSAGE LINE */}
       <View style={styles.headerMessageContainer}>
-        <Text style={styles.headerMessageText}>Tasks will open at </Text>
+        {altMessage ? (
+          <Text style={styles.headerMessageText}>Day will open at </Text>
+        ) : (
+          <Text style={styles.headerMessageText}>Tasks will open at</Text>
+        )}
         <TouchableOpacity
           style={styles.headerButton}
           onPress={() => toggleModal("start")}

@@ -1,34 +1,41 @@
 import { useEffect, useState } from "react";
-import { getTimeStatus } from "../utils/currentDate";
+import { dayChanged } from "./useDayChange";
+
+const getTimeStatus = (dayStart, dayEnd) => {
+  const now = new Date();
+  const currentHours = now.getHours();
+  const currentMinutes = now.getMinutes();
+  const [startHours, startMinutes] = dayStart.split(":").map(Number);
+
+  // convert endHours to 24-hour format if it's meant to be PM
+  let [endHours, endMinutes] = dayEnd.split(":").map(Number);
+  endHours = endHours < 12 ? endHours + 12 : endHours;
+
+  if (
+    currentHours < startHours ||
+    (currentHours === startHours && currentMinutes < startMinutes)
+  ) {
+    return 0; // before day start
+  } else if (
+    currentHours < endHours ||
+    (currentHours === endHours && currentMinutes < endMinutes)
+  ) {
+    return 1; // between day start and day end
+  } else {
+    return 2; // after day end
+  }
+};
 
 export const useDayStatus = (dayStart, dayEnd) => {
   const [timeStatus, setTimeStatus] = useState(getTimeStatus(dayStart, dayEnd));
-  const [dayChanged, setDayChanged] = useState(false);
   const [tmrwHeaderSubtitleMessage, setTmrwHeaderSubtitleMessage] =
     useState("");
   const [todayHeaderSubtitleMessage, setTodayHeaderSubtitleMessage] =
     useState("");
- 
-  // Set dayChanged to true if new day and update timeStatus
+
   useEffect(() => {
-    const checkDayChange = () => {
-      const now = new Date();
-      const currentDay = now.getDate();
-      const isNewDay = dayChanged !== currentDay;
-      setDayChanged(isNewDay); // true if day changes
-
-      setTimeStatus(getTimeStatus(dayStart, dayEnd));
-    };
-
-    // initial call to set the correct values
-    checkDayChange();
-
-    // check day change every second
-    const timerId = setInterval(checkDayChange, 1000);
-
-    // cleanup on component unmount
-    return () => clearInterval(timerId);
-  }, [dayStart, dayEnd, dayChanged]);
+    setTimeStatus(getTimeStatus(dayStart, dayEnd));
+  }, [dayStart, dayEnd]);
 
   useEffect(() => {
     // Change message when timeStatus or dayChanged changes
@@ -45,11 +52,11 @@ export const useDayStatus = (dayStart, dayEnd) => {
         setTmrwHeaderSubtitleMessage(`Locked @ ${dayEnd} PM`);
         setTodayHeaderSubtitleMessage(`Ended @ ${dayEnd} PM`);
         break;
-        default:
-          setTmrwHeaderSubtitleMessage("");
-          setTodayHeaderSubtitleMessage("");
+      default:
+        setTmrwHeaderSubtitleMessage("");
+        setTodayHeaderSubtitleMessage("");
     }
   }, [timeStatus, dayChanged]);
 
-  return { todayHeaderSubtitleMessage, tmrwHeaderSubtitleMessage, timeStatus, dayChanged };
+  return { todayHeaderSubtitleMessage, tmrwHeaderSubtitleMessage, timeStatus };
 };

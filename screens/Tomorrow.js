@@ -1,6 +1,6 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback } from "react";
 import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
@@ -9,12 +9,14 @@ import { useDayStatus } from "../hooks/useDayStatus";
 import { useTmrwTodos } from "../hooks/useTmrwTodos";
 import VacationMessage from "../components/VacationMessage";
 import RestDayMessage from "../components/RestDayMessage";
-import TouchableRipple from "../components/TouchableRipple";
 import TmrwTimePicker from "../components/TmrwTimePicker";
+import { useTodayTodos } from "../hooks/useTodayTodos";
+import { useDayChange } from "../hooks/useDayChange";
 
-const renderLockedTodo = (
-  { title, description, amount, tag, isLocked, isTodoLocked },
-  index
+const renderTodo = (
+  { title, description, amount, tag, isLocked },
+  index,
+  timeStatus
 ) => (
   <Todo
     key={index + 1}
@@ -23,67 +25,31 @@ const renderLockedTodo = (
     description={description}
     amount={amount.toString()}
     tag={tag}
-    componentType="lock"
-    isLocked={isLocked || isTodoLocked}
-  />
-);
-
-const renderNewTodo = (index) => (
-  <Todo
-    key={index + 1}
-    todoNumber={index + 1}
-    componentType="number"
-    title=""
-    description=""
-    amount="3"
-    tag=""
-    isLocked={false}
-  />
-);
-
-const renderFinedTodo = (index) => (
-  <Todo
-    key={index + 1}
-    todoNumber=""
-    title=""
-    description=""
-    amount=""
-    tag=""
-    componentType="fined"
-    isLocked={null}
+    componentType="tmrw"
+    isLocked={isLocked}
+    timeStatus={timeStatus}
   />
 );
 
 const Tomorrow = () => {
   const { tmrwTodos } = useBottomSheet();
   const {
-    settings: { dayStart, dayEnd, vacationModeOn, daysActive },
+    settings: { vacationModeOn, daysActive },
     currentUserID,
   } = useSettings();
-
-  // Realtime detection of if it's 12am, and if it's before, during, after day window
-  const { tmrwHeaderSubtitleMessage, dayChanged, timeStatus } = useDayStatus(
+  const { dayChanged } = useDayChange();
+  const { dayStart, dayEnd } = useTodayTodos(dayChanged);
+  const { tmrwHeaderSubtitleMessage, timeStatus } = useDayStatus(
     dayStart,
     dayEnd
   );
-
-  // Re-fetches and sets tmrwTodos, and processes daysActive
-  const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay } = useTmrwTodos(
-    dayChanged,
-    daysActive
-  );
+  const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty } =
+    useTmrwTodos(dayChanged, daysActive);
 
   const renderTodos = useCallback(() => {
     // Map through three todos and render them based on their content
     return tmrwTodos.map((todo, index) => {
-      if (todo.title !== "") {
-        return renderLockedTodo(todo, index);
-      } else if (todo.title == "") {
-        // edit
-        return renderNewTodo(index);
-      } else {
-        return renderFinedTodo(index);
-      }
+      return renderTodo(todo, index, timeStatus);
     });
   }, [tmrwTodos, dayChanged, timeStatus]);
 
@@ -99,15 +65,29 @@ const Tomorrow = () => {
           <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
         </View>
         {!vacationModeOn && isTmrwActiveDay && (
-          <View>
+          <View> 
             <Text style={styles.headerSubtitle}>
               {tmrwHeaderSubtitleMessage}
             </Text>
-            <TmrwTimePicker
-              currentUserID={currentUserID}
-              dayStart={dayStart}
-              dayEnd={dayEnd}
-            />
+            {
+              // Show a different time picker message if day has ended and no tasks inputted
+              // Instead of tasks will open from...to..., day will start at...to...
+              timeStatus == 2 && isTodoArrayEmpty ? (
+                <TmrwTimePicker
+                  currentUserID={currentUserID}
+                  dayStart={dayStart}
+                  dayEnd={dayEnd}
+                  altMessage={true}
+                />
+              ) : (
+                <TmrwTimePicker
+                  currentUserID={currentUserID}
+                  dayStart={dayStart}
+                  dayEnd={dayEnd}
+                  altMessage={false}
+                />
+              )
+            }
           </View>
         )}
       </View>
@@ -120,7 +100,7 @@ const Tomorrow = () => {
         <View style={styles.todoContainer}>{renderTodos()}</View>
       )}
     </SafeAreaView>
-  );
+  ); 
 };
 
 const styles = StyleSheet.create({

@@ -4,7 +4,7 @@ import { getDoc, doc } from "firebase/firestore";
 import {
   getNextActiveDay,
   getTmrwAbbrevDOW,
-  getTmrwDOW, 
+  getTmrwDOW,
   getTmrwDate,
 } from "../utils/currentDate";
 import { useBottomSheet } from "./BottomSheetContext";
@@ -21,6 +21,7 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
   const [nextActiveDay, setNextActiveDay] = useState(
     getNextActiveDay(getTmrwDOW(), daysActive)
   );
+  const [isTodoArrayEmpty, setIsTodoArrayEmpty] = useState(true);
 
   // Re-run when it hits 12am or daysActive changes
   useEffect(() => {
@@ -29,8 +30,6 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
 
     // Set whether tmrw is active, to be returned
     setIsTmrwActiveDay(daysActive[getTmrwDOW()]);
-
-
 
     // Set DOW of next active day, to be returned
     setNextActiveDay(getNextActiveDay(getTmrwDOW(), daysActive));
@@ -45,7 +44,7 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
     setNextActiveDay(getNextActiveDay(getTmrwDOW(), daysActive));
   }, [daysActive]);
 
-  // 1. 
+  // 1.
   const getAndSetTodos = async () => {
     const fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
@@ -55,13 +54,13 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
       if (docSnapshot.exists()) {
         const todoData = docSnapshot.data().todos;
 
-        // Here we merge fetched todos with our predefined array
-        // This will overwrite the empty slots with actual todo data
-        for (let i = 0; i < todoData.length; i++) {
-          fetchedTodos[todoData[i].todoNumber - 1] = todoData[i];
+        if (todoData) {
+          for (let i = 0; i < todoData.length; i++) {
+            fetchedTodos[todoData[i].todoNumber - 1] = todoData[i];
+          }
         }
       } else {
-        console.log("Todo document does not exist.");
+        console.log("Todo document does not exist."); 
       }
     } catch (error) {
       console.error("Error fetching todos: ", error);
@@ -78,13 +77,22 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
           amount: "",
           tag: "",
           isLocked: false,
-        };
+        }; 
+      } else {
+        // If any todo has non-empty title, description or amount, set isTodoArrayEmpty to false
+        if (
+          fetchedTodos[i].title !== "" ||
+          fetchedTodos[i].description !== "" ||
+          fetchedTodos[i].amount !== ""
+        ) {
+          setIsTodoArrayEmpty(false);
+        }
       }
     }
- 
+
     // Set state
     setTmrwTodos(fetchedTodos);
   };
 
-  return { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay };
+  return { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty };
 };
