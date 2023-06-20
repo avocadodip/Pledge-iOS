@@ -56,7 +56,7 @@ export const useDayStatus = (dayStart, dayEnd) => {
         setTmrwHeaderSubtitleMessage("");
         setTodayHeaderSubtitleMessage("");
     }
-  }, [timeStatus, dayChanged]);
+  }, [timeStatus, dayChanged, dayStart, dayEnd]);
 
   return { todayHeaderSubtitleMessage, tmrwHeaderSubtitleMessage, timeStatus };
 };

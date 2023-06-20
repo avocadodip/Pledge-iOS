@@ -60,8 +60,7 @@ const Todo = ({
       // updatedIsTodoComplete,
     });
     // Set sheet editable and open
-    if (updatedIsLocked == true) {
-      // (isLocked == null on today page)
+    if (updatedIsLocked == true || componentType == "today") {
       setIsBottomSheetEditable(false);
     } else {
       setIsBottomSheetEditable(true);

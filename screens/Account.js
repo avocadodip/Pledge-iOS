@@ -62,18 +62,7 @@ const Account = ({ navigation }) => {
           autoCapitalize="none"
         ></TextInput>
       </View>
-      <View style={styles.preferenceContainer}>
-        <Text style={styles.preferenceTitle}> Time Zone </Text>
-        {/* <TextInput
-          value={Intl.DateTimeFormat().resolvedOptions().timeZone}
-          style={styles.preferenceInput}
-          placeholder="America/Chicago"
-          placeholderTextColor={Color.faint_white}
-          autoCorrect={false}
-          autoCapitalize="none"
-        ></TextInput> */}
-        <TimezoneSelector timezone={timezone} />
-      </View>
+
 
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Days Active </Text>
@@ -81,15 +70,6 @@ const Account = ({ navigation }) => {
           <DaysActiveToggle
             currentUserID={currentUserID}
             daysActive={daysActive}
-          />
-        </View>
-      </View>
-      <View style={styles.preferenceContainer}>
-        <Text style={styles.preferenceTitle}> Vacation </Text>
-        <View style={styles.preferenceRightContainer}>
-          <VacationToggle
-            currentUserID={currentUserID}
-            vacationModeOn={vacationModeOn}
           />
         </View>
       </View>

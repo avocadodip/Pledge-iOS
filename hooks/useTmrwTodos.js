@@ -73,8 +73,8 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
           id: i,
           todoNumber: i + 1,
           title: "",
-          description: "",
-          amount: "",
+          description: "", 
+          amount: "3",
           tag: "",
           isLocked: false,
         }; 
@@ -89,7 +89,7 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
         }
       }
     }
-
+    console.log(fetchedTodos);
     // Set state
     setTmrwTodos(fetchedTodos);
   };

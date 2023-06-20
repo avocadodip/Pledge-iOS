@@ -23,7 +23,7 @@ const Billing = ({navigation}) => {
               color={Color.white}
           />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Billing</Text>
+        <Text style={styles.headerTitle}>Add Payment Method</Text>
       </View>
         <CardField
           postalCodeEnabled={true}

@@ -56,7 +56,7 @@ const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd, altMessage }) => {
         {altMessage ? (
           <Text style={styles.headerMessageText}>Day will open at </Text>
         ) : (
-          <Text style={styles.headerMessageText}>Tasks will open at</Text>
+          <Text style={styles.headerMessageText}>Tasks will open at </Text>
         )}
         <TouchableOpacity
           style={styles.headerButton}
