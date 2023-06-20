@@ -63,16 +63,6 @@ const Account = ({ navigation }) => {
         ></TextInput>
       </View>
 
-
-      <View style={styles.preferenceContainer}>
-        <Text style={styles.preferenceTitle}> Days Active </Text>
-        <View style={styles.preferenceRightContainer}>
-          <DaysActiveToggle
-            currentUserID={currentUserID}
-            daysActive={daysActive}
-          />
-        </View>
-      </View>
       <View style={styles.preferenceContainer}>
         <DeleteAccountButton currentUserID={currentUserID} />
       </View>

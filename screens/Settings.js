@@ -8,24 +8,42 @@ import CreditCardIcon from "../assets/icons/credit-card.svg";
 import LogoutIcon from "../assets/icons/logout.svg";
 import SunThemeIcon from "../assets/icons/sun-theme-icon.svg";
 import GlobeIcon from "../assets/icons/globe-icon.svg";
-import TrashBinIcon from "../assets/icons/trash-bin-icon.svg";
 import PlaneIcon from "../assets/icons/vacation-plane-icon.svg";
+import DaysActiveIcon from "../assets/icons/days-active-icon.svg";
 
 import OnboardingPopup from "../components/OnboardingPopup";
 import TouchableRipple from "../components/TouchableRipple";
-import React from "react";
+import React, { useState } from "react";
 import { auth } from "../database/firebase";
 import ThemeToggle from "../components/ThemeToggle";
-import ToggleSwitch from "toggle-switch-react-native";
+import DaysActiveModal from "../components/DaysActiveModal";
 
 import { useSettings } from "../hooks/SettingsContext";
 import VacationToggle from "../components/VacationToggle";
 
 const Settings = ({ navigation }) => {
   const {
-    settings: { vacationModeOn, timezone },
+    settings: { daysActive, vacationModeOn, timezone },
     currentUserID,
   } = useSettings();
+
+  const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
+  const buttonTexts = ["S", "M", "T", "W", "T", "F", "S"];
+  const dayKeys = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const handleOpenDaysActiveModal = (action) => {
+    if (action == true) {
+      setDaysActiveModalVisible(true);
+    } else setDaysActiveModalVisible(false);
+  };
 
   const handlePress = (screenName) => {
     navigation.navigate(screenName);
@@ -83,24 +101,45 @@ const Settings = ({ navigation }) => {
               <RightChevronIcon width={24} height={24} color={Color.white} />
             </View>
           </TouchableRipple>
-          {/* TIMEZONE */}
-          <View style={styles.button}>
+          {/* DAYS ACTIVE */}
+          <TouchableRipple
+            style={styles.button}
+            onPress={() => handleOpenDaysActiveModal(true)}
+          >
             <View style={styles.leftSettingsButton}>
-              <GlobeIcon width={25} height={25} color={Color.white} />
-              <Text style={styles.buttonTitle}>Time Zone</Text>
+              <DaysActiveIcon width={25} height={25} color={Color.white} />
+              <Text style={styles.buttonTitle}>Days Active</Text>
             </View>
-            <Text style={styles.rightSideText}>{timezone}</Text>
-          </View>
-          {/* THEME */}
-          <View style={styles.button}>
-            <View style={styles.leftSettingsButton}>
-              <SunThemeIcon width={25} height={25} color={Color.white} />
-              <Text style={styles.buttonTitle}>Theme</Text>
+
+            <View style={styles.chevronContainer}>
+              <View style={styles.daysOfWeekTextContainer}>
+                {dayKeys.map((dayKey, index) => (
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: daysActive[dayKey]
+                        ? "rgba(255, 255, 255, 1)"
+                        : "rgba(255, 255, 255, 0.5)",
+                      fontWeight: daysActive[dayKey]
+                        ? 500
+                        : 400,
+                      opacity: 0.8,
+                    }}
+                    key={index}
+                  >
+                    {buttonTexts[index]}
+                  </Text>
+                ))}
+              </View>
+              <RightChevronIcon width={24} height={24} color={Color.white} />
             </View>
-            <View style={styles.rightSettingsButton}>
-              <ThemeToggle />
-            </View>
-          </View>
+          </TouchableRipple>
+          <DaysActiveModal
+            currentUserID={currentUserID}
+            daysActive={daysActive}
+            isVisible={daysActiveModalVisible}
+            handleToggleModal={handleOpenDaysActiveModal}
+          />
           {/* VACATION */}
           <View style={styles.button}>
             <View style={styles.leftSettingsButton}>
@@ -114,25 +153,43 @@ const Settings = ({ navigation }) => {
               />
             </View>
           </View>
+          {/* THEME */}
+          <View style={styles.button}>
+            <View style={styles.leftSettingsButton}>
+              <SunThemeIcon width={25} height={25} color={Color.white} />
+              <Text style={styles.buttonTitle}>Theme</Text>
+            </View>
+            <View style={styles.rightSettingsButton}>
+              <ThemeToggle />
+            </View>
+          </View>
+          {/* TIMEZONE */}
+          <View style={styles.button}>
+            <View style={styles.leftSettingsButton}>
+              <GlobeIcon width={25} height={25} color={Color.white} />
+              <Text style={styles.buttonTitle}>Time Zone</Text>
+            </View>
+            <Text style={styles.rightSideText}>{timezone}</Text>
+          </View>
         </View>
       </View>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionHeaderText}>Account</Text>
       </View>
       <View style={styles.sectionContainer}>
+        {/* LOGOUT */}
         <TouchableRipple
           style={styles.button}
           onPress={() => handlePress("Account")}
         >
           <View style={styles.leftSettingsButton}>
             <UserCircleIcon width={24} height={24} color={Color.white} />
-            <Text style={styles.buttonTitle}>Change Email</Text>
+            <Text style={styles.buttonTitle}>Account</Text>
           </View>
           <View style={styles.chevronContainer}>
             <RightChevronIcon width={24} height={24} color={Color.white} />
           </View>
         </TouchableRipple>
-        {/* LOGOUT */}
         <TouchableRipple style={styles.button} onPress={handleLogout}>
           <View style={styles.leftSettingsButton}>
             <LogoutIcon width={24} height={24} color={Color.white} />
@@ -140,12 +197,12 @@ const Settings = ({ navigation }) => {
           </View>
         </TouchableRipple>
         {/* DELETE ACCOUNT */}
-        <TouchableRipple style={styles.button} onPress={handleLogout}>
+        {/* <TouchableRipple style={styles.button} onPress={handleLogout}>
           <View style={styles.leftSettingsButton}>
             <TrashBinIcon width={24} height={24} color={Color.white} />
             <Text style={styles.buttonTitle}>Delete Account</Text>
           </View>
-        </TouchableRipple>
+        </TouchableRipple> */}
       </View>
     </SafeAreaView>
   );
@@ -184,7 +241,7 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     width: "100%",
-    marginTop: 35,
+    marginTop: 30,
     marginBottom: 10,
   },
   sectionHeaderText: {
@@ -195,7 +252,10 @@ const styles = StyleSheet.create({
     marginLeft: 23,
   },
   chevronContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 7,
+    gap: 16
   },
   button: {
     paddingLeft: 21,
@@ -215,6 +275,10 @@ const styles = StyleSheet.create({
     fontSize: 17,
     marginLeft: 21,
     fontWeight: 500,
+  },
+  daysOfWeekTextContainer: {
+    flexDirection: "row",
+    gap: 4
   },
   rightSideText: {
     fontSize: 15,
