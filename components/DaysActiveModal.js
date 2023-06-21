@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 40,
-    gap: 10,
+    gap: 18,
   },
   dayContainer: {
     flexDirection: "row",
@@ -164,8 +164,12 @@ const styles = StyleSheet.create({
   },
   dayText: {
     width: 60,
-    fontSize: 18,
+    fontSize: 19,
     color: Color.white,
+  },
+  checkbox: {
+    transform: [{ scale: 1.2 }], // checkbox size
+    borderRadius: 3,
   },
 });
 

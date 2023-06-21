@@ -22,7 +22,7 @@ const getTimeStatus = (dayStart, dayEnd) => {
   ) {
     return 1; // between day start and day end
   } else {
-    return 2; // after day end
+    return 2; // after day end 
   }
 };
 

@@ -2,7 +2,7 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Color } from "../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
-import LeftArrowIcon from "../assets/icons/arrow-left.svg";
+import LeftChevronIcon from "../assets/icons/chevron-left.svg";
 
 import { TouchableOpacity } from "react-native-gesture-handler";
 import DaysActiveToggle from "../components/DaysActiveToggle";
@@ -12,6 +12,7 @@ import VacationToggle from "../components/VacationToggle";
 import ThemeToggle from "../components/ThemeToggle";
 import TimezoneSelector from "../components/TimezoneSelector";
 import DeleteAccountButton from "../components/DeleteAccountButton";
+import SettingsHeader from "../components/SettingsHeader";
 
 const Account = ({ navigation }) => {
   const {
@@ -21,12 +22,6 @@ const Account = ({ navigation }) => {
     settings: { dayStart, dayEnd, vacationModeOn, theme, daysActive, timezone },
   } = useSettings();
 
-
-
-  const handlePress = (screenName) => {
-    navigation.navigate(screenName);
-  };
-
   return (
     <SafeAreaView style={styles.pageContainer}>
       {/* <OnboardingPopup
@@ -34,12 +29,8 @@ const Account = ({ navigation }) => {
         buttonTitle="Let's give this one more go!"
         secondButtonTitle="Yes, delete my account."
       /> */}
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => handlePress("SettingsScreen")}>
-          <LeftArrowIcon width={24} height={24} color={Color.white} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Account</Text>
-      </View>
+      <SettingsHeader navigation={navigation} header={"Account"} />
+
       {/* <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Name </Text>
         <TextInput
@@ -77,22 +68,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     marginHorizontal: 20,
-    // borderWidth: 1,
-    // borderColor: 'black',
-  },
-  headerContainer: {
-    paddingTop: 20,
-    paddingLeft: 20,
-    width: "100%",
-    flexDirection: "row",
-    marginBottom: 20,
-    // borderWidth: 1,
-    // borderColor: 'black',
-  },
-  headerTitle: {
-    color: Color.white,
-    fontSize: 20,
-    marginLeft: 24,
     // borderWidth: 1,
     // borderColor: 'black',
   },

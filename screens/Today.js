@@ -29,7 +29,7 @@ const renderTodo = (
     isComplete={isComplete}
     timeStatus={timeStatus}
   />
-);
+); 
 
 const Today = () => {
   const { todayTodos } = useBottomSheet();
@@ -42,6 +42,7 @@ const Today = () => {
     isTodayVacation,
     isTodoArrayEmpty,
   } = useTodayTodos(dayChanged);
+  console.log(dayStart);
   const { todayHeaderSubtitleMessage, timeStatus } = useDayStatus(
     dayStart,
     dayEnd
@@ -54,7 +55,7 @@ const Today = () => {
     });
   }, [todayTodos, timeStatus]);
 
-  return (
+  return ( 
     <SafeAreaView style={styles.pageContainer}>
       {/* <OnboardingPopup
         texts={['This is the Today page.', 'Your three tasks planned the night before will show up here.','Your only mission is to check them off before the day ends!']}

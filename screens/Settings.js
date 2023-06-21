@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Color } from "../GlobalStyles";
-import RightChevronIcon from "../assets/icons/right-chevron.svg";
+import RightChevronIcon from "../assets/icons/chevron-right.svg";
 import UserCircleIcon from "../assets/icons/user-profile-circle.svg";
 import HistoryIcon from "../assets/icons/history-icon.svg";
 import CreditCardIcon from "../assets/icons/credit-card.svg";
@@ -120,9 +120,7 @@ const Settings = ({ navigation }) => {
                       color: daysActive[dayKey]
                         ? "rgba(255, 255, 255, 1)"
                         : "rgba(255, 255, 255, 0.5)",
-                      fontWeight: daysActive[dayKey]
-                        ? 500
-                        : 400,
+                      fontWeight: daysActive[dayKey] ? 500 : 400,
                       opacity: 0.8,
                     }}
                     key={index}
@@ -131,7 +129,6 @@ const Settings = ({ navigation }) => {
                   </Text>
                 ))}
               </View>
-              <RightChevronIcon width={24} height={24} color={Color.white} />
             </View>
           </TouchableRipple>
           <DaysActiveModal
@@ -195,7 +192,7 @@ const Settings = ({ navigation }) => {
             <LogoutIcon width={24} height={24} color={Color.white} />
             <Text style={styles.buttonTitle}>Log Out</Text>
           </View>
-        </TouchableRipple> 
+        </TouchableRipple>
         {/* DELETE ACCOUNT */}
         {/* <TouchableRipple style={styles.button} onPress={handleLogout}>
           <View style={styles.leftSettingsButton}>
@@ -255,7 +252,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginRight: 7,
-    gap: 16
+    gap: 16,
   },
   button: {
     paddingLeft: 21,
@@ -278,7 +275,7 @@ const styles = StyleSheet.create({
   },
   daysOfWeekTextContainer: {
     flexDirection: "row",
-    gap: 4
+    gap: 4,
   },
   rightSideText: {
     fontSize: 15,

@@ -1,81 +1,152 @@
-import React from 'react'
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity} from 'react-native'
-import { CardField, useStripe } from '@stripe/stripe-react-native';
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  TextInput,
+  Button,
+  Image,
+} from "react-native";
+import { CardField, useStripe } from "@stripe/stripe-react-native";
+import CountryPicker, {
+  FlagButton,
+  CallingCode,
+} from "react-native-country-picker-modal";
 import { Color } from "../GlobalStyles";
-import LeftArrowIcon from "../assets/icons/arrow-left.svg";
+import AmericanFlag from "../assets/flags/US-UnitedStates.svg";
+import Svg from "react-native-svg";
+import SettingsHeader from "../components/SettingsHeader";
 
-const Billing = ({navigation}) => {
-  const handlePress = (screenName) => {
-    navigation.navigate(screenName);
-  };
+const Billing = ({ navigation }) => {
 
-  const handleSaveCard = async () => {
-    
-  };
+
+  const [countryCode, setCountryCode] = useState("US");
+  const [selectedCountry, setSelectedCountry] = useState("United States");
+  const [countryModalVisible, setCountryModalVisible] = useState(false);
+
+  const handleSaveCard = async () => {};
+
+  // https://flagpack.xyz/
+  const getCustomFlagImageUrl = (countryCode) => {
+    const flagFileName = `${countryCode}-UnitedStates.svg`;
+    const customFlagImageUrl = `../assets/flags/${flagFileName}`;
+    // console.log(customFlagImageUrl);
+    return customFlagImageUrl;
+  }; 
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity	onPress={() => handlePress("SettingsScreen")}>
-          <LeftArrowIcon
-            width={24}
-              height={24}
-              color={Color.white}
-          />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Add Payment Method</Text>
+      <SettingsHeader navigation={navigation} header={"Add Payment Method"}/>
+      <View style={styles.inputSection}>
+        <Text style={styles.inputTitle}>Name</Text>
+        <TextInput style={styles.inputField} placeholder="Name" />
       </View>
+      <View style={styles.inputSection}>
+        <Text style={styles.inputTitle}>Country</Text>
+
+        <TouchableOpacity
+          style={styles.inputField}
+          onPress={() => setCountryModalVisible(true)}
+        >
+          <CountryPicker
+            theme={{ fontSize: 16 }}
+            withFilter={true}
+            visible={countryModalVisible}
+            withEmoji={false}
+            withFlag={false}
+            withFlagButton={true}
+            onClose={() => setCountryModalVisible(false)}
+            onSelect={(country) => {
+              setSelectedCountry(country.name);
+              setCountryModalVisible(false);
+            }}
+            withCountryNameButton={true}
+            renderFlagButton={(props) => {
+              const { countryCode, flagSize } = props;
+              console.log(props);
+              const customFlagImageUrl = getCustomFlagImageUrl("US");
+              console.log(customFlagImageUrl);
+              return (
+                <View
+                  style={{
+                    width: 30,
+                    height: 24,
+                    borderRadius: 5,
+                    overflow: "hidden",
+                  }}
+                >
+                  <Image
+                    style={{ width: flagSize, height: flagSize }}
+                    source={{ uri: customFlagImageUrl }}
+                  />
+                  <AmericanFlag />
+                </View>
+              );
+            }}
+          />
+          <Text>{selectedCountry}</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.inputSection}>
+        <Text style={styles.inputTitle}>Card Details</Text>
         <CardField
           postalCodeEnabled={true}
           placeholders={{
-            number: '4242 4242 4242 4242',
+            number: "1234 1234 1234 1234",
           }}
           cardStyle={{
-            backgroundColor: '#FFFFFF',
-            textColor: '#000000',
+            backgroundColor: "#FFFFFF",
+            textColor: "#000000",
           }}
-          style={{
-            width: '100%',
-            height: 50,
-            marginVertical: 30,
-          }}
+          style={styles.cardField}
           onCardChange={(cardDetails) => {
-            console.log('cardDetails', cardDetails);
+            console.log("cardDetails", cardDetails);
           }}
           onFocus={(focusedField) => {
-            console.log('focusField', focusedField);
+            console.log("focusField", focusedField);
           }}
         />
-      <View>
-    </View>
+      </View>
+      <View style={styles.inputSection}>
+        <Text style={styles.inputTitle}>Powered by Stripe</Text>
+      </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Billing
+export default Billing;
 
 const styles = StyleSheet.create({
   pageContainer: {
-  flex: 1,
-  alignItems: "center",
-  marginHorizontal: 20,
-  // borderWidth: 1,
-  // borderColor: 'black',
-},
-headerContainer: {
-  paddingTop: 20,
-  paddingLeft: 20,
-  width: "100%",
-  flexDirection: "row",
-  marginBottom: 20,
-  // borderWidth: 1,
-  // borderColor: 'black',
-},
-headerTitle: {
-  color: Color.white,
-  fontSize: 20,
-  marginLeft: 24,
-  // borderWidth: 1,
-  // borderColor: 'black',
-},
-})
+    flex: 1,
+    alignItems: "center",
+    marginHorizontal: 20,
+  },
+  inputSection: {
+    flexDirection: "col",
+    width: "100%",
+  },
+  inputTitle: {
+    color: Color.white,
+    fontSize: 18,
+    marginLeft: 5,
+  },
+  inputField: {
+    width: "100%",
+    height: 65,
+    marginVertical: 15,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  cardField: {
+    width: "100%",
+    height: 65,
+    marginVertical: 15,
+    borderRadius: 8,
+  },
+});
