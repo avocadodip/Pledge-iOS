@@ -101,7 +101,7 @@ const Tomorrow = () => {
       )}
     </SafeAreaView>
   ); 
-};
+}; 
 
 const styles = StyleSheet.create({
   bottomSheet: {

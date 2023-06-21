@@ -4,6 +4,7 @@ import { Color } from "../GlobalStyles";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../database/firebase";
 import Modal from "react-native-modal";
+import Checkbox from "expo-checkbox";
 
 const DaysActiveModal = ({
   currentUserID,
@@ -20,7 +21,7 @@ const DaysActiveModal = ({
     "Friday",
     "Saturday",
   ];
-  const buttonTexts = ["S", "M", "T", "W", "T", "F", "S"];
+  const abbrevDayKeys = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 
   // Local state for changes made in the modal
   const [modalDaysActive, setModalDaysActive] = useState({ ...daysActive });
@@ -61,28 +62,22 @@ const DaysActiveModal = ({
       animationOutTiming={500}
     >
       <View style={styles.modalContent}>
-        <Text style={styles.modalTitle}>Change Days Active</Text>
+        <Text style={styles.modalTitle}>Set Days Active</Text>
         <View style={styles.daysActiveContainer}>
-          {buttonTexts.map((text, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.button,
-                tempDaysActive[dayKeys[index]] ? styles.selectedButton : null,
-              ]}
-              onPress={() => handleModalDayToggle(index)}
-            >
-              <Text
-                style={[
-                  styles.buttonText,
+          {abbrevDayKeys.map((text, index) => (
+            <View style={styles.dayContainer} key={index}>
+              <Text style={styles.dayText}>{text}</Text>
+              <Checkbox
+                style={styles.checkbox}
+                color={
                   tempDaysActive[dayKeys[index]]
-                    ? styles.selectedButtonText
-                    : null,
-                ]}
-              >
-                {text}
-              </Text>
-            </TouchableOpacity>
+                    ? "rgba(255,255,255, 0.4)"
+                    : "rgba(255,255,255, 0.4)"
+                }
+                value={tempDaysActive[dayKeys[index]]}
+                onValueChange={() => handleModalDayToggle(index)}
+              />
+            </View>
           ))}
         </View>
         {/* SAVE BUTTON */}
@@ -107,7 +102,7 @@ const DaysActiveModal = ({
 };
 
 const styles = StyleSheet.create({
-  // Modal and modal content styles
+  // Modal styles
   bottomModal: {
     justifyContent: "flex-end",
   },
@@ -146,25 +141,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
   },
-
-  daysActiveContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 60,
-    gap: 7,
-  },
-  button: {
-    width: 34,
-    height: 40,
-    backgroundColor: "rgba(243,243,243,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-  },
-  selectedButton: {
-    backgroundColor: Color.white,
-  },
   buttonText: {
     fontSize: 16,
     lineHeight: 15,
@@ -172,8 +148,24 @@ const styles = StyleSheet.create({
     color: Color.white,
     fontWeight: 500,
   },
-  selectedButtonText: {
-    color: Color.fervo_red,
+
+  // Modal content styles
+  daysActiveContainer: {
+    flexDirection: "col",
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 40,
+    gap: 10,
+  },
+  dayContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 30,
+  },
+  dayText: {
+    width: 60,
+    fontSize: 18,
+    color: Color.white,
   },
 });
 

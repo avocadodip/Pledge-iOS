@@ -193,9 +193,9 @@ const Settings = ({ navigation }) => {
         <TouchableRipple style={styles.button} onPress={handleLogout}>
           <View style={styles.leftSettingsButton}>
             <LogoutIcon width={24} height={24} color={Color.white} />
-            <Text style={styles.buttonTitle}>Logout</Text>
+            <Text style={styles.buttonTitle}>Log Out</Text>
           </View>
-        </TouchableRipple>
+        </TouchableRipple> 
         {/* DELETE ACCOUNT */}
         {/* <TouchableRipple style={styles.button} onPress={handleLogout}>
           <View style={styles.leftSettingsButton}>

@@ -5,8 +5,9 @@ import UnlockIcon from "../../assets/icons/unlock-icon.svg";
 import { styles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 
-const RenderTmrwLock = ({ isLocked, handleLockTodo }) => {
+const RenderTmrwLock = ({ isLocked, handleLockTodo, timeStatus }) => {
   // Lock icon: Todo is locked
+  // If time status == 2, make it disabled opacity
   if (isLocked === true) {
     return (
       <View
@@ -15,7 +16,9 @@ const RenderTmrwLock = ({ isLocked, handleLockTodo }) => {
           backgroundColor: "rgba(255, 255, 255, 0.1)",
         }}
       >
-        <LockIcon />
+        <View style={timeStatus === 2 ? styles.disabledOpacity : null}>
+          <LockIcon />
+        </View>
       </View>
     );
     // Unlock icon: Todo is NOT locked

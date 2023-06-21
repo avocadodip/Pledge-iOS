@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
-    borderRadius: 16,
+    borderRadius: 16, 
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     padding: 15,
     overflow: 'hidden'
@@ -75,6 +75,44 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
 
+  },
+  rightDisabledContainer: {
+    borderTopRightRadius: 16,
+    borderBottomRightRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    flex: 2,
+    // width: "20%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+    borderLeftWidth: 1.5,
+    borderLeftColor: "rgba(255, 255, 255, 0.1)"
+  },
+  checkDisabledContainer: {
+    borderTopRightRadius: 16,
+    borderBottomRightRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    flex: 2,
+    // width: "20%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  disabledOpacity: {
+    opacity: 0.6
+  },
+  disabledCompleteContainer: {
+    borderTopRightRadius: 16,
+    borderBottomRightRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    flex: 2,
+    // width: "20%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
   },
   // infoContainer: {
   //   flexDirection: "row",
@@ -183,7 +221,7 @@ export const styles = StyleSheet.create({
 
   finedText: {
     color: "white",
-    opacity: 0.7,
+    opacity: 0.6,
     fontSize: 22,
     fontWeight: "bold",
   },

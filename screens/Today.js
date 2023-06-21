@@ -11,11 +11,11 @@ import RestDayMessage from "../components/RestDayMessage";
 import Loading from "../components/Loading";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayChange } from "../hooks/useDayChange";
-
-const renderTodo = (
+ 
+const renderTodo = ( 
   { title, description, amount, tag, isComplete },
   index,
-  timeStatus
+  timeStatus 
 ) => (
   <Todo
     key={index + 1}
@@ -126,3 +126,4 @@ const styles = StyleSheet.create({
 });
 
 export default Today;
+  

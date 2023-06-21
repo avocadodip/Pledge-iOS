@@ -4,34 +4,42 @@ import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
 import RenderTmrwLock from "./RenderTmrwLock.js";
 import TouchableRipple from "../TouchableRipple";
 
-
 const TmrwTodo = ({
   todoNumber,
   title,
-  description, 
+  description,
   amount,
   tag,
   isLocked,
   handleOpenBottomSheet,
   handleLockTodo,
-  timeStatus
+  timeStatus,
 }) => {
-  // After day end, show disabled locked todos:
-
-  // During day: Show editable locked or unlocked tmrw todo:
   return (
     <View style={[styles.infoContainer]}>
       <TouchableRipple
         onPress={handleOpenBottomSheet}
         style={styles.leftContainer}
       >
-        <View style={[styles.upperHalfContainer, { margin: 15 }]}>
+        <View
+          style={[
+            styles.upperHalfContainer,
+            { margin: 15 },
+            timeStatus === 2 && styles.disabledOpacity,
+          ]}
+        >
           <View style={styles.numberTitleContainer}>
             <Text style={styles.todoNumber}>{todoNumber}</Text>
             <Text style={styles.todoTitle}>{title}</Text>
           </View>
         </View>
-        <View style={[styles.lowerHalfContainer, { margin: 15 }]}>
+        <View
+          style={[
+            styles.lowerHalfContainer,
+            { margin: 15 },
+            timeStatus === 2 && styles.disabledOpacity,
+          ]}
+        >
           <View style={styles.tagDescriptionContainer}>
             {tag && (
               <View style={styles.tagContainer}>
@@ -64,6 +72,7 @@ const TmrwTodo = ({
         isLocked={isLocked}
         handleLockTodo={handleLockTodo}
         todoNumber={todoNumber}
+        timeStatus={timeStatus}
       />
     </View>
   );
