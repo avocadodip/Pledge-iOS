@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     marginVertical: 40,
     gap: 18,
   },
-  dayContainer: {
+  dayContainer: { 
     flexDirection: "row",
     alignItems: "center",
     gap: 30,

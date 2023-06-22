@@ -6,96 +6,43 @@ import {
   SafeAreaView,
   TouchableOpacity,
   TextInput,
-  Button,
-  Image,
 } from "react-native";
 import { CardField, useStripe } from "@stripe/stripe-react-native";
-import CountryPicker, {
-  FlagButton,
-  CallingCode,
-} from "react-native-country-picker-modal";
 import { Color } from "../GlobalStyles";
-import AmericanFlag from "../assets/flags/US-UnitedStates.svg";
-import Svg from "react-native-svg";
 import SettingsHeader from "../components/SettingsHeader";
+import CountrySelect from "../components/CountrySelect";
+import PoweredByStripeIcon from "../assets/icons/stripe-logo.svg";
 
 const Billing = ({ navigation }) => {
-
-
-  const [countryCode, setCountryCode] = useState("US");
   const [selectedCountry, setSelectedCountry] = useState("United States");
-  const [countryModalVisible, setCountryModalVisible] = useState(false);
 
   const handleSaveCard = async () => {};
 
-  // https://flagpack.xyz/
-  const getCustomFlagImageUrl = (countryCode) => {
-    const flagFileName = `${countryCode}-UnitedStates.svg`;
-    const customFlagImageUrl = `../assets/flags/${flagFileName}`;
-    // console.log(customFlagImageUrl);
-    return customFlagImageUrl;
-  }; 
-
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <SettingsHeader navigation={navigation} header={"Add Payment Method"}/>
+      <SettingsHeader navigation={navigation} header={"Add Payment Method"} />
       <View style={styles.inputSection}>
         <Text style={styles.inputTitle}>Name</Text>
         <TextInput style={styles.inputField} placeholder="Name" />
       </View>
       <View style={styles.inputSection}>
         <Text style={styles.inputTitle}>Country</Text>
-
-        <TouchableOpacity
-          style={styles.inputField}
-          onPress={() => setCountryModalVisible(true)}
-        >
-          <CountryPicker
-            theme={{ fontSize: 16 }}
-            withFilter={true}
-            visible={countryModalVisible}
-            withEmoji={false}
-            withFlag={false}
-            withFlagButton={true}
-            onClose={() => setCountryModalVisible(false)}
-            onSelect={(country) => {
-              setSelectedCountry(country.name);
-              setCountryModalVisible(false);
-            }}
-            withCountryNameButton={true}
-            renderFlagButton={(props) => {
-              const { countryCode, flagSize } = props;
-              console.log(props);
-              const customFlagImageUrl = getCustomFlagImageUrl("US");
-              console.log(customFlagImageUrl);
-              return (
-                <View
-                  style={{
-                    width: 30,
-                    height: 24,
-                    borderRadius: 5,
-                    overflow: "hidden",
-                  }}
-                >
-                  <Image
-                    style={{ width: flagSize, height: flagSize }}
-                    source={{ uri: customFlagImageUrl }}
-                  />
-                  <AmericanFlag />
-                </View>
-              );
-            }}
+        <View style={styles.inputField}>
+          <CountrySelect
+            selectedCountry={selectedCountry}
+            setSelectedCountry={setSelectedCountry}
           />
-          <Text>{selectedCountry}</Text>
-        </TouchableOpacity>
+        </View>
       </View>
-
       <View style={styles.inputSection}>
         <Text style={styles.inputTitle}>Card Details</Text>
         <CardField
           postalCodeEnabled={true}
           placeholders={{
             number: "1234 1234 1234 1234",
+            expiration: "MM/YY",
+            cvc: "CVC",
+            postalCode: "ZIP",
           }}
           cardStyle={{
             backgroundColor: "#FFFFFF",
@@ -110,8 +57,13 @@ const Billing = ({ navigation }) => {
           }}
         />
       </View>
-      <View style={styles.inputSection}>
-        <Text style={styles.inputTitle}>Powered by Stripe</Text>
+      <View style={styles.poweredByStripeContainer}>
+        <PoweredByStripeIcon height={30} width={150} />
+      </View>
+      <View style={styles.submitButtonContainer}>
+        <TouchableOpacity style={styles.submitButton}>
+          <Text style={styles.submitButtonText}>Add Card</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -128,6 +80,7 @@ const styles = StyleSheet.create({
   inputSection: {
     flexDirection: "col",
     width: "100%",
+    
   },
   inputTitle: {
     color: Color.white,
@@ -138,15 +91,45 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 65,
     marginVertical: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    backgroundColor: Color.white,
+    borderColor: Color.white,
+    borderWidth: 1,
     borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
+    fontSize: 16,
+    color: "grey",
+    paddingLeft: 16,
+    
   },
   cardField: {
     width: "100%",
     height: 65,
     marginVertical: 15,
     borderRadius: 8,
+  },
+  poweredByStripeContainer: {
+    marginTop: 10,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  submitButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  submitButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 55,
+    width: 270,
+    marginTop: 35,
+    borderRadius: 16,
+    backgroundColor: "white",
+  },
+  submitButtonText: {
+    color: "grey",
+    fontSize: 20,
   },
 });
