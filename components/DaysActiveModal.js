@@ -56,8 +56,8 @@ const DaysActiveModal = ({
       style={styles.bottomModal}
       isVisible={isVisible}
       onBackdropPress={() => {
-        handleToggleModal(false);
-        setTempDaysActive(modalDaysActive);
+        handleConfirm();
+        // setTempDaysActive(modalDaysActive);
       }}
       backdropTransitionOutTiming={0}
       animationOutTiming={500}
