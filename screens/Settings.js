@@ -116,7 +116,7 @@ const Settings = ({ navigation }) => {
                 {dayKeys.map((dayKey, index) => (
                   <Text
                     style={{
-                      fontSize: 16,
+                      fontSize: 15,
                       color: daysActive[dayKey]
                         ? "rgba(255, 255, 255, 1)"
                         : "rgba(255, 255, 255, 0.5)",
@@ -220,11 +220,11 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     width: "100%",
     flexDirection: "col",
-    marginBottom: 20,
+    marginBottom: 13,
   },
   headerTitle: {
     color: Color.white,
-    fontSize: 30,
+    fontSize: 27,
     fontWeight: "bold",
   },
   mainContainer: {
@@ -238,26 +238,26 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     width: "100%",
-    marginTop: 30,
+    marginTop: 23,
     marginBottom: 10,
   },
   sectionHeaderText: {
     color: Color.white,
     opacity: 0.8,
-    fontSize: 16,
+    fontSize: 14,
     textAlign: "left", // this line aligns text to the left
-    marginLeft: 23,
+    marginLeft: 16,
   },
   chevronContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 7,
+    marginRight: 4,
     gap: 16,
   },
   button: {
-    paddingLeft: 21,
+    paddingLeft: 16,
     paddingRight: 15,
-    height: 60,
+    height: 56,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -269,8 +269,8 @@ const styles = StyleSheet.create({
 
   buttonTitle: {
     color: Color.white,
-    fontSize: 17,
-    marginLeft: 21,
+    fontSize: 15.5,
+    marginLeft: 16,
     fontWeight: 500,
   },
   daysOfWeekTextContainer: {

@@ -33,17 +33,17 @@ export default function TouchableRipple({
   ...props
 }) {
   const [focusAnimation, setFocusAnimation] = useState(new Animated.Value(0));
-  const [disableAnimation, setDisableAnimation] = useState(
-    new Animated.Value(disabled ? 1 : 0)
-  );
+  // const [disableAnimation, setDisableAnimation] = useState(
+  //   new Animated.Value(disabled ? 1 : 0)
+  // );
 
-  useEffect(() => {
-    Animated.timing(disableAnimation, {
-      toValue: disabled ? 1 : 0,
-      duration: disableAnimationDuration,
-      useNativeDriver: false,
-    }).start();
-  }, [disabled, disableAnimationDuration, disableAnimation]);
+  // useEffect(() => {
+  //   Animated.timing(disableAnimation, {
+  //     toValue: disabled ? 1 : 0,
+  //     duration: disableAnimationDuration,
+  //     useNativeDriver: false,
+  //   }).start();
+  // }, [disabled, disableAnimationDuration, disableAnimation]);
 
   function onPress() {
     if (typeof props.onPress === "function") {
@@ -61,10 +61,7 @@ export default function TouchableRipple({
   }
 
   let rippleStyle = {
-    backgroundColor: disableAnimation.interpolate({
-      inputRange: [0, 1],
-      outputRange: [color, disabledColor],
-    }),
+    backgroundColor: color,
   };
 
   let shadeContainerStyle = {
@@ -82,12 +79,13 @@ export default function TouchableRipple({
   return (
     <Ripple
       {...props}
-      style={[styles.container, rippleStyle, props.style]}
+      style={[styles.container, props.style]}
       onPress={onPress}
       onPressIn={() => onFocusChange(true)}
       onPressOut={() => onFocusChange(false)}
       rippleColor={"#8A1919"}
       rippleOpacity={0.5}
+      disabled={disabled}
     >
       {props.children}
 

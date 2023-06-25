@@ -42,7 +42,6 @@ const Today = () => {
     isTodayVacation,
     isTodoArrayEmpty,
   } = useTodayTodos(dayChanged);
-  console.log(dayStart);
   const { todayHeaderSubtitleMessage, timeStatus } = useDayStatus(
     dayStart,
     dayEnd
@@ -104,14 +103,15 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: "white",
-    fontSize: 50,
-    fontWeight: "bold",
+    fontSize: 42,
+    fontWeight: "bold", 
   },
   headerDayOfWeek: {
     color: "white",
-    fontSize: 25,
+    fontSize: 23,
     fontWeight: "bold",
     paddingBottom: 6,
+    opacity: 0.7,
   },
   headerSubtitle: {
     color: "white",

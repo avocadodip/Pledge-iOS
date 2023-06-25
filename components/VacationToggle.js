@@ -20,7 +20,7 @@ const VacationToggle = ({ currentUserID, vacationModeOn }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{vacationModeOn ? "On" : "Off"}</Text>
-      <View style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }] }}>
+      <View style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.25 }] }}>
         <ToggleSwitch
           isOn={vacationModeOn}
           onColor="rgba(243,243,243,0.6)"
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   label: {
     width: 30,
     marginRight: 15,
-    fontSize: 17, // should match style of theme toggle text
+    fontSize: 15, // should match style of theme toggle text
     color: Color.white,
     opacity: 0.8, // should match style of theme toggle text
   },

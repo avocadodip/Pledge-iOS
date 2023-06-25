@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { Color } from "../GlobalStyles";
 import LeftChevronIcon from "../assets/icons/chevron-left.svg";
+import TouchableRipple from "./TouchableRipple";
 
 const SettingsHeader = ({ navigation, header }) => {
   const handlePress = (screenName) => {
@@ -9,13 +10,17 @@ const SettingsHeader = ({ navigation, header }) => {
   };
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => handlePress("SettingsScreen")}
-      >
-        <LeftChevronIcon width={24} height={24} color={Color.white} />
-      </TouchableOpacity>
-      <Text style={styles.headerTitle}>{header}</Text>
+      <View style={styles.buttonWrapper}>
+        <TouchableRipple
+          style={styles.backButton}
+          onPress={() => handlePress("SettingsScreen")}
+        >
+          <LeftChevronIcon width={24} height={24} color={Color.white} />
+        </TouchableRipple>
+      </View>
+      <View style={styles.headerTitleWrapper}>
+        <Text style={styles.headerTitle}>{header}</Text>
+      </View>
     </View>
   );
 };
@@ -24,18 +29,30 @@ export default SettingsHeader;
 
 const styles = StyleSheet.create({
   headerContainer: {
-    paddingTop: 20,
-    paddingLeft: 20,
+    marginTop: 20,
+    marginBottom: 40,
+    paddingHorizontal: 50,
     width: "100%",
     flexDirection: "row",
-    marginBottom: 20,
+    alignItems: "center",
+  },
+  headerTitleWrapper: {
+    flex: 1,
+    alignItems: "center",
+    marginLeft: "auto",
   },
   headerTitle: {
     color: Color.white,
-    fontSize: 20,
-    marginLeft: 24,
+    fontSize: 19,
+    fontWeight: 600
+  },
+  buttonWrapper: {
+    borderRadius: 10,
+    overflow: "hidden",
+    position: "absolute",
+    left: 0,
   },
   backButton: {
-    padding: 1
+    padding: 7,
   },
 });

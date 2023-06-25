@@ -1,21 +1,18 @@
 /* eslint-disable max-len */
 // firebase emulators:start (root dir)
 // firebase deploy --only functions (root dir; run with deploying to prod)
-// lsof -i :5001    kill -9 <PID>
-// http://localhost:5001/fervo-1/us-central1/runDailyUpdate?text=hichris
+// KILL LOCAL PORT: lsof -i :5001    kill -9 <PID>
+// LOCAL LINK: http://localhost:5001/fervo-1/us-central1/runDailyUpdate
+// FORMATTER: npx eslint --fix index.js
 
-// The Cloud Functions for Firebase SDK to create Cloud Functions and triggers.
-// const {logger} = require("firebase-functions");
+require("dotenv").config();
+
 const {onRequest} = require("firebase-functions/v2/https");
-// const {onDocumentCreated} = require("firebase-functions/v2/firestore");
-
 const admin = require("firebase-admin");
 const moment = require("moment-timezone");
-const stripe = require("stripe")("sk_test_51Lulh6CNzspyvGyfqUMb1ra1HZo8ce3FIXGDsBz2plZ26C0GOTBgZv5jLdRVcwKWMc0bqam6c9MW4NDA3EHmuGM700JytjRJ7f");
-
-// The Firebase Admin SDK to access Firestore.
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const {initializeApp} = require("firebase-admin/app");
-// const {getFirestore} = require("firebase-admin/firestore");
+const schedulerKey = process.env.SCHEDULER_KEY;
 
 initializeApp();
 
@@ -56,12 +53,17 @@ function calculateFines(todos, missedTaskFine) {
  */
 
 exports.runDailyUpdate = onRequest(async (req, res) => {
+  if (req.headers.authorization !== schedulerKey) {
+    res.status(403).send("Unauthorized");
+    return;
+  }
+
   // 1. Calculate which timezone has a current time between 11:45pm & 12:00am
   const timeZones = moment.tz.names(); // Get all the time zones
   // Get time zones where current time is between 11:45pm and 12:00am
   const desiredTimeZones = timeZones.filter((tz) => {
     const currentTime = moment().tz(tz).format("HH:mm");
-    return (currentTime >= "10:00" && currentTime <= "24:00");
+    return currentTime >= "23:45" && currentTime <= "24:00";
   });
 
   const db = admin.firestore();
@@ -74,9 +76,10 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
         .get();
 
     // For each user in a desired timezone
-    querySnapshot.forEach(async (doc) => {
+    await Promise.all(querySnapshot.docs.map(async (doc) => {
       const userDoc = doc.data();
-      const {dayStart, dayEnd, daysActive, vacationModeOn, missedTaskFine} = userDoc;
+      const {dayStart, dayEnd, daysActive, vacationModeOn, missedTaskFine} =
+        userDoc;
       const userid = doc.id;
       const userRef = db.collection("users").doc(userid);
 
@@ -95,27 +98,26 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
       const pastWeek = `${startOfWeekFormatted}-${endOfWeekFormatted}`;
 
       // Defining doc references
-      const todayRef = userRef
-          .collection("todos")
-          .doc(todayFormatted);
-      const tmrwRef = userRef
-          .collection("todos")
-          .doc(nextDayFormatted);
-      const weekRef = userRef
-          .collection("fines")
-          .doc(pastWeek);
+      const todayRef = userRef.collection("todos").doc(todayFormatted);
+      const tmrwRef = userRef.collection("todos").doc(nextDayFormatted);
+      const weekRef = userRef.collection("fines").doc(pastWeek);
 
       // 2. Set user's tmrwDoc w/ settings data
-      await tmrwRef.set({
-        opensAt: dayStart,
-        closesAt: dayEnd,
-        isActive: daysActive[nextDayOfWeek],
-        isVacation: vacationModeOn,
-      }, {merge: true}); // merge true to avoid overwriting existing data
+      await tmrwRef.set(
+          {
+            opensAt: dayStart,
+            closesAt: dayEnd,
+            isActive: daysActive[nextDayOfWeek],
+            isVacation: vacationModeOn,
+          },
+          {merge: true},
+      ); // merge true to avoid overwriting existing data
 
       // 3. Tally & update today fine count
       const todayDoc = await todayRef.get();
-      if (!todayDoc.exists) return console.log(`No ${todayFormatted} doc for ${userid}`);
+      if (!todayDoc.exists) {
+        return console.log(`No ${todayFormatted} doc for ${userid}`);
+      }
       const {todos = []} = todayDoc.data(); // Get todos array
 
       const todayFine = calculateFines(todos, missedTaskFine);
@@ -123,17 +125,27 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
 
       // 4. Update week fine count
       const weekDoc = await weekRef.get();
-      let {totalWeeklyFine = 0, isCharged = false} = weekDoc.exists ? weekDoc.data() : {};
+      let {totalWeeklyFine = 0, isCharged = false} = weekDoc.exists ?
+        weekDoc.data() :
+        {};
 
       totalWeeklyFine += todayFine;
-      await weekRef.set({
-        totalWeeklyFine, isCharged,
-      }, {merge: true});
+      await weekRef.set(
+          {
+            totalWeeklyFine,
+            isCharged,
+          },
+          {merge: true},
+      );
 
       console.log(`Updated fines for user ${userid} on ${todayFormatted}`);
 
       // 5. Charge user with weekly fine if it's Saturday
-      if (todayDayOfWeek === "Saturday" && totalWeeklyFine !== 0 && userDoc.stripeCustomerId) {
+      if (
+        todayDayOfWeek === "Saturday" &&
+        totalWeeklyFine !== 0 &&
+        userDoc.stripeCustomerId
+      ) {
         // Convert the fine amount to cents (Stripe uses cents instead of dollars)
         const amount = totalWeeklyFine * 100;
 
@@ -153,8 +165,35 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
           console.log(`Failed to charge user ${doc.id}`);
         }
       }
-    });
+    }));
   }
 
   res.json({result: `Completed.`});
 });
+
+exports.createStripeCustomer = onRequest(async (req, res) => {
+  // Ensure the request is authorized
+  if (req.headers.authorization !== schedulerKey) {
+    res.status(403).send("Unauthorized");
+    return;
+  }
+
+  const email = req.email;
+  const uid = req.uid;
+
+  try {
+    // Create a new customer in Stripe.
+    const customer = await stripe.customers.create({email: email});
+
+    // Save the customer ID in Firestore.
+    const db = admin.firestore();
+    await db.collection("users").doc(uid).update({stripeCustomerId: customer.id});
+
+    console.log(`Created Stripe customer ${customer.id} for user ${uid}`);
+    res.json({customer_id: customer.id});
+  } catch (error) {
+    console.error(`Failed to create Stripe customer for user ${uid}:`, error);
+    res.status(500).send("Failed to create Stripe customer");
+  }
+});
+

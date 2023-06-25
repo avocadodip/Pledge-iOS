@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   getCustomFlagImage,
   FLAGS,
@@ -10,11 +10,16 @@ import { TouchableOpacity } from "react-native";
 import { Color } from "../GlobalStyles";
 import { SearchBar } from "@rneui/themed";
 import Modal from "react-native-modal";
+import TouchableRipple from "./TouchableRipple";
 
 const CountrySelect = ({ selectedCountry, setSelectedCountry }) => {
   const [countryCode, setCountryCode] = useState("US");
   const [countryModalVisible, setCountryModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    console.log(countryModalVisible);
+  }, [countryModalVisible]);
 
   const FlagImage = getCustomFlagImage(countryCode);
 
@@ -25,7 +30,7 @@ const CountrySelect = ({ selectedCountry, setSelectedCountry }) => {
   );
 
   return (
-    <View>
+    <>
       <TouchableOpacity
         style={styles.button}
         onPress={() => setCountryModalVisible(true)}
@@ -38,10 +43,11 @@ const CountrySelect = ({ selectedCountry, setSelectedCountry }) => {
       <Modal
         style={styles.bottomModal}
         isVisible={countryModalVisible}
-        onBackdropPress={() => {
-          setCountryModalVisible(false);
-        }}
-        animationOutTiming={500}
+        onBackdropPress={() => setCountryModalVisible(false)}
+        animationOut={"slideOutDown"}
+        animationInTiming={300}
+        animationOutTiming={300}
+        backdropTransitionOutTiming={0}
       >
         <View style={styles.modalContent}>
           <View style={styles.searchWrapper}>
@@ -61,13 +67,12 @@ const CountrySelect = ({ selectedCountry, setSelectedCountry }) => {
           </View>
           <FlatList
             contentContainerStyle={styles.listContainer}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
             data={filteredCountries}
             keyExtractor={(item) => item[0]} // use country code as key
             renderItem={({ item }) => {
               const [countryCode, FlagImage] = item;
               return (
-                <TouchableOpacity
+                <TouchableRipple
                   onPress={() => {
                     setSelectedCountry(COUNTRY_NAMES[countryCode]);
                     setCountryCode(countryCode);
@@ -82,13 +87,13 @@ const CountrySelect = ({ selectedCountry, setSelectedCountry }) => {
                       {COUNTRY_NAMES[countryCode]}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </TouchableRipple>
               );
             }}
           />
         </View>
       </Modal>
-    </View>
+    </>
   );
 };
 
@@ -100,11 +105,12 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 12,
+    paddingLeft: 16,
   },
   text: {
     color: "grey",
-    fontSize: 16,
+    fontSize: 17,
   },
   flagWrapper: {
     width: 30,
@@ -121,14 +127,14 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flexDirection: "col",
-    backgroundColor: Color.fervo_red,
+    backgroundColor: Color.white,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 20,
     borderColor: "rgba(0, 0, 0, 0.1)",
     overflow: "hidden",
     height: 500,
-    width: 300,
+    width: 275,
     paddingTop: 20,
     paddingHorizontal: 20,
   },
@@ -150,7 +156,7 @@ const styles = StyleSheet.create({
     margin: -5, // use to hide lines
   },
   searchInputContainer: {
-    backgroundColor: "white",
+    backgroundColor: "#cccccc",
   },
   searchInputText: {
     color: Color.fervo_white,
@@ -163,19 +169,16 @@ const styles = StyleSheet.create({
     // borderColor: "black",
     // borderWidth: 1,
   },
-  separator: {
-    height: 14,
-  },
   countryItem: {
     width: "100%",
-    paddingHorizontal: 25,
     flexDirection: "row",
     alignItems: "center",
     gap: 20,
+    paddingVertical: 10,
   },
   countryName: {
     fontSize: 17,
-    color: Color.white,
+    color: "grey",
     fontWeight: 500,
     width: 150,
   },

@@ -223,11 +223,11 @@ function AppContent({ isSignedIn }) {
                       />
                     ),
 
-                  tabBarButton: (props) => (
-                    <TouchableRipple {...props}>
-                      {props.children}
-                    </TouchableRipple>
-                  ),
+                  // tabBarButton: (props) => (
+                  //   <TouchableRipple {...props}>
+                  //     {props.children}
+                  //   </TouchableRipple>
+                  // ),
                 }}
               />
               <Tab.Screen
@@ -249,11 +249,11 @@ function AppContent({ isSignedIn }) {
                       />
                     ),
 
-                  tabBarButton: (props) => (
-                    <TouchableRipple {...props}>
-                      {props.children}
-                    </TouchableRipple>
-                  ),
+                  // tabBarButton: (props) => (
+                  //   <TouchableRipple {...props}>
+                  //     {props.children}
+                  //   </TouchableRipple>
+                  // ),
                 }}
               />
               <Tab.Screen

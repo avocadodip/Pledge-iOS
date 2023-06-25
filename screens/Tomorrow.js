@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: "white",
-    fontSize: 45,
-    fontWeight: "bold",
+    fontSize: 42,
+    fontWeight: "bold", 
   },
   headerDayOfWeek: {
     color: "white",

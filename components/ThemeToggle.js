@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   currentThemeText: {
-    fontSize: 17,
+    fontSize: 15,
     color: Color.white,
     opacity: 0.8,
   },
