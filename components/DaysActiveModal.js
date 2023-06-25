@@ -59,6 +59,7 @@ const DaysActiveModal = ({
         handleToggleModal(false);
         setTempDaysActive(modalDaysActive);
       }}
+      backdropTransitionOutTiming={0}
       animationOutTiming={500}
     >
       <View style={styles.modalContent}>
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     marginVertical: 40,
     gap: 18,
   },
-  dayContainer: { 
+  dayContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 30,

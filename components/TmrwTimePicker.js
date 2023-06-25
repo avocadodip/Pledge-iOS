@@ -9,7 +9,7 @@ import { db } from "../database/firebase";
 
 const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
- 
+
 const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd, altMessage }) => {
   const [isModalVisible, setModalVisible] = useState({
     start: false,
@@ -82,6 +82,7 @@ const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd, altMessage }) => {
         style={styles.bottomModal}
         isVisible={isModalVisible.start}
         onBackdropPress={() => toggleModal("start")}
+        backdropTransitionOutTiming={0}
         animationOutTiming={500}
       >
         <View style={styles.modalContent}>
@@ -147,6 +148,7 @@ const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd, altMessage }) => {
         style={styles.bottomModal}
         isVisible={isModalVisible.end}
         onBackdropPress={() => toggleModal("end")}
+        backdropTransitionOutTiming={0}
         animationOutTiming={500}
       >
         <View style={styles.modalContent}>
