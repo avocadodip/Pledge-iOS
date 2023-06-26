@@ -1,3 +1,10 @@
+// todo
+// - fix cardholder name/country not being added to stripe
+// - navigate to settings page after card has been added
+// - show last 4 digits of card info / change add payment method button
+// - add reset/delete card button
+// - detach payment method cloud function
+
 import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
@@ -26,7 +33,7 @@ import { getIdToken } from "firebase/auth";
 import { auth } from "../database/firebase";
 
 const Billing = ({ navigation }) => {
-  const { currentUserEmail, currentUserID } = useSettings();
+  const { currentUserEmail, currentUserID, currentUserFullName } = useSettings();
   const [name, setName] = useState("");
   const [country, setCountry] = useState("United States");
   const [card, setCard] = useState(null);
@@ -44,6 +51,8 @@ const Billing = ({ navigation }) => {
 
   // --- Handle card save ---
   const handleSaveCard = async () => {
+    console.log(name);
+    console.log(country);
     // Create payment method
     const { error, paymentMethod } = await createPaymentMethod({
       paymentMethodType: "Card",
@@ -73,6 +82,7 @@ const Billing = ({ navigation }) => {
             },
             body: JSON.stringify({
               paymentMethodId: paymentMethod.id,
+              userFullName: currentUserFullName,
               email: currentUserEmail,
               uid: currentUserID,
             }),

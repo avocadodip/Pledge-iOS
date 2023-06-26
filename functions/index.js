@@ -183,6 +183,7 @@ exports.createStripeCustomer = onRequest(async (req, res) => {
   const paymentMethodId = req.body.paymentMethodId;
   const email = req.body.email;
   const uid = req.body.uid;
+  const userFullName = req.body.userFullName;
 
   try {
     // Verify the ID token
@@ -199,7 +200,10 @@ exports.createStripeCustomer = onRequest(async (req, res) => {
 
     try {
       // Create a new customer in Stripe.
-      const customer = await stripe.customers.create({email: email});
+      const customer = await stripe.customers.create({
+        name: userFullName,
+        email: email,
+      });
 
       // Associate the new payment method with the customer
       const paymentMethod = await stripe.paymentMethods.attach(
