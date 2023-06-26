@@ -22,14 +22,14 @@ import PoweredByStripeIcon from "../assets/icons/stripe-logo.svg";
 import TouchableRipple from "../components/TouchableRipple";
 import { useSettings } from "../hooks/SettingsContext";
 import LockIcon from "../assets/icons/lock-icon-outline.svg";
+import { getIdToken } from "firebase/auth";
+import { auth } from "../database/firebase";
 
 const Billing = ({ navigation }) => {
-  const { currentUserEmail } = useSettings();
-
+  const { currentUserEmail, currentUserID } = useSettings();
   const [name, setName] = useState("");
   const [country, setCountry] = useState("United States");
   const [card, setCard] = useState(null);
-
   const [isCardComplete, setIsCardComplete] = useState(false);
 
   // useEffect to track changes in input fields and check if all fields are completed
@@ -40,16 +40,13 @@ const Billing = ({ navigation }) => {
     } else {
       setAllFieldsCompleted(false);
     }
-    console.log(allFieldsCompleted);
   }, [name, country, isCardComplete]);
 
-  // Handle card save
+  // --- Handle card save ---
   const handleSaveCard = async () => {
-    console.log(card);
-
-    // Attempt to create the payment method
+    // Create payment method
     const { error, paymentMethod } = await createPaymentMethod({
-      type: "Card",
+      paymentMethodType: "Card",
       card: card,
       billing_details: {
         name: name,
@@ -62,21 +59,41 @@ const Billing = ({ navigation }) => {
     if (error) {
       console.log(error);
     } else if (paymentMethod) {
-      // Send the paymentMethod.id to your server
-      const response = await fetch("https://yourserver.com/save-card", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          paymentMethodId: paymentMethod.id,
-          customerId: "123", // Customer's Stripe ID if one exists, else this can be created on server-side
-        }),
-      });
+      try {
+        const idToken = await getIdToken(auth.currentUser, true);
 
-      // Check the response from your server. If successful, save the payment method ID or any other data in state, or navigate to another screen, etc.
-      if (response.ok) {
-        // Success handling
-      } else {
-        // Error handling
+        // Send paymentMethod.id to Cloud Function
+        const response = await fetch(
+          "https://us-central1-fervo-1.cloudfunctions.net/createStripeCustomer",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + idToken,
+            },
+            body: JSON.stringify({
+              paymentMethodId: paymentMethod.id,
+              email: currentUserEmail,
+              uid: currentUserID,
+            }),
+          }
+        );
+
+        // Check the response from your server.
+        if (response.ok) {
+          // Success handling
+          const jsonResponse = await response.json();
+          console.log(
+            `Stripe customer ${jsonResponse.customer_id} created successfully.`
+          );
+          // navigation.navigate("settings");
+        } else {
+
+          // Error handling
+          console.log("Error while calling Google Cloud Function: ", response.status, response.statusText);
+        }
+      } catch (error) {
+        console.log("Error while calling Google Cloud Function:", error);
       }
     }
   };

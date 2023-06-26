@@ -17,10 +17,6 @@ const CountrySelect = ({ selectedCountry, setSelectedCountry }) => {
   const [countryModalVisible, setCountryModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    console.log(countryModalVisible);
-  }, [countryModalVisible]);
-
   const FlagImage = getCustomFlagImage(countryCode);
 
   const filteredCountries = Object.entries(FLAGS).filter(
