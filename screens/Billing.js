@@ -45,7 +45,6 @@ const Billing = ({ navigation }) => {
   const [name, setName] = useState("");
   const [country, setCountry] = useState("United States");
 
-  // temp
   const [loading, setLoading] = useState(false);
 
   // useEffect to track changes in input fields and check if all fields are completed
@@ -58,7 +57,7 @@ const Billing = ({ navigation }) => {
     const response = await fetch(
       "https://us-central1-fervo-1.cloudfunctions.net/createSetupIntent",
       {
-        method: "POST",
+        method: "POST", 
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + idToken,
