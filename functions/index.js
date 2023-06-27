@@ -172,21 +172,25 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
   res.json({result: `Completed.`});
 });
 
+
+// Function to create a Stripe Customer during sign up
 exports.createStripeCustomer = onRequest(async (req, res) => {
+  // Check if method is POST
+  if (req.method !== "POST") {
+    res.status(405).send("Method Not Allowed");
+    return;
+  }
+
   if (!req.headers.authorization) {
     res.status(401).send("Missing Authorization header");
     return;
   }
-  // Get the ID token passed in the Authorization header
+
+  const uid = req.body.uid;
   const idToken = req.headers.authorization.split("Bearer ")[1];
 
-  const paymentMethodId = req.body.paymentMethodId;
-  const email = req.body.email;
-  const uid = req.body.uid;
-  const userFullName = req.body.userFullName;
-
+  // Verify ID token
   try {
-    // Verify the ID token
     const decodedToken = await auth.verifyIdToken(idToken);
 
     // Get the UID from the decoded token
@@ -197,52 +201,72 @@ exports.createStripeCustomer = onRequest(async (req, res) => {
       console.error("UID from ID token does not match UID from request body.");
       return res.status(403).send("Unauthorized");
     }
-
-    try {
-      // Create a new customer in Stripe.
-      const customer = await stripe.customers.create({
-        name: userFullName,
-        email: email,
-      });
-
-      // Associate the new payment method with the customer
-      const paymentMethod = await stripe.paymentMethods.attach(
-          paymentMethodId,
-          {customer: customer.id},
-      );
-
-      // Save the customer ID in Firestore.
-      const db = admin.firestore();
-
-      await db.collection("users").doc(uid).update({
-        stripeCustomerId: customer.id,
-        paymentMethodId: paymentMethod.id,
-      });
-
-      console.log(`Created Stripe customer ${customer.id} with payment method ${paymentMethod.id} for user ${uid}`);
-      res.json({customer_id: customer.id, payment_method_id: paymentMethod.id});
-    } catch (error) {
-      console.error(`Failed to create Stripe customer for user ${uid}:`, error);
-      res.status(500).send("Failed to create Stripe customer: " + error.message);
-    }
-    // Rest of your function...
   } catch (error) {
     console.error("Error verifying ID token:", error);
     res.status(403).send("Unauthorized");
   }
+
+  try {
+    // Create a new customer in Stripe
+    const customer = await stripe.customers.create({
+      email: req.body.email,
+      name: req.body.name,
+    });
+
+    // Send the customer ID in the response
+    res.json({
+      customerId: customer.id,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Failed to create Stripe customer: " + error.message);
+  }
 });
 
+// Function to create a Stripe SetupIntent in settings page
+exports.createSetupIntent = onRequest(async (req, res) => {
+  if (!req.headers.authorization) {
+    res.status(401).send("Missing Authorization header");
+    return;
+  }
 
-// exports.detachPaymentMethod = onRequest(async (req, res) => {
-//   const paymentMethodId = req.body.paymentMethodId;
+  const uid = req.body.uid;
+  const stripeCustomerId = req.body.stripeCustomerId;
+  const idToken = req.headers.authorization.split("Bearer ")[1];
 
-//   try {
-//     // Detach the payment method
-//     const detachedPaymentMethod = await stripe.paymentMethods.detach(paymentMethodId);
+  // Verify ID token
+  try {
+    const decodedToken = await auth.verifyIdToken(idToken);
 
-//     // Send a response back to the client
-//     res.send({status: "Payment method detached successfully"});
-//   } catch (error) {
-//     res.status(400).send(`Failed to detach payment method: ${error}`);
-//   }
-// });
+    // Get the UID from the decoded token
+    const uidFromToken = decodedToken.uid;
+
+    // Verify that the UID from the decoded token matches the uid from the request body
+    if (uid !== uidFromToken) {
+      console.error("UID from ID token does not match UID from request body.");
+      return res.status(403).send("Unauthorized");
+    }
+  } catch (error) {
+    console.error("Error verifying ID token:", error);
+    res.status(403).send("Unauthorized");
+  }
+
+  try {
+    const ephemeralKey = await stripe.ephemeralKeys.create(
+        {customer: stripeCustomerId},
+        {apiVersion: "2022-08-01"},
+    );
+    const setupIntent = await stripe.setupIntents.create({
+      customer: stripeCustomerId,
+    });
+    res.json({
+      setupIntent: setupIntent.client_secret,
+      ephemeralKey: ephemeralKey.secret,
+      customer: stripeCustomerId,
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Failed to create setup intent: " + error.message);
+  }
+});

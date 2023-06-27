@@ -11,7 +11,7 @@ import {
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MenuProvider } from "react-native-popup-menu";
-import { StripeProvider } from '@stripe/stripe-react-native';
+import { StripeProvider } from "@stripe/stripe-react-native";
 import { useFonts } from "expo-font";
 import Today from "./screens/Today";
 import Onboard1 from "./screens/Onboard1";
@@ -154,9 +154,11 @@ export default function App() {
   if (initializing) {
     return null;
   }
- 
+
   return (
-    <StripeProvider publishableKey="pk_test_51Lulh6CNzspyvGyfbvbpkGnt3C12jmuRiUZssraQSUhxWBmdaHvcCwI9jD3JVAY5HEHX10XEUGflGluiscNywvxD002YXGYWyT">
+    <StripeProvider
+      publishableKey="pk_test_51Lulh6CNzspyvGyfbvbpkGnt3C12jmuRiUZssraQSUhxWBmdaHvcCwI9jD3JVAY5HEHX10XEUGflGluiscNywvxD002YXGYWyT"
+    >
       <MenuProvider>
         <SettingsProvider>
           <BottomSheetProvider>
@@ -193,7 +195,7 @@ function AppContent({ isSignedIn }) {
   }, [isSignedIn, setCurrentUserID]);
 
   // If app state becomes active, update firebase timezone if user is in new timezone
-  useUpdateTimezoneOnAppActive(currentUserID); 
+  // useUpdateTimezoneOnAppActive(currentUserID);
 
   return (
     <View style={{ flex: 1 }}>

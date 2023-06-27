@@ -54,4 +54,32 @@ export const Border = {
   br_9xs: 4,
   br_7xs: 6,
   br_8xs: 5,
-};
+}; 
+
+// https://stripe.com/docs/elements/appearance-api
+export const paymentSheetAppearance = {
+  // font: {
+  //   family:
+  //     Platform.OS === 'android' ? 'avenirnextregular' : 'AvenirNext-Regular',
+  // },
+  shapes: {
+    borderRadius: 12,
+    borderWidth: 0.5,
+  },
+  primaryButton: {
+    shapes: {
+     borderRadius: 20,
+    },
+  },
+  colors: {
+    primary: '#fcfdff',
+    background: '#ffffff',
+    componentBackground: '#f3f8fa',
+    componentBorder: '#f3f8fa',
+    componentDivider: '#000000',
+    primaryText: '#000000',
+    secondaryText: '#000000',
+    componentText: '#000000',
+    placeholderText: '#73757b',
+  },
+ };

@@ -5,9 +5,14 @@ import { db } from '../database/firebase';
 
 // Updates timezone when app is active & their device timezone is different from stored timezone
 export default function useUpdateTimezoneOnAppActive(currentUserID) {
+
   const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
   const handleAppStateChange = async (nextAppState) => {
+
+    console.log("0");  
+
+
     if (nextAppState === 'active') {
       const newTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -22,10 +27,10 @@ export default function useUpdateTimezoneOnAppActive(currentUserID) {
         }
 
         // To add: update dayStart/dayEnd
-      }
+      } 
     }
-  };
-
+  }; 
+   
   // if App State changes, run check function
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);

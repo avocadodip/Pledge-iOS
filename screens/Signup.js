@@ -13,7 +13,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { Color } from "../GlobalStyles";
 import { auth, db } from "../database/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, getIdToken } from "firebase/auth";
 import {
   collection,
   doc,
@@ -39,36 +39,35 @@ const Signup = () => {
   const navigation = useNavigation();
 
   const handleSignup = async () => {
-    // Check if the inputPhoneNumber field is empty or invalid
     // Check if all fields are filled
     if (!fullName || !email || !password) {
       Alert.alert("Oops! 🙈", "Please fill in all fields");
       return;
     }
-
+  
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert("Uh-oh! 📧", "Please enter a valid email address");
       return;
     }
-
+  
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("email", "==", email.toLowerCase()));
     const querySnapshot = await getDocs(q);
-
+  
     // If a user with the same email is found, show an error alert
     if (!querySnapshot.empty) {
       Alert.alert("Error", "A user with this email address already exists.");
       return;
     }
-
+  
     // Sign up the user using Firebase Authentication
     const lowerCaseEmail = email.toLowerCase();
     const lowerCasePassword = password.toLowerCase();
-
+  
     setLoading(true);
-
+  
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -79,11 +78,39 @@ const Signup = () => {
       const user = userCredential.user;
       setCurrentUserID(user.uid);
       setCurrentUserFullName(fullName);
-
-      // get user's local timezone
+  
+      // Get user's local timezone
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      // Save full name and email to Firestore
+  
+      // Call the Firebase Cloud Function to create a new Stripe customer
+      const idToken = await getIdToken(auth.currentUser, true);
+  
+      // Send paymentMethod.id to Cloud Function
+      const response = await fetch(
+        "https://us-central1-fervo-1.cloudfunctions.net/createStripeCustomer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + idToken,
+          },
+          body: JSON.stringify({
+            email: lowerCaseEmail,
+            uid: user.uid,
+            name: fullName,
+          }),
+        }
+      );
+  
+      // Handle response from your server.
+      if (!response.ok) {
+        throw new Error('Failed to create Stripe customer.');
+      }
+  
+      const result = await response.json();
+      const stripeCustomerId = result.customerId;
+  
+      // Save full name, email and stripeCustomerId to Firestore
       await setDoc(doc(db, "users", user.uid), {
         fullName: fullName,
         email: lowerCaseEmail,
@@ -105,8 +132,9 @@ const Signup = () => {
         timezone: timeZone,
         isActiveUser: true,
         currency: "usd",
-        stripeCustomerId: null
+        stripeCustomerId: stripeCustomerId
       });
+  
       setLoading(false);
     } catch (error) {
       // Handle sign up errors (e.g., show error message)
@@ -114,6 +142,7 @@ const Signup = () => {
       Alert.alert("Sign Up Failed", error.message);
     }
   };
+  
 
   return (
     <KeyboardAvoidingView

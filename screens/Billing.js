@@ -15,14 +15,17 @@ import {
   Alert,
   Keyboard,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native";
 import {
   useStripe,
   createPaymentMethod,
   CardField,
   confirmPayment,
+  initPaymentSheet,
+  presentPaymentSheet,
 } from "@stripe/stripe-react-native";
-import { Color } from "../GlobalStyles";
+import { Color, paymentSheetAppearance } from "../GlobalStyles";
 import SettingsHeader from "../components/SettingsHeader";
 import CountrySelect from "../components/CountrySelect";
 import PoweredByStripeIcon from "../assets/icons/stripe-logo.svg";
@@ -33,78 +36,84 @@ import { getIdToken } from "firebase/auth";
 import { auth } from "../database/firebase";
 
 const Billing = ({ navigation }) => {
-  const { currentUserEmail, currentUserID, currentUserFullName } = useSettings();
+  const {
+    currentUserEmail,
+    currentUserID,
+    currentUserFullName,
+    settings: { stripeCustomerId },
+  } = useSettings();
   const [name, setName] = useState("");
   const [country, setCountry] = useState("United States");
-  const [card, setCard] = useState(null);
-  const [isCardComplete, setIsCardComplete] = useState(false);
+
+  // temp
+  const [loading, setLoading] = useState(false);
 
   // useEffect to track changes in input fields and check if all fields are completed
   const [allFieldsCompleted, setAllFieldsCompleted] = useState(false);
-  useEffect(() => {
-    if (name.trim() && country.trim() && isCardComplete) {
-      setAllFieldsCompleted(true);
-    } else {
-      setAllFieldsCompleted(false);
-    }
-  }, [name, country, isCardComplete]);
 
-  // --- Handle card save ---
-  const handleSaveCard = async () => {
-    console.log(name);
-    console.log(country);
-    // Create payment method
-    const { error, paymentMethod } = await createPaymentMethod({
-      paymentMethodType: "Card",
-      card: card,
-      billing_details: {
-        name: name,
-        address: {
-          country: country,
+  // Get setup intent
+  const fetchPaymentSheetParams = async () => {
+    const idToken = await getIdToken(auth.currentUser, true);
+
+    const response = await fetch(
+      "https://us-central1-fervo-1.cloudfunctions.net/createSetupIntent",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + idToken,
         },
-      },
+        body: JSON.stringify({
+          stripeCustomerId: stripeCustomerId,
+          uid: currentUserID
+        }),
+      }
+    );
+
+    // Handle response from your server.
+    if (!response.ok) {
+      throw new Error("Failed to setup intent.");
+    }
+
+    const { setupIntent, ephemeralKey, customer } = await response.json();
+
+    return {
+      setupIntent,
+      ephemeralKey,
+      customer,
+    };
+  };
+
+  // Initiailize payment sheet
+  const initializePaymentSheet = async () => {
+    const { setupIntent, ephemeralKey, customer } =
+      await fetchPaymentSheetParams();
+
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "Example, Inc.",
+      customerId: customer,
+      customerEphemeralKeySecret: ephemeralKey,
+      setupIntentClientSecret: setupIntent,
+      appearance: paymentSheetAppearance,
     });
+    if (!error) {
+      setLoading(true);
+    }
+  };
+
+  // Initialize payment sheet on mount
+  useEffect(() => {
+    initializePaymentSheet();
+  }, []);
+
+  // Open sheet when button clicked
+  const openPaymentSheet = async () => {
+    const { error } = await presentPaymentSheet();
 
     if (error) {
-      console.log(error);
-    } else if (paymentMethod) {
-      try {
-        const idToken = await getIdToken(auth.currentUser, true);
-
-        // Send paymentMethod.id to Cloud Function
-        const response = await fetch(
-          "https://us-central1-fervo-1.cloudfunctions.net/createStripeCustomer",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + idToken,
-            },
-            body: JSON.stringify({
-              paymentMethodId: paymentMethod.id,
-              userFullName: currentUserFullName,
-              email: currentUserEmail,
-              uid: currentUserID,
-            }),
-          }
-        );
-
-        // Check the response from your server.
-        if (response.ok) {
-          // Success handling
-          const jsonResponse = await response.json();
-          console.log(
-            `Stripe customer ${jsonResponse.customer_id} created successfully.`
-          );
-          // navigation.navigate("settings");
-        } else {
-
-          // Error handling
-          console.log("Error while calling Google Cloud Function: ", response.status, response.statusText);
-        }
-      } catch (error) {
-        console.log("Error while calling Google Cloud Function:", error);
-      }
+      Alert.alert(`Error code: ${error.code}`, error.message);
+    } else {
+      Alert.alert('Success', 'Your payment method is successfully set up for future payments!');
     }
   };
 
@@ -164,7 +173,7 @@ const Billing = ({ navigation }) => {
               styles.submitButton,
               !allFieldsCompleted && styles.disabledButton,
             ]}
-            onPress={handleSaveCard}
+            // onPress={handleSaveCard}
             disabled={!allFieldsCompleted}
           >
             {!allFieldsCompleted && (
@@ -173,6 +182,9 @@ const Billing = ({ navigation }) => {
             <Text style={styles.submitButtonText}>Add Card</Text>
           </TouchableRipple>
         </View>
+        <TouchableOpacity onPress={openPaymentSheet}>
+          <Text>hi</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
