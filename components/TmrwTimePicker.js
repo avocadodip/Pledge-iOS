@@ -6,9 +6,12 @@ import { Color } from "../GlobalStyles";
 import TouchableRipple from "./TouchableRipple";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../database/firebase";
+import ContentLoader, { Rect } from "react-content-loader/native";
 
 const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
+const CONTENT_LOADER_HEIGHT = 25;
+const CONTENT_LOADER_WIDTH = 60;
 
 const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd, altMessage }) => {
   const [isModalVisible, setModalVisible] = useState({
@@ -20,18 +23,24 @@ const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd, altMessage }) => {
     end: dayEnd,
   });
 
-  useEffect(() => {
-    if (dayStart && dayEnd) {
-      setSelectedTime({ start: dayStart, end: dayEnd });
-    }
-  }, [dayStart, dayEnd]); // won't show on intial load otherwise
-
   const [tempTime, setTempTime] = useState({
     startHour: dayStart.split(":")[0],
     startMinute: dayStart.split(":")[1],
     endHour: dayEnd.split(":")[0],
     endMinute: dayEnd.split(":")[1],
   });
+
+  useEffect(() => {
+    if (dayStart && dayEnd) {
+      setSelectedTime({ start: dayStart, end: dayEnd });
+      setTempTime({
+        startHour: dayStart.split(":")[0],
+        startMinute: dayStart.split(":")[1],
+        endHour: dayEnd.split(":")[0],
+        endMinute: dayEnd.split(":")[1],
+      });
+    }
+  }, [dayStart, dayEnd]);
 
   const toggleModal = (period) => {
     setModalVisible((prev) => ({ ...prev, [period]: !prev[period] }));
@@ -52,29 +61,61 @@ const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd, altMessage }) => {
   return (
     <View>
       {/* HEADER MESSAGE LINE */}
+
       <View style={styles.headerMessageContainer}>
         {altMessage ? (
           <Text style={styles.headerMessageText}>Day will open at </Text>
         ) : (
           <Text style={styles.headerMessageText}>Tasks will open at </Text>
         )}
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => toggleModal("start")}
-        >
-          <Text style={styles.headerButtonText}>
-            {`${selectedTime.start} AM`}
-          </Text>
-        </TouchableOpacity>
+
+        {dayStart == "" || !dayStart ? (
+          <View style={styles.contentLoaderContainer}>
+            <ContentLoader
+              speed={0.6}
+              height={CONTENT_LOADER_HEIGHT}
+              width={CONTENT_LOADER_WIDTH}
+              backgroundColor="#e16564"
+              foregroundColor="#f27b7b"
+            >
+              <Rect width="100%" height="100%" />
+            </ContentLoader>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => toggleModal("start")}
+          >
+            <Text style={styles.headerButtonText}>
+              {`${selectedTime.start} AM`}
+            </Text>
+          </TouchableOpacity>
+        )}
+
         <Text style={styles.headerMessageText}> and close at </Text>
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => toggleModal("end")}
-        >
-          <Text style={styles.headerButtonText}>
-            {`${selectedTime.end} PM`}
-          </Text>
-        </TouchableOpacity>
+
+        {dayEnd == "" || !dayEnd ? (
+          <View style={styles.contentLoaderContainer}>
+            <ContentLoader
+              speed={0.6}
+              height={CONTENT_LOADER_HEIGHT}
+              width={CONTENT_LOADER_WIDTH}
+              backgroundColor="#e16564"
+              foregroundColor="#f27b7b"
+            >
+              <Rect width="100%" height="100%" />
+            </ContentLoader>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => toggleModal("end")}
+          >
+            <Text style={styles.headerButtonText}>
+              {`${selectedTime.end} PM`}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* AM MODAL */}
@@ -223,15 +264,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Color.white,
   },
-  headerButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.17)",
-    paddingVertical: 5,
-    paddingHorizontal: 7,
+  contentLoaderContainer: {
+    width: CONTENT_LOADER_WIDTH,
+    height: CONTENT_LOADER_HEIGHT,
     borderRadius: 5,
-    marginHorizontal: 1,
     overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+  },
+  headerButton: {
+    borderRadius: 5,
+    overflow: "hidden",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    paddingHorizontal: 7,
+    paddingVertical: 4,
   },
   headerButtonText: {
     color: Color.white,

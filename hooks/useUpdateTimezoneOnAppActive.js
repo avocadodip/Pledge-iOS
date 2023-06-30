@@ -1,20 +1,17 @@
 import { useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 import { doc, setDoc } from "firebase/firestore"; 
-import { db } from '../database/firebase';
+import { db } from '../database/firebase'; 
 
 // Updates timezone when app is active & their device timezone is different from stored timezone
 export default function useUpdateTimezoneOnAppActive(currentUserID) {
 
   const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
-  const handleAppStateChange = async (nextAppState) => {
-
-    console.log("0");  
-
+  const handleAppStateChange = async (nextAppState) => { 
 
     if (nextAppState === 'active') {
-      const newTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const newTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;  
 
       // If new time zone
       if (newTimezone !== timezone) {

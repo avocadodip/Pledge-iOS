@@ -9,7 +9,7 @@ const Stats = ({navigation}) => {
  
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <SettingsHeader navigation={navigation} header={"Stats"}/>
+      <SettingsHeader navigation={navigation} header={"Past Bets"}/>
       <StatsBundle even={false} month="Jul" day="2"/>
       <StatsBundle even={true} month="Jul" day="2"/>
       <StatsBundle even={false} month="Jun" day="31"/>

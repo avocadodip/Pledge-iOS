@@ -7,6 +7,8 @@
 // 7. formatDayStart()
 // 8. formatDayEnd()
 
+
+
 // Array of week days
 export const daysOfWeek = [
   "Sunday",

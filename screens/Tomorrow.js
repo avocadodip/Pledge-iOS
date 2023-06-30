@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
@@ -29,7 +29,7 @@ const renderTodo = (
     isLocked={isLocked}
     timeStatus={timeStatus}
   />
-);
+); 
 
 const Tomorrow = () => {
   const { tmrwTodos } = useBottomSheet();
@@ -37,6 +37,7 @@ const Tomorrow = () => {
     settings: { vacationModeOn, daysActive },
     currentUserID,
   } = useSettings();
+
   const { dayChanged } = useDayChange();
   const { dayStart, dayEnd } = useTodayTodos(dayChanged);
   const { tmrwHeaderSubtitleMessage, timeStatus } = useDayStatus(
@@ -65,7 +66,7 @@ const Tomorrow = () => {
           <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
         </View>
         {!vacationModeOn && isTmrwActiveDay && (
-          <View> 
+          <View>
             <Text style={styles.headerSubtitle}>
               {tmrwHeaderSubtitleMessage}
             </Text>
@@ -100,8 +101,8 @@ const Tomorrow = () => {
         <View style={styles.todoContainer}>{renderTodos()}</View>
       )}
     </SafeAreaView>
-  ); 
-}; 
+  );
+};
 
 const styles = StyleSheet.create({
   bottomSheet: {
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: "white",
     fontSize: 42,
-    fontWeight: "bold", 
+    fontWeight: "bold",
   },
   headerDayOfWeek: {
     color: "white",

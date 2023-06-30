@@ -1,10 +1,12 @@
 import { StyleSheet } from "react-native";
 
+const TODO_HEIGHT = "26%";
+
 export const styles = StyleSheet.create({
   numberContainer: {
     flexDirection: "column",
     width: "100%",
-    height: "26%",
+    height: TODO_HEIGHT,
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
@@ -21,7 +23,7 @@ export const styles = StyleSheet.create({
   finedContainer: {
     flexDirection: "column",
     width: "100%",
-    height: "27%",
+    height: TODO_HEIGHT,
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
@@ -32,7 +34,7 @@ export const styles = StyleSheet.create({
   oneContainer: {
     flexDirection: "column",
     width: "100%",
-    height: "27%",
+    height: TODO_HEIGHT,
     justifyContent: "center",
     alignItems: "center",
     gap: 28,
@@ -43,7 +45,7 @@ export const styles = StyleSheet.create({
   infoContainer: {
     flexDirection: "row",
     width: "100%",
-    height: "27%",
+    height: TODO_HEIGHT,
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 16,

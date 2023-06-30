@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Color } from "../GlobalStyles";
 import RightChevronIcon from "../assets/icons/chevron-right.svg";
@@ -10,43 +10,45 @@ import SunThemeIcon from "../assets/icons/sun-theme-icon.svg";
 import GlobeIcon from "../assets/icons/globe-icon.svg";
 import PlaneIcon from "../assets/icons/vacation-plane-icon.svg";
 import DaysActiveIcon from "../assets/icons/days-active-icon.svg";
-
 import OnboardingPopup from "../components/OnboardingPopup";
 import TouchableRipple from "../components/TouchableRipple";
-import React, { useState } from "react";
-import { auth } from "../database/firebase";
+import React, { useEffect, useState, useRef } from "react";
+import { auth, db } from "../database/firebase";
 import ThemeToggle from "../components/ThemeToggle";
 import DaysActiveModal from "../components/DaysActiveModal";
-
 import { useSettings } from "../hooks/SettingsContext";
 import VacationToggle from "../components/VacationToggle";
+import {
+  fetchPaymentMethods,
+  initializePaymentSheet,
+} from "../utils/stripePaymentSheet";
+import { presentPaymentSheet } from "@stripe/stripe-react-native";
+import ContentLoader, { Rect, Circle, Path } from "react-content-loader/native";
+import PlusIcon from "../assets/icons/plus-icon.svg";
+import { daysOfWeek } from "../utils/currentDate";
 
 const Settings = ({ navigation }) => {
   const {
-    settings: { daysActive, vacationModeOn, timezone },
+    settings: {
+      daysActive,
+      vacationModeOn,
+      timezone,
+      stripeCustomerId,
+      isPaymentSetup,
+    },
     currentUserID,
   } = useSettings();
-
+  const [loading, setLoading] = useState(false);
+  const [isPaymentInitialized, setIsPaymentInitialized] = useState(false);
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
+  const [lastFourDigits, setLastFourDigits] = useState("");
+  const prevCardCountRef = useRef(0);
   const buttonTexts = ["S", "M", "T", "W", "T", "F", "S"];
-  const dayKeys = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
 
   const handleOpenDaysActiveModal = (action) => {
     if (action == true) {
       setDaysActiveModalVisible(true);
     } else setDaysActiveModalVisible(false);
-  };
-
-  const handlePress = (screenName) => {
-    navigation.navigate(screenName);
   };
 
   const handleLogout = async () => {
@@ -56,6 +58,90 @@ const Settings = ({ navigation }) => {
       console.error("Sign out error", error);
     }
   };
+
+  // --- PAYMENT ---
+  const checkIfPaymentInitialized = async () => {
+    const paymentMethods = await fetchPaymentMethods(
+      stripeCustomerId,
+      currentUserID
+    );
+  
+    const cardCount = paymentMethods.data.length;
+    if (cardCount === 0) {
+      setIsPaymentInitialized(false);
+    } else if (cardCount > 0) {
+      setIsPaymentInitialized(true);
+  
+      const defaultCard = paymentMethods.data[0];
+      const last4 = defaultCard.card.last4;
+      setLastFourDigits(last4);
+    }
+  
+    // Check if card count has decreased
+    if (prevCardCountRef.current > cardCount) {
+      setLoading(true);
+  
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
+    }
+  
+    // Update the previous card count after the check
+    prevCardCountRef.current = cardCount;
+  };
+  
+
+  const loadPaymentSheet = async () => {
+    try {
+      await initializePaymentSheet(stripeCustomerId, currentUserID);
+    } catch (error) {
+      // Handle the error if initialization fails
+      console.error(error);
+    }
+    setLoading(false);
+  }; 
+
+  // Opens payment sheet
+  const openPaymentSheet = async () => {
+    
+    setTimeout(() => {
+    }, 300);
+    const { error } = await presentPaymentSheet();
+
+    // Result: Error
+    if (error) {
+      if (error.code !== "Canceled") {
+        Alert.alert(`Error code: ${error.code}`, error.message);
+      }
+
+      // User may have removed credit card and dismissed/canceled the sheet
+      checkIfPaymentInitialized();
+    }
+
+    // Result: Success - payment has been setup
+    else {
+      setLoading(true);
+      checkIfPaymentInitialized();
+      loadPaymentSheet();
+      // Alert.alert(
+      //   "Success",
+      //   "Your payment method is successfully set up for future payments!"
+      // );
+    }
+  };  
+
+  useEffect(() => {
+    setLoading(true); 
+    loadPaymentSheet();
+    checkIfPaymentInitialized();
+  }, []);
+
+  // Set state when isPaymentSetup is fetched
+  useEffect(() => {
+    if (isPaymentSetup !== undefined) {
+      setIsPaymentInitialized(isPaymentSetup);
+    }
+  }, [isPaymentSetup]);
 
   return (
     <SafeAreaView style={styles.pageContainer}>
@@ -70,18 +156,39 @@ const Settings = ({ navigation }) => {
 
       <View style={styles.mainContainer}>
         <View style={styles.sectionContainer}>
-          <TouchableRipple
-            style={styles.button}
-            onPress={() => handlePress("Billing")}
-          >
-            <View style={styles.leftSettingsButton}>
-              <CreditCardIcon width={24} height={24} color={Color.white} />
-              <Text style={styles.buttonTitle}>Link Payment Method</Text>
-            </View>
-            <View style={styles.chevronContainer}>
-              <RightChevronIcon width={24} height={24} color={Color.white} />
-            </View>
-          </TouchableRipple>
+          {loading ? (
+            <ContentLoader
+              speed={0.6}
+              height={56}
+              backgroundColor="#e16564"
+              foregroundColor="#f27b7b"
+            >
+              <Rect width="100%" height="100%" />
+            </ContentLoader>
+          ) : (
+            <>
+              <TouchableRipple style={styles.button} onPress={openPaymentSheet}>
+                <View style={styles.leftSettingsButton}>
+                  <CreditCardIcon width={24} height={24} color={Color.white} />
+
+                  {isPaymentInitialized ? (
+                    <Text style={styles.buttonTitle}>Payment method added</Text>
+                  ) : (
+                    <Text style={styles.buttonTitle}>Add a payment method</Text>
+                  )}
+                </View>
+                <View style={styles.chevronContainer}>
+                  {isPaymentInitialized ? (
+                    <Text style={styles.lastFourDigitsText}>
+                      {lastFourDigits}
+                    </Text>
+                  ) : (
+                    <PlusIcon width={27} height={27} color={Color.white} />
+                  )}
+                </View>
+              </TouchableRipple>
+            </>
+          )}
         </View>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionHeaderText}>App</Text>
@@ -91,7 +198,7 @@ const Settings = ({ navigation }) => {
         <View style={styles.sectionContainer}>
           <TouchableRipple
             style={styles.button}
-            onPress={() => handlePress("Stats")}
+            onPress={() => navigation.navigate("Stats")}
           >
             <View style={styles.leftSettingsButton}>
               <HistoryIcon width={24} height={24} color={Color.white} />
@@ -113,7 +220,7 @@ const Settings = ({ navigation }) => {
 
             <View style={styles.chevronContainer}>
               <View style={styles.daysOfWeekTextContainer}>
-                {dayKeys.map((dayKey, index) => (
+                {daysOfWeek.map((dayKey, index) => (
                   <Text
                     style={{
                       fontSize: 15,
@@ -177,7 +284,7 @@ const Settings = ({ navigation }) => {
         {/* LOGOUT */}
         <TouchableRipple
           style={styles.button}
-          onPress={() => handlePress("Account")}
+          onPress={() => navigation.navigate("Account")}
         >
           <View style={styles.leftSettingsButton}>
             <UserCircleIcon width={24} height={24} color={Color.white} />
@@ -282,5 +389,10 @@ const styles = StyleSheet.create({
     color: Color.white,
     opacity: 0.8,
     marginRight: 12,
+  },
+  lastFourDigitsText: {
+    fontSize: 15,
+    color: Color.white,
+    opacity: 0.8,
   },
 });

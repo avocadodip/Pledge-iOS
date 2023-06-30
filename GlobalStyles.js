@@ -8,6 +8,7 @@ export const FontFamily = {
   interBold: "Inter_bold",
   epilogueMedium: "Epilogue_medium",
 };
+
 /* font sizes */
 export const FontSize = {
   size_lg: 18,
@@ -18,6 +19,7 @@ export const FontSize = {
   size_17xl: 36,
   size_31xl: 50,
 };
+
 /* Colors */
 export const Color = {
   fervo_red: "#DD4F4F",
@@ -27,13 +29,14 @@ export const Color = {
   task_red: "#E98E8E",
   task_green: "#8FE98E",
   task_yellow: "#E9E08E",
-  white: "#fff",
+  white: "#FFFFFF",
   faint_white: "rgba(243, 243, 243, 0.5)",
   border_white: "rgba(243, 243, 243, 0.32)",
   black: "#000",
   gray_100: "rgba(0, 0, 0, 0.5)",
   gray_200: "rgba(0, 0, 0, 0.6)",
 };
+
 /* Paddings */
 export const Padding = {
   p_xl: 20,
@@ -54,32 +57,37 @@ export const Border = {
   br_9xs: 4,
   br_7xs: 6,
   br_8xs: 5,
-}; 
+};
 
-// https://stripe.com/docs/elements/appearance-api
+// https://stripe.com/docs/elements/appearance-api (fonts & light/dark mode)
 export const paymentSheetAppearance = {
-  // font: {
-  //   family:
-  //     Platform.OS === 'android' ? 'avenirnextregular' : 'AvenirNext-Regular',
-  // },
   shapes: {
     borderRadius: 12,
-    borderWidth: 0.5,
-  },
-  primaryButton: {
-    shapes: {
-     borderRadius: 20,
-    },
+    borderWidth: 0,
+    shadow: 0,
   },
   colors: {
-    primary: '#fcfdff',
-    background: '#ffffff',
-    componentBackground: '#f3f8fa',
-    componentBorder: '#f3f8fa',
-    componentDivider: '#000000',
-    primaryText: '#000000',
-    secondaryText: '#000000',
-    componentText: '#000000',
-    placeholderText: '#73757b',
+    primary: "#fcfdff",
+    background: Color.fervo_red,
+    componentBackground: "#e86464",
+    componentBorder: "#f3f8fa",
+    componentDivider: Color.white,
+    primaryText: Color.white,
+    secondaryText: Color.white,
+    componentText: Color.white,
+    placeholderText: Color.white,
+    icon: Color.white,
+    error: "#e1e1e1"
   },
- };
+  primaryButton: {
+    colors: {
+      background: "#e86464",
+      text: Color.white,
+    },
+    shapes: {
+      borderWidth: 0,
+      borderRadius: 12,
+      shadow: 0
+    },
+  },
+};

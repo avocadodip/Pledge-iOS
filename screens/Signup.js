@@ -23,9 +23,6 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import MailIcon from "../assets/icons/mail-icon.svg";
-import FervoWhite from "../assets/FervoWhite.png";
-import { getTodayDateTime } from "../utils/currentDate";
 import { useSettings } from "../hooks/SettingsContext";
 import TouchableRipple from "../components/TouchableRipple";
 
@@ -87,7 +84,7 @@ const Signup = () => {
   
       // Send paymentMethod.id to Cloud Function
       const response = await fetch(
-        "https://us-central1-fervo-1.cloudfunctions.net/createStripeCustomer",
+        `${API_URL}/createStripeCustomer`,
         {
           method: "POST",
           headers: {
@@ -132,7 +129,8 @@ const Signup = () => {
         timezone: timeZone,
         isActiveUser: true,
         currency: "usd",
-        stripeCustomerId: stripeCustomerId
+        stripeCustomerId: stripeCustomerId,
+        isPaymentSetup: false
       });
   
       setLoading(false);
