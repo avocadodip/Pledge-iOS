@@ -77,7 +77,7 @@ export const paymentSheetAppearance = {
     componentText: Color.white,
     placeholderText: Color.white,
     icon: Color.white,
-    error: "#e1e1e1"
+    error: "#e1e1e1",
   },
   primaryButton: {
     colors: {
@@ -87,7 +87,19 @@ export const paymentSheetAppearance = {
     shapes: {
       borderWidth: 0,
       borderRadius: 12,
-      shadow: 0
+      shadow: 0,
     },
+  },
+};
+
+export const BOTTOM_TAB_HEIGHT = 90;
+export const SETTINGS_HORIZONTAL_PADDING = 20;
+
+export const settingsPageStyles = {
+  pageContainer: {
+    display: "flex",
+    marginBottom: BOTTOM_TAB_HEIGHT + 90,
+
+    marginHorizontal: SETTINGS_HORIZONTAL_PADDING,
   },
 };

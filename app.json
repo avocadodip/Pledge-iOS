@@ -1,8 +1,10 @@
 {
   "expo": {
     "name": "fervo-mobile",
-    "slug": "fervo-mobile",
-    "plugins": ["@react-native-google-signin/google-signin"],
+    "slug": "fervo",
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,9 +31,21 @@
     },
     "packagerOpts": {
       "config": "metro.config.js",
-      "sourceExts": ["ts", "tsx", "js", "jsx", "json", "wasm", "svg"]
-    }
-
-
+      "sourceExts": [
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "json",
+        "wasm",
+        "svg"
+      ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2f8cb7e8-ec8b-4bed-b41b-d518b8adfdf4"
+      }
+    },
+    "owner": "cewidiupleek"
   }
 }

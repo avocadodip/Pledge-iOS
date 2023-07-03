@@ -25,6 +25,7 @@ import {
 } from "firebase/firestore";
 import { useSettings } from "../hooks/SettingsContext";
 import TouchableRipple from "../components/TouchableRipple";
+import { API_URL } from "../constants";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -106,7 +107,7 @@ const Signup = () => {
   
       const result = await response.json();
       const stripeCustomerId = result.customerId;
-  
+   
       // Save full name, email and stripeCustomerId to Firestore
       await setDoc(doc(db, "users", user.uid), {
         fullName: fullName,
@@ -130,7 +131,8 @@ const Signup = () => {
         isActiveUser: true,
         currency: "usd",
         stripeCustomerId: stripeCustomerId,
-        isPaymentSetup: false
+        isPaymentSetup: false,
+        hasBeenChargedBefore: false,
       });
   
       setLoading(false);
@@ -140,7 +142,7 @@ const Signup = () => {
       Alert.alert("Sign Up Failed", error.message);
     }
   };
-  
+   
 
   return (
     <KeyboardAvoidingView
@@ -150,7 +152,7 @@ const Signup = () => {
       <View style={styles.logoContainer}>
         {/* replace with app logo */}
         <Image
-          source={require("../assets/FervoWhite.png")}
+          source={require("../assets/icons/FervoWhite.png")}
           style={{ width: 100, height: 100 }}
         />
         <Text style={styles.appNameText}>Fervo</Text>
@@ -269,23 +271,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 600,
   },
-  // alternativeButton: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  //   backgroundColor: "transparent",
-  //   gap: 10,
-  //   height: 45,
-  //   borderRadius: 50,
-  //   width: 322,
-  //   borderWidth: 3, // Set the border width
-  //   borderColor: "#fff", // Set the border color
-  // },
-  // alternativeButtonText: {
-  //   color: "white",
-  //   fontSize: 16,
-  //   fontWeight: 700,
-  // },
 });
 
 export default Signup;

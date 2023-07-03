@@ -5,6 +5,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../database/firebase";
 import Modal from "react-native-modal";
 import Checkbox from "expo-checkbox";
+import TouchableRipple from "./TouchableRipple";
 
 const DaysActiveModal = ({
   currentUserID,
@@ -62,7 +63,7 @@ const DaysActiveModal = ({
       backdropTransitionOutTiming={0}
       animationOutTiming={500}
     >
-      <View style={styles.modalContent}>
+      <View style={styles.modalContainer}>
         <Text style={styles.modalTitle}>Set Days Active</Text>
         <View style={styles.daysActiveContainer}>
           {abbrevDayKeys.map((text, index) => (
@@ -82,13 +83,13 @@ const DaysActiveModal = ({
           ))}
         </View>
         {/* SAVE BUTTON */}
-        <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
+        {/* <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
           <Text style={styles.buttonText}>Confirm</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {/* CANCEL BUTTON */}
       <View>
-        <TouchableOpacity
+        <TouchableRipple
           style={styles.cancelButton}
           onPress={() => {
             handleToggleModal(false);
@@ -96,7 +97,7 @@ const DaysActiveModal = ({
           }}
         >
           <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableOpacity>
+        </TouchableRipple>
       </View>
     </Modal>
   );
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
   bottomModal: {
     justifyContent: "flex-end",
   },
-  modalContent: {
+  modalContainer: {
     flexDirection: "col",
     backgroundColor: Color.fervo_red,
     paddingTop: 22,

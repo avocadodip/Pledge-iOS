@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { Color } from "../GlobalStyles";
+import { Color, SETTINGS_HORIZONTAL_PADDING, settingsPageStyles } from "../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
 import LeftChevronIcon from "../assets/icons/chevron-left.svg";
@@ -13,6 +13,7 @@ import ThemeToggle from "../components/ThemeToggle";
 import TimezoneSelector from "../components/TimezoneSelector";
 import DeleteAccountButton from "../components/DeleteAccountButton";
 import SettingsHeader from "../components/SettingsHeader";
+import LogoutButton from "../components/LogoutButton";
 
 const Account = ({ navigation }) => {
   const {
@@ -22,26 +23,14 @@ const Account = ({ navigation }) => {
     settings: { dayStart, dayEnd, vacationModeOn, theme, daysActive, timezone },
   } = useSettings();
 
-  return (
-    <SafeAreaView style={styles.pageContainer}>
+  return ( 
+    <SafeAreaView style={settingsPageStyles.pageContainer}>
       {/* <OnboardingPopup
         texts={['Are you sure you want to delete your account?', 'Progress takes time and failure is a vital part of the process!','If you are struggling to complete tasks, try setting smaller tasks each day. It will pay off over time!']}
         buttonTitle="Let's give this one more go!"
         secondButtonTitle="Yes, delete my account."
       /> */}
       <SettingsHeader navigation={navigation} header={"Account"} />
-
-      {/* <View style={styles.preferenceContainer}>
-        <Text style={styles.preferenceTitle}> Name </Text>
-        <TextInput
-          style={styles.preferenceInput}
-          placeholder="First Last"
-          placeholderTextColor={Color.faint_white}
-          autoCorrect={false}
-          autoCapitalize="none"
-          value={currentUserFullName}
-        ></TextInput>
-      </View> */}
       <View style={styles.preferenceContainer}>
         <Text style={styles.preferenceTitle}> Email </Text>
         <TextInput
@@ -54,9 +43,8 @@ const Account = ({ navigation }) => {
         ></TextInput>
       </View>
 
-      <View style={styles.preferenceContainer}>
-        <DeleteAccountButton currentUserID={currentUserID} />
-      </View>
+      <LogoutButton />
+      <DeleteAccountButton currentUserID={currentUserID} />
     </SafeAreaView>
   );
 };
@@ -64,22 +52,14 @@ const Account = ({ navigation }) => {
 export default Account;
 
 const styles = StyleSheet.create({
-  pageContainer: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 20,
-    // borderWidth: 1,
-    // borderColor: 'black',
+  container: {
+    marginHorizontal: SETTINGS_HORIZONTAL_PADDING,
   },
   preferenceContainer: {
-    paddingLeft: 10,
-    paddingTop: 20,
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // borderWidth: 1,
-    // borderColor: 'black',
   },
   preferenceRightContainer: {
     width: 250,

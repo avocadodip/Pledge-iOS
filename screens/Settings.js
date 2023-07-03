@@ -1,11 +1,10 @@
 import { StyleSheet, Text, View, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Color } from "../GlobalStyles";
+import { Color, settingsPageStyles } from "../GlobalStyles";
 import RightChevronIcon from "../assets/icons/chevron-right.svg";
 import UserCircleIcon from "../assets/icons/user-profile-circle.svg";
 import HistoryIcon from "../assets/icons/history-icon.svg";
 import CreditCardIcon from "../assets/icons/credit-card.svg";
-import LogoutIcon from "../assets/icons/logout.svg";
 import SunThemeIcon from "../assets/icons/sun-theme-icon.svg";
 import GlobeIcon from "../assets/icons/globe-icon.svg";
 import PlaneIcon from "../assets/icons/vacation-plane-icon.svg";
@@ -16,6 +15,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { auth, db } from "../database/firebase";
 import ThemeToggle from "../components/ThemeToggle";
 import DaysActiveModal from "../components/DaysActiveModal";
+import NotificationsModal from "../components/NotificationsModal";
 import { useSettings } from "../hooks/SettingsContext";
 import VacationToggle from "../components/VacationToggle";
 import {
@@ -25,7 +25,12 @@ import {
 import { presentPaymentSheet } from "@stripe/stripe-react-native";
 import ContentLoader, { Rect, Circle, Path } from "react-content-loader/native";
 import PlusIcon from "../assets/icons/plus-icon.svg";
+import MoneyIcon from "../assets/icons/money-icon.svg";
+import NotificationBellIcon from "../assets/icons/notification-bell-icon.svg";
 import { daysOfWeek } from "../utils/currentDate";
+import { doc, updateDoc } from "firebase/firestore";
+
+const BUTTON_HEIGHT = 51;
 
 const Settings = ({ navigation }) => {
   const {
@@ -35,15 +40,18 @@ const Settings = ({ navigation }) => {
       timezone,
       stripeCustomerId,
       isPaymentSetup,
+      notificationsEnabled,
     },
     currentUserID,
   } = useSettings();
   const [loading, setLoading] = useState(false);
+  const [defaultCard, setDefaultCard] = useState("");
   const [isPaymentInitialized, setIsPaymentInitialized] = useState(false);
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
-  const [lastFourDigits, setLastFourDigits] = useState("");
+  const [notifsModalVisible, setNotifsModalVisible] = useState(false);
   const prevCardCountRef = useRef(0);
   const buttonTexts = ["S", "M", "T", "W", "T", "F", "S"];
+  const userRef = doc(db, "users", currentUserID);
 
   const handleOpenDaysActiveModal = (action) => {
     if (action == true) {
@@ -51,45 +59,46 @@ const Settings = ({ navigation }) => {
     } else setDaysActiveModalVisible(false);
   };
 
-  const handleLogout = async () => {
-    try {
-      await auth.signOut();
-    } catch (error) {
-      console.error("Sign out error", error);
-    }
+  const handleOpenNotifsModal = (action) => {
+    if (action == true) {
+      setNotifsModalVisible(true);
+    } else setNotifsModalVisible(false);
   };
 
-  // --- PAYMENT ---
+  // Payment
   const checkIfPaymentInitialized = async () => {
     const paymentMethods = await fetchPaymentMethods(
       stripeCustomerId,
       currentUserID
     );
-  
+
     const cardCount = paymentMethods.data.length;
     if (cardCount === 0) {
       setIsPaymentInitialized(false);
+      await updateDoc(userRef, {
+        isPaymentSetup: false,
+      });
     } else if (cardCount > 0) {
       setIsPaymentInitialized(true);
-  
-      const defaultCard = paymentMethods.data[0];
-      const last4 = defaultCard.card.last4;
-      setLastFourDigits(last4);
+      if (isPaymentSetup == false) {
+        await updateDoc(userRef, {
+          isPaymentSetup: true,
+        });
+      }
     }
-  
+
     // Check if card count has decreased
     if (prevCardCountRef.current > cardCount) {
       setLoading(true);
-  
+
       setTimeout(() => {
         setLoading(false);
       }, 300);
     }
-  
+
     // Update the previous card count after the check
     prevCardCountRef.current = cardCount;
   };
-  
 
   const loadPaymentSheet = async () => {
     try {
@@ -99,13 +108,11 @@ const Settings = ({ navigation }) => {
       console.error(error);
     }
     setLoading(false);
-  }; 
+  };
 
   // Opens payment sheet
   const openPaymentSheet = async () => {
-    
-    setTimeout(() => {
-    }, 300);
+    setTimeout(() => {}, 300);
     const { error } = await presentPaymentSheet();
 
     // Result: Error
@@ -128,12 +135,13 @@ const Settings = ({ navigation }) => {
       //   "Your payment method is successfully set up for future payments!"
       // );
     }
-  };  
+  };
 
   useEffect(() => {
-    setLoading(true); 
+    setLoading(true);
     loadPaymentSheet();
     checkIfPaymentInitialized();
+    console.log(defaultCard);
   }, []);
 
   // Set state when isPaymentSetup is fetched
@@ -144,7 +152,7 @@ const Settings = ({ navigation }) => {
   }, [isPaymentSetup]);
 
   return (
-    <SafeAreaView style={styles.pageContainer}>
+    <SafeAreaView style={settingsPageStyles.pageContainer}>
       {/* <OnboardingPopup
         texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
         buttonTitle="Back to settings."
@@ -159,7 +167,7 @@ const Settings = ({ navigation }) => {
           {loading ? (
             <ContentLoader
               speed={0.6}
-              height={56}
+              height={BUTTON_HEIGHT}
               backgroundColor="#e16564"
               foregroundColor="#f27b7b"
             >
@@ -172,16 +180,14 @@ const Settings = ({ navigation }) => {
                   <CreditCardIcon width={24} height={24} color={Color.white} />
 
                   {isPaymentInitialized ? (
-                    <Text style={styles.buttonTitle}>Payment method added</Text>
+                    <Text style={styles.buttonTitle}>Payment Method</Text>
                   ) : (
                     <Text style={styles.buttonTitle}>Add a payment method</Text>
                   )}
                 </View>
                 <View style={styles.chevronContainer}>
                   {isPaymentInitialized ? (
-                    <Text style={styles.lastFourDigitsText}>
-                      {lastFourDigits}
-                    </Text>
+                    <Text style={styles.rightSideText}>Activated</Text>
                   ) : (
                     <PlusIcon width={27} height={27} color={Color.white} />
                   )}
@@ -198,16 +204,33 @@ const Settings = ({ navigation }) => {
         <View style={styles.sectionContainer}>
           <TouchableRipple
             style={styles.button}
-            onPress={() => navigation.navigate("Stats")}
+            onPress={() => handleOpenNotifsModal(true)}
           >
             <View style={styles.leftSettingsButton}>
-              <HistoryIcon width={24} height={24} color={Color.white} />
-              <Text style={styles.buttonTitle}>Past Bets</Text>
+              <NotificationBellIcon
+                width={24}
+                height={24}
+                color={Color.white}
+              />
+              <Text style={styles.buttonTitle}>Notifications</Text>
             </View>
             <View style={styles.chevronContainer}>
-              <RightChevronIcon width={24} height={24} color={Color.white} />
+              <View style={styles.daysOfWeekTextContainer}>
+                {notificationsEnabled ? (
+                  <Text style={styles.rightSideText}>On</Text>
+                ) : (
+                  <Text style={styles.rightSideText}>Off</Text>
+                )}
+              </View>
             </View>
           </TouchableRipple>
+          <NotificationsModal
+            currentUserID={currentUserID}
+            daysActive={daysActive}
+            isVisible={notifsModalVisible}
+            handleToggleModal={handleOpenNotifsModal}
+            notifsEnabled={notificationsEnabled}
+          />
           {/* DAYS ACTIVE */}
           <TouchableRipple
             style={styles.button}
@@ -265,7 +288,7 @@ const Settings = ({ navigation }) => {
             </View>
             <View style={styles.rightSettingsButton}>
               <ThemeToggle />
-            </View>
+            </View> 
           </View>
           {/* TIMEZONE */}
           <View style={styles.button}>
@@ -281,7 +304,30 @@ const Settings = ({ navigation }) => {
         <Text style={styles.sectionHeaderText}>Account</Text>
       </View>
       <View style={styles.sectionContainer}>
-        {/* LOGOUT */}
+        <TouchableRipple
+          style={styles.button}
+          onPress={() => navigation.navigate("PastBets")}
+        >
+          <View style={styles.leftSettingsButton}>
+            <HistoryIcon width={24} height={24} color={Color.white} />
+            <Text style={styles.buttonTitle}>Past Bets</Text>
+          </View>
+          <View style={styles.chevronContainer}>
+            <RightChevronIcon width={24} height={24} color={Color.white} />
+          </View>
+        </TouchableRipple>
+        <TouchableRipple
+          style={styles.button}
+          onPress={() => navigation.navigate("Transactions")}
+        >
+          <View style={styles.leftSettingsButton}>
+            <MoneyIcon width={24} height={24} color={Color.white} />
+            <Text style={styles.buttonTitle}>Transactions</Text>
+          </View>
+          <View style={styles.chevronContainer}>
+            <RightChevronIcon width={24} height={24} color={Color.white} />
+          </View>
+        </TouchableRipple>
         <TouchableRipple
           style={styles.button}
           onPress={() => navigation.navigate("Account")}
@@ -294,19 +340,6 @@ const Settings = ({ navigation }) => {
             <RightChevronIcon width={24} height={24} color={Color.white} />
           </View>
         </TouchableRipple>
-        <TouchableRipple style={styles.button} onPress={handleLogout}>
-          <View style={styles.leftSettingsButton}>
-            <LogoutIcon width={24} height={24} color={Color.white} />
-            <Text style={styles.buttonTitle}>Log Out</Text>
-          </View>
-        </TouchableRipple>
-        {/* DELETE ACCOUNT */}
-        {/* <TouchableRipple style={styles.button} onPress={handleLogout}>
-          <View style={styles.leftSettingsButton}>
-            <TrashBinIcon width={24} height={24} color={Color.white} />
-            <Text style={styles.buttonTitle}>Delete Account</Text>
-          </View>
-        </TouchableRipple> */}
       </View>
     </SafeAreaView>
   );
@@ -315,13 +348,6 @@ const Settings = ({ navigation }) => {
 export default Settings;
 
 const styles = StyleSheet.create({
-  pageContainer: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 20,
-    // borderWidth: 1,
-    // borderColor: 'black',
-  },
   headerContainer: {
     paddingTop: 20,
     paddingLeft: 20,
@@ -345,14 +371,14 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     width: "100%",
-    marginTop: 23,
+    marginTop: 20,
     marginBottom: 10,
   },
   sectionHeaderText: {
     color: Color.white,
     opacity: 0.8,
     fontSize: 14,
-    textAlign: "left", // this line aligns text to the left
+    textAlign: "left",
     marginLeft: 16,
   },
   chevronContainer: {
@@ -364,7 +390,7 @@ const styles = StyleSheet.create({
   button: {
     paddingLeft: 16,
     paddingRight: 15,
-    height: 56,
+    height: BUTTON_HEIGHT,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -373,10 +399,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-
   buttonTitle: {
     color: Color.white,
-    fontSize: 15.5,
+    fontSize: 15,
     marginLeft: 16,
     fontWeight: 500,
   },
@@ -385,7 +410,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   rightSideText: {
-    fontSize: 15,
+    fontSize: 14,
     color: Color.white,
     opacity: 0.8,
     marginRight: 12,

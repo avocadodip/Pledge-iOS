@@ -11,7 +11,7 @@ const Splash = () => {
         <Image
           style={styles.beaconlogo51Icon}
           resizeMode="cover"
-          source={require("../assets/beaconlogo.png")}
+          source={require("../assets/icons/FervoWhite.png")}
         />
         <Text style={styles.beacon}>beacon</Text>
       </View>

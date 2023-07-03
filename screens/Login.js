@@ -103,7 +103,7 @@ const Login = () => {
     > */}
       <View style={styles.logoContainer}>
         <Image
-          source={require("../assets/FervoWhite.png")}
+          source={require("../assets/icons/FervoWhite.png")}
           style={{ width: 100, height: 100 }}
         />
         <Text style={styles.appNameText}>Fervo</Text>

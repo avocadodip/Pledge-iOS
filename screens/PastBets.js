@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity} from 'react-native'
-import { Color } from "../GlobalStyles";
+import { Color, SETTINGS_HORIZONTAL_PADDING, settingsPageStyles } from "../GlobalStyles";
 import React from 'react'
 import LeftChevronIcon from "../assets/icons/chevron-left.svg";
 import StatsBundle from "../components/StatsBundle";
 import SettingsHeader from '../components/SettingsHeader';
 
-const Stats = ({navigation}) => {
+const PastBets = ({navigation}) => {
  
   return (
-    <SafeAreaView style={styles.pageContainer}>
+    <SafeAreaView style={settingsPageStyles.pageContainer}>
       <SettingsHeader navigation={navigation} header={"Past Bets"}/>
       <StatsBundle even={false} month="Jul" day="2"/>
       <StatsBundle even={true} month="Jul" day="2"/>
@@ -16,13 +16,13 @@ const Stats = ({navigation}) => {
       <StatsBundle even={true} month="Jun" day="30"/>
     </SafeAreaView>
   )
-}
+} 
+ 
+export default PastBets;
 
-export default Stats
-
-const styles = StyleSheet.create({
-    pageContainer: {
-    flex: 1,
-    alignItems: "center",
+const style = StyleSheet.create({
+  pageContainer: {
+    display: "flex",
+    marginHorizontal: SETTINGS_HORIZONTAL_PADDING,
   },
 })

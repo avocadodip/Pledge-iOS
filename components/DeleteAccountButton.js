@@ -11,69 +11,76 @@ const DeleteAccountButton = ({ currentUserID }) => {
 
   const handleDelete = async () => {
     Alert.alert(
-      'Confirm Account Deletion',
-      'Are you sure you want to delete your account? This action cannot be undone.',
+      "Confirm Account Deletion",
+      "Are you sure you want to delete your account? This action cannot be undone.",
       [
         {
-          text: 'Cancel',
-          style: 'cancel',
-        }, 
-        { 
-          text: 'OK', 
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
           onPress: async () => {
             try {
               const userRef = doc(db, "users", currentUserID);
               await deleteDoc(userRef);
-  
+
               const user = auth.currentUser;
               if (user) {
                 await deleteUser(user);
-                
+
                 // Show success prompt
                 Alert.alert(
-                  'Account Successfully Deleted',
-                  'Your account has been deleted successfully.',
+                  "Account Successfully Deleted",
+                  "Your account has been deleted successfully.",
                   [
-                    { 
-                      text: 'OK'
+                    {
+                      text: "OK",
                     },
                   ],
-                  { cancelable: false },
+                  { cancelable: false }
                 );
               }
             } catch (error) {
-              if (error.code === 'auth/requires-recent-login') {
+              if (error.code === "auth/requires-recent-login") {
                 Alert.alert(
-                  'Reauthentication Required',
-                  'Please log out and log back in before deleting your account.',
+                  "Reauthentication Required",
+                  "Please log out and log back in before deleting your account.",
                   [
-                    { 
-                      text: 'OK', 
+                    {
+                      text: "OK",
                       onPress: async () => {
                         await signOut(auth);
-                      } 
+                      },
                     },
                   ],
-                  { cancelable: false },
+                  { cancelable: false }
                 );
               } else {
                 console.error("Error deleting user account: ", error);
               }
             }
-          } 
+          },
         },
       ],
-      { cancelable: false },
+      { cancelable: false }
     );
   };
-  
 
   return (
-    <TouchableOpacity onPress={handleDelete}>
-      <Text
-        style={[styles.preferenceTitle, { textDecorationLine: "underline" }]}
-      >
-        Delete account.
+    <TouchableOpacity
+      style={[
+        styles.button,
+        {
+          backgroundColor: "transparent",
+          borderWidth: 2,
+          borderColor: "rgba(255, 255, 255, 0.7)",
+        },
+      ]}
+      onPress={handleDelete}
+    >
+      <Text style={[styles.buttonText, { color: Color.white }]}>
+        Delete Account
       </Text>
     </TouchableOpacity>
   );
@@ -82,8 +89,20 @@ const DeleteAccountButton = ({ currentUserID }) => {
 export default DeleteAccountButton;
 
 const styles = StyleSheet.create({
-  preferenceTitle: {
-    color: Color.white,
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Color.white,
+    gap: 15,
+    height: 48,
+    borderRadius: 17,
+    width: "100%",
+    overflow: "hidden",
+  },
+  buttonText: {
+    color: Color.fervo_red,
     fontSize: 16,
+    fontWeight: 600,
   },
 });

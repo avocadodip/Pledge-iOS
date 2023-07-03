@@ -9,7 +9,7 @@ import { API_URL, MERCHANT_DISPLAY_NAME } from "../constants";
 // Initiailize payment sheet
 export const initializePaymentSheet = async (stripeCustomerId, currentUserID) => {
   const idToken = await getIdToken(auth.currentUser, true);
-
+ 
   const response = await fetch(
     `${API_URL}/createSetupIntent`,
     {

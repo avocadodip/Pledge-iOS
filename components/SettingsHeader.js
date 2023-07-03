@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
-import { Color } from "../GlobalStyles";
+import { Color, SETTINGS_HORIZONTAL_PADDING } from "../GlobalStyles";
 import LeftChevronIcon from "../assets/icons/chevron-left.svg";
 import TouchableRipple from "./TouchableRipple";
 
@@ -30,7 +30,7 @@ export default SettingsHeader;
 const styles = StyleSheet.create({
   headerContainer: {
     marginTop: 20,
-    marginBottom: 40,
+    marginBottom: 20,
     paddingHorizontal: 50,
     width: "100%",
     flexDirection: "row",

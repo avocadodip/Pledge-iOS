@@ -13,7 +13,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MenuProvider } from "react-native-popup-menu";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { useFonts } from "expo-font";
-import Today from "./screens/Today";
+import Today from "./screens/Today"; 
 import Onboard1 from "./screens/Onboard1";
 import Onboard2 from "./screens/Onboard2";
 import Tomorrow from "./screens/Tomorrow";
@@ -22,10 +22,10 @@ import Signup from "./screens/Signup";
 import Login from "./screens/Login";
 import Splash from "./screens/Splash";
 import Account from "./screens/Account";
-import Stats from "./screens/Stats";
+import PastBets from "./screens/PastBets";
 import TodoBottomSheet from "./components/TodoBottomSheet";
 import OnboardingPopup from "./components/OnboardingPopup";
-import { Color } from "./GlobalStyles";
+import { BOTTOM_TAB_HEIGHT, Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 // import { MenuProvider } from "react-native-popup-menu";
@@ -41,6 +41,8 @@ import { auth } from "./database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
 import TouchableRipple from "./components/TouchableRipple";
 import useUpdateTimezoneOnAppActive from "./hooks/useUpdateTimezoneOnAppActive";
+import { STRIPE_PUBLISHABLE_KEY } from "./constants";
+import Transactions from "./screens/Transactions";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -93,8 +95,13 @@ const SettingsStack = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="Stats"
-      component={Stats}
+      name="PastBets"
+      component={PastBets}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Transactions"
+      component={Transactions}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
@@ -151,7 +158,7 @@ export default function App() {
 
   return (
     <StripeProvider
-      publishableKey="pk_test_51Lulh6CNzspyvGyfbvbpkGnt3C12jmuRiUZssraQSUhxWBmdaHvcCwI9jD3JVAY5HEHX10XEUGflGluiscNywvxD002YXGYWyT"
+      publishableKey={STRIPE_PUBLISHABLE_KEY}
     >
       <MenuProvider>
         <SettingsProvider>
@@ -287,12 +294,13 @@ function AppContent({ isSignedIn }) {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: "transparent",
+    backgroundColor: Color.fervo_red,
     borderTopWidth: 0,
     position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
-    height: 100,
+    height: BOTTOM_TAB_HEIGHT,
+    marginBottom: 7
   },
 });
