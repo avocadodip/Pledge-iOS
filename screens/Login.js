@@ -1,54 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
   Text,
   TextInput,
   Image,
-  SafeAreaView,
   KeyboardAvoidingView,
   ActivityIndicator,
 } from "react-native";
 import { Alert } from "react-native";
-// import { Input as RNKTextInput } from '@ui-kitten/components'
-import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
-import { Padding, Border, FontFamily, FontSize, Color } from "../GlobalStyles";
-import firebase, { auth, db } from "../database/firebase";
+import { Padding, Border, FontSize, Color } from "../GlobalStyles";
+import { auth } from "../database/firebase";
 import "firebase/firestore";
-import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "@firebase/auth";
-import { useSettings } from "../hooks/SettingsContext";
 import TouchableRipple from "../components/TouchableRipple";
 
 const Login = () => {
-  const [fullName, setFullName] = useState();
+  const navigation = useNavigation();
   const [email, setEmail] = useState(); // New state for email input
-  const [phoneNumber, setPhoneNumber] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
-  const [loginPressed, setLoginPressed] = useState(false); // Add this state to handle the button pressed state
-  const { setCurrentUserID, setCurrentUserFullName, setCurrentUserEmail } =
-    useSettings();
-  const navigation = useNavigation();
 
   const handleLogin = async () => {
-  // Check if email and password variables are defined
-  if (!email?.trim() || !password?.trim()) {
-    Alert.alert(
-      "🤔 Whoops!",
-      "Email and password are needed to login. Try again!"
-    );
-    return;
-  }
+    // 1. Validate email and password
+    if (!email?.trim() || !password?.trim()) {
+      Alert.alert(
+        "🤔 Whoops!",
+        "Email and password are needed to login. Try again!"
+      );
+      return;
+    }
 
-  let lowerCaseEmail = email.trim().toLowerCase();
-  let lowerCasePassword = password.trim().toLowerCase();
-
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(lowerCaseEmail)) {
+    if (!emailRegex.test(email)) {
       Alert.alert(
         "📧 Email Error",
         "Make sure your email is formatted correctly!"
@@ -56,40 +41,27 @@ const Login = () => {
       return;
     }
 
-    signInWithEmailAndPassword(auth, lowerCaseEmail, lowerCasePassword)
-      .then((userCredential) => {
-        // Signed in successfully
-        const user = userCredential.user;
-        setCurrentUserID(user.uid);
 
-        // Get the user's document from Firestore
-        const userDoc = doc(db, "users", user.uid);
+    // 2. Sign user in
+    try {
+      // Triggers auth state change in App.js to navigate user to Today
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-        getDoc(userDoc)
-          .then((docSnap) => {
-            if (docSnap.exists()) {
-              // Set the full name in settings context
-              setCurrentUserFullName(docSnap.data().fullName);
-              setCurrentUserEmail(docSnap.data().email);
-            } else {
-              console.log("No such document!");
-            } 
-          })
-          .catch((error) => {
-            console.error("Error getting document:", error);
-          });
-      })
-      .catch((error) => {
-        // Handle login error
-        const errorMessage = error.message;
-        console.log("Login error:" + errorMessage);
+    } catch (error) {
+      // Handle login error
+      const errorMessage = error.message;
+      console.log("Login error: " + errorMessage);
 
-        // Show an alert to the user with a friendly error message
-        Alert.alert(
-          "Oops! 🙈",
-          "It looks like there was a typo in your login. Please double-check your email and password. 🌟"
-        );
-      });
+      // Show an alert to the user with a friendly error message
+      Alert.alert(
+        "Oops! 🙈",
+        "It looks like there was a typo in your login. Please double-check your email and password. 🌟"
+      );
+    }
   };
 
   return (
@@ -112,13 +84,13 @@ const Login = () => {
         {loading ? <ActivityIndicator size="small" color="white" /> : null}
         <TextInput
           style={[styles.inputField]}
-          placeholder="Email" // Email input field
+          placeholder="Email"
           placeholderTextColor={Color.white}
           keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
-          autoCorrect={false} // Disable auto-correction
-          autoCapitalize="none" // Disable auto-capitalization
+          autoCorrect={false}
+          autoCapitalize="none"
         />
         <TextInput
           style={[styles.inputField]}
@@ -126,16 +98,11 @@ const Login = () => {
           placeholderTextColor={Color.white}
           value={password}
           onChangeText={setPassword}
-          autoCorrect={false} // Disable auto-correction
-          autoCapitalize="none" // Disable auto-capitalization
-          secureTextEntry={true} // Mask password input
+          autoCorrect={false}
+          autoCapitalize="none"
+          secureTextEntry={true}
         />
-        <TouchableRipple
-          style={[styles.button]}
-          onPress={handleLogin} // Invoke the handleSignup function when the button is pressed
-          onPressIn={() => setLoginPressed(true)} // Set "pressed" state to true when the button is pressed
-          onPressOut={() => setLoginPressed(false)} // Set "pressed" state to false when the button is released
-        >
+        <TouchableRipple style={[styles.button]} onPress={handleLogin}>
           <Text style={[styles.buttonText, styles.signupTypo]}>Login</Text>
         </TouchableRipple>
         <TouchableRipple
@@ -308,7 +275,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 17,
     width: "100%",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   buttonText: {
     color: Color.fervo_red,

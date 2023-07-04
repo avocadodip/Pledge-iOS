@@ -13,7 +13,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MenuProvider } from "react-native-popup-menu";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { useFonts } from "expo-font";
-import Today from "./screens/Today"; 
+import Today from "./screens/Today";
 import Onboard1 from "./screens/Onboard1";
 import Onboard2 from "./screens/Onboard2";
 import Tomorrow from "./screens/Tomorrow";
@@ -43,6 +43,7 @@ import TouchableRipple from "./components/TouchableRipple";
 import useUpdateTimezoneOnAppActive from "./hooks/useUpdateTimezoneOnAppActive";
 import { STRIPE_PUBLISHABLE_KEY } from "./constants";
 import Transactions from "./screens/Transactions";
+import EmailVerification from "./screens/EmailVerification";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -57,6 +58,11 @@ const AuthStack = () => (
     <Stack.Screen
       name="Login"
       component={Login}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="EmailVerification"
+      component={EmailVerification}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
@@ -125,7 +131,7 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+      if (user && user.emailVerified) {
         setIsSignedIn(true);
         if (initializing) setInitializing(false);
       } else {
@@ -137,6 +143,10 @@ export default function App() {
     // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    console.log("isSignedIn state has changed: ", isSignedIn);
+  }, [isSignedIn]);
 
   const [fontsLoaded, error] = useFonts({
     Epilogue_regular: require("./assets/fonts/Epilogue_regular.ttf"),
@@ -157,9 +167,7 @@ export default function App() {
   }
 
   return (
-    <StripeProvider
-      publishableKey={STRIPE_PUBLISHABLE_KEY}
-    >
+    <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
       <MenuProvider>
         <SettingsProvider>
           <BottomSheetProvider>
@@ -179,18 +187,17 @@ function AppContent({ isSignedIn }) {
   //   }, 2000);
   // }, []);
 
-  const { currentUserID, setCurrentUserID } = useSettings();
+  const { setCurrentUserID } = useSettings();
 
   useEffect(() => {
     if (isSignedIn) {
       const user = auth.currentUser;
       if (user) {
-        console.log("current user: " + user.uid);
         setCurrentUserID(user.uid);
+        
       }
     } else {
       console.log("current user: none");
-
       setCurrentUserID(null);
     }
   }, [isSignedIn, setCurrentUserID]);
@@ -301,6 +308,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: BOTTOM_TAB_HEIGHT,
-    marginBottom: 7
+    marginBottom: 7,
   },
 });

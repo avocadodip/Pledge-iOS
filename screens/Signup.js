@@ -1,148 +1,83 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
-  SafeAreaView,
   Alert,
   Image,
   KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Color } from "../GlobalStyles";
-import { auth, db } from "../database/firebase";
-import { createUserWithEmailAndPassword, getIdToken } from "firebase/auth";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
-import { useSettings } from "../hooks/SettingsContext";
+import { auth } from "../database/firebase";
 import TouchableRipple from "../components/TouchableRipple";
-import { API_URL } from "../constants";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import * as SecureStore from "expo-secure-store";
 
 const Signup = () => {
+  const navigation = useNavigation();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { setCurrentUserID, setCurrentUserFullName } = useSettings();
-
-  const navigation = useNavigation();
 
   const handleSignup = async () => {
-    // Check if all fields are filled
-    if (!fullName || !email || !password) {
-      Alert.alert("Oops! 🙈", "Please fill in all fields");
+    // Validate name
+    if (!fullName?.trim()) {
+      Alert.alert(
+        "🤔 Whoops!",
+        "Name is needed to login. Try again!"
+      );
       return;
     }
-  
-    // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Alert.alert("Uh-oh! 📧", "Please enter a valid email address");
-      return;
-    }
-  
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", email.toLowerCase()));
-    const querySnapshot = await getDocs(q);
-  
-    // If a user with the same email is found, show an error alert
-    if (!querySnapshot.empty) {
-      Alert.alert("Error", "A user with this email address already exists.");
-      return;
-    }
-  
-    // Sign up the user using Firebase Authentication
-    const lowerCaseEmail = email.toLowerCase();
-    const lowerCasePassword = password.toLowerCase();
-  
-    setLoading(true);
-  
+
     try {
+      // Create user
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        lowerCaseEmail,
-        lowerCasePassword
+        email,
+        password
       );
-      // User successfully signed up
       const user = userCredential.user;
-      setCurrentUserID(user.uid);
-      setCurrentUserFullName(fullName);
-  
-      // Get user's local timezone
-      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  
-      // Call the Firebase Cloud Function to create a new Stripe customer
-      const idToken = await getIdToken(auth.currentUser, true);
-  
-      // Send paymentMethod.id to Cloud Function
-      const response = await fetch(
-        `${API_URL}/createStripeCustomer`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + idToken,
+
+      // Send email verification
+      try {
+        await sendEmailVerification(user);
+
+        // Securely store password to auto re-authenticate user after email verification
+        await SecureStore.setItemAsync("password", password);
+
+        // If the verification email was sent successfully, navigate to the verification page
+        navigation.navigate("EmailVerification", {
+          userData: {
+            fullName: fullName,
+            email: email,
           },
-          body: JSON.stringify({
-            email: lowerCaseEmail,
-            uid: user.uid,
-            name: fullName,
-          }),
-        }
-      );
-  
-      // Handle response from your server.
-      if (!response.ok) {
-        throw new Error('Failed to create Stripe customer.');
+        });
+      } catch (error) {
+        console.error("Failed to send verification email:", error);
+        Alert.alert(
+          "Error",
+          "Failed to send verification email. Please try again."
+        );
+        return;
       }
-  
-      const result = await response.json();
-      const stripeCustomerId = result.customerId;
-   
-      // Save full name, email and stripeCustomerId to Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        fullName: fullName,
-        email: lowerCaseEmail,
-        profilePhoto: 1,
-        dayStart: "7:30",
-        dayEnd: "9:00",
-        daysActive: {
-          Sunday: true,
-          Monday: true,
-          Tuesday: true,
-          Wednesday: true,
-          Thursday: true,
-          Friday: true,
-          Saturday: true,
-        },
-        vacationModeOn: false,
-        theme: "Classic",
-        missedTaskFine: 1,
-        timezone: timeZone,
-        isActiveUser: true,
-        currency: "usd",
-        stripeCustomerId: stripeCustomerId,
-        isPaymentSetup: false,
-        hasBeenChargedBefore: false,
-      });
-  
-      setLoading(false);
     } catch (error) {
-      // Handle sign up errors (e.g., show error message)
-      console.error(error.message);
-      Alert.alert("Sign Up Failed", error.message);
+      if (error.code === "auth/email-already-in-use") {
+        Alert.alert("Error", "A user with this email address already exists.");
+      } else if (error.code === "auth/invalid-email") {
+        Alert.alert("Error", "Invalid email address.");
+      } else if (error.code === "auth/missing-password") {
+        Alert.alert("Error", "Please enter a password.");
+      } else {
+        console.log(error)
+        Alert.alert("Error", "Failed to sign up. Please try again later.");
+      }
     }
   };
-   
 
   return (
     <KeyboardAvoidingView
@@ -150,7 +85,6 @@ const Signup = () => {
       style={styles.container}
     >
       <View style={styles.logoContainer}>
-        {/* replace with app logo */}
         <Image
           source={require("../assets/icons/FervoWhite.png")}
           style={{ width: 100, height: 100 }}
@@ -165,9 +99,9 @@ const Signup = () => {
           onChangeText={setFullName}
           value={fullName}
           placeholderTextColor="#fff"
-          // textStyle={styles.frameTextInputText}
-          autoCorrect={false} // Disable auto-correction
-          autoCapitalize="none" // Disable auto-capitalization
+          textStyle={styles.frameTextInputText}
+          autoCorrect={false}
+          autoCapitalize="none"
         />
         <TextInput
           style={styles.inputField}
@@ -176,9 +110,9 @@ const Signup = () => {
           value={email}
           keyboardType="email-address"
           placeholderTextColor="#fff"
-          // textStyle={styles.frameTextInputText}
-          autoCorrect={false} // Disable auto-correction
-          autoCapitalize="none" // Disable auto-capitalization
+          textStyle={styles.frameTextInputText}
+          autoCorrect={false}
+          autoCapitalize="none"
         />
         <TextInput
           style={styles.inputField}
@@ -188,16 +122,11 @@ const Signup = () => {
           value={password}
           secureTextEntry={true}
           textStyle={styles.frameTextInput1Text}
-          autoCorrect={false} // Disable auto-correction
-          autoCapitalize="none" // Disable auto-capitalization
+          autoCorrect={false}
+          autoCapitalize="none"
         />
 
-        {/* <TouchableOpacity style={styles.button} onPress={handleGoogleLogin}>
-          <GoogleLogoIcon />
-          <Text style={styles.buttonText}>Continue with Google</Text>
-        </TouchableOpacity> */}
         <TouchableRipple style={styles.button} onPress={handleSignup}>
-          {/* <MailIcon width={24} height={24} color={`${Color.fervo_red}`} /> */}
           <Text style={styles.buttonText}>Sign up</Text>
         </TouchableRipple>
 

@@ -22,6 +22,8 @@ export const SettingsProvider = ({ children }) => {
           if (docSnapshot.exists()) {
             const userSettings = docSnapshot.data();
             setSettings(userSettings);
+            setCurrentUserFullName(userSettings.fullName);
+            setCurrentUserEmail(userSettings.email);
 
           } else {
             // Handle the case where the user does not exist or has no settings
