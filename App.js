@@ -28,6 +28,7 @@ import OnboardingPopup from "./components/OnboardingPopup";
 import { BOTTOM_TAB_HEIGHT, Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
+import { ThemesProvider } from "./hooks/ThemesContext";
 // import { MenuProvider } from "react-native-popup-menu";
 // import { IconRegistry, ApplicationProvider } from "@ui-kitten/components";
 import TodayActiveIcon from "./assets/icons/fire-active-icon.svg";
@@ -170,9 +171,11 @@ export default function App() {
     <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
       <MenuProvider>
         <SettingsProvider>
-          <BottomSheetProvider>
-            <AppContent isSignedIn={isSignedIn} />
-          </BottomSheetProvider>
+          <ThemesProvider>
+            <BottomSheetProvider>
+              <AppContent isSignedIn={isSignedIn} />
+            </BottomSheetProvider>
+          </ThemesProvider>
         </SettingsProvider>
       </MenuProvider>
     </StripeProvider>
@@ -194,7 +197,6 @@ function AppContent({ isSignedIn }) {
       const user = auth.currentUser;
       if (user) {
         setCurrentUserID(user.uid);
-        
       }
     } else {
       console.log("current user: none");

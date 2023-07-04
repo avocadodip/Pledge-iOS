@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 import ThreeDotsIcon from "../assets/icons/three-dots.svg";
 import {
   Menu,
@@ -7,32 +7,15 @@ import {
   MenuOption,
   MenuTrigger,
 } from "react-native-popup-menu";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Color } from "../GlobalStyles";
+import { useThemes } from "../hooks/ThemesContext";
 
 const ThemeToggle = () => {
-  const [currentTheme, setCurrentTheme] = useState(null);
-
-  useEffect(() => {
-    // Fetch the theme from async storage when the component mounts
-    fetchTheme();
-  }, []);
-
-  const fetchTheme = async () => {
-    const storedTheme = await AsyncStorage.getItem("theme");
-    setCurrentTheme(storedTheme);
-  };
-
-  const handleThemeSave = async (theme) => {
-    // Store the theme in async storage
-    await AsyncStorage.setItem("theme", theme);
-    // Update the current theme
-    setCurrentTheme(theme);
-  };
+  const { currentThemeName, saveTheme } = useThemes();
 
   return (
     <View style={styles.rightSettingsButton}>
-      <Text style={styles.currentThemeText}>{currentTheme}</Text>
+      <Text style={styles.currentThemeText}>{currentThemeName}</Text>
       <View style={{ borderRadius: 10, overflow: "hidden" }}>
         <Menu>
           <MenuTrigger>
@@ -42,23 +25,23 @@ const ThemeToggle = () => {
           </MenuTrigger>
           <MenuOptions customStyles={menuOptionsStyles}>
             <MenuOption
-              style={currentTheme === "Classic" ? styles.selectedOption : {}}
-              onSelect={() => handleThemeSave("Classic")}
+              style={currentThemeName === "Classic" ? styles.selectedOption : {}}
+              onSelect={() => saveTheme("Classic")}
               text="Classic"
             />
             <MenuOption
-              style={currentTheme === "Light" ? styles.selectedOption : {}}
-              onSelect={() => handleThemeSave("Light")}
+              style={currentThemeName === "Light" ? styles.selectedOption : {}}
+              onSelect={() => saveTheme("Light")}
               text="Light"
             />
             <MenuOption
-              style={currentTheme === "Dark" ? styles.selectedOption : {}}
-              onSelect={() => handleThemeSave("Dark")}
+              style={currentThemeName === "Dark" ? styles.selectedOption : {}}
+              onSelect={() => saveTheme("Dark")}
               text="Dark"
             />
             <MenuOption
-              style={currentTheme === "Auto" ? styles.selectedOption : {}}
-              onSelect={() => handleThemeSave("Auto")}
+              style={currentThemeName === "Auto" ? styles.selectedOption : {}}
+              onSelect={() => saveTheme("Auto")}
               text="Auto"
             />
           </MenuOptions>

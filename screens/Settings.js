@@ -17,6 +17,7 @@ import ThemeToggle from "../components/ThemeToggle";
 import DaysActiveModal from "../components/DaysActiveModal";
 import NotificationsModal from "../components/NotificationsModal";
 import { useSettings } from "../hooks/SettingsContext";
+import { useThemes } from "../hooks/ThemesContext";
 import VacationToggle from "../components/VacationToggle";
 import {
   fetchPaymentMethods,
@@ -31,12 +32,15 @@ import { daysOfWeek } from "../utils/currentDate";
 import { doc, updateDoc } from "firebase/firestore";
 
 const BUTTON_HEIGHT = 51;
+const BUTTON_TEXTS = ["S", "M", "T", "W", "T", "F", "S"];
 
 const Settings = ({ navigation }) => {
-  const {
+  const {theme} = useThemes();
+  const styles = getStyles(theme);
+  const {   
     settings: {
       daysActive,
-      vacationModeOn,
+      vacationModeOn, 
       timezone,
       stripeCustomerId,
       isPaymentSetup,
@@ -45,12 +49,10 @@ const Settings = ({ navigation }) => {
     currentUserID,
   } = useSettings();
   const [loading, setLoading] = useState(false);
-  const [defaultCard, setDefaultCard] = useState("");
   const [isPaymentInitialized, setIsPaymentInitialized] = useState(false);
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
   const [notifsModalVisible, setNotifsModalVisible] = useState(false);
   const prevCardCountRef = useRef(0);
-  const buttonTexts = ["S", "M", "T", "W", "T", "F", "S"];
   const userRef = doc(db, "users", currentUserID);
 
   const handleOpenDaysActiveModal = (action) => {
@@ -141,7 +143,6 @@ const Settings = ({ navigation }) => {
     setLoading(true);
     loadPaymentSheet();
     checkIfPaymentInitialized();
-    console.log(defaultCard);
   }, []);
 
   // Set state when isPaymentSetup is fetched
@@ -255,7 +256,7 @@ const Settings = ({ navigation }) => {
                     }}
                     key={index}
                   >
-                    {buttonTexts[index]}
+                    {BUTTON_TEXTS[index]}
                   </Text>
                 ))}
               </View>
@@ -288,7 +289,7 @@ const Settings = ({ navigation }) => {
             </View>
             <View style={styles.rightSettingsButton}>
               <ThemeToggle />
-            </View> 
+            </View>
           </View>
           {/* TIMEZONE */}
           <View style={styles.button}>
@@ -347,7 +348,7 @@ const Settings = ({ navigation }) => {
 
 export default Settings;
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   headerContainer: {
     paddingTop: 20,
     paddingLeft: 20,

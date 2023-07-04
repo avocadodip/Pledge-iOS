@@ -11,7 +11,7 @@ export const SettingsProvider = ({ children }) => {
   const [currentUserFullName, setCurrentUserFullName] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [loading, setLoading] = useState(true);
-
+ 
   useEffect(() => {
     if (currentUserID) {
       const userDoc = doc(db, "users", currentUserID);
