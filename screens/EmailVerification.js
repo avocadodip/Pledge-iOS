@@ -130,12 +130,17 @@ const EmailVerification = ({ route, navigation }) => {
   const resendEmailVerification = async () => {
     try {
       await sendEmailVerification(currentUser);
+      Alert.alert("Success", "Resent.");
     } catch (error) {
-      console.error("Failed to send verification email:", error);
-      Alert.alert(
-        "Error",
-        "Failed to send verification email. Please try again."
-      );
+      if (error.code === "auth/too-many-requests") {
+        Alert.alert("Error", "Please wait a moment and try again.");
+      } else {
+        console.error("Failed to send verification email:", error);
+        Alert.alert(
+          "Error",
+          "Failed to send verification email. Please try again."
+        );
+      }
       return;
     }
   };
@@ -178,8 +183,9 @@ const EmailVerification = ({ route, navigation }) => {
 
       <View style={styles.contentContainer}>
         <Text style={styles.promptText}>
-          An email with a verification link has been sent to {email}
+          An email with a verification link has been sent to
         </Text>
+        <Text style={styles.emailText}>{email}</Text>
 
         <View style={styles.resendContainer}>
           <Text style={styles.resendText}>Didn't receive a link?</Text>
@@ -187,7 +193,7 @@ const EmailVerification = ({ route, navigation }) => {
             style={styles.resendButton}
             onPress={resendEmailVerification}
           >
-            <Text style={styles.resendText}>Request again</Text>
+            <Text style={styles.resendText}>Resend</Text>
           </TouchableRipple>
         </View>
 
@@ -233,20 +239,26 @@ const styles = StyleSheet.create({
   promptText: {
     color: Color.white,
     fontSize: 16,
-    marginBottom: 24,
+    marginBottom: 5,
+  },
+  emailText: {
+    color: Color.white,
+    fontSize: 16,
+    fontWeight: 600,
+    marginBottom: 25,
   },
 
   // Resend line styles
   resendContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 25,
   },
   resendText: {
     color: Color.white,
     fontSize: 16,
   },
   resendButton: {
-    backgroundColor: Color.primary,
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -254,7 +266,7 @@ const styles = StyleSheet.create({
 
   // Verify button styles
   verifyButton: {
-    backgroundColor: Color.secondary,
+    backgroundColor: "#7d1818",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
