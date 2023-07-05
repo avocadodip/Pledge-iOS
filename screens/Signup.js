@@ -116,7 +116,7 @@ const Signup = () => {
     </KeyboardAvoidingView>
   );
 };
-
+ 
 const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,

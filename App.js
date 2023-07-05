@@ -45,6 +45,7 @@ import useUpdateTimezoneOnAppActive from "./hooks/useUpdateTimezoneOnAppActive";
 import { STRIPE_PUBLISHABLE_KEY } from "./constants";
 import Transactions from "./screens/Transactions";
 import EmailVerification from "./screens/EmailVerification";
+import ForgotPassword from "./screens/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -64,6 +65,11 @@ const AuthStack = () => (
     <Stack.Screen
       name="EmailVerification"
       component={EmailVerification}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="ForgotPassword"
+      component={ForgotPassword}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

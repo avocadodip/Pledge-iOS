@@ -70,8 +70,11 @@ const Login = () => {
         {loading ? <ActivityIndicator size="small" color="white" /> : null}
         <FormInput action={setEmail} value={email} type="email" />
         <FormInput action={setPassword} value={password} type="password" />
-
-        <TouchableOpacity style={styles.forgotPasswordButton}>
+ 
+        <TouchableOpacity
+          style={styles.forgotPasswordButton}
+          onPress={() => navigation.navigate("ForgotPassword")}
+        >
           <Text style={styles.forgotPasswordButtonText}>Forgot Password?</Text>
         </TouchableOpacity>
         <LoginButton action={handleLogin} text={"Login"} />
