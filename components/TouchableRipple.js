@@ -3,8 +3,9 @@ import React, { PureComponent, useEffect, useState } from "react";
 import { View, Animated, Easing, StyleSheet } from "react-native";
 import Ripple from "react-native-material-ripple";
 import { Color } from "../GlobalStyles";
+import { useThemes } from "../hooks/ThemesContext";
 
-const styles = StyleSheet.create({
+const rippleStyles = StyleSheet.create({
   container: {
     borderRadius: 2,
     justifyContent: "space-around",
@@ -20,18 +21,30 @@ const styles = StyleSheet.create({
   },
 });
 
+const getStyles = (theme) =>
+  StyleSheet.create({
+    color: "transparent",
+    disabledColor: "rgb(240, 240, 240)",
+    shadeColor: theme.rippleFocus, // focus color
+    rippleColor: theme.rippleColor,
+  });
+
 export default function TouchableRipple({
   // default props
-  color = "transparent",
-  disabledColor = "rgb(240, 240, 240)",
-  shadeColor = "#8A1919", // focus color
+  // color = "transparent",
+  // disabledColor = "rgb(240, 240, 240)",
+  // shadeColor = "#8A1919", // focus color
+  // shadeOpacity = 0.15, // focus opacity
   shadeOpacity = 0.15, // focus opacity
+
   shadeBorderRadius = 2,
   focusAnimationDuration = 225, // transition duration
   disableAnimationDuration = 225,
   disabled = false,
   ...props
 }) {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
   const [focusAnimation, setFocusAnimation] = useState(new Animated.Value(0));
   // const [disableAnimation, setDisableAnimation] = useState(
   //   new Animated.Value(disabled ? 1 : 0)
@@ -60,16 +73,12 @@ export default function TouchableRipple({
     }).start();
   }
 
-  let rippleStyle = {
-    backgroundColor: color,
-  };
-
   let shadeContainerStyle = {
-    borderRadius: shadeBorderRadius,
+    borderRadius: styles.shadeBorderRadius,
   };
 
   let shadeStyle = {
-    backgroundColor: shadeColor,
+    backgroundColor: styles.shadeColor,
     opacity: focusAnimation.interpolate({
       inputRange: [0, 1],
       outputRange: [0, shadeOpacity],
@@ -79,32 +88,32 @@ export default function TouchableRipple({
   return (
     <Ripple
       {...props}
-      style={[styles.container, props.style]}
+      style={[rippleStyles.container, props.style]}
       onPress={onPress}
       onPressIn={() => onFocusChange(true)}
       onPressOut={() => onFocusChange(false)}
-      rippleColor={"#8A1919"}
+      rippleColor={styles.rippleColor}
       rippleOpacity={0.5}
       disabled={disabled}
     >
       {props.children}
 
-      <View style={[styles.shadeContainer, shadeContainerStyle]}>
-        <Animated.View style={[styles.shade, shadeStyle]} />
+      <View style={[rippleStyles.shadeContainer, shadeContainerStyle]}>
+        <Animated.View style={[rippleStyles.shade, shadeStyle]} />
       </View>
     </Ripple>
   );
 }
 
 TouchableRipple.propTypes = {
-  ...Ripple.propTypes,
-  color: PropTypes.string,
-  disabledColor: PropTypes.string,
-  shadeColor: PropTypes.string,
-  shadeOpacity: PropTypes.number,
-  shadeBorderRadius: PropTypes.number,
-  focusAnimationDuration: PropTypes.number,
-  disableAnimationDuration: PropTypes.number,
-  payload: PropTypes.any,
+  // ...Ripple.propTypes,
+  // color: PropTypes.string,
+  // disabledColor: PropTypes.string,
+  // shadeColor: PropTypes.string,
+  // shadeOpacity: PropTypes.number,
+  // shadeBorderRadius: PropTypes.number,
+  // focusAnimationDuration: PropTypes.number,
+  // disableAnimationDuration: PropTypes.number,
+  // payload: PropTypes.any,
   disabled: PropTypes.bool,
 };

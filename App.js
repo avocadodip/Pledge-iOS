@@ -28,7 +28,7 @@ import OnboardingPopup from "./components/OnboardingPopup";
 import { BOTTOM_TAB_HEIGHT, Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
-import { ThemesProvider } from "./hooks/ThemesContext";
+import { ThemesProvider, useThemes } from "./hooks/ThemesContext";
 // import { MenuProvider } from "react-native-popup-menu";
 // import { IconRegistry, ApplicationProvider } from "@ui-kitten/components";
 import TodayActiveIcon from "./assets/icons/fire-active-icon.svg";
@@ -126,18 +126,6 @@ const SettingsStack = () => (
   </Stack.Navigator>
 );
 
-const theme = {
-  dark: false,
-  colors: {
-    primary: "rgb(255, 45, 85)",
-    background: "#DD4F4F",
-    card: "rgb(255, 255, 255)",
-    text: "rgb(28, 28, 30)",
-    border: "rgb(199, 199, 204)",
-    notification: "rgb(255, 69, 58)",
-  },
-};
-
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [initializing, setInitializing] = useState(true);
@@ -195,13 +183,44 @@ export default function App() {
 }
 
 function AppContent({ isSignedIn }) {
+  const { theme } = useThemes();
+
+  const getStyles = (theme) =>
+    StyleSheet.create({
+      tabBar: {
+        backgroundColor: theme ? theme.accent : 'defaultColor',
+        borderTopWidth: 0,
+        position: "absolute",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: BOTTOM_TAB_HEIGHT,
+        marginBottom: 7,
+      },
+    });
+
+  const [themePalette, setThemePalette] = useState();
+  const [stylesState, setStylesState] = useState();
+
+  useEffect(() => {
+    if (theme) {
+      setThemePalette({
+        colors: {
+          background: theme.accent,
+        },
+      });
+      setStylesState(getStyles(theme));
+    }
+  }, [theme]);
+
+  const styles = getStyles(theme);
+
   const [hideSplashScreen, setHideSplashScreen] = useState(true);
   // useEffect(() => {
   //   setTimeout(() => {
   //     setHideSplashScreen(true);
   //   }, 2000);
   // }, []);
-
   const { setCurrentUserID } = useSettings();
 
   useEffect(() => {
@@ -222,13 +241,13 @@ function AppContent({ isSignedIn }) {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style="light" backgroundColor={Color.white} />
-      <NavigationContainer theme={theme}>
+      <NavigationContainer theme={themePalette}>
         {hideSplashScreen ? (
           isSignedIn ? (
             <Tab.Navigator
               screenOptions={{
                 headerShown: false,
-                tabBarStyle: styles.tabBar,
+                tabBarStyle: stylesState ? stylesState.tabBar : null,
                 tabBarShowLabel: false,
               }}
             >
@@ -312,16 +331,3 @@ function AppContent({ isSignedIn }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: Color.fervo_red,
-    borderTopWidth: 0,
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: BOTTOM_TAB_HEIGHT,
-    marginBottom: 7,
-  },
-});

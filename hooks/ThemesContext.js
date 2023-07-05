@@ -6,9 +6,9 @@ import themeStyles from '../themes';
 export const ThemeContext = createContext();
 
 export const ThemesProvider = ({ children }) => {
-  const [currentThemeName, setCurrentThemeName] = useState(null);
+  const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme
-
+ 
   // Fetch theme from storage
   const fetchTheme = async () => {
     const storedTheme = await AsyncStorage.getItem("storedTheme");

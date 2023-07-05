@@ -365,7 +365,7 @@ const getStyles = (theme) => StyleSheet.create({
     width: "100%",
   },
   sectionContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    backgroundColor: theme.faintPrimary,
     borderRadius: 16,
     width: "100%",
     overflow: "hidden",
