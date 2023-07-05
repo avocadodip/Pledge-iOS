@@ -1,41 +1,47 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Alert,
-  Image,
-  KeyboardAvoidingView,
-} from "react-native";
+import { StyleSheet, View, Alert, KeyboardAvoidingView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Color } from "../GlobalStyles";
 import { auth } from "../database/firebase";
-import TouchableRipple from "../components/TouchableRipple";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
 import * as SecureStore from "expo-secure-store";
+import LogoAppName from "../components/auth/LogoAppName";
+import FormInput from "../components/auth/AuthFormInput";
+import SignUpButton from "../components/auth/AuthFormButton";
+import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
 
 const Signup = () => {
   const navigation = useNavigation();
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSignup = async () => {
-    // Validate name
-    if (!fullName?.trim()) {
+    // Validate fields
+    if (!firstName?.trim()) {
+      Alert.alert("Whoops!", "First name is needed to sign up. Try again!");
+      return;
+    }
+    if (!lastName?.trim()) {
+      Alert.alert("Whoops!", "Last name is needed to sign up. Try again!");
+      return;
+    }
+
+    if (password.length < 8) {
       Alert.alert(
-        "🤔 Whoops!",
-        "Name is needed to login. Try again!"
+        "Password Error",
+        "Password needs to be at least 8 characters long. Try again!"
       );
       return;
     }
 
+    const fullName = `${firstName} ${lastName}`;
+
+    // Create user, send verif email, & navigate to verif page
     try {
-      // Create user
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -73,7 +79,7 @@ const Signup = () => {
       } else if (error.code === "auth/missing-password") {
         Alert.alert("Error", "Please enter a password.");
       } else {
-        console.log(error)
+        console.log(error);
         Alert.alert("Error", "Failed to sign up. Please try again later.");
       }
     }
@@ -82,123 +88,57 @@ const Signup = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+      style={styles.pageContainer}
     >
-      <View style={styles.logoContainer}>
-        <Image
-          source={require("../assets/icons/FervoWhite.png")}
-          style={{ width: 100, height: 100 }}
-        />
-        <Text style={styles.appNameText}>Fervo</Text>
+      <LogoAppName />
+
+      <View style={styles.formContainer}>
+        <View style={styles.firstLastContainer}>
+          <View style={styles.textInputContainer}>
+            <FormInput action={setFirstName} value={firstName} type="first" />
+          </View>
+          <View style={styles.textInputContainer}>
+            <FormInput action={setLastName} value={lastName} type="last" />
+          </View>
+        </View>
+        <FormInput action={setEmail} value={email} type="email" />
+        <FormInput action={setPassword} value={password} type="password" />
+
+        <SignUpButton action={handleSignup} text={"Sign up"} />
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TextInput
-          style={styles.inputField}
-          placeholder="Full name"
-          onChangeText={setFullName}
-          value={fullName}
-          placeholderTextColor="#fff"
-          textStyle={styles.frameTextInputText}
-          autoCorrect={false}
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.inputField}
-          placeholder="Email"
-          onChangeText={setEmail}
-          value={email}
-          keyboardType="email-address"
-          placeholderTextColor="#fff"
-          textStyle={styles.frameTextInputText}
-          autoCorrect={false}
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.inputField}
-          placeholder="Password"
-          placeholderTextColor="#fff"
-          onChangeText={setPassword}
-          value={password}
-          secureTextEntry={true}
-          textStyle={styles.frameTextInput1Text}
-          autoCorrect={false}
-          autoCapitalize="none"
-        />
-
-        <TouchableRipple style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>Sign up</Text>
-        </TouchableRipple>
-
-        <TouchableRipple
-          style={[
-            styles.button,
-            {
-              backgroundColor: "transparent",
-              borderWidth: 2,
-              borderColor: "rgba(255, 255, 255, 0.7)",
-            },
-          ]}
-          onPress={() => navigation.navigate("Login")}
-        >
-          <Text style={[styles.buttonText, { color: Color.white }]}>
-            Log in
-          </Text>
-        </TouchableRipple>
-      </View>
+      <SignInSignUpSwitch
+        navigation={navigation}
+        prompt={"Already have an account?"}
+        navigateTo={"Login"}
+        buttonText={"Sign In"}
+      />
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  pageContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  logoContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-    // borderColor:'black',
-    // borderWidth: 1
-  },
-  appNameText: {
-    fontSize: 50,
-    color: Color.white,
-    marginTop: 0,
-    fontWeight: "bold",
-  },
-  inputField: {
-    height: 40,
-    width: "100%",
-    borderColor: Color.white,
-    borderWidth: 1,
-    paddingLeft: 10,
-    borderRadius: 5,
-    color: Color.white,
-    backgroundColor: Color.fervo_red,
-  },
-  buttonContainer: {
-    alignItems: "center",
     flexDirection: "col",
-    gap: 15,
-    width: "90%",
-  },
-  button: {
-    flexDirection: "row",
-    alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Color.white,
-    gap: 15,
-    height: 52,
-    borderRadius: 17,
+    alignItems: "center",
+    paddingHorizontal: 20,
     width: "100%",
-    overflow: "hidden",
   },
-  buttonText: {
-    color: Color.fervo_red,
-    fontSize: 18,
-    fontWeight: 600,
+
+  formContainer: {
+    gap: 15,
+    width: "100%",
+  },
+  firstLastContainer: {
+    flexDirection: "row",
+    gap: 15,
+    width: "100%",
+    justifyContent: "space-between",
+  },
+  textInputContainer: {
+    flex: 1,
   },
 });
 
