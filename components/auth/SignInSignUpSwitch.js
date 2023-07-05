@@ -12,7 +12,7 @@ const SignInSignUpSwitch = ({ navigation, prompt, navigateTo, buttonText }) => {
     </View>
   );
 };
-
+ 
 export default SignInSignUpSwitch;
 
 const styles = StyleSheet.create({

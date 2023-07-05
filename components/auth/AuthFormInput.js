@@ -5,7 +5,7 @@ import { Color } from "../../GlobalStyles";
 
 // possible types: first, last, email, password
 const AuthFormInput = ({ action, value, type }) => {
-  return (
+  return ( 
     <TextInput
       mainColor="#ffffffb0"
       originalColor="#ffffff2a"

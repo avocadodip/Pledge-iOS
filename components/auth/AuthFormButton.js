@@ -3,12 +3,12 @@ import React from "react";
 import TouchableRipple from "../TouchableRipple";
 import { Color } from "../../GlobalStyles";
 
-const AuthFormButton = ({ action, text }) => {
+const AuthFormButton = ({ action, text, disabledCondition }) => {
   return (
-    <TouchableRipple style={styles.button} onPress={action}>
+    <TouchableRipple style={styles.button} onPress={action} disabled={disabledCondition}>
       <Text style={styles.buttonText}>{text}</Text>
     </TouchableRipple>
-  );
+  ); 
 };
 
 export default AuthFormButton;

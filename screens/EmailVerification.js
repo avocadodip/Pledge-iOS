@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Alert, SafeAreaView } from "react-native";
+import { StyleSheet, Text, View, Alert, SafeAreaView, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import {
   EmailAuthProvider,
@@ -17,6 +17,8 @@ import TouchableRipple from "../components/TouchableRipple";
 import * as SecureStore from "expo-secure-store";
 import LeftChevronIcon from "../assets/icons/chevron-left.svg";
 import { Color } from "../GlobalStyles";
+import AuthFormButton from "../components/auth/AuthFormButton";
+import MailIcon from "../assets/icons/mail-icon.svg";
 
 const EmailVerification = ({ route, navigation }) => {
   const [isChecking, setIsChecking] = useState(false);
@@ -174,36 +176,34 @@ const EmailVerification = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <View style={styles.header}>
-        <TouchableRipple style={styles.backButton} onPress={handleBackPress}>
-          <LeftChevronIcon width={24} height={24} color={Color.white} />
-        </TouchableRipple>
-        <Text style={styles.headerText}>Verify Email</Text>
-      </View>
+      <TouchableRipple style={styles.backButton} onPress={handleBackPress}>
+        <LeftChevronIcon width={24} height={24} color={Color.white} />
+      </TouchableRipple>
 
       <View style={styles.contentContainer}>
+        <View style={styles.header}>
+          <MailIcon width={60} height={60} color={Color.white} />
+          <Text style={styles.headerText}>Check your email</Text>
+        </View>
         <Text style={styles.promptText}>
           An email with a verification link has been sent to
         </Text>
         <Text style={styles.emailText}>{email}</Text>
 
+        <AuthFormButton
+          action={checkEmailVerification}
+          text={"Confirm"}
+          disabledCondition={isChecking}
+        />
         <View style={styles.resendContainer}>
           <Text style={styles.resendText}>Didn't receive a link?</Text>
-          <TouchableRipple
+          <TouchableOpacity
             style={styles.resendButton}
             onPress={resendEmailVerification}
           >
-            <Text style={styles.resendText}>Resend</Text>
-          </TouchableRipple>
+            <Text style={styles.resendButtonText}>Resend</Text>
+          </TouchableOpacity>
         </View>
-
-        <TouchableRipple
-          style={styles.verifyButton}
-          onPress={checkEmailVerification}
-          disabled={isChecking}
-        >
-          <Text style={styles.buttonText}>Confirm</Text>
-        </TouchableRipple>
       </View>
     </SafeAreaView>
   );
@@ -213,27 +213,38 @@ export default EmailVerification;
 
 const styles = StyleSheet.create({
   pageContainer: {
+    display: "flex",
+    marginHorizontal: 20,
     flex: 1,
-    paddingHorizontal: 20,
   },
   contentContainer: {
     alignItems: "center",
+    flex: 1,
+  },
+
+  // Back button
+  backButton: {
+    borderRadius: 10,
+    overflow: "hidden",
+    height: 50,
+    width: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   // Header style
-  backButton: {
-    marginRight: 12,
-    padding: 8,
-  },
   header: {
-    flexDirection: "row",
+    flexDirection: "col",
     alignItems: "center",
-    marginBottom: 16,
+    gap: 10,
+    marginTop: 60,
+    marginBottom: 40,
   },
   headerText: {
     color: Color.white,
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 25,
+    fontWeight: "700",
+    marginBottom: 10,
   },
 
   promptText: {
@@ -245,7 +256,7 @@ const styles = StyleSheet.create({
     color: Color.white,
     fontSize: 16,
     fontWeight: 600,
-    marginBottom: 25,
+    marginBottom: 50,
   },
 
   // Resend line styles
@@ -253,15 +264,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 25,
+    gap: 8
   },
   resendText: {
     color: Color.white,
     fontSize: 16,
   },
   resendButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
     borderRadius: 8,
+  },
+  resendButtonText: {
+    color: Color.white,
+    fontSize: 16,
+    fontWeight: 500,
   },
 
   // Verify button styles
@@ -270,6 +285,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
+
   },
   buttonText: {
     color: Color.white,
