@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Alert, KeyboardAvoidingView } from "react-native";
+import { StyleSheet, View, Alert, KeyboardAvoidingView, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../database/firebase";
 import {

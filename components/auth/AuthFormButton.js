@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import React from "react";
 import TouchableRipple from "../TouchableRipple";
 import { Color } from "../../GlobalStyles";
@@ -16,7 +16,7 @@ export default AuthFormButton;
 const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "center", 
     justifyContent: "center",
     backgroundColor: Color.white,
     gap: 15,
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: Color.fervo_red,
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 600,
   },
 });

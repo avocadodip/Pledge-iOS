@@ -1,5 +1,9 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { Color, SETTINGS_HORIZONTAL_PADDING, settingsPageStyles } from "../GlobalStyles";
+import {
+  Color,
+  SETTINGS_HORIZONTAL_PADDING,
+  settingsPageStyles,
+} from "../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
 import LeftChevronIcon from "../assets/icons/chevron-left.svg";
@@ -14,6 +18,7 @@ import TimezoneSelector from "../components/TimezoneSelector";
 import DeleteAccountButton from "../components/DeleteAccountButton";
 import SettingsHeader from "../components/SettingsHeader";
 import LogoutButton from "../components/LogoutButton";
+import AuthFormButton from "../components/auth/AuthFormButton";
 
 const Account = ({ navigation }) => {
   const {
@@ -23,7 +28,7 @@ const Account = ({ navigation }) => {
     settings: { dayStart, dayEnd, vacationModeOn, theme, daysActive, timezone },
   } = useSettings();
 
-  return ( 
+  return (
     <SafeAreaView style={settingsPageStyles.pageContainer}>
       {/* <OnboardingPopup
         texts={['Are you sure you want to delete your account?', 'Progress takes time and failure is a vital part of the process!','If you are struggling to complete tasks, try setting smaller tasks each day. It will pay off over time!']}
@@ -32,7 +37,6 @@ const Account = ({ navigation }) => {
       /> */}
       <SettingsHeader navigation={navigation} header={"Account"} />
       <View style={styles.preferenceContainer}>
-        <Text style={styles.preferenceTitle}> Email </Text>
         <TextInput
           value={currentUserEmail}
           style={styles.preferenceInput}
@@ -41,7 +45,12 @@ const Account = ({ navigation }) => {
           autoCorrect={false}
           autoCapitalize="none"
         ></TextInput>
+
       </View>
+
+      <TouchableOpacity onPress={() => navigation.navigate("ChangeEmail")}>
+        <Text style={styles.signInButtonText}>Change email</Text>
+      </TouchableOpacity>
 
       <LogoutButton />
       <DeleteAccountButton currentUserID={currentUserID} />
@@ -77,5 +86,15 @@ const styles = StyleSheet.create({
     borderColor: Color.white,
     padding: 10,
     borderRadius: 10,
+  },
+
+  signInText: {
+    color: Color.white,
+    fontSize: 17,
+  },
+  signInButtonText: {
+    color: Color.white,
+    fontSize: 17,
+    fontWeight: 500,
   },
 });

@@ -30,7 +30,7 @@ export default SettingsHeader;
 const styles = StyleSheet.create({
   headerContainer: {
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 30,
     paddingHorizontal: 50,
     width: "100%",
     flexDirection: "row",

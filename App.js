@@ -46,6 +46,7 @@ import { STRIPE_PUBLISHABLE_KEY } from "./constants";
 import Transactions from "./screens/Transactions";
 import EmailVerification from "./screens/EmailVerification";
 import ForgotPassword from "./screens/ForgotPassword";
+import ChangeEmail from "./screens/ChangeEmail";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -105,6 +106,11 @@ const SettingsStack = () => (
     <Stack.Screen
       name="Account"
       component={Account}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="ChangeEmail"
+      component={ChangeEmail}
       options={{ headerShown: false }}
     />
     <Stack.Screen

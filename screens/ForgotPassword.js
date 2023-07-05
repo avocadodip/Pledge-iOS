@@ -62,9 +62,9 @@ const ForgotPassword = () => {
 
         <SignInSignUpSwitch
           navigation={navigation}
-          prompt={"Don't have an account?"}
-          navigateTo={"Signup"}
-          buttonText={"Sign up"}
+          prompt={""}
+          navigateTo={"Login"}
+          buttonText={"Back to login"}
         />
       </View>
     </SafeAreaView>

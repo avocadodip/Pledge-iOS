@@ -20,7 +20,7 @@ const AuthFormInput = ({ action, value, type }) => {
           ? "Email"
           : "Password"
       }
-      onChangeText={action}
+      onChangeText={action} 
       value={value}
       secureTextEntry={type === "password"}
       keyboardType={type === "email" ? "email-address" : "default"}
