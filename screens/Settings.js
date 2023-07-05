@@ -35,12 +35,12 @@ const BUTTON_HEIGHT = 51;
 const BUTTON_TEXTS = ["S", "M", "T", "W", "T", "F", "S"];
 
 const Settings = ({ navigation }) => {
-  const {theme} = useThemes();
+  const { theme } = useThemes();
   const styles = getStyles(theme);
-  const {   
+  const {
     settings: {
       daysActive,
-      vacationModeOn, 
+      vacationModeOn,
       timezone,
       stripeCustomerId,
       isPaymentSetup,
@@ -54,6 +54,10 @@ const Settings = ({ navigation }) => {
   const [notifsModalVisible, setNotifsModalVisible] = useState(false);
   const prevCardCountRef = useRef(0);
   const userRef = doc(db, "users", currentUserID);
+
+  useEffect(() => {
+    loadPaymentSheet();
+  }, [theme]);
 
   const handleOpenDaysActiveModal = (action) => {
     if (action == true) {
@@ -104,7 +108,7 @@ const Settings = ({ navigation }) => {
 
   const loadPaymentSheet = async () => {
     try {
-      await initializePaymentSheet(stripeCustomerId, currentUserID);
+      await initializePaymentSheet(stripeCustomerId, currentUserID, theme);
     } catch (error) {
       // Handle the error if initialization fails
       console.error(error);
@@ -341,84 +345,85 @@ const Settings = ({ navigation }) => {
             <RightChevronIcon width={24} height={24} color={Color.white} />
           </View>
         </TouchableRipple>
-      </View> 
+      </View>
     </SafeAreaView>
   );
 };
 
 export default Settings;
 
-const getStyles = (theme) => StyleSheet.create({
-  headerContainer: {
-    paddingTop: 20,
-    paddingLeft: 20,
-    width: "100%",
-    flexDirection: "col",
-    marginBottom: 13,
-  },
-  headerTitle: {
-    color: Color.white,
-    fontSize: 27,
-    fontWeight: "bold",
-  },
-  mainContainer: {
-    width: "100%",
-  },
-  sectionContainer: {
-    backgroundColor: theme.faintPrimary,
-    borderRadius: 16,
-    width: "100%",
-    overflow: "hidden",
-  },
-  sectionHeader: {
-    width: "100%",
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  sectionHeaderText: {
-    color: Color.white,
-    opacity: 0.8,
-    fontSize: 14,
-    textAlign: "left",
-    marginLeft: 16,
-  },
-  chevronContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 4,
-    gap: 16,
-  },
-  button: {
-    paddingLeft: 16,
-    paddingRight: 15,
-    height: BUTTON_HEIGHT,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  leftSettingsButton: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  buttonTitle: {
-    color: Color.white,
-    fontSize: 15,
-    marginLeft: 16,
-    fontWeight: 500,
-  },
-  daysOfWeekTextContainer: {
-    flexDirection: "row",
-    gap: 4,
-  },
-  rightSideText: {
-    fontSize: 14,
-    color: Color.white,
-    opacity: 0.8,
-    marginRight: 12,
-  },
-  lastFourDigitsText: {
-    fontSize: 15,
-    color: Color.white,
-    opacity: 0.8,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    headerContainer: {
+      paddingTop: 20,
+      paddingLeft: 20,
+      width: "100%",
+      flexDirection: "col",
+      marginBottom: 13,
+    },
+    headerTitle: {
+      color: Color.white,
+      fontSize: 27,
+      fontWeight: "bold",
+    },
+    mainContainer: {
+      width: "100%",
+    },
+    sectionContainer: {
+      backgroundColor: theme.faintPrimary,
+      borderRadius: 16,
+      width: "100%",
+      overflow: "hidden",
+    },
+    sectionHeader: {
+      width: "100%",
+      marginTop: 20,
+      marginBottom: 10,
+    },
+    sectionHeaderText: {
+      color: Color.white,
+      opacity: 0.8,
+      fontSize: 14,
+      textAlign: "left",
+      marginLeft: 16,
+    },
+    chevronContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginRight: 4,
+      gap: 16,
+    },
+    button: {
+      paddingLeft: 16,
+      paddingRight: 15,
+      height: BUTTON_HEIGHT,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    leftSettingsButton: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    buttonTitle: {
+      color: Color.white,
+      fontSize: 15,
+      marginLeft: 16,
+      fontWeight: 500,
+    },
+    daysOfWeekTextContainer: {
+      flexDirection: "row",
+      gap: 4,
+    },
+    rightSideText: {
+      fontSize: 14,
+      color: Color.white,
+      opacity: 0.8,
+      marginRight: 12,
+    },
+    lastFourDigitsText: {
+      fontSize: 15,
+      color: Color.white,
+      opacity: 0.8,
+    },
+  });

@@ -1,35 +1,67 @@
 import { getIdToken } from "firebase/auth";
 import { auth } from "../database/firebase";
-import { paymentSheetAppearance } from "../GlobalStyles";
-import {
-  initPaymentSheet,
-} from "@stripe/stripe-react-native";
+import { initPaymentSheet } from "@stripe/stripe-react-native";
 import { API_URL, MERCHANT_DISPLAY_NAME } from "../constants";
+import { Color } from "../GlobalStyles";
 
 // Initiailize payment sheet
-export const initializePaymentSheet = async (stripeCustomerId, currentUserID) => {
-  const idToken = await getIdToken(auth.currentUser, true);
- 
-  const response = await fetch(
-    `${API_URL}/createSetupIntent`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + idToken,
+export const initializePaymentSheet = async (
+  stripeCustomerId,
+  currentUserID,
+  theme
+) => {
+  // https://stripe.com/docs/elements/appearance-api (fonts & light/dark mode)
+  const paymentSheetAppearance = {
+    shapes: {
+      borderRadius: 12,
+      borderWidth: 0,
+      shadow: 0,
+    },
+    colors: {
+      primary: "#fcfdff",
+      background: theme.accent,
+      componentBackground: "#e86464",
+      componentBorder: "#f3f8fa",
+      componentDivider: Color.white,
+      primaryText: Color.white,
+      secondaryText: Color.white,
+      componentText: Color.white,
+      placeholderText: Color.white,
+      icon: Color.white,
+      error: "#e1e1e1",
+    },
+    primaryButton: {
+      colors: {
+        background: "#e86464",
+        text: Color.white,
       },
-      body: JSON.stringify({
-        stripeCustomerId: stripeCustomerId,
-        uid: currentUserID,
-      }),
-    }
-  );
+      shapes: {
+        borderWidth: 0,
+        borderRadius: 12,
+        shadow: 0,
+      },
+    },
+  };
+
+  const idToken = await getIdToken(auth.currentUser, true);
+
+  const response = await fetch(`${API_URL}/createSetupIntent`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + idToken,
+    },
+    body: JSON.stringify({
+      stripeCustomerId: stripeCustomerId,
+      uid: currentUserID,
+    }),
+  });
 
   // Handle response from your server.
   if (!response.ok) {
     throw new Error("Failed to setup intent.");
   }
-  
+
   const { setupIntent, ephemeralKey } = await response.json();
 
   // Initialize payment sheet
@@ -51,28 +83,24 @@ export const initializePaymentSheet = async (stripeCustomerId, currentUserID) =>
 export const fetchPaymentMethods = async (stripeCustomerId, currentUserID) => {
   const idToken = await getIdToken(auth.currentUser, true);
 
-  const response = await fetch(
-    `${API_URL}/listPaymentMethods`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + idToken,
-      },
-      body: JSON.stringify({
-        stripeCustomerId: stripeCustomerId,
-        uid: currentUserID,
-      }),
-    }
-  );
+  const response = await fetch(`${API_URL}/listPaymentMethods`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + idToken,
+    },
+    body: JSON.stringify({
+      stripeCustomerId: stripeCustomerId,
+      uid: currentUserID,
+    }),
+  });
 
   // Handle response from your server.
   if (!response.ok) {
     throw new Error("Failed to fetch payment methods.");
   }
-  
+
   const paymentMethods = await response.json();
 
   return paymentMethods;
 };
-

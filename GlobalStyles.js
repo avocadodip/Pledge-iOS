@@ -67,39 +67,6 @@ export const Border = {
   br_8xs: 5,
 };
 
-// https://stripe.com/docs/elements/appearance-api (fonts & light/dark mode)
-export const paymentSheetAppearance = {
-  shapes: {
-    borderRadius: 12,
-    borderWidth: 0,
-    shadow: 0,
-  },
-  colors: {
-    primary: "#fcfdff",
-    background: Color.fervo_red,
-    componentBackground: "#e86464",
-    componentBorder: "#f3f8fa",
-    componentDivider: Color.white,
-    primaryText: Color.white,
-    secondaryText: Color.white,
-    componentText: Color.white,
-    placeholderText: Color.white,
-    icon: Color.white,
-    error: "#e1e1e1",
-  },
-  primaryButton: {
-    colors: {
-      background: "#e86464",
-      text: Color.white,
-    },
-    shapes: {
-      borderWidth: 0,
-      borderRadius: 12,
-      shadow: 0,
-    },
-  },
-};
-
 export const BOTTOM_TAB_HEIGHT = 90;
 export const SETTINGS_HORIZONTAL_PADDING = 20;
 

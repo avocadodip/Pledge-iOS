@@ -41,3 +41,4 @@ export default {
     rippleColor: "#8A1919",
   },
 };
+
