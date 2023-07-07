@@ -14,7 +14,7 @@ export const ThemesProvider = ({ children }) => {
     const storedTheme = await AsyncStorage.getItem("storedTheme");
     setCurrentThemeName(storedTheme);
   };
-
+ 
   // Save theme to storage
   const saveTheme = async (themeType) => {
     await AsyncStorage.setItem("storedTheme", themeType);
@@ -29,10 +29,12 @@ export const ThemesProvider = ({ children }) => {
   // If current theme is "Auto", select light or dark based on system theme
   let currentTheme;
   if (currentThemeName === 'Auto') {
-    currentTheme = systemTheme === 'dark' ? themeStyles.Dark : themeStyles.Light;
+    currentTheme = systemTheme === 'Dark' ? themeStyles.Dark : themeStyles.Light;
   } else {
     currentTheme = themeStyles[currentThemeName];
   }
+
+  currentTheme = currentTheme || themeStyles.Light; 
 
   // Prepare the theme data to be provided
   const themeData = { currentThemeName, saveTheme, theme: currentTheme };

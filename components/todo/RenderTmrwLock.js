@@ -2,10 +2,14 @@ import { View, TouchableOpacity } from "react-native";
 import React from "react";
 import LockIcon from "../../assets/icons/lock-icon.svg";
 import UnlockIcon from "../../assets/icons/unlock-icon.svg";
-import { styles } from "./TodoStyles";
+import { getTodoStyles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
+import { useThemes } from "../../hooks/ThemesContext";
 
 const RenderTmrwLock = ({ isLocked, handleLockTodo, timeStatus }) => {
+  const { theme } = useThemes();
+  const styles = getTodoStyles(theme);
+
   // Lock icon: Todo is locked
   // If time status == 2, make it disabled opacity
   if (isLocked === true) {

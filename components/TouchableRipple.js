@@ -24,9 +24,9 @@ const rippleStyles = StyleSheet.create({
 const getStyles = (theme) =>
   StyleSheet.create({
     color: "transparent",
-    disabledColor: "rgb(240, 240, 240)",
-    shadeColor: theme.rippleFocus, // focus color
-    rippleColor: theme.rippleColor,
+    disabledColor: "rgb(130, 130, 130)",
+    shadeColor: theme ? theme.rippleFocus : "transparent",
+    rippleColor: theme ? theme.rippleColor : "transparent",
   });
 
 export default function TouchableRipple({

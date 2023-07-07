@@ -4,28 +4,28 @@ import { db } from "../database/firebase";
 import { Text } from "react-native";
 
 export const SettingsContext = createContext();
-
+ 
 export const SettingsProvider = ({ children }) => {
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState({ isOnboarded: false });
   const [currentUserID, setCurrentUserID] = useState(null);
   const [currentUserFullName, setCurrentUserFullName] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [loading, setLoading] = useState(true);
- 
+  
   useEffect(() => {
     if (currentUserID) {
       const userDoc = doc(db, "users", currentUserID);
 
       const unsubscribe = onSnapshot( 
         userDoc,
-        (docSnapshot) => {
+        (docSnapshot) => { 
           if (docSnapshot.exists()) {
             const userSettings = docSnapshot.data();
             setSettings(userSettings);
             setCurrentUserFullName(userSettings.fullName);
             setCurrentUserEmail(userSettings.email);
 
-          } else {
+          } else { 
             // Handle the case where the user does not exist or has no settings
           }
           setLoading(false); // turn off loading

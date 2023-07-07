@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
-import { styles } from "./TodoStyles";
+import { getTodoStyles, styles } from "./TodoStyles";
 import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
 import CheckIcon from "../../assets/icons/check-icon.svg";
 import InfoIcon from "../../assets/icons/info-icon.svg";
@@ -12,6 +12,7 @@ import Animated, {
 } from "react-native-reanimated";
 import TouchableRipple from "../TouchableRipple";
 import { Color } from "../../GlobalStyles";
+import { useThemes } from "../../hooks/ThemesContext";
 
 // Animation constants
 const OPEN_DURATION = 100;
@@ -28,6 +29,8 @@ const TodayTodo = ({
   handleCheckTodo,
   timeStatus,
 }) => {
+  const { theme } = useThemes();
+  const styles = getTodoStyles(theme);
   const leftFlex = useSharedValue(8);
   const rightFlex = useSharedValue(2);
 
@@ -73,7 +76,7 @@ const TodayTodo = ({
             onPress={handleOpenBottomSheet}
             style={animatedStyles.leftButtonContainer}
           >
-            {shouldRenderTaskInfo && (
+            {/* {shouldRenderTaskInfo && (
               <>
                 <View
                   style={[
@@ -122,7 +125,7 @@ const TodayTodo = ({
                   )}
                 </View>
               </>
-            )}
+            )} */}
           </TouchableRipple>
         </Animated.View>
         {/* Right side */}

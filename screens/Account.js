@@ -1,20 +1,14 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import {
   Color,
   SETTINGS_HORIZONTAL_PADDING,
   settingsPageStyles,
 } from "../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useState } from "react";
-import LeftChevronIcon from "../assets/icons/chevron-left.svg";
-
+import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import DaysActiveToggle from "../components/DaysActiveToggle";
 import OnboardingPopup from "../components/OnboardingPopup";
 import { useSettings } from "../hooks/SettingsContext";
-import VacationToggle from "../components/VacationToggle";
-import ThemeToggle from "../components/ThemeToggle";
-import TimezoneSelector from "../components/TimezoneSelector";
 import DeleteAccountButton from "../components/DeleteAccountButton";
 import SettingsHeader from "../components/SettingsHeader";
 import LogoutButton from "../components/LogoutButton";
@@ -23,11 +17,9 @@ import AuthFormButton from "../components/auth/AuthFormButton";
 const Account = ({ navigation }) => {
   const {
     currentUserID,
-    currentUserFullName,
     currentUserEmail,
-    settings: { dayStart, dayEnd, vacationModeOn, theme, daysActive, timezone },
   } = useSettings();
-
+ 
   return (
     <SafeAreaView style={settingsPageStyles.pageContainer}>
       {/* <OnboardingPopup
@@ -37,14 +29,7 @@ const Account = ({ navigation }) => {
       /> */}
       <SettingsHeader navigation={navigation} header={"Account"} />
       <View style={styles.preferenceContainer}>
-        <TextInput
-          value={currentUserEmail}
-          style={styles.preferenceInput}
-          placeholder="email@domain.com"
-          placeholderTextColor={Color.faint_white}
-          autoCorrect={false}
-          autoCapitalize="none"
-        ></TextInput>
+        <Text style={styles.emailText}>{currentUserEmail}</Text>
 
       </View>
 
@@ -64,28 +49,8 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: SETTINGS_HORIZONTAL_PADDING,
   },
-  preferenceContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  preferenceRightContainer: {
-    width: 250,
-    flexDirection: "row",
-  },
-  preferenceTitle: {
-    color: Color.white,
-    fontSize: 16,
-  },
-  preferenceInput: {
-    color: Color.white,
-    fontSize: 16,
-    borderWidth: 1,
-    width: 250,
-    borderColor: Color.white,
-    padding: 10,
-    borderRadius: 10,
+  emailText: {
+    color: "white"
   },
 
   signInText: {

@@ -12,6 +12,7 @@ import RestDayMessage from "../components/RestDayMessage";
 import TmrwTimePicker from "../components/TmrwTimePicker";
 import { useTodayTodos } from "../hooks/useTodayTodos";
 import { useDayChange } from "../hooks/useDayChange";
+import { useThemes } from "../hooks/ThemesContext";
 
 const renderTodo = (
   { title, description, amount, tag, isLocked },
@@ -29,9 +30,11 @@ const renderTodo = (
     isLocked={isLocked}
     timeStatus={timeStatus}
   />
-); 
+);
 
 const Tomorrow = () => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
   const { tmrwTodos } = useBottomSheet();
   const {
     settings: { vacationModeOn, daysActive },
@@ -104,12 +107,8 @@ const Tomorrow = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  bottomSheet: {
-    backgroundColor: "red",
-    width: "100%",
-    height: "100%",
-  },
+const getStyles = (theme) =>
+ StyleSheet.create({
   pageContainer: {
     flex: 1,
     alignItems: "center",
@@ -127,19 +126,18 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   headerTitle: {
-    color: "white",
+    color: theme.textHigh,
     fontSize: 42,
     fontWeight: "bold",
   },
   headerDayOfWeek: {
-    color: "white",
+    color: theme.textMedium,
     fontSize: 23,
     fontWeight: "bold",
     paddingBottom: 6,
-    opacity: 0.7,
   },
   headerSubtitle: {
-    color: "white",
+    color: theme.textHigh,
     fontSize: 23,
     fontWeight: "bold",
   },

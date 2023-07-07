@@ -13,6 +13,7 @@ import TouchableRipple from "./TouchableRipple";
 import * as Notifications from "expo-notifications";
 import { EXPO_PROJECT_ID } from "../constants";
 import SelectDropdown from "react-native-select-dropdown";
+// https://github.com/samad324/react-native-animated-multistep
 
 const TIME_CHOICES = ["15 min", "30 min", "1 hour", "2 hours", "3 hours"];
 

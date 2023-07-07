@@ -11,8 +11,10 @@ import { Color } from "../GlobalStyles";
 import { useThemes } from "../hooks/ThemesContext";
 
 const ThemeToggle = () => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
   const { currentThemeName, saveTheme } = useThemes();
-
+ 
   return (
     <View style={styles.rightSettingsButton}>
       <Text style={styles.currentThemeText}>{currentThemeName}</Text>
@@ -20,15 +22,10 @@ const ThemeToggle = () => {
         <Menu>
           <MenuTrigger>
             <View style={styles.threeDotsButton}>
-              <ThreeDotsIcon width={22} height={22} color={Color.white} />
+              <ThreeDotsIcon width={22} height={22} color={theme.textHigh} />
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={menuOptionsStyles}>
-            <MenuOption
-              style={currentThemeName === "Classic" ? styles.selectedOption : {}}
-              onSelect={() => saveTheme("Classic")}
-              text="Classic"
-            />
             <MenuOption
               style={currentThemeName === "Light" ? styles.selectedOption : {}}
               onSelect={() => saveTheme("Light")}
@@ -38,6 +35,13 @@ const ThemeToggle = () => {
               style={currentThemeName === "Dark" ? styles.selectedOption : {}}
               onSelect={() => saveTheme("Dark")}
               text="Dark"
+            />
+            <MenuOption
+              style={
+                currentThemeName === "Classic" ? styles.selectedOption : {}
+              }
+              onSelect={() => saveTheme("Classic")}
+              text="Classic"
             />
             <MenuOption
               style={currentThemeName === "Auto" ? styles.selectedOption : {}}
@@ -53,28 +57,29 @@ const ThemeToggle = () => {
 
 export default ThemeToggle;
 
-const styles = StyleSheet.create({
-  rightSettingsButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 15,
-  },
-  currentThemeText: {
-    fontSize: 15,
-    color: Color.white,
-    opacity: 0.8,
-  },
-  threeDotsButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-    height: 44,
-    width: 44,
-  },
-  selectedOption: {
-    backgroundColor: "rgba(0,0,0,0.2)",
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    rightSettingsButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 15,
+    },
+    currentThemeText: {
+      fontSize: 15,
+      color: theme.textMedium,
+      opacity: 0.8,
+    },
+    threeDotsButton: {
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+      height: 44,
+      width: 44,
+    },
+    selectedOption: {
+      backgroundColor: "rgba(0, 0, 0, 0.2)",
+    },
+  });
 
 const menuOptionsStyles = {
   optionsContainer: {

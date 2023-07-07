@@ -1,6 +1,5 @@
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
-import { styles } from "../components/todo/TodoStyles";
 import CircleRightArrow from "../assets/icons/circle-right-arrow.svg";
 
 const VacationMessage = () => {
@@ -17,3 +16,5 @@ const VacationMessage = () => {
 };
 
 export default VacationMessage;
+
+const styles = StyleSheet.create({})

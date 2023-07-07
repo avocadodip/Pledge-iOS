@@ -11,11 +11,12 @@ import RestDayMessage from "../components/RestDayMessage";
 import Loading from "../components/Loading";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayChange } from "../hooks/useDayChange";
- 
-const renderTodo = ( 
+import { useThemes } from "../hooks/ThemesContext";
+
+const renderTodo = (
   { title, description, amount, tag, isComplete },
   index,
-  timeStatus 
+  timeStatus
 ) => (
   <Todo
     key={index + 1}
@@ -29,9 +30,11 @@ const renderTodo = (
     isComplete={isComplete}
     timeStatus={timeStatus}
   />
-); 
+);
 
 const Today = () => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
   const { todayTodos } = useBottomSheet();
   const { dayChanged } = useDayChange();
   const {
@@ -54,7 +57,7 @@ const Today = () => {
     });
   }, [todayTodos, timeStatus]);
 
-  return ( 
+  return (
     <SafeAreaView style={styles.pageContainer}>
       {/* <OnboardingPopup
         texts={['This is the Today page.', 'Your three tasks planned the night before will show up here.','Your only mission is to check them off before the day ends!']}
@@ -84,47 +87,46 @@ const Today = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  pageContainer: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 20,
-  },
-  headerContainer: {
-    marginTop: 5,
-    width: "100%",
-    flexDirection: "col",
-  },
-  headerTitleContainer: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 15,
-  },
-  headerTitle: {
-    color: "white",
-    fontSize: 42,
-    fontWeight: "bold", 
-  },
-  headerDayOfWeek: {
-    color: "white",
-    fontSize: 23,
-    fontWeight: "bold",
-    paddingBottom: 6,
-    opacity: 0.7,
-  },
-  headerSubtitle: {
-    color: "white",
-    fontSize: 25,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-  todoContainer: {
-    marginTop: 20,
-    gap: 22,
-    width: "100%",
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    pageContainer: {
+      flex: 1,
+      alignItems: "center",
+      marginHorizontal: 20,
+    },
+    headerContainer: {
+      marginTop: 5,
+      width: "100%",
+      flexDirection: "col",
+    },
+    headerTitleContainer: {
+      width: "100%",
+      flexDirection: "row",
+      alignItems: "flex-end",
+      gap: 15,
+    },
+    headerTitle: {
+      color: theme.textHigh,
+      fontSize: 42,
+      fontWeight: "bold",
+    },
+    headerDayOfWeek: {
+      color: theme.textMedium,
+      fontSize: 23,
+      fontWeight: "bold",
+      paddingBottom: 6,
+    },
+    headerSubtitle: {
+      color: theme.textHigh,
+      fontSize: 25,
+      fontWeight: "bold",
+      marginTop: 5,
+    },
+    todoContainer: {
+      marginTop: 20,
+      gap: 22,
+      width: "100%",
+    },
+  });
 
 export default Today;
-  

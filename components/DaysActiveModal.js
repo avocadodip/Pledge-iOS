@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
 import { Color } from "../GlobalStyles";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../database/firebase";
@@ -31,11 +31,21 @@ const DaysActiveModal = ({
   // Handle day toggle in modal
   const handleModalDayToggle = (index) => {
     const dayKey = dayKeys[index];
-    setTempDaysActive({
+    const newTempDaysActive = {
       ...tempDaysActive,
       [dayKey]: !tempDaysActive[dayKey],
-    });
+    };
+  
+    if (!Object.values(newTempDaysActive).some(Boolean)) {
+      Alert.alert(
+        "At least one day must be active.",
+        "Or turn vacation mode on."
+      );
+    } else {
+      setTempDaysActive(newTempDaysActive);
+    }
   };
+  
 
   // Handle confirm button click
   const handleConfirm = async () => {
@@ -58,7 +68,6 @@ const DaysActiveModal = ({
       isVisible={isVisible}
       onBackdropPress={() => {
         handleConfirm();
-        // setTempDaysActive(modalDaysActive);
       }}
       backdropTransitionOutTiming={0}
       animationOutTiming={500}

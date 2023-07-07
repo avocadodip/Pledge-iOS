@@ -182,7 +182,11 @@ const Settings = ({ navigation }) => {
             <>
               <TouchableRipple style={styles.button} onPress={openPaymentSheet}>
                 <View style={styles.leftSettingsButton}>
-                  <CreditCardIcon width={24} height={24} color={Color.white} />
+                  <CreditCardIcon
+                    width={24}
+                    height={24}
+                    color={theme.textHigh}
+                  />
 
                   {isPaymentInitialized ? (
                     <Text style={styles.buttonTitle}>Payment Method</Text>
@@ -194,7 +198,7 @@ const Settings = ({ navigation }) => {
                   {isPaymentInitialized ? (
                     <Text style={styles.rightSideText}>Activated</Text>
                   ) : (
-                    <PlusIcon width={27} height={27} color={Color.white} />
+                    <PlusIcon width={27} height={27} color={theme.textHigh} />
                   )}
                 </View>
               </TouchableRipple>
@@ -215,7 +219,7 @@ const Settings = ({ navigation }) => {
               <NotificationBellIcon
                 width={24}
                 height={24}
-                color={Color.white}
+                color={theme.textHigh}
               />
               <Text style={styles.buttonTitle}>Notifications</Text>
             </View>
@@ -242,27 +246,40 @@ const Settings = ({ navigation }) => {
             onPress={() => handleOpenDaysActiveModal(true)}
           >
             <View style={styles.leftSettingsButton}>
-              <DaysActiveIcon width={25} height={25} color={Color.white} />
+              <DaysActiveIcon width={25} height={25} color={theme.textHigh} />
               <Text style={styles.buttonTitle}>Days Active</Text>
             </View>
 
             <View style={styles.chevronContainer}>
               <View style={styles.daysOfWeekTextContainer}>
-                {daysOfWeek.map((dayKey, index) => (
+                {Object.values(daysActive).every(Boolean) ? (
                   <Text
                     style={{
                       fontSize: 15,
-                      color: daysActive[dayKey]
-                        ? "rgba(255, 255, 255, 1)"
-                        : "rgba(255, 255, 255, 0.5)",
-                      fontWeight: daysActive[dayKey] ? 500 : 400,
+                      color: theme.textHigh,
+                      fontWeight: 500,
                       opacity: 0.8,
                     }}
-                    key={index}
                   >
-                    {BUTTON_TEXTS[index]}
+                    All
                   </Text>
-                ))}
+                ) : (
+                  daysOfWeek.map((dayKey, index) => (
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: daysActive[dayKey]
+                          ? theme.textHigh
+                          : theme.textDisabled,
+                        fontWeight: daysActive[dayKey] ? 500 : 400,
+                        opacity: 0.8,
+                      }}
+                      key={index}
+                    >
+                      {BUTTON_TEXTS[index]}
+                    </Text>
+                  ))
+                )}
               </View>
             </View>
           </TouchableRipple>
@@ -275,7 +292,7 @@ const Settings = ({ navigation }) => {
           {/* VACATION */}
           <View style={styles.button}>
             <View style={styles.leftSettingsButton}>
-              <PlaneIcon width={25} height={25} color={Color.white} />
+              <PlaneIcon width={25} height={25} color={theme.textHigh} />
               <Text style={styles.buttonTitle}>Vacation Mode</Text>
             </View>
             <View style={styles.chevronContainer}>
@@ -288,7 +305,7 @@ const Settings = ({ navigation }) => {
           {/* THEME */}
           <View style={styles.button}>
             <View style={styles.leftSettingsButton}>
-              <SunThemeIcon width={25} height={25} color={Color.white} />
+              <SunThemeIcon width={25} height={25} color={theme.textHigh} />
               <Text style={styles.buttonTitle}>Theme</Text>
             </View>
             <View style={styles.rightSettingsButton}>
@@ -298,7 +315,7 @@ const Settings = ({ navigation }) => {
           {/* TIMEZONE */}
           <View style={styles.button}>
             <View style={styles.leftSettingsButton}>
-              <GlobeIcon width={25} height={25} color={Color.white} />
+              <GlobeIcon width={25} height={25} color={theme.textHigh} />
               <Text style={styles.buttonTitle}>Time Zone</Text>
             </View>
             <Text style={styles.rightSideText}>{timezone}</Text>
@@ -314,11 +331,11 @@ const Settings = ({ navigation }) => {
           onPress={() => navigation.navigate("PastBets")}
         >
           <View style={styles.leftSettingsButton}>
-            <HistoryIcon width={24} height={24} color={Color.white} />
+            <HistoryIcon width={24} height={24} color={theme.textHigh} />
             <Text style={styles.buttonTitle}>Past Bets</Text>
           </View>
           <View style={styles.chevronContainer}>
-            <RightChevronIcon width={24} height={24} color={Color.white} />
+            <RightChevronIcon width={24} height={24} color={theme.textHigh} />
           </View>
         </TouchableRipple>
         <TouchableRipple
@@ -326,11 +343,11 @@ const Settings = ({ navigation }) => {
           onPress={() => navigation.navigate("Transactions")}
         >
           <View style={styles.leftSettingsButton}>
-            <MoneyIcon width={24} height={24} color={Color.white} />
+            <MoneyIcon width={24} height={24} color={theme.textHigh} />
             <Text style={styles.buttonTitle}>Transactions</Text>
           </View>
           <View style={styles.chevronContainer}>
-            <RightChevronIcon width={24} height={24} color={Color.white} />
+            <RightChevronIcon width={24} height={24} color={theme.textHigh} />
           </View>
         </TouchableRipple>
         <TouchableRipple
@@ -338,11 +355,11 @@ const Settings = ({ navigation }) => {
           onPress={() => navigation.navigate("Account")}
         >
           <View style={styles.leftSettingsButton}>
-            <UserCircleIcon width={24} height={24} color={Color.white} />
+            <UserCircleIcon width={24} height={24} color={theme.textHigh} />
             <Text style={styles.buttonTitle}>Account</Text>
           </View>
           <View style={styles.chevronContainer}>
-            <RightChevronIcon width={24} height={24} color={Color.white} />
+            <RightChevronIcon width={24} height={24} color={theme.textHigh} />
           </View>
         </TouchableRipple>
       </View>
@@ -362,7 +379,7 @@ const getStyles = (theme) =>
       marginBottom: 13,
     },
     headerTitle: {
-      color: Color.white,
+      color: theme.textHigh,
       fontSize: 27,
       fontWeight: "bold",
     },
@@ -381,7 +398,7 @@ const getStyles = (theme) =>
       marginBottom: 10,
     },
     sectionHeaderText: {
-      color: Color.white,
+      color: theme.textMedium,
       opacity: 0.8,
       fontSize: 14,
       textAlign: "left",
@@ -406,7 +423,7 @@ const getStyles = (theme) =>
       alignItems: "center",
     },
     buttonTitle: {
-      color: Color.white,
+      color: theme.textHigh,
       fontSize: 15,
       marginLeft: 16,
       fontWeight: 500,
@@ -417,13 +434,7 @@ const getStyles = (theme) =>
     },
     rightSideText: {
       fontSize: 14,
-      color: Color.white,
-      opacity: 0.8,
+      color: theme.textMedium,
       marginRight: 12,
-    },
-    lastFourDigitsText: {
-      fontSize: 15,
-      color: Color.white,
-      opacity: 0.8,
     },
   });

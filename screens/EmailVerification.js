@@ -104,6 +104,7 @@ const EmailVerification = ({ route, navigation }) => {
         stripeCustomerId: stripeCustomerId,
         isPaymentSetup: false,
         hasBeenChargedBefore: false,
+        isOnboarded: false,
       });
     } catch (error) {
       console.error(error);
@@ -192,7 +193,7 @@ const EmailVerification = ({ route, navigation }) => {
 
         <AuthFormButton
           action={checkEmailVerification}
-          text={"Confirm"}
+          text={"Confirm"} 
           disabledCondition={isChecking}
         />
         <View style={styles.resendContainer}>

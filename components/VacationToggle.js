@@ -4,8 +4,11 @@ import { Color } from "../GlobalStyles";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../database/firebase";
 import ToggleSwitch from "toggle-switch-react-native";
+import { useThemes } from "../hooks/ThemesContext";
 
 const VacationToggle = ({ currentUserID, vacationModeOn }) => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
   const handleVacationToggle = async (value) => {
     const userRef = doc(db, "users", currentUserID);
     try {
@@ -33,7 +36,7 @@ const VacationToggle = ({ currentUserID, vacationModeOn }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "flex-start",
@@ -43,7 +46,7 @@ const styles = StyleSheet.create({
     width: 30,
     marginRight: 15,
     fontSize: 15, // should match style of theme toggle text
-    color: Color.white,
+    color: theme.textMedium,
     opacity: 0.8, // should match style of theme toggle text
   },
 });

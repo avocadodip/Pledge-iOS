@@ -6,7 +6,8 @@ import PledgeDollarIcon from "../assets/icons/pledge-dollar-icon.svg";
 import FolderIcon from "../assets/icons/amount-folder-icon.svg";
 import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
 import { Color } from "../GlobalStyles";
-
+import { useThemes } from "../hooks/ThemesContext";
+ 
 export default function TodoBottomSheet() {
   const {
     isBottomSheetOpen,
@@ -20,6 +21,8 @@ export default function TodoBottomSheet() {
   const snapPoints = ["75%"];
   const [todo, setTodo] = useState(selectedTodo || {});
   const todoRef = useRef(todo);
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
 
   // Set initial todo object
   useEffect(() => {
@@ -70,7 +73,7 @@ export default function TodoBottomSheet() {
       index={isBottomSheetOpen ? 0 : -1}
       snapPoints={snapPoints}
       enablePanDownToClose={true}
-      backgroundStyle={{ backgroundColor: Color.fervo_red }}
+      backgroundStyle={{ backgroundColor: theme.accent }}
       backdropComponent={renderBackdrop}
       onChange={handleSheetChange}
       handleComponent={() => (
@@ -167,15 +170,12 @@ export default function TodoBottomSheet() {
   ) : null;
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   bottomSheetContainer: {
-    backgroundColor: Color.fervo_red,
+    backgroundColor: theme.accent,
     flex: 1,
     flexDirection: "col",
-    paddingHorizontal: 20,
-  },
-  bottomSheetTabBar: {
-    backgroundColor: Color.fervo_red,
+    paddingHorizontal: 20, 
   },
   dragHandleContainer: {
     alignSelf: "center",

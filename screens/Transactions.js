@@ -17,6 +17,7 @@ import { db } from "../database/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useSettings } from "../hooks/SettingsContext";
 import WeekBundle from "../components/WeekBundle";
+import { useThemes } from "../hooks/ThemesContext";
 
 const formatWeekID = (weekID) => {
   const year = weekID.slice(0, 4);
@@ -29,6 +30,8 @@ const formatWeekID = (weekID) => {
 };
 
 const Transactions = ({ navigation }) => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
   const {
     settings: { isPaymentSetup, hasBeenChargedBefore },
     currentUserID,
@@ -188,7 +191,8 @@ const Transactions = ({ navigation }) => {
 
 export default Transactions;
 
-const styles = StyleSheet.create({
+const getStyles = (theme) =>
+ StyleSheet.create({
   pageContainer: {
     display: "flex",
     marginBottom: BOTTOM_TAB_HEIGHT + 90,
@@ -202,8 +206,7 @@ const styles = StyleSheet.create({
   },
   descriptorText: {
     width: "100%",
-    color: Color.white,
-    opacity: 0.8,
+    color: theme.textMedium,
     fontSize: 14,
     textAlign: "left",
     marginLeft: 16,

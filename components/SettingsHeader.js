@@ -4,8 +4,9 @@ import { Color, SETTINGS_HORIZONTAL_PADDING } from "../GlobalStyles";
 import LeftChevronIcon from "../assets/icons/chevron-left.svg";
 import TouchableRipple from "./TouchableRipple";
 
-const SettingsHeader = ({ navigation, header }) => {
-  const handlePress = (screenName) => {
+const SettingsHeader = ({ navigation, header, altScreen }) => {
+  const handlePress = () => {
+    const screenName = altScreen || "SettingsScreen";
     navigation.navigate(screenName);
   };
   return (
@@ -13,7 +14,7 @@ const SettingsHeader = ({ navigation, header }) => {
       <View style={styles.buttonWrapper}>
         <TouchableRipple
           style={styles.backButton}
-          onPress={() => handlePress("SettingsScreen")}
+          onPress={handlePress}
         >
           <LeftChevronIcon width={24} height={24} color={Color.white} />
         </TouchableRipple>
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: Color.white,
     fontSize: 19,
-    fontWeight: 600
+    fontWeight: 600,
   },
   buttonWrapper: {
     borderRadius: 10,
@@ -55,4 +56,4 @@ const styles = StyleSheet.create({
   backButton: {
     padding: 16,
   },
-}); 
+});

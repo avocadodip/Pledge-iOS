@@ -17,8 +17,11 @@ import FormInput from "../components/auth/AuthFormInput";
 import LoginButton from "../components/auth/AuthFormButton";
 import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
 import { Color } from "../GlobalStyles";
+import { useThemes } from "../hooks/ThemesContext";
 
 const Login = () => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
   const navigation = useNavigation();
   const [email, setEmail] = useState(); // New state for email input
   const [password, setPassword] = useState();
@@ -48,15 +51,15 @@ const Login = () => {
       // Triggers auth state change in App.js to navigate user to Today
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      // Handle login error
-      const errorMessage = error.message;
-      console.log("Login error: " + errorMessage);
-
-      // Show an alert to the user with a friendly error message
-      Alert.alert(
-        "Oops!",
-        "It looks like there was a typo in your login. Please double-check your email and password."
-      );
+      if (error.code == "auth/wrong-password") {
+        Alert.alert("Login error", "Incorrect email or password.");
+      } else {
+        // Show an alert to the user with a friendly error message
+        Alert.alert(
+          "Oops!",
+          "It looks like there was a typo in your login. Please double-check your email and password."
+        );
+      }
     }
   };
 
@@ -70,7 +73,7 @@ const Login = () => {
         {loading ? <ActivityIndicator size="small" color="white" /> : null}
         <FormInput action={setEmail} value={email} type="email" />
         <FormInput action={setPassword} value={password} type="password" />
- 
+
         <TouchableOpacity
           style={styles.forgotPasswordButton}
           onPress={() => navigation.navigate("ForgotPassword")}
@@ -90,28 +93,29 @@ const Login = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  pageContainer: {
-    flex: 1,
-    flexDirection: "col",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    width: "100%",
-  },
+const getStyles = (theme) =>
+  StyleSheet.create({
+    pageContainer: {
+      flex: 1,
+      flexDirection: "col",
+      justifyContent: "center",
+      alignItems: "center",
+      paddingHorizontal: 20,
+      width: "100%",
+    },
 
-  formContainer: {
-    gap: 15,
-    width: "100%",
-  },
+    formContainer: {
+      gap: 15,
+      width: "100%",
+    },
 
-  forgotPasswordButton: {
-    alignItems: "flex-end",
-    width: "100%",
-  },
-  forgotPasswordButtonText: {
-    color: Color.white,
-  },
-});
+    forgotPasswordButton: {
+      alignItems: "flex-end",
+      width: "100%",
+    },
+    forgotPasswordButtonText: {
+      color: theme.textHigh
+    },
+  });
 
 export default Login;

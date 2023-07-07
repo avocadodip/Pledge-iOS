@@ -1,8 +1,12 @@
 import { Text, View } from "react-native";
 import React from "react";
-import { styles } from "./TodoStyles";
+import { getTodoStyles } from "./TodoStyles";
+import { useThemes } from "../../hooks/ThemesContext";
 
 const FinedTodo = () => {
+  const { theme } = useThemes();
+  const styles = getTodoStyles(theme);
+  
   return (
     <View style={styles.finedContainer}>
       <Text style={styles.finedText}>No task entered.</Text>
