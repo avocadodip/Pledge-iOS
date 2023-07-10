@@ -1,4 +1,10 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useState } from "react";
 import Todo from "../components/todo/Todo";
@@ -12,6 +18,8 @@ import Loading from "../components/Loading";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
+import { Modal } from "react-native";
+import GettingStartedModal from "../components/onboard/GettingStartedModal";
 
 const renderTodo = (
   { title, description, amount, tag, isComplete },
@@ -49,6 +57,7 @@ const Today = () => {
     dayStart,
     dayEnd
   );
+  const [modalVisible, setModalVisible] = useState(true);
 
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
   const renderTodos = useCallback(() => {
@@ -83,6 +92,8 @@ const Today = () => {
       ) : (
         <View style={styles.todoContainer}>{renderTodos()}</View>
       )}
+
+      <GettingStartedModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
     </SafeAreaView>
   );
 };

@@ -1,18 +1,19 @@
-import React, { useState, useRef, useEffect } from "react";
 import {
-  SafeAreaView,
-  View,
+  Modal,
+  StyleSheet,
   Text,
-  Animated,
+  TouchableWithoutFeedback,
+  View,
   FlatList,
   Dimensions,
-  StyleSheet,
-  TouchableOpacity,
+  Animated,
 } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
 import StepIndicator from "react-native-step-indicator";
-import SetDeadline from "../components/onboard/SetDeadline";
-import NextButton from "../components/onboard/NextButton";
-import SetStartDay from "../components/onboard/SetStartDay";
+import SetDeadline from "./SetDeadline";
+import NextButton from "./NextButton";
+import SetStartDay from "./SetStartDay";
+import { Color } from "../../GlobalStyles";
 
 const thirdIndicatorStyles = {
   stepIndicatorSize: 25,
@@ -42,19 +43,15 @@ const thirdIndicatorStyles = {
   stepIndicatorLabelUnFinishedColor: "transparent",
 
   labelAlign: "left",
-  // labelColor: "#e6e6e6",
-  // labelSize: 16,
-  // currentStepLabelColor: "#eeeeee",
 };
 
 const PAGES = ["Page 1", "Page 2", "Page 3"];
 const itemHeight = Dimensions.get("window").height;
 
-export default function App() {
+const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const scrollAnim = useRef(new Animated.Value(0)).current;
-  const flatListRef = useRef(null); // Add this line
-  const [furthestPageUnlocked, setFurthestPageUnlocked] = useState(0);
+  const flatListRef = useRef(null);
 
   useEffect(() => {
     console.log(currentPage);
@@ -88,7 +85,6 @@ export default function App() {
   );
 
   const onStepPress = (position) => {
-    // Only allow navigation to the same page or a previous page
     if (flatListRef.current) {
       flatListRef.current.scrollToOffset({
         offset: position * itemHeight,
@@ -104,7 +100,7 @@ export default function App() {
         index * itemHeight,
         (index + 1) * itemHeight,
       ],
-      outputRange: [-2, 1, -2],
+      outputRange: [-4, 1, -4],
       extrapolate: "clamp",
     });
 
@@ -156,123 +152,132 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.gettingStartedText}>Getting Started</Text>
-      <View style={styles.stepIndicator}>
-        <StepIndicator
-          stepCount={3}
-          customStyles={thirdIndicatorStyles}
-          currentPosition={currentPage}
-          onPress={onStepPress}
-          renderLabel={renderLabel}
-          labelAlign="left"
-          labels={["Set daily deadline", "Set start day", "Lock in 3 tasks"]}
-          direction="vertical"
-        />
-      </View>
-      <FlatList
-        ref={flatListRef} // Add this line
-        data={PAGES}
-        renderItem={renderViewPagerPage}
-        keyExtractor={(item, index) => "page_" + index}
-        pagingEnabled
-        vertical
-        showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={onPageChange}
-        getItemLayout={(data, index) => ({
-          length: itemHeight,
-          offset: itemHeight * index,
-          index,
-        })}
-      />
-    </View>
+    <Modal
+      visible={true}
+      animationType="slide"
+      onDismiss={() => console.log("on dismiss")}
+      onRequestClose={() => console.log("on dismiss")}
+      presentationStyle={"pageSheet"}
+      onSwipeStart={() => {}} // Disable swipe gesture
+      isModalInPresentation={true}
+    >
+      <TouchableWithoutFeedback
+        onPressOut={(e) => {
+          if (e.nativeEvent.locationY > 150) {
+            setModalVisible(false);
+          }
+        }}
+      >
+        <View style={styles.container}>
+          <Text style={styles.gettingStartedText}>Set Up Your First Day</Text>
+          <View style={styles.stepIndicator}>
+            <StepIndicator
+              stepCount={3}
+              customStyles={thirdIndicatorStyles}
+              currentPosition={currentPage}
+              onPress={onStepPress}
+              renderLabel={renderLabel}
+              labelAlign="left"
+              labels={[
+                "Set daily deadline",
+                "Set start day",
+                "Lock in 3 tasks",
+              ]}
+              direction="vertical"
+            />
+          </View>
+          <FlatList
+            ref={flatListRef}
+            data={PAGES}
+            renderItem={renderViewPagerPage}
+            keyExtractor={(item, index) => "page_" + index}
+            pagingEnabled
+            vertical
+            showsVerticalScrollIndicator={false}
+            scrollEventThrottle={16}
+            onScroll={onPageChange}
+            getItemLayout={(data, index) => ({
+              length: itemHeight,
+              offset: itemHeight * index,
+              index,
+            })}
+          />
+        </View> 
+      </TouchableWithoutFeedback>
+    </Modal>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+    backgroundColor: Color.fervo_red,
+  },
   pageContainer: {
     height: itemHeight,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
 
-    // borderWidth: 1,
-    // borderColor: "black",
+    borderWidth: 1,
+    borderColor: "black",
   },
   pageContent: {
     position: "absolute",
     bottom: 0,
-
     flex: 1,
-    height: "73%",
+    height: "77%",
     width: "100%",
 
-    // borderWidth: 1,
-    // borderColor: "black",
+    borderWidth: 1,
+    borderColor: "black",
   },
   contentContainer: {
     flex: 8,
     width: "100%",
     justifyContent: "center",
-
-    // borderColor: "black",
-    // borderWidth: 1,
   },
   nextButtonContainer: {
     flex: 2,
     width: "100%",
     alignItems: "center",
-
-    // borderColor: "black",
-    // borderWidth: 1,
   },
-
   gettingStartedText: {
     fontSize: 25,
-    fontWeight: 700,
+    fontWeight: "700",
     color: "white",
-    width: 100,
-    marginTop: 10,
+    width: 120,
     marginLeft: 20,
     position: "absolute",
-    top: 60,
+    top: 50,
+
+    // borderWidth: 1,
+    // borderColor: "black",
   },
   stepIndicator: {
     zIndex: 1,
-
     position: "absolute",
-    top: "7%",
+    top: 40,
     right: 0,
-
     height: "20%",
-
-    // borderColor: "black",
-    // borderWidth: 1,
-
     width: "60%",
-
     flexDirection: "row",
     gap: 20,
   },
-
-  headerContainer: {},
-  headerText: {},
-
-  // Step indicator
   stepLabel: {
     fontSize: 17,
     fontWeight: "500",
     color: "#ffffffbd",
     paddingLeft: 10,
-    fontWeight: 400,
+    fontWeight: "400",
   },
   stepLabelSelected: {
     fontSize: 17,
     fontWeight: "500",
     color: "#ffffff",
     paddingLeft: 10,
-    fontWeight: 700,
+    fontWeight: "700",
   },
 });
+
+export default GettingStartedModal;
