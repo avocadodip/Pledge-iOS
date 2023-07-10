@@ -40,14 +40,12 @@ import SettingsInactiveIcon from "./assets/icons/settings-inactive-icon.svg";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { auth } from "./database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
-import TouchableRipple from "./components/TouchableRipple";
 import useUpdateTimezoneOnAppActive from "./hooks/useUpdateTimezoneOnAppActive";
 import { STRIPE_PUBLISHABLE_KEY } from "./constants";
 import Transactions from "./screens/Transactions";
 import EmailVerification from "./screens/EmailVerification";
 import ForgotPassword from "./screens/ForgotPassword";
 import ChangeEmail from "./screens/ChangeEmail";
-import Onboard from "./screens/Onboard";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -77,15 +75,15 @@ const AuthStack = () => (
   </Stack.Navigator>
 );
 
-const OnboardStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen
-      name="OnboardScreen"
-      component={Onboard}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
-);
+// const IntroStack = () => (
+//   <Stack.Navigator screenOptions={{ headerShown: false }}>
+//     <Stack.Screen
+//       name="IntroScreen"
+//       component={Intro}
+//       options={{ headerShown: false }}
+//     />
+//   </Stack.Navigator>
+// );
 
 const TodayStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -265,7 +263,7 @@ function AppContent({ isSignedIn }) {
       <NavigationContainer theme={themePalette}>
         {hideSplashScreen ? (
           isSignedIn ? (
-            isOnboarded ? (
+            // isIntroed ? (
               <Tab.Navigator
                 screenOptions={{
                   headerShown: false,
@@ -346,9 +344,9 @@ function AppContent({ isSignedIn }) {
                   }}
                 />
               </Tab.Navigator>
-            ) : (
-              <OnboardStack />
-            )
+            // ) : (
+            //   <IntroStack />
+            // )
           ) : (
             <AuthStack />
           )

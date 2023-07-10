@@ -1,6 +1,6 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
@@ -13,7 +13,8 @@ import TmrwTimePicker from "../components/TmrwTimePicker";
 import { useTodayTodos } from "../hooks/useTodayTodos";
 import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
-
+import GettingStartedModal from "../components/onboard/GettingStartedModal";
+ 
 const renderTodo = (
   { title, description, amount, tag, isLocked },
   index,
@@ -37,10 +38,9 @@ const Tomorrow = () => {
   const styles = getStyles(theme);
   const { tmrwTodos } = useBottomSheet();
   const {
-    settings: { vacationModeOn, daysActive },
+    settings: { vacationModeOn, daysActive, isOnboarded },
     currentUserID,
   } = useSettings();
-
   const { dayChanged } = useDayChange();
   const { dayStart, dayEnd } = useTodayTodos(dayChanged);
   const { tmrwHeaderSubtitleMessage, timeStatus } = useDayStatus(
@@ -49,9 +49,9 @@ const Tomorrow = () => {
   );
   const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty } =
     useTmrwTodos(dayChanged, daysActive);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const renderTodos = useCallback(() => {
-    // Map through three todos and render them based on their content
     return tmrwTodos.map((todo, index) => {
       return renderTodo(todo, index, timeStatus);
     });
@@ -59,16 +59,14 @@ const Tomorrow = () => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      {/* <OnboardingPopup
-        texts={['This is the Tomorrow page.', 'Plug in your 3 tasks to be completed tomorrow and how much you will be fined if you fail them.','Be careful! If you forget to input 3 tasks each day, you’ll be fined!','Give this a go, now! We’ve added your dreams as tags to get you started.']}
-        buttonTitle="Will do!"
-      /> */}
+      {/* ... */}
       <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Tmrw</Text>
           <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
         </View>
-        {!vacationModeOn && isTmrwActiveDay && (
+
+        {!isOnboarded && !vacationModeOn && isTmrwActiveDay && (
           <View>
             <Text style={styles.headerSubtitle}>
               {tmrwHeaderSubtitleMessage}
@@ -96,56 +94,87 @@ const Tomorrow = () => {
         )}
       </View>
 
-      {vacationModeOn ? (
-        <VacationMessage />
-      ) : !isTmrwActiveDay ? (
-        <RestDayMessage />
-      ) : (
-        <View style={styles.todoContainer}>{renderTodos()}</View>
-      )}
+      <View style={styles.pageContent}>
+        {isOnboarded ? (
+          <View style={styles.startButtonContainer}>
+            <TouchableOpacity
+              style={styles.startButton}
+              onPress={() => setModalVisible(true)}
+            >
+              <Text style={styles.startButtonText}>
+                Start your first day of tasks
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : vacationModeOn ? (
+          <VacationMessage />
+        ) : !isTmrwActiveDay ? (
+          <RestDayMessage />
+        ) : (
+          <View style={styles.todoContainer}>{renderTodos()}</View>
+        )}
+      </View>
+
+      <GettingStartedModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
     </SafeAreaView>
   );
 };
 
 const getStyles = (theme) =>
- StyleSheet.create({
-  pageContainer: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 20,
-  },
-  headerContainer: {
-    marginTop: 5,
-    width: "100%",
-    flexDirection: "col",
-  },
-  headerTitleContainer: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 15,
-  },
-  headerTitle: {
-    color: theme.textHigh,
-    fontSize: 42,
-    fontWeight: "bold",
-  },
-  headerDayOfWeek: {
-    color: theme.textMedium,
-    fontSize: 23,
-    fontWeight: "bold",
-    paddingBottom: 6,
-  },
-  headerSubtitle: {
-    color: theme.textHigh,
-    fontSize: 23,
-    fontWeight: "bold",
-  },
-  todoContainer: {
-    marginTop: 20,
-    gap: 18,
-    width: "100%",
-  },
-});
+  StyleSheet.create({
+    pageContainer: {
+      flex: 1,
+      alignItems: "center",
+      marginHorizontal: 20,
+    },
+    headerContainer: {
+      marginTop: 5,
+      width: "100%",
+      flexDirection: "col",
+    },
+    headerTitleContainer: {
+      width: "100%",
+      flexDirection: "row",
+      alignItems: "flex-end",
+      gap: 15,
+    },
+    headerTitle: {
+      color: theme.textHigh,
+      fontSize: 42,
+      fontWeight: "bold",
+    },
+    headerDayOfWeek: {
+      color: theme.textMedium,
+      fontSize: 23,
+      fontWeight: "bold",
+      paddingBottom: 6,
+    },
+    headerSubtitle: {
+      color: theme.textHigh,
+      fontSize: 23,
+      fontWeight: "bold",
+    },
+    pageContent: {
+      height: "82%",
+      width: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    todoContainer: {
+      marginTop: 20,
+      gap: 18,
+      width: "100%",
+    },
+
+    startButton: {},
+    startButtonText: {
+      color: "white",
+      fontWeight: 500,
+      fontSize: 20,
+    },
+  });
 
 export default Tomorrow;

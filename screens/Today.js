@@ -46,6 +46,9 @@ const Today = () => {
   const { todayTodos } = useBottomSheet();
   const { dayChanged } = useDayChange();
   const {
+    settings: { isOnboarded },
+  } = useSettings();
+  const {
     todayDOWAbbrev,
     dayStart,
     dayEnd,
@@ -57,7 +60,7 @@ const Today = () => {
     dayStart,
     dayEnd
   );
-  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
   const renderTodos = useCallback(() => {
@@ -85,15 +88,31 @@ const Today = () => {
         )}
       </View>
 
-      {isTodayVacation ? (
-        <VacationMessage />
-      ) : !isTodayActiveDay ? (
-        <RestDayMessage />
-      ) : (
-        <View style={styles.todoContainer}>{renderTodos()}</View>
-      )}
+      <View style={styles.pageContent}>
+        {isOnboarded ? (
+          <View style={styles.startButtonContainer}>
+            <TouchableOpacity
+              style={styles.startButton}
+              onPress={() => {setModalVisible(true); console.log("pressed")}}
+            >
+              <Text style={styles.startButtonText}>
+                Start your first day of tasks
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : isTodayVacation ? (
+          <VacationMessage />
+        ) : !isTodayActiveDay ? (
+          <RestDayMessage />
+        ) : (
+          <View style={styles.todoContainer}>{renderTodos()}</View>
+        )}
+      </View>
 
-      <GettingStartedModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+      <GettingStartedModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
     </SafeAreaView>
   );
 };
@@ -132,11 +151,26 @@ const getStyles = (theme) =>
       fontSize: 25,
       fontWeight: "bold",
       marginTop: 5,
+    }, 
+    pageContent: {
+      height: "82%",
+      width: "100%",
+      justifyContent: "center",
+      alignItems: "center",
     },
     todoContainer: {
       marginTop: 20,
       gap: 22,
       width: "100%",
+    },
+
+    startButton: {
+      
+    },
+    startButtonText: {
+      color: "white",
+      fontWeight: 500,
+      fontSize: 20,
     },
   });
 
