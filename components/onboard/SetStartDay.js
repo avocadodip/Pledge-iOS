@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import { Color } from "../../GlobalStyles";
+import { useThemes } from "../../hooks/ThemesContext";
 
 const options = [
   {
@@ -16,12 +17,14 @@ const options = [
 ];
 
 const SetStartDay = () => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
   const [selectedOption, setSelectedOption] = useState("Today");
 
   return (
     <View style={styles.container}>
       <Text style={styles.promptText}>
-        I want to complete my first day of tasks
+        I will complete{"\n"}my first day of tasks
       </Text>
       {options.map((option) => (
         <TouchableOpacity
@@ -44,7 +47,8 @@ const SetStartDay = () => {
             <Text
               style={[
                 styles.buttonDescText,
-                selectedOption === option.label && styles.buttonDescTextSelected,
+                selectedOption === option.label &&
+                  styles.buttonDescTextSelected,
               ]}
             >
               {option.subtext}{" "}
@@ -52,7 +56,8 @@ const SetStartDay = () => {
             <Text
               style={[
                 styles.buttonDateText,
-                selectedOption === option.label && styles.buttonDescTextSelected,
+                selectedOption === option.label &&
+                  styles.buttonDescTextSelected,
               ]}
             >
               {option.date}
@@ -66,59 +71,68 @@ const SetStartDay = () => {
 
 export default SetStartDay;
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "column",
-    gap: 20,
-  },
-  promptText: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: 600,
-  },
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: "column",
+      gap: 20,
+      alignItems: "center",
+    },
+    promptText: {
+      color: "white",
+      fontSize: 26,
+      fontWeight: 600,
+      alignSelf: "flex-start",
+      lineHeight: 35,
+    },
 
-  // Unselected button styles
-  button: {
-    // Base styles
-    flexDirection: "column",
-    gap: 12,
-    borderRadius: 12,
-    width: "100%",
-    height: 100,
-    justifyContent: "center",
-    alignItems: "center",
+    // Unselected button styles
+    button: {
+      // Base styles
+      flexDirection: "column",
+      gap: 7,
+      borderRadius: 12,
+      width: "100%",
+      paddingVertical: 20,
+      justifyContent: "center",
+      alignItems: "center",
 
-    // Unselected
-    borderWidth: 2,
-    borderColor: "#ffffffb1",
-  },
-  buttonTitleText: {
-    color: "#ffffffb1",
-    fontSize: 18,
-    fontWeight: 600,
-  },
-  buttonDescText: {
-    color: "#ffffffb1",
-    fontSize: 16,
-  },
-  buttonDateText: {
-    color: "#ffffffb1",
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
+      // Unselected
+      borderWidth: 2,
+      borderColor: "#ffffffb1",
+    },
+    buttonTitleText: {
+      color: "#ffffffb1",
+      fontSize: 23,
+      fontWeight: 600,
+    },
+    buttonDescText: {
+      color: "#ffffffb1",
+      fontSize: 16,
+      lineHeight: 27,
+    },
+    buttonDateText: {
+      color: "#ffffffb1",
+      fontSize: 16,
+      fontWeight: "bold",
+    },
 
-  // Selected button styles
-  buttonSelected: {
-    backgroundColor: "#ffffff",
-  },
-  buttonTitleTextSelected: {
-    color: Color.fervo_red,
-  },
-  buttonDescTextSelected: {
-    color: Color.fervo_red,
-  },
+    // Selected button styles
+    buttonSelected: {
+      backgroundColor: "#ffffff",
+    },
+    buttonTitleTextSelected: {
+      color: theme.authButtonText,
+    },
+    buttonDescTextSelected: {
+      color: theme.authButtonText,
+    },
 
-  descContainer: {
-    flexDirection: 'row',
-  },
-});
+    descContainer: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      width: "100%",
+      paddingHorizontal: 20,
+      justifyContent: "center",
+    },
+  });

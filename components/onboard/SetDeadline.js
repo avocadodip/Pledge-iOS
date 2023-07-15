@@ -11,20 +11,20 @@ const SetDeadline = () => {
   return (
     <>
       <View style={styles.promptContainer}>
-        <View style={styles.lineContainer}>
-          <View style={styles.container}>
-            <SunFilledIcon color={"white"} height={25} width={25} />
-            <Text style={styles.promptText}>Start your day at</Text>
+        <Text style={styles.promptText}>I will start my day at</Text>
+        <View style={styles.container}>
+          <View style={styles.iconContainer}>
+            <SunFilledIcon color={"white"} height={30} width={30} />
           </View>
           <OnboardTimePicker type={"AM"} />
         </View>
       </View>
 
       <View style={styles.promptContainer}>
-        <View style={styles.lineContainer}>
-          <View style={styles.container}>
+        <Text style={styles.promptText}>and end my day at</Text>
+        <View style={styles.container}>
+          <View style={styles.iconContainer}>
             <MoonIcon color={"white"} height={25} width={25} />
-            <Text style={styles.promptText}>End your day at</Text>
           </View>
 
           <OnboardTimePicker type={"PM"} />
@@ -38,26 +38,10 @@ export default SetDeadline;
 
 const styles = StyleSheet.create({
   promptContainer: {
-    flexDirection: "column",
-    // paddingHorizontal: 10,
-    // paddingVertical: 6,
-    borderRadius: 12,
+    flexDirection: "col",
+    gap: 15,
     width: "100%",
-    height: "100%",
-    height: 200,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 20,
-
-    borderColor: "black",
-    borderWidth: 1,  
-  },
-  lineContainer: {
-    flexDirection: "row",
-    gap: 8,
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
+    paddingVertical: 20,
 
     // borderColor: "black",
     // borderWidth: 1,
@@ -69,7 +53,10 @@ const styles = StyleSheet.create({
   },
   promptText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 26,
     fontWeight: 600,
+  },
+  iconContainer: {
+    width: 35
   },
 });

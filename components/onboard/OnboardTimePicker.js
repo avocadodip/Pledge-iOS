@@ -186,7 +186,7 @@ const getStyles = (theme) =>
     },
     buttonText: {
       color: Color.white,
-      fontSize: 20,
+      fontSize: 23,
       fontWeight: 600,
     },
 

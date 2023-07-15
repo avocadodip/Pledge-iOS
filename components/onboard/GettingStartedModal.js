@@ -16,16 +16,25 @@ import SetStartDay from "./SetStartDay";
 import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 
-const PAGE_CONTENT_HEIGHT = 800;
 const steps = ["Set daily deadline", "Set start day", "Lock in 3 tasks"];
 
 const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const { theme } = useThemes();
-  const styles = getStyles(theme);
+  const [modalHeight, setModalHeight] = useState(0);
+  const styles = getStyles(theme, modalHeight);
   const [currentPage, setCurrentPage] = useState(0);
   const scrollAnim = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
   const [isScrolling, setIsScrolling] = useState(false);
+
+  const [ startTime, setStartTime ] = useState("Choose time");
+  const [ endTime, setEndTime ] = useState("Choose time");
+
+  // Gets modal height
+  const onLayout = (event) => {
+    const { height } = event.nativeEvent.layout;
+    setModalHeight(height);
+  };
 
   useEffect(() => {
     if (!modalVisible) {
@@ -43,7 +52,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
     stepStrokeWidth: 3,
     stepStrokeCurrentColor: "#e7e7e7",
     stepStrokeFinishedColor: "#e7e7e7",
-    stepStrokeUnFinishedColor: "#f56565",
+    stepStrokeUnFinishedColor: theme.stepStrokeFinishedColor,
 
     // line
     separatorStrokeWidth: 2,
@@ -52,7 +61,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
 
     // inside circle
     stepIndicatorFinishedColor: "#e7e7e7",
-    stepIndicatorUnFinishedColor: "#f97676",
+    stepIndicatorUnFinishedColor: theme.stepIndicatorUnFinishedColor,
     stepIndicatorCurrentColor: "#ffffff",
 
     stepIndicatorLabelFontSize: 0,
@@ -85,7 +94,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
     {
       listener: (event) => {
         const page = Math.round(
-          event.nativeEvent.contentOffset.y / PAGE_CONTENT_HEIGHT
+          event.nativeEvent.contentOffset.y / modalHeight
         );
         if (page !== currentPage) {
           setCurrentPage(page);
@@ -100,7 +109,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const onStepPress = (position) => {
     if (flatListRef.current) {
       flatListRef.current.scrollToOffset({
-        offset: position * PAGE_CONTENT_HEIGHT,
+        offset: position * modalHeight,
         animated: true,
       });
     }
@@ -121,11 +130,11 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
     const opacity = isScrolling
       ? scrollAnim.interpolate({
           inputRange: [
-            (index - 1) * PAGE_CONTENT_HEIGHT,
-            index * PAGE_CONTENT_HEIGHT,
-            (index + 1) * PAGE_CONTENT_HEIGHT,
+            (index - 1) * modalHeight,
+            index * modalHeight,
+            (index + 1) * modalHeight,
           ],
-          outputRange: [-4, 1, -4],
+          outputRange: [-3, 1, -3],
           extrapolate: "clamp",
         })
       : 1;
@@ -167,7 +176,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
           }
         }}
       >
-        <View style={styles.container}>
+        <View style={styles.container} onLayout={onLayout}>
           <Text style={styles.gettingStartedText}>Set Up Your First Day</Text>
           <View style={styles.stepIndicator}>
             <StepIndicator
@@ -192,8 +201,8 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
             scrollEventThrottle={16}
             onScroll={onPageChange}
             getItemLayout={(data, index) => ({
-              length: PAGE_CONTENT_HEIGHT,
-              offset: PAGE_CONTENT_HEIGHT * index,
+              length: modalHeight,
+              offset: modalHeight * index,
               index,
             })}
           />
@@ -203,33 +212,24 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   );
 };
 
-const getStyles = (theme) =>
+const getStyles = (theme, modalHeight) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: Color.fervo_red,
-
-      // borderWidth: 1,
-      // borderColor: "black",
+      backgroundColor: theme.accent,
     },
     pageContainer: {
-      height: 800,
+      height: modalHeight,
       justifyContent: "center",
       alignItems: "center",
       paddingHorizontal: 20,
-
-      // borderWidth: 1,
-      // borderColor: "black",
     },
     pageContent: {
       position: "absolute",
       top: 200,
       flex: 1,
-      height: "65%",
+      height: "70%",
       width: "100%",
-
-      // borderWidth: 1,
-      // borderColor: "black",
     },
     contentContainer: {
       flex: 8,
@@ -238,6 +238,7 @@ const getStyles = (theme) =>
     },
     nextButtonContainer: {
       flex: 2,
+      justifyContent: "center",
       width: "100%",
       alignItems: "center",
     },
@@ -262,9 +263,6 @@ const getStyles = (theme) =>
       width: "60%",
       flexDirection: "row",
       gap: 20,
-
-      // borderWidth: 1,
-      // borderColor: "black",
     },
     stepLabel: {
       fontSize: 17,

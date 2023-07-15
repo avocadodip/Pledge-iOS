@@ -15,7 +15,7 @@ const NextButton = ({ action, text, disabledCondition }) => {
         onPress={action}
         disabled={disabledCondition}
       >
-        <DownArrowIcon color={Color.fervo_red} width={27} height={27}/>
+        <DownArrowIcon color={theme.authButtonText} width={27} height={27}/>
       </TouchableRipple>
     </View>
   );
@@ -29,7 +29,6 @@ const getStyles = (theme) =>
       borderRadius: 25,
       width: "30%",
       overflow: "hidden",
-      marginBottom: 40,
     },
     button: {
       height: 52,
@@ -39,10 +38,5 @@ const getStyles = (theme) =>
       backgroundColor: theme.authButtonBg,
       borderColor: theme.authButtonBorder,
       borderWidth: 1.7,
-    },
-    buttonText: {
-      color: theme.authButtonText,
-      fontSize: 17,
-      fontWeight: 600,
     },
   });
