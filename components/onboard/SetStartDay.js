@@ -1,70 +1,92 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
-import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 
-const options = [
-  {
-    label: "Today",
-    subtext: "Tasks must be completed by",
-    date: "7:30 PM, July 23",
-  },
-  {
-    label: "Tomorrow",
-    subtext: "Tasks must be completed by",
-    date: "7:30 PM, July 24",
-  },
-];
-
-const SetStartDay = () => {
+const SetStartDay = ({
+  isTodayOption,
+  timePickerText,
+  startDay,
+  setStartDay,
+}) => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
-  const [selectedOption, setSelectedOption] = useState("Today");
 
   return (
     <View style={styles.container}>
       <Text style={styles.promptText}>
         I will complete{"\n"}my first day of tasks
       </Text>
-      {options.map((option) => (
+
+      {/* Today Button */}
+      {isTodayOption && (
         <TouchableOpacity
-          key={option.label}
-          style={[
-            styles.button,
-            selectedOption === option.label && styles.buttonSelected,
-          ]}
-          onPress={() => setSelectedOption(option.label)}
+          style={[styles.button, startDay === "Today" && styles.buttonSelected]}
+          onPress={() => setStartDay("Today")}
         >
           <Text
             style={[
               styles.buttonTitleText,
-              selectedOption === option.label && styles.buttonTitleTextSelected,
+              startDay === "Today" && styles.buttonTitleTextSelected,
             ]}
           >
-            {option.label}
+            Today
           </Text>
           <View style={styles.descContainer}>
             <Text
               style={[
                 styles.buttonDescText,
-                selectedOption === option.label &&
-                  styles.buttonDescTextSelected,
+                startDay === "Today" && styles.buttonDescTextSelected,
               ]}
             >
-              {option.subtext}{" "}
+              Tasks must be completed by{" "}
             </Text>
             <Text
               style={[
-                styles.buttonDateText,
-                selectedOption === option.label &&
-                  styles.buttonDescTextSelected,
+                styles.buttonDescBoldText,
+                startDay === "Today" && styles.buttonDescTextSelected,
               ]}
             >
-              {option.date}
+              {timePickerText.end}
             </Text>
           </View>
         </TouchableOpacity>
-      ))}
+      )}
+
+      {/* Tomorrow Button */}
+      <TouchableOpacity
+        style={[
+          styles.button,
+          startDay === "Tomorrow" && styles.buttonSelected,
+        ]}
+        onPress={() => setStartDay("Tomorrow")}
+      >
+        <Text
+          style={[
+            styles.buttonTitleText,
+            startDay === "Tomorrow" && styles.buttonTitleTextSelected,
+          ]}
+        >
+          Tomorrow
+        </Text>
+        <View style={styles.descContainer}>
+          <Text
+            style={[
+              styles.buttonDescText,
+              startDay === "Tomorrow" && styles.buttonDescTextSelected,
+            ]}
+          >
+            Tasks must be completed by{" "}
+          </Text>
+          <Text
+            style={[
+              styles.buttonDescBoldText,
+              startDay === "Tomorrow" && styles.buttonDescTextSelected,
+            ]}
+          >
+            {timePickerText.end}, July 24
+          </Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -93,7 +115,7 @@ const getStyles = (theme) =>
       gap: 7,
       borderRadius: 12,
       width: "100%",
-      paddingVertical: 20,
+      height: 120,
       justifyContent: "center",
       alignItems: "center",
 
@@ -111,7 +133,7 @@ const getStyles = (theme) =>
       fontSize: 16,
       lineHeight: 27,
     },
-    buttonDateText: {
+    buttonDescBoldText: {
       color: "#ffffffb1",
       fontSize: 16,
       fontWeight: "bold",
@@ -134,5 +156,6 @@ const getStyles = (theme) =>
       width: "100%",
       paddingHorizontal: 20,
       justifyContent: "center",
+      alignItems: "center",
     },
   });

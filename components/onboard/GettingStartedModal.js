@@ -5,7 +5,6 @@ import {
   TouchableWithoutFeedback,
   View,
   FlatList,
-  Dimensions,
   Animated,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
@@ -13,10 +12,10 @@ import StepIndicator from "react-native-step-indicator";
 import SetDeadline from "./SetDeadline";
 import NextButton from "./NextButton";
 import SetStartDay from "./SetStartDay";
-import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 
 const steps = ["Set daily deadline", "Set start day", "Lock in 3 tasks"];
+const FADE_OUT_OPACITY = -3;
 
 const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const { theme } = useThemes();
@@ -26,9 +25,25 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const scrollAnim = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [lastCompletedPage, setLastCompletedPage] = useState(0);
+  const [timePickerText, setTimePickerText] = useState({
+    start: "Pick time",
+    end: "Pick time",
+  });
+  const [startDay, setStartDay] = useState("");
 
-  const [ startTime, setStartTime ] = useState("Choose time");
-  const [ endTime, setEndTime ] = useState("Choose time");
+  // Allow step indicator press 
+  useEffect(() => {
+    if (
+      timePickerText.start !== "Pick time" &&
+      timePickerText.end !== "Pick time"
+    ) {
+      setLastCompletedPage(1);
+    }
+    if (startDay !== "") {
+      setLastCompletedPage(2);
+    }
+  }, [timePickerText, startDay]);
 
   // Gets modal height
   const onLayout = (event) => {
@@ -107,6 +122,11 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
 
   // Step indicator press
   const onStepPress = (position) => {
+    // Prevent navigation if the user has not completed the previous page
+    if (position > lastCompletedPage) {
+      return;
+    }
+
     if (flatListRef.current) {
       flatListRef.current.scrollToOffset({
         offset: position * modalHeight,
@@ -134,17 +154,46 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
             index * modalHeight,
             (index + 1) * modalHeight,
           ],
-          outputRange: [-3, 1, -3],
+          outputRange: [FADE_OUT_OPACITY, 1, FADE_OUT_OPACITY],
           extrapolate: "clamp",
         })
       : 1;
 
     // Render each page content
-    let PageContent;
+    let PageContent, nextButtonDisabled;
     if (index === 0) {
-      PageContent = <SetDeadline />;
+      PageContent = (
+        <SetDeadline
+          timePickerText={timePickerText}
+          setTimePickerText={setTimePickerText}
+        />
+      );
+      nextButtonDisabled =
+        timePickerText.start === "Pick time" ||
+        timePickerText.end === "Pick time";
     } else if (index === 1) {
-      PageContent = <SetStartDay />;
+      // Get user's device time and show today option if their time is before day end
+      const currentTime = new Date();
+      const currentHour = currentTime.getHours();
+      const currentMinutes = currentTime.getMinutes();
+
+      const end = timePickerText.end.split(" ")[0];
+      const endHour = parseInt(end.split(":")[0]) + 12; // adding 12 to convert to 24 hour format
+      const endMinute = parseInt(end.split(":")[1]);
+
+      // Check if current time is before end time
+      const isTodayOption =
+        currentHour < endHour ||
+        (currentHour === endHour && currentMinutes <= endMinute);
+      nextButtonDisabled = startDay === "";
+      PageContent = (
+        <SetStartDay
+          isTodayOption={isTodayOption}
+          timePickerText={timePickerText}
+          startDay={startDay}
+          setStartDay={setStartDay}
+        />
+      );
     } else {
       PageContent = <Text>Carrot</Text>;
     }
@@ -154,7 +203,11 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
         <View style={styles.pageContent}>
           <View style={styles.contentContainer}>{PageContent}</View>
           <View style={styles.nextButtonContainer}>
-            <NextButton action={onNextPress} text={"Next"} />
+            <NextButton
+              action={onNextPress}
+              text={"Next"}
+              disabled={nextButtonDisabled}
+            />
           </View>
         </View>
       </Animated.View>
@@ -226,9 +279,9 @@ const getStyles = (theme, modalHeight) =>
     },
     pageContent: {
       position: "absolute",
-      top: 200,
+      top: 170,
       flex: 1,
-      height: "70%",
+      height: "75%",
       width: "100%",
     },
     contentContainer: {
@@ -249,7 +302,7 @@ const getStyles = (theme, modalHeight) =>
       width: 120,
       marginLeft: 20,
       position: "absolute",
-      top: 50,
+      top: 30,
 
       // borderWidth: 1,
       // borderColor: "black",
@@ -257,7 +310,7 @@ const getStyles = (theme, modalHeight) =>
     stepIndicator: {
       zIndex: 1,
       position: "absolute",
-      top: 40,
+      top: 20,
       right: 0,
       height: "18%",
       width: "60%",

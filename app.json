@@ -10,7 +10,7 @@
     "icon": "",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icons/FervoWhite.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

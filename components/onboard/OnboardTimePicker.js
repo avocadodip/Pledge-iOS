@@ -8,8 +8,8 @@ import { Color } from "../../GlobalStyles";
 
 const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
-
-const OnboardTimePicker = ({ type }) => {
+ 
+const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   let dayStart = "7:30";
@@ -31,6 +31,19 @@ const OnboardTimePicker = ({ type }) => {
   });
 
   const toggleModal = (period) => {
+    if (isModalVisible[period]) {
+      // User is closing the modal, so we update the display text
+      const formattedTime = `${tempTime[`${period}Hour`]}:${
+        tempTime[`${period}Minute`]
+      }`;
+      setSelectedTime((prev) => ({ ...prev, [`${period}`]: formattedTime }));
+      setTimePickerText((prev) => ({
+        ...prev,
+        [period]: `${formattedTime} ${period === "start" ? "AM" : "PM"}`,
+      }));
+    }
+
+    // Toggle the modal visibility
     setModalVisible((prev) => ({ ...prev, [period]: !prev[period] }));
   };
 
@@ -39,6 +52,11 @@ const OnboardTimePicker = ({ type }) => {
       tempTime[`${period}Minute`]
     }`;
     setSelectedTime((prev) => ({ ...prev, [`${period}`]: formattedTime }));
+    // When modal is closed, set the display text to the selected time
+    setTimePickerText((prev) => ({
+      ...prev,
+      [period]: formattedTime !== "7:30" ? formattedTime : "Pick time",
+    }));
   };
 
   return (
@@ -48,18 +66,14 @@ const OnboardTimePicker = ({ type }) => {
           style={styles.button}
           onPress={() => toggleModal("start")}
         >
-          <Text style={styles.buttonText}>
-            {`${selectedTime.start} AM`}
-          </Text>
+          <Text style={styles.buttonText}>{timePickerText.start}</Text>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
           style={styles.button}
           onPress={() => toggleModal("end")}
         >
-          <Text
-            style={styles.buttonText}
-          >{`${selectedTime.end} PM`}</Text>
+          <Text style={styles.buttonText}>{timePickerText.end}</Text>
         </TouchableOpacity>
       )}
 

@@ -5,21 +5,23 @@ import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 import DownArrowIcon from "../../assets/icons/down-arrow-icon.svg";
 
-const NextButton = ({ action, text, disabledCondition }) => {
+const NextButton = ({ action, text, disabled }) => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
+
   return (
     <View style={styles.buttonWrapper}>
       <TouchableRipple
-        style={styles.button}
+        style={[styles.button, disabled ? {opacity: 0.2} : {opacity: 1}]}
         onPress={action}
-        disabled={disabledCondition}
+        disabled={disabled}
       >
         <DownArrowIcon color={theme.authButtonText} width={27} height={27}/>
       </TouchableRipple>
     </View>
   );
 };
+
 
 export default NextButton;
 

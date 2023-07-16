@@ -7,27 +7,35 @@ import SunIcon from "../../assets/icons/sun-theme-icon.svg";
 import SunFilledIcon from "../../assets/icons/sun-filled.svg";
 import MoonIcon from "../../assets/icons/moon-icon.svg";
 
-const SetDeadline = () => {
+const SetDeadline = ({ timePickerText, setTimePickerText }) => {
   return (
     <>
       <View style={styles.promptContainer}>
-        <Text style={styles.promptText}>I will start my day at</Text>
+        <Text style={styles.promptText}>My day will start at</Text>
         <View style={styles.container}>
           <View style={styles.iconContainer}>
             <SunFilledIcon color={"white"} height={30} width={30} />
           </View>
-          <OnboardTimePicker type={"AM"} />
+          <OnboardTimePicker
+            type={"AM"}
+            timePickerText={timePickerText}
+            setTimePickerText={setTimePickerText}
+          />
         </View>
       </View>
 
       <View style={styles.promptContainer}>
-        <Text style={styles.promptText}>and end my day at</Text>
+        <Text style={styles.promptText}>and end at</Text>
         <View style={styles.container}>
           <View style={styles.iconContainer}>
             <MoonIcon color={"white"} height={25} width={25} />
           </View>
 
-          <OnboardTimePicker type={"PM"} />
+          <OnboardTimePicker
+            type={"PM"}
+            timePickerText={timePickerText}
+            setTimePickerText={setTimePickerText}
+          />
         </View>
       </View>
     </>
@@ -57,6 +65,6 @@ const styles = StyleSheet.create({
     fontWeight: 600,
   },
   iconContainer: {
-    width: 35
+    width: 35,
   },
 });
