@@ -4,24 +4,28 @@ import TouchableRipple from "../TouchableRipple";
 import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 import DownArrowIcon from "../../assets/icons/down-arrow-icon.svg";
+import LockIcon from "../../assets/icons/lock-icon.svg";
 
-const NextButton = ({ action, text, disabled }) => {
+const NextButton = ({ action, text, disabled, isFinalButton }) => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
 
   return (
     <View style={styles.buttonWrapper}>
       <TouchableRipple
-        style={[styles.button, disabled ? {opacity: 0.2} : {opacity: 1}]}
+        style={[styles.button, disabled ? { opacity: 0.2 } : { opacity: 1 }]}
         onPress={action}
         disabled={disabled}
       >
-        <DownArrowIcon color={theme.authButtonText} width={27} height={27}/>
+        {isFinalButton ? (
+          <LockIcon color={theme.authButtonText} width={27} height={27} />
+        ) : (
+          <DownArrowIcon color={theme.authButtonText} width={27} height={27} />
+        )}
       </TouchableRipple>
     </View>
   );
 };
-
 
 export default NextButton;
 

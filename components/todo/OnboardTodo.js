@@ -1,41 +1,48 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { getTodoStyles } from "./TodoStyles";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import { useThemes } from "../../hooks/ThemesContext";
-// import { renderLockStatus } from "./RenderLockStatus";
 
-const OnboardTodo = ({ todoNumber, isTodoLocked, handleLockTodo }) => {
+const OnboardTodo = ({ title, amount, todoNumber, isTodoLocked }) => {
   const { theme } = useThemes();
-  const styles = getTodoStyles(theme);
+  const styles = getStyles(theme);
 
   return (
-    <View style={[styles.infoContainer, { height: 86 }]}>
+    <View style={styles.todoContainer}>
       <View style={styles.leftContainer}>
-        <View style={styles.upperHalfContainer}>
-          <View style={styles.numberTitleContainer}>
-            <Text style={styles.todoNumber}>{todoNumber}</Text>
-            <TextInput
-              autoCorrect={false}
-              multiline={true}
-              numberOfLines={2}
-              style={[
-                styles.todoTitle,
-                { flexGrow: 1, flexShrink: 1, lineHeight: 24 },
-              ]}
-              placeholder={"Write a screenplay"}
-              placeholderTextColor="rgba(243, 243, 243, 0.5)"
-              maxLength={40}
-              // borderWidth={1}
-              // borderColor={"black"}
-            />
-          </View>
-        </View>
+        <Text style={styles.todoNumber}>{todoNumber}</Text>
+        <TextInput
+          autoCorrect={false}
+          style={styles.titleText}
+          placeholder={"Write a screenplay"}
+          placeholderTextColor="rgba(243, 243, 243, 0.5)"
+          maxLength={40}
+          // borderWidth={1}
+          // borderColor={"black"}
+        />
       </View>
-      {/* <RenderLockStatus
-      isTodoLocked={isTodoLocked}
-      handleLockTodo={handleLockTodo}
-    /> */}
     </View>
   );
 };
 export default OnboardTodo;
+
+const getStyles = (theme) =>
+  StyleSheet.create({
+    todoContainer: {
+      height: 50,
+    },
+    leftContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 15,
+    },
+    todoNumber: {
+      color: theme.textHigh,
+      fontSize: 28,
+      fontWeight: 700,
+    },
+    titleText: {
+      color: theme.textHigh,
+      fontSize: 24,
+      fontWeight: 700,
+    },
+  });

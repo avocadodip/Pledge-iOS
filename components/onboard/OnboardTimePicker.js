@@ -8,9 +8,9 @@ import { Color } from "../../GlobalStyles";
 
 const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
- 
+
 const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
-  const { theme } = useThemes();
+  const { theme } = useThemes(); 
   const styles = getStyles(theme);
   let dayStart = "7:30";
   let dayEnd = "7:30";
@@ -66,14 +66,32 @@ const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
           style={styles.button}
           onPress={() => toggleModal("start")}
         >
-          <Text style={styles.buttonText}>{timePickerText.start}</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              timePickerText.start === "Pick time"
+                ? { opacity: 0.7 }
+                : { opacity: 1 },
+            ]}
+          >
+            {timePickerText.start}
+          </Text>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
           style={styles.button}
           onPress={() => toggleModal("end")}
         >
-          <Text style={styles.buttonText}>{timePickerText.end}</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              timePickerText.end === "Pick time"
+                ? { opacity: 0.7 }
+                : { opacity: 1 },
+            ]}
+          >
+            {timePickerText.end}
+          </Text>
         </TouchableOpacity>
       )}
 
@@ -196,7 +214,7 @@ const getStyles = (theme) =>
       justifyContent: "center",
       alignItems: "center",
       paddingVertical: 7,
-      width: 120,
+      width: 130,
     },
     buttonText: {
       color: Color.white,

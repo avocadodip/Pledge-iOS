@@ -115,7 +115,7 @@ const Today = () => {
       />
     </SafeAreaView>
   );
-};
+}; 
 
 const getStyles = (theme) =>
   StyleSheet.create({

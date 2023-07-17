@@ -219,14 +219,18 @@ const Todo = ({
         );
       }
 
-    // case "onboard":
-    //   return (
-    //     <OnboardTodo
-    //       todoNumber={todoNumber}
-    //       isTodoLocked={isTodoLocked}
-    //       handleLockTodo={handleLockTodo}
-    //     />
-    //   );
+    case "onboard":
+      return (
+        <OnboardTodo
+          todoNumber={todoNumber}
+          title={title}
+          description={description}
+          amount={amount}
+          tag={tag}
+          isTodoLocked={isLocked}
+          handleLockTodo={handleLockTodo}
+        />
+      );
     default:
       return null;
   }

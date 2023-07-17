@@ -13,6 +13,8 @@ import SetDeadline from "./SetDeadline";
 import NextButton from "./NextButton";
 import SetStartDay from "./SetStartDay";
 import { useThemes } from "../../hooks/ThemesContext";
+import Todo from "../todo/Todo";
+import TaskInput from "./TaskInput";
 
 const steps = ["Set daily deadline", "Set start day", "Lock in 3 tasks"];
 const FADE_OUT_OPACITY = -3;
@@ -32,7 +34,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   });
   const [startDay, setStartDay] = useState("");
 
-  // Allow step indicator press 
+  // Allow step indicator press
   useEffect(() => {
     if (
       timePickerText.start !== "Pick time" &&
@@ -195,7 +197,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
         />
       );
     } else {
-      PageContent = <Text>Carrot</Text>;
+      PageContent = <TaskInput />;
     }
 
     return (
@@ -207,6 +209,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
               action={onNextPress}
               text={"Next"}
               disabled={nextButtonDisabled}
+              isFinalButton={index === 2}
             />
           </View>
         </View>
