@@ -59,7 +59,6 @@ const Tomorrow = () => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      {/* ... */}
       <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Tmrw</Text>
