@@ -1,24 +1,19 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Linking,
-} from "react-native";
+import { View, Text, StyleSheet, Linking } from "react-native";
 import { Color } from "../GlobalStyles";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../database/firebase";
 import Modal from "react-native-modal";
 import TouchableRipple from "./TouchableRipple";
 import * as Notifications from "expo-notifications";
-import { EXPO_PROJECT_ID } from "../constants";
+import { EXPO_PROJECT_ID } from "@env";
 import SelectDropdown from "react-native-select-dropdown";
 // https://github.com/samad324/react-native-animated-multistep
 
 const TIME_CHOICES = ["15 min", "30 min", "1 hour", "2 hours", "3 hours"];
 
 const NotificationsModal = ({
-  currentUserID, 
+  currentUserID,
   isVisible,
   handleToggleModal,
   notifsEnabled,
@@ -132,7 +127,7 @@ const NotificationsModal = ({
             <View style={styles.modalContent}>
               <Text style={styles.modalHeader}>Daily Reminder</Text>
               <Text style={styles.modalSubheader}>
-                Get reminded when your day is about to end. 
+                Get reminded when your day is about to end.
               </Text>
               <View style={styles.sampleNotif}>
                 <View style={styles.sampleNotifAppIcon}></View>

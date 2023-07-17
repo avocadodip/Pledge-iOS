@@ -41,7 +41,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { auth } from "./database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
 import useUpdateTimezoneOnAppActive from "./hooks/useUpdateTimezoneOnAppActive";
-import { STRIPE_PUBLISHABLE_KEY } from "./constants";
+import { STRIPE_PUBLISHABLE_KEY } from "@env";
 import Transactions from "./screens/Transactions";
 import EmailVerification from "./screens/EmailVerification";
 import ForgotPassword from "./screens/ForgotPassword";
@@ -218,11 +218,11 @@ function AppContent({ isSignedIn }) {
         colors: {
           background: theme.accent,
         },
-      }); 
+      });
       setStylesState(getStyles(theme));
     }
   }, [theme]);
- 
+
   const {
     setCurrentUserID,
     settings: { isOnboarded },
@@ -237,7 +237,7 @@ function AppContent({ isSignedIn }) {
     }, 2000);
     return () => clearTimeout(timeoutId);
   }, []);
-  
+
   // useEffect(() => {
   //   setHideSplashScreen(!loading);
   // }, [loading]);
@@ -264,90 +264,90 @@ function AppContent({ isSignedIn }) {
         {hideSplashScreen ? (
           isSignedIn ? (
             // isIntroed ? (
-              <Tab.Navigator
-                screenOptions={{
-                  headerShown: false,
-                  tabBarStyle: stylesState ? stylesState.tabBar : null,
-                  tabBarShowLabel: false,
+            <Tab.Navigator
+              screenOptions={{
+                headerShown: false,
+                tabBarStyle: stylesState ? stylesState.tabBar : null,
+                tabBarShowLabel: false,
+              }}
+            >
+              <Tab.Screen
+                name="Today"
+                component={TodayStack}
+                options={{
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <TodayActiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ) : (
+                      <TodayInactiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ),
+
+                  // tabBarButton: (props) => (
+                  //   <TouchableRipple {...props}>
+                  //     {props.children}
+                  //   </TouchableRipple>
+                  // ),
                 }}
-              >
-                <Tab.Screen
-                  name="Today"
-                  component={TodayStack}
-                  options={{
-                    tabBarIcon: ({ focused }) =>
-                      focused ? (
-                        <TodayActiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ) : (
-                        <TodayInactiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ),
+              />
+              <Tab.Screen
+                name="Tomorrow"
+                component={TomorrowStack}
+                options={{
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <TomorrowActiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ) : (
+                      <TomorrowInactiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ),
 
-                    // tabBarButton: (props) => (
-                    //   <TouchableRipple {...props}>
-                    //     {props.children}
-                    //   </TouchableRipple>
-                    // ),
-                  }}
-                />
-                <Tab.Screen
-                  name="Tomorrow"
-                  component={TomorrowStack}
-                  options={{
-                    tabBarIcon: ({ focused }) =>
-                      focused ? (
-                        <TomorrowActiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ) : (
-                        <TomorrowInactiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ),
-
-                    // tabBarButton: (props) => (
-                    //   <TouchableRipple {...props}>
-                    //     {props.children}
-                    //   </TouchableRipple>
-                    // ),
-                  }}
-                />
-                <Tab.Screen
-                  name="Settings"
-                  component={SettingsStack}
-                  options={{
-                    tabBarIcon: ({ focused }) =>
-                      focused ? (
-                        <SettingsActiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ) : (
-                        <SettingsInactiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ),
-                  }}
-                />
-              </Tab.Navigator>
+                  // tabBarButton: (props) => (
+                  //   <TouchableRipple {...props}>
+                  //     {props.children}
+                  //   </TouchableRipple>
+                  // ),
+                }}
+              />
+              <Tab.Screen
+                name="Settings"
+                component={SettingsStack}
+                options={{
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <SettingsActiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ) : (
+                      <SettingsInactiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ),
+                }}
+              />
+            </Tab.Navigator>
+          ) : (
             // ) : (
             //   <IntroStack />
             // )
-          ) : (
             <AuthStack />
           )
         ) : (

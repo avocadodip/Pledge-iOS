@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Alert, SafeAreaView, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
 import React, { useState } from "react";
 import {
   EmailAuthProvider,
@@ -10,7 +17,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { API_URL } from "../constants";
+import { API_URL } from "@env";
 import { auth, db } from "../database/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import TouchableRipple from "../components/TouchableRipple";
@@ -193,7 +200,7 @@ const EmailVerification = ({ route, navigation }) => {
 
         <AuthFormButton
           action={checkEmailVerification}
-          text={"Confirm"} 
+          text={"Confirm"}
           disabledCondition={isChecking}
         />
         <View style={styles.resendContainer}>
@@ -265,7 +272,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 25,
-    gap: 8
+    gap: 8,
   },
   resendText: {
     color: Color.white,
@@ -286,7 +293,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
-
   },
   buttonText: {
     color: Color.white,
