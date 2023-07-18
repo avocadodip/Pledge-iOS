@@ -1,69 +1,64 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import Todo from "../todo/Todo";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { useThemes } from "../../hooks/ThemesContext";
+import {
+  getTmrwAbbrevDOW,
+  getTodayAbbrevDOW,
+} from "../../utils/currentDate";
 
-const TaskInput = () => {
-  const todos = [
-    {
-      id: 1,
-      title: "Learn to juggle",
-    },
-    {
-      id: 2,
-      title: "Create a silly dance",
-    },
-    {
-      id: 3,
-      title:
-        "Build a blanket fort Build a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fort",
-    },
-  ];
+const PLACEHOLDER_EXAMPLES = [
+  "Write a chapter",
+  "Do 20 minutes of yoga",
+  "Apply to scholarship",
+];
+
+const TaskInput = ({ startDay, endTime }) => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
+  const [DOWAbbrev, setDOWAbbrev] = useState("");
+  const [todos, setTodos] = useState(Array(3).fill(''));  // Initialize with empty strings
+
+  // Set DOW Abbreviation based on start day 
+  useEffect(() => {
+    if (startDay === "Today") {
+      setDOWAbbrev(getTodayAbbrevDOW());
+    } else if (startDay === "Tmrw") {
+      setDOWAbbrev(getTmrwAbbrevDOW());
+    }
+  }, [startDay]);
+
+  const handleTodoChange = (text, index) => {
+    const newTodos = [...todos];
+    newTodos[index] = text;
+    setTodos(newTodos);
+  };
 
   const renderTodos = () => {
-    // Prepare the todos array
-    const preparedTodos = Array(3).fill(null);
-    todos.forEach((todo) => {
-      preparedTodos[todo.id - 1] = todo; // assuming IDs start from 1
-    });
-
-    const result = [];
-    // Iterate over the preparedTodos array and render Todo or EmptyTodo
-    for (let i = 0; i < 3; i++) {
-      if (preparedTodos[i]) {
-        const todo = preparedTodos[i];
-        result.push(
-          <Todo
-            key={todo.id}
-            todoNumber={i + 1}
-            title={todo.title}
-            description={todo.description}
-            amount={todo.amount}
-            tag={todo.tag}
-            componentType="onboard"
-            isLocked={false}
+    return todos.map((todo, index) => (
+      <View key={index} style={styles.todoContainer}>
+        <View style={styles.leftContainer}>
+          <Text style={styles.todoNumber}>{index + 1}</Text>
+          <TextInput
+            autoCorrect={false}
+            style={styles.titleInput}
+            placeholder={PLACEHOLDER_EXAMPLES[index]}
+            placeholderTextColor="rgba(243, 243, 243, 0.5)"
+            maxLength={40}
+            onChangeText={(text) => handleTodoChange(text, index)} 
+            value={todos[index]} 
           />
-        );
-      } else {
-        result.push(
-          <Todo
-            key={i + 1}
-            todoNumber={""}
-            title={""}
-            description={""}
-            amount={""}
-            tag={""}
-            componentType="fined"
-            isLocked={null}
-          />
-        ); // keys now start from 1
-      }
-    }
-
-    return result;
+        </View>
+      </View>
+    ));
   };
+
   return (
     <View>
-      <Text>Today. Due at 9pm</Text>
+      <View style={styles.headerTitleContainer}>
+        <Text style={styles.headerTitle}>{startDay}</Text>
+        <Text style={styles.headerDayOfWeek}>{DOWAbbrev}</Text>
+      </View>
+      <Text style={styles.headerSubtitle}>Due @ {endTime}</Text>
       <View style={styles.todoContainer}>{renderTodos()}</View>
     </View>
   );
@@ -71,10 +66,55 @@ const TaskInput = () => {
 
 export default TaskInput;
 
-const styles = StyleSheet.create({
-  todoContainer: {
-    marginTop: 20,
-    gap: 22,
-    width: "100%",
-  },
-});
+
+const getStyles = (theme) =>
+  StyleSheet.create({
+    todoContainer: {
+      marginTop: 40, 
+      gap: 22,
+      width: "100%",
+    },
+    headerTitleContainer: {
+      width: "100%",
+      flexDirection: "row",
+      alignItems: "flex-end",
+      gap: 15,
+    },
+    headerTitle: {
+      color: theme.textHigh,
+      fontSize: 42,
+      fontWeight: "bold",
+    },
+    headerDayOfWeek: {
+      color: theme.textMedium,
+      fontSize: 23,
+      fontWeight: "bold",
+      paddingBottom: 6,
+    },
+    headerSubtitle: {
+      color: theme.textHigh,
+      fontSize: 25,
+      fontWeight: "bold",
+      marginTop: 5,
+    },
+
+    // todo styles
+    todoContainer: {
+      height: 50,
+    },
+    leftContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 15,
+    },
+    todoNumber: {
+      color: theme.textHigh,
+      fontSize: 28,
+      fontWeight: "600",
+    },
+    titleInput: {
+      color: theme.textHigh,
+      fontSize: 24,
+      // fontWeight:" 600",
+    },
+  });

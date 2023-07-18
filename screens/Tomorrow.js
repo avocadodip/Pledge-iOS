@@ -65,7 +65,7 @@ const Tomorrow = () => {
           <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
         </View>
 
-        {!isOnboarded && !vacationModeOn && isTmrwActiveDay && (
+        {isOnboarded && !vacationModeOn && isTmrwActiveDay && (
           <View>
             <Text style={styles.headerSubtitle}>
               {tmrwHeaderSubtitleMessage}
@@ -94,7 +94,7 @@ const Tomorrow = () => {
       </View>
 
       <View style={styles.pageContent}>
-        {isOnboarded ? (
+        {!isOnboarded ? (
           <View style={styles.startButtonContainer}>
             <TouchableOpacity
               style={styles.startButton}
@@ -157,15 +157,17 @@ const getStyles = (theme) =>
       fontWeight: "bold",
     },
     pageContent: {
-      height: "82%",
+      height: "75%",
       width: "100%",
       justifyContent: "center",
       alignItems: "center",
+
     },
     todoContainer: {
       marginTop: 20,
       gap: 18,
       width: "100%",
+
     },
 
     startButton: {},

@@ -17,7 +17,7 @@ import Todo from "../todo/Todo";
 import TaskInput from "./TaskInput";
 
 const steps = ["Set daily deadline", "Set start day", "Lock in 3 tasks"];
-const FADE_OUT_OPACITY = -3;
+const FADE_OUT_OPACITY = -7;
 
 const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const { theme } = useThemes();
@@ -197,7 +197,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
         />
       );
     } else {
-      PageContent = <TaskInput />;
+      PageContent = <TaskInput startDay={startDay} endTime={timePickerText.end}/>;
     }
 
     return (
@@ -300,7 +300,7 @@ const getStyles = (theme, modalHeight) =>
     },
     gettingStartedText: {
       fontSize: 25,
-      fontWeight: "700",
+      fontWeight: 500,
       color: "white",
       width: 120,
       marginLeft: 20,
@@ -322,17 +322,15 @@ const getStyles = (theme, modalHeight) =>
     },
     stepLabel: {
       fontSize: 17,
-      fontWeight: "500",
+      fontWeight: 500,
       color: "#ffffffbd",
       paddingLeft: 10,
-      fontWeight: "400",
     },
     stepLabelSelected: {
       fontSize: 17,
-      fontWeight: "500",
+      fontWeight: 500,
       color: "#ffffff",
       paddingLeft: 10,
-      fontWeight: "700",
     },
   });
 

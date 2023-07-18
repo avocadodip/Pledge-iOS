@@ -18,7 +18,7 @@ import {
 import { useSettings } from "../../hooks/SettingsContext";
 import NumberTodo from "./NumberTodo";
 import FinedTodo from "./FinedTodo";
-import OnboardTodo from "./OnboardTodo";
+// import OnboardTodo from "./OnboardTodo";
 import TodayTodo from "./TodayTodo";
 import TmrwTodo from "./TmrwTodo";
 
@@ -219,18 +219,18 @@ const Todo = ({
         );
       }
 
-    case "onboard":
-      return (
-        <OnboardTodo
-          todoNumber={todoNumber}
-          title={title}
-          description={description}
-          amount={amount}
-          tag={tag}
-          isTodoLocked={isLocked}
-          handleLockTodo={handleLockTodo}
-        />
-      );
+    // case "onboard":
+    //   return (
+    //     <OnboardTodo
+    //       todoNumber={todoNumber}
+    //       title={title}
+    //       description={description}
+    //       amount={amount}
+    //       tag={tag}
+    //       isTodoLocked={isLocked}
+    //       handleLockTodo={handleLockTodo}
+    //     />
+    //   );
     default:
       return null;
   }

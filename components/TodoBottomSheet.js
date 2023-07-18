@@ -227,7 +227,7 @@ const getStyles = (theme) => StyleSheet.create({
   text: {
     color: "white",
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: 500,
     lineHeight: 18,
     width: "80%",
     paddingVertical: 15,
@@ -235,7 +235,7 @@ const getStyles = (theme) => StyleSheet.create({
   textInput: {
     color: "white",
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: 500,
     lineHeight: 18,
     width: "80%",
     paddingVertical: 15,

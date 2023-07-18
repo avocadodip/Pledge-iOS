@@ -92,12 +92,12 @@ const styles = StyleSheet.create({
   weekDateRangeText: {
     fontSize: 15,
     color: "white",
-    fontWeight: "600",
+    fontWeight: 600,
   },
   totalWeeklyFineText: {
     fontSize: 15,
     color: "white",
-    fontWeight: "600",
+    fontWeight: 600,
   },
   // Collapsible content styles
   collapsibleContent: {
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   collapsibleText: {
     fontSize: 15,
     color: "white",
-    fontWeight: "400",
+    fontWeight: 400,
     opacity: 0.8,
   },
   unenteredTasksItem: {
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   dayDate: {
     fontSize: 15,
     color: "white",
-    fontWeight: "700",
+    fontWeight: 600,
     opacity: 0.8,
   },
   spaceBetween: {

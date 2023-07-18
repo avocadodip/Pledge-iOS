@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useThemes } from "../../hooks/ThemesContext";
 
 const SetStartDay = ({
@@ -10,6 +10,40 @@ const SetStartDay = ({
 }) => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
+  const [hoursLeft, setHoursLeft] = useState(0);
+
+  // Calculate time left
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const [hours, minutes, period] = timePickerText.end.split(/[:\s]/);
+      const targetHours =
+        period === "PM" && hours !== "12"
+          ? parseInt(hours) + 12
+          : parseInt(hours);
+      const targetMinutes = parseInt(minutes);
+
+      const targetTime = new Date();
+      targetTime.setHours(targetHours);
+      targetTime.setMinutes(targetMinutes);
+      targetTime.setSeconds(0);
+
+      let diffInMilliseconds = targetTime - now;
+      if (diffInMilliseconds < 0) {
+        // If the target time has already passed today, add 24 hours to the difference
+        diffInMilliseconds += 24 * 60 * 60 * 1000;
+      }
+
+      const diffInHours = diffInMilliseconds / 1000 / 60 / 60;
+
+      setHoursLeft(Math.floor(diffInHours)); // Round down to nearest hour
+    };
+
+    calculateTimeLeft();
+    const intervalId = setInterval(calculateTimeLeft, 60000); // Update every minute
+
+    return () => clearInterval(intervalId); // Clean up on unmount
+  }, [timePickerText]);
 
   return (
     <View style={styles.container}>
@@ -18,7 +52,7 @@ const SetStartDay = ({
       </Text>
 
       {/* Today Button */}
-      {isTodayOption && (
+      {isTodayOption && hoursLeft !== 0 && (
         <TouchableOpacity
           style={[styles.button, startDay === "Today" && styles.buttonSelected]}
           onPress={() => setStartDay("Today")}
@@ -46,7 +80,8 @@ const SetStartDay = ({
                 startDay === "Today" && styles.buttonDescTextSelected,
               ]}
             >
-              {timePickerText.end}
+              {timePickerText.end} ({hoursLeft}{" "}
+              {hoursLeft === 1 ? "hour" : "hours"} left)
             </Text>
           </View>
         </TouchableOpacity>
@@ -54,16 +89,13 @@ const SetStartDay = ({
 
       {/* Tomorrow Button */}
       <TouchableOpacity
-        style={[
-          styles.button,
-          startDay === "Tomorrow" && styles.buttonSelected,
-        ]}
-        onPress={() => setStartDay("Tomorrow")}
+        style={[styles.button, startDay === "Tmrw" && styles.buttonSelected]}
+        onPress={() => setStartDay("Tmrw")}
       >
         <Text
           style={[
             styles.buttonTitleText,
-            startDay === "Tomorrow" && styles.buttonTitleTextSelected,
+            startDay === "Tmrw" && styles.buttonTitleTextSelected,
           ]}
         >
           Tomorrow
@@ -72,7 +104,7 @@ const SetStartDay = ({
           <Text
             style={[
               styles.buttonDescText,
-              startDay === "Tomorrow" && styles.buttonDescTextSelected,
+              startDay === "Tmrw" && styles.buttonDescTextSelected,
             ]}
           >
             Tasks must be completed by{" "}
@@ -80,7 +112,7 @@ const SetStartDay = ({
           <Text
             style={[
               styles.buttonDescBoldText,
-              startDay === "Tomorrow" && styles.buttonDescTextSelected,
+              startDay === "Tmrw" && styles.buttonDescTextSelected,
             ]}
           >
             {timePickerText.end}, July 24
@@ -157,5 +189,14 @@ const getStyles = (theme) =>
       paddingHorizontal: 20,
       justifyContent: "center",
       alignItems: "center",
+    },
+
+    buttonRemainingTimeText: {
+      color: "#ffffffb1",
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    buttonRemainingTimeTextSelected: {
+      color: theme.authButtonText,
     },
   });

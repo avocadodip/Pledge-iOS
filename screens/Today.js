@@ -68,7 +68,7 @@ const Today = () => {
       return renderTodo(todo, index, timeStatus);
     });
   }, [todayTodos, timeStatus]);
-
+ 
   return (
     <SafeAreaView style={styles.pageContainer}>
       {/* <OnboardingPopup
@@ -89,7 +89,7 @@ const Today = () => {
       </View>
 
       <View style={styles.pageContent}>
-        {isOnboarded ? (
+        {!isOnboarded ? (
           <View style={styles.startButtonContainer}>
             <TouchableOpacity
               style={styles.startButton}
@@ -153,7 +153,7 @@ const getStyles = (theme) =>
       marginTop: 5,
     }, 
     pageContent: {
-      height: "82%",
+      height: "75%",
       width: "100%",
       justifyContent: "center",
       alignItems: "center",
@@ -163,7 +163,6 @@ const getStyles = (theme) =>
       gap: 22,
       width: "100%",
     },
-
     startButton: {
       
     },

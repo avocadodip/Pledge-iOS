@@ -1,12 +1,8 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
-  Text,
   View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
 } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -29,8 +25,6 @@ import { BOTTOM_TAB_HEIGHT, Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 import { ThemesProvider, useThemes } from "./hooks/ThemesContext";
-// import { MenuProvider } from "react-native-popup-menu";
-// import { IconRegistry, ApplicationProvider } from "@ui-kitten/components";
 import TodayActiveIcon from "./assets/icons/fire-active-icon.svg";
 import TodayInactiveIcon from "./assets/icons/fire-inactive-icon.svg";
 import TomorrowActiveIcon from "./assets/icons/add-active-icon.svg";
@@ -216,7 +210,8 @@ function AppContent({ isSignedIn }) {
     if (theme) {
       setThemePalette({
         colors: {
-          background: theme.accent,
+          background: theme.accent
+
         },
       });
       setStylesState(getStyles(theme));

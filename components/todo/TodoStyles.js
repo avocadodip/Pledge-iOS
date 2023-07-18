@@ -94,7 +94,7 @@ export const getTodoStyles = (theme) =>
       color: "white",
       font: 12,
       lineHeight: 12,
-      fontWeight: "500",
+      fontWeight: 500,
     },
     titleContainer: {
       height: 66,

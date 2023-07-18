@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   nextButtonTitle: {
-    fontWeight: 'bold',
+    fontWeight: 500,
     fontSize: 20,
     lineHeight: 20,
     color: '#DD4F4F',
