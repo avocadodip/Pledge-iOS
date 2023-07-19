@@ -235,7 +235,6 @@ const getStyles = (theme) => StyleSheet.create({
   textInput: {
     color: "white",
     fontSize: 16,
-    fontWeight: 500,
     lineHeight: 18,
     width: "80%",
     paddingVertical: 15,

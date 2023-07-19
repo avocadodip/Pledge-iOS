@@ -21,7 +21,7 @@ import FinedTodo from "./FinedTodo";
 // import OnboardTodo from "./OnboardTodo";
 import TodayTodo from "./TodayTodo";
 import TmrwTodo from "./TmrwTodo";
-import { updateTodoList } from "../../utils/firebaseUtils";
+import { addTodoItem, updateTodoList } from "../../utils/firebaseUtils";
 
 const Todo = ({
   todoNumber,
@@ -97,7 +97,7 @@ const Todo = ({
     };
 
     // Adds doc to 'todos' containing new task info for tomorrow
-    updateTodoList(currentUserID, newTodo, getTmrwDate());
+    addTodoItem(currentUserID, newTodo, getTmrwDate());
 
     // Update icon
     setUpdatedIsLocked(true);

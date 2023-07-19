@@ -69,7 +69,7 @@ const Tomorrow = () => {
           <View>
             <Text style={styles.headerSubtitle}>
               {tmrwHeaderSubtitleMessage}
-            </Text>
+            </Text> 
             {
               // Show a different time picker message if day has ended and no tasks inputted
               // Instead of tasks will open from...to..., day will start at...to...

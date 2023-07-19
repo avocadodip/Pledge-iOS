@@ -13,11 +13,12 @@ import SetDeadline from "./SetDeadline";
 import NextButton from "./NextButton";
 import SetStartDay from "./SetStartDay";
 import { useThemes } from "../../hooks/ThemesContext";
-import Todo from "../todo/Todo";
 import TaskInput from "./TaskInput";
 import { useSettings } from "../../hooks/SettingsContext";
-import { updateTodoList } from "../../utils/firebaseUtils";
-import { getTmrwDate, getTodayDate } from "../../utils/currentDate";
+import {
+  updateTodoListOnboarding,
+  updateUserIsOnboarded,
+} from "../../utils/firebaseUtils";
 
 const steps = ["Set daily deadline", "Set start day", "Lock in 3 tasks"];
 const FADE_OUT_OPACITY = -7;
@@ -38,9 +39,9 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const { currentUserID } = useSettings();
   const [startDay, setStartDay] = useState("");
   const [todos, setTodos] = useState([
-    { title: "", amount: "" },
-    { title: "", amount: "" },
-    { title: "", amount: "" },
+    { todoNumber: 1, title: "", amount: "", isComplete: false },
+    { todoNumber: 2, title: "", amount: "", isComplete: false },
+    { todoNumber: 3, title: "", amount: "", isComplete: false },
   ]);
 
   // Allow step indicator press
@@ -150,11 +151,23 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const onNextPress = () => {
     // Save todos if last page
     if (currentPage === 2) {
-      if (startDay === "Today") {
-        updateTodoList(currentUserID, todos, getTodayDate());
-      } else if (startDay === "Tmrw") {
-        updateTodoList(currentUserID, todos, getTmrwDate());
-      }
+      // Get rid of AM/PM at end of string
+      let dayStart = timePickerText.start.replace(/(AM|PM)/g, "").trim();
+      let dayEnd = timePickerText.end.replace(/(AM|PM)/g, "").trim();
+
+      // Update todos collection
+      updateTodoListOnboarding(
+        currentUserID,
+        todos,
+        startDay,
+        dayStart,
+        dayEnd
+      );
+
+      // Update firebase isOnboarded field to true
+      updateUserIsOnboarded(currentUserID);
+      // Close modal
+      setModalVisible(false);
     }
     if (currentPage < steps.length - 1) {
       flatListRef.current.scrollToIndex({

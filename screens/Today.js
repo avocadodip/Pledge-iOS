@@ -25,7 +25,7 @@ const renderTodo = (
   { title, description, amount, tag, isComplete },
   index,
   timeStatus
-) => (
+) => ( 
   <Todo
     key={index + 1}
     todoNumber={index + 1}

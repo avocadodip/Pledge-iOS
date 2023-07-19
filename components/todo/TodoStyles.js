@@ -52,7 +52,7 @@ export const getTodoStyles = (theme) =>
       overflow: "hidden",
     },
 
-    // Left styles
+    // Left styles (scroll down more for right styles)
     leftContainer: {
       backgroundColor: "rgba(255, 255, 255, 0.1)",
       height: "100%",
@@ -67,6 +67,7 @@ export const getTodoStyles = (theme) =>
       // borderWidth: 1,
       // borderColor: "white",
     },
+
     tagTitleContainer: {
       display: "flex",
       flexDirection: "column",
@@ -90,9 +91,9 @@ export const getTodoStyles = (theme) =>
       // borderWidth: 1,
       // borderColor: "white",
     },
-    tagText: {
+    tagText: { 
       color: "white",
-      font: 12,
+      fontSize: 12,
       lineHeight: 12,
       fontWeight: 500,
     },
