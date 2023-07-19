@@ -27,8 +27,8 @@ const SetDeadline = ({ timePickerText, setTimePickerText }) => {
         </View>
         <View style={styles.explainer}>
           <Text style={styles.explainerText}>
-            This is when you can start working on today's tasks and begin entering
-            tomorrow's tasks.
+            This is when the app allows you to begin checking off tasks and entering in
+            next day's tasks.
           </Text>
         </View>
       </View>
@@ -48,11 +48,11 @@ const SetDeadline = ({ timePickerText, setTimePickerText }) => {
         </View>
         <View>
           <Text style={styles.explainerText}>
-            This is your deadline for checking off today's tasks and entering
-            tomorrow's tasks.
+            This is your deadline for checking off tasks and locking
+            in next day's tasks.
           </Text>
           <Text style={[styles.explainerText, {marginTop: 15}]}>
-            After this time, you will be fined $1 for each unentered task.
+            After this time, the app will total up incomplete pledges and fines for unentered tasks. (Charges occur on Saturdays at 11:45 PM)
           </Text>
         </View>
       </View>

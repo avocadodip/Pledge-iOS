@@ -21,11 +21,12 @@ import FinedTodo from "./FinedTodo";
 // import OnboardTodo from "./OnboardTodo";
 import TodayTodo from "./TodayTodo";
 import TmrwTodo from "./TmrwTodo";
+import { updateTodoList } from "../../utils/firebaseUtils";
 
 const Todo = ({
   todoNumber,
   title,
-  description,
+  description, 
   amount,
   tag,
   isLocked,
@@ -95,34 +96,8 @@ const Todo = ({
       todoNumber: todoNumber,
     };
 
-    // Adds doc to 'todos' containing new task info
-    const todosRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
-
-    runTransaction(db, async (transaction) => {
-      const todoDoc = await transaction.get(todosRef);
-
-      if (!todoDoc.exists()) {
-        // If the document does not exist, create it
-        transaction.set(todosRef, {
-          todos: [newTodo],
-          totalTodos: 1,
-          totalFine: 0,
-        });
-      } else {
-        // If the document exists, update it
-        transaction.update(todosRef, {
-          todos: arrayUnion(newTodo),
-          totalTodos: increment(1),
-          totalFine: 0,
-        });
-      }
-    })
-      .then(() => {
-        console.log("Todo added successfully");
-      })
-      .catch((error) => {
-        console.error("Error adding Todo: ", error);
-      });
+    // Adds doc to 'todos' containing new task info for tomorrow
+    updateTodoList(currentUserID, newTodo, getTmrwDate());
 
     // Update icon
     setUpdatedIsLocked(true);

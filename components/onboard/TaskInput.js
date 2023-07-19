@@ -1,10 +1,7 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useThemes } from "../../hooks/ThemesContext";
-import {
-  getTmrwAbbrevDOW,
-  getTodayAbbrevDOW,
-} from "../../utils/currentDate";
+import { getTmrwAbbrevDOW, getTodayAbbrevDOW } from "../../utils/currentDate";
 
 const PLACEHOLDER_EXAMPLES = [
   "Write a chapter",
@@ -12,13 +9,12 @@ const PLACEHOLDER_EXAMPLES = [
   "Apply to scholarship",
 ];
 
-const TaskInput = ({ startDay, endTime }) => {
+const TaskInput = ({ startDay, endTime, todos, setTodos }) => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const [DOWAbbrev, setDOWAbbrev] = useState("");
-  const [todos, setTodos] = useState(Array(3).fill(''));  // Initialize with empty strings
 
-  // Set DOW Abbreviation based on start day 
+  // Set DOW Abbreviation based on start day
   useEffect(() => {
     if (startDay === "Today") {
       setDOWAbbrev(getTodayAbbrevDOW());
@@ -27,9 +23,9 @@ const TaskInput = ({ startDay, endTime }) => {
     }
   }, [startDay]);
 
-  const handleTodoChange = (text, index) => {
+  const handleTodoChange = (text, index, type) => {
     const newTodos = [...todos];
-    newTodos[index] = text;
+    newTodos[index][type] = text;
     setTodos(newTodos);
   };
 
@@ -44,8 +40,17 @@ const TaskInput = ({ startDay, endTime }) => {
             placeholder={PLACEHOLDER_EXAMPLES[index]}
             placeholderTextColor="rgba(243, 243, 243, 0.5)"
             maxLength={40}
-            onChangeText={(text) => handleTodoChange(text, index)} 
-            value={todos[index]} 
+            onChangeText={(text) => handleTodoChange(text, index, "title")}
+            value={todos[index].title}
+          />
+          <TextInput
+            autoCorrect={false}
+            style={styles.amountInput} // Create a new style for this
+            placeholder="Amount"
+            placeholderTextColor="rgba(243, 243, 243, 0.5)"
+            maxLength={40}
+            onChangeText={(text) => handleTodoChange(text, index, "amount")}
+            value={todos[index].amount}
           />
         </View>
       </View>
@@ -66,11 +71,10 @@ const TaskInput = ({ startDay, endTime }) => {
 
 export default TaskInput;
 
-
 const getStyles = (theme) =>
   StyleSheet.create({
     todoContainer: {
-      marginTop: 40, 
+      marginTop: 40,
       gap: 22,
       width: "100%",
     },

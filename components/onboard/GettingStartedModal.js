@@ -15,6 +15,9 @@ import SetStartDay from "./SetStartDay";
 import { useThemes } from "../../hooks/ThemesContext";
 import Todo from "../todo/Todo";
 import TaskInput from "./TaskInput";
+import { useSettings } from "../../hooks/SettingsContext";
+import { updateTodoList } from "../../utils/firebaseUtils";
+import { getTmrwDate, getTodayDate } from "../../utils/currentDate";
 
 const steps = ["Set daily deadline", "Set start day", "Lock in 3 tasks"];
 const FADE_OUT_OPACITY = -7;
@@ -32,7 +35,13 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
     start: "Pick time",
     end: "Pick time",
   });
+  const { currentUserID } = useSettings();
   const [startDay, setStartDay] = useState("");
+  const [todos, setTodos] = useState([
+    { title: "", amount: "" },
+    { title: "", amount: "" },
+    { title: "", amount: "" },
+  ]);
 
   // Allow step indicator press
   useEffect(() => {
@@ -139,6 +148,14 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
 
   // Next button press
   const onNextPress = () => {
+    // Save todos if last page
+    if (currentPage === 2) {
+      if (startDay === "Today") {
+        updateTodoList(currentUserID, todos, getTodayDate());
+      } else if (startDay === "Tmrw") {
+        updateTodoList(currentUserID, todos, getTmrwDate());
+      }
+    }
     if (currentPage < steps.length - 1) {
       flatListRef.current.scrollToIndex({
         animated: true,
@@ -197,7 +214,16 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
         />
       );
     } else {
-      PageContent = <TaskInput startDay={startDay} endTime={timePickerText.end}/>;
+      // Disable lock button if any fields unentered
+      nextButtonDisabled = todos.some((todo) => !todo.title || !todo.amount);
+      PageContent = (
+        <TaskInput
+          startDay={startDay}
+          endTime={timePickerText.end}
+          todos={todos}
+          setTodos={setTodos}
+        />
+      );
     }
 
     return (
