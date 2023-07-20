@@ -128,6 +128,7 @@ const getStyles = (theme) =>
       marginTop: 5,
       width: "100%",
       flexDirection: "col",
+      height: 110,
     },
     headerTitleContainer: {
       width: "100%",
@@ -160,7 +161,7 @@ const getStyles = (theme) =>
     },
     todoContainer: {
       marginTop: 20,
-      gap: 22,
+      gap: 18,
       width: "100%",
     },
     headerSubtitleContainer: {

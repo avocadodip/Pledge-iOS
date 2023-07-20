@@ -26,7 +26,7 @@ export const getTodoStyles = (theme) =>
       justifyContent: "center",
       alignItems: "center",
       gap: 20,
-      borderRadius: 16,
+      borderRadius: BORDER_RADIUS,
       backgroundColor: "rgba(255, 255, 255, 0.2)",
       padding: 15,
       overflow: "hidden",
