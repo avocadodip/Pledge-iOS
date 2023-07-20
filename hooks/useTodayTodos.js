@@ -13,6 +13,7 @@ export const useTodayTodos = (dayChanged) => {
   const [dayEnd, setDayEnd] = useState("");
   const [isTodayActiveDay, setIsTodayActiveDay] = useState(true);
   const [isTodayVacation, setIsTodayVacation] = useState(false);
+  const [onboardStartTmrw, setOnboardStartTmrw] = useState(false); // Lets Today page know to show "all set" message if user elects to start Tmrw in onboarding
   const [isTodoArrayEmpty, setIsTodoArrayEmpty] = useState(true);
 
   // In your useEffect call
@@ -42,13 +43,14 @@ export const useTodayTodos = (dayChanged) => {
     // The onSnapshot function triggers every time the data changes, including when it's initially loaded.
     const unsubscribe = onSnapshot(todoRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-        const { opensAt, closesAt, isActive, isVacation, todos } =
+        const { opensAt, closesAt, isActive, isVacation, todos, onboardStartTmrw } =
           docSnapshot.data();
 
         setIsTodayActiveDay(isActive);
         setIsTodayVacation(isVacation);
         setDayStart(opensAt);
         setDayEnd(closesAt);
+        setOnboardStartTmrw(onboardStartTmrw);
 
         if (todos) {
           for (let i = 0; i < todos.length; i++) {
@@ -97,5 +99,6 @@ export const useTodayTodos = (dayChanged) => {
     isTodayActiveDay,
     isTodayVacation,
     isTodoArrayEmpty,
+    onboardStartTmrw,
   };
 };

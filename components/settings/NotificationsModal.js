@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Linking } from "react-native";
-import { Color } from "../GlobalStyles";
+import { Color } from "../../GlobalStyles";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../database/firebase";
+import { db } from "../../database/firebase";
 import Modal from "react-native-modal";
-import TouchableRipple from "./TouchableRipple";
+import TouchableRipple from "../TouchableRipple";
 import * as Notifications from "expo-notifications";
 import { EXPO_PROJECT_ID } from "@env";
 import SelectDropdown from "react-native-select-dropdown";

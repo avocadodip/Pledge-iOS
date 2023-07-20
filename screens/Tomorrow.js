@@ -7,14 +7,13 @@ import { useSettings } from "../hooks/SettingsContext";
 import OnboardingPopup from "../components/OnboardingPopup";
 import { useDayStatus } from "../hooks/useDayStatus";
 import { useTmrwTodos } from "../hooks/useTmrwTodos";
-import VacationMessage from "../components/VacationMessage";
-import RestDayMessage from "../components/RestDayMessage";
 import TmrwTimePicker from "../components/TmrwTimePicker";
 import { useTodayTodos } from "../hooks/useTodayTodos";
 import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
- 
+import TodayTmrwMessage from "../components/TodayTmrwMessage";
+
 const renderTodo = (
   { title, description, amount, tag, isLocked },
   index,
@@ -69,7 +68,7 @@ const Tomorrow = () => {
           <View>
             <Text style={styles.headerSubtitle}>
               {tmrwHeaderSubtitleMessage}
-            </Text> 
+            </Text>
             {
               // Show a different time picker message if day has ended and no tasks inputted
               // Instead of tasks will open from...to..., day will start at...to...
@@ -95,20 +94,14 @@ const Tomorrow = () => {
 
       <View style={styles.pageContent}>
         {!isOnboarded ? (
-          <View style={styles.startButtonContainer}>
-            <TouchableOpacity
-              style={styles.startButton}
-              onPress={() => setModalVisible(true)}
-            >
-              <Text style={styles.startButtonText}>
-                Start your first day of tasks
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <TodayTmrwMessage
+            type={"new user"}
+            setModalVisible={setModalVisible}
+          />
         ) : vacationModeOn ? (
-          <VacationMessage />
+          <TodayTmrwMessage type={"vacation"} />
         ) : !isTmrwActiveDay ? (
-          <RestDayMessage />
+          <TodayTmrwMessage type={"rest day"} />
         ) : (
           <View style={styles.todoContainer}>{renderTodos()}</View>
         )}
@@ -157,17 +150,15 @@ const getStyles = (theme) =>
       fontWeight: "bold",
     },
     pageContent: {
-      height: "75%",
+      height: "72%",
       width: "100%",
       justifyContent: "center",
       alignItems: "center",
-
     },
     todoContainer: {
       marginTop: 20,
       gap: 18,
       width: "100%",
-
     },
 
     startButton: {},

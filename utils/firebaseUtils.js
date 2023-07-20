@@ -48,6 +48,7 @@ export const updateTodoListOnboarding = async (
   dayEnd
 ) => {
   if (startDay === "Today") {
+    // Today doc (tmrw doc set by cloud function at end of day)
     await addTodoArray(
       currentUserID,
       todos,
@@ -60,6 +61,7 @@ export const updateTodoListOnboarding = async (
   }
 
   if (startDay === "Tmrw") {
+    // Today doc
     await addTodoArray(
       currentUserID,
       [],
@@ -67,8 +69,10 @@ export const updateTodoListOnboarding = async (
       getTodayDate(),
       dayStart,
       dayEnd,
-      false
+      false,
+      true
     );
+    // Tmrw doc
     await addTodoArray(
       currentUserID,
       todos,
@@ -76,7 +80,8 @@ export const updateTodoListOnboarding = async (
       getTmrwDate(),
       dayStart,
       dayEnd,
-      true
+      true,
+      false
     );
   }
 };
@@ -90,6 +95,7 @@ const addTodoArray = async (
   dayStart,
   dayEnd,
   isActive,
+  onboardStartTmrw // only if user chooses tmrw in onboarding
 ) => {
   const todosRef = doc(db, "users", currentUserID, "todos", date);
 
@@ -98,7 +104,7 @@ const addTodoArray = async (
 
     if (!todoDoc.exists()) {
       // If the document does not exist, create it
-      transaction.set(todosRef, {
+      const newTodo = {
         todos,
         totalTodos: totalTodos,
         totalFine: 0,
@@ -106,7 +112,14 @@ const addTodoArray = async (
         closesAt: dayEnd,
         isActive: isActive,
         isVacation: false,
-      });
+      };
+
+      // Lets Today page know to show "all set" message if user elects to start Tmrw in onboarding
+      if (onboardStartTmrw) {
+        newTodo.onboardStartTmrw = true;
+      }
+
+      transaction.set(todosRef, newTodo);
     }
   })
     .then(() => {

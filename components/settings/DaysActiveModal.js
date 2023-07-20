@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
-import { Color } from "../GlobalStyles";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../database/firebase";
 import Modal from "react-native-modal";
 import Checkbox from "expo-checkbox";
-import TouchableRipple from "./TouchableRipple";
+import { Color } from "../../GlobalStyles";
+import TouchableRipple from "../TouchableRipple";
+import { db } from "../../database/firebase";
 
 const DaysActiveModal = ({
   currentUserID,

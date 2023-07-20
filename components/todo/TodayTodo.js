@@ -34,7 +34,6 @@ const TodayTodo = ({
   const leftFlex = useSharedValue(8);
   const rightFlex = useSharedValue(2);
 
-
   // State to show or hide task info
   const [shouldRenderTaskInfo, setShouldRenderTaskInfo] = useState(
     !isTodoComplete
@@ -66,9 +65,6 @@ const TodayTodo = ({
   const rightStyle = useAnimatedStyle(() => ({
     flex: withTiming(rightFlex.value, { duration: OPEN_DURATION }),
   }));
-
-  timeStatus = 2;
-
 
   // Before day, show disabled today todos with moon icon
   if (timeStatus === 0) {
@@ -116,45 +112,30 @@ const TodayTodo = ({
         <Animated.View style={leftStyle}>
           <TouchableRipple
             onPress={handleOpenBottomSheet}
-            style={styles.leftContainer}
+            style={[styles.leftContainer, { padding: 0 }]}
           >
             {shouldRenderTaskInfo && (
-              <>
-                <View style={[styles.upperHalfContainer, { margin: 15 }]}>
-                  <View style={styles.numberTitleContainer}>
-                    <Text style={styles.todoNumber}>{todoNumber}</Text>
-                    <Text style={styles.todoTitle}>{title}</Text>
-                  </View>
-                </View>
-                <View style={[styles.lowerHalfContainer, { margin: 15 }]}>
-                  <View style={styles.tagDescriptionContainer}>
-                    {tag && (
-                      <View style={styles.tagContainer}>
-                        <View style={styles.tagBackground}>
-                          <Text style={styles.todoTag}>{tag}</Text>
-                        </View>
-                      </View>
-                    )}
-                    {description && (
-                      <View style={styles.descriptionContainer}>
-                        <DescriptLinesIcon />
-                        <Text
-                          style={styles.todoDescription}
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          {description}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                  {amount && (
-                    <View style={styles.amountContainer}>
-                      <Text style={styles.todoAmount}>${amount}</Text>
+              <View style={{ width: "100%", padding: 16 }}>
+                <View style={styles.tagTitleContainer}>
+                  {tag && (
+                    <View style={styles.tagContainer}>
+                      <Text style={styles.tagText}>{tag}</Text>
                     </View>
                   )}
+                  <View style={styles.titleContainer}>
+                    <Text style={styles.titleText}>{title}</Text>
+                  </View>
                 </View>
-              </>
+                {amount && (
+                  <View
+                    style={[
+                      styles.amountContainer,
+                    ]}
+                  >
+                    <Text style={styles.amountText}>${amount}</Text>
+                  </View>
+                )}
+              </View>
             )}
           </TouchableRipple>
         </Animated.View>

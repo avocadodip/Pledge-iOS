@@ -72,6 +72,7 @@ export const Border = {
 export const BOTTOM_TAB_HEIGHT = 90;
 export const SETTINGS_HORIZONTAL_PADDING = 20;
 
+
 export const settingsPageStyles = {
   pageContainer: {
     display: "flex",

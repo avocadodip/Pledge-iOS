@@ -1,31 +1,23 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useState } from "react";
 import Todo from "../components/todo/Todo";
-import OnboardingPopup from "../components/OnboardingPopup";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useDayStatus } from "../hooks/useDayStatus";
 import { useTodayTodos } from "../hooks/useTodayTodos";
-import VacationMessage from "../components/VacationMessage";
-import RestDayMessage from "../components/RestDayMessage";
 import Loading from "../components/Loading";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
 import { Modal } from "react-native";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
+import TodayTmrwMessage from "../components/TodayTmrwMessage";
 
 const renderTodo = (
   { title, description, amount, tag, isComplete },
   index,
   timeStatus
-) => ( 
+) => (
   <Todo
     key={index + 1}
     todoNumber={index + 1}
@@ -55,6 +47,7 @@ const Today = () => {
     isTodayActiveDay,
     isTodayVacation,
     isTodoArrayEmpty,
+    onboardStartTmrw,
   } = useTodayTodos(dayChanged);
   const { todayHeaderSubtitleMessage, timeStatus } = useDayStatus(
     dayStart,
@@ -68,7 +61,7 @@ const Today = () => {
       return renderTodo(todo, index, timeStatus);
     });
   }, [todayTodos, timeStatus]);
- 
+
   return (
     <SafeAreaView style={styles.pageContainer}>
       {/* <OnboardingPopup
@@ -90,20 +83,18 @@ const Today = () => {
 
       <View style={styles.pageContent}>
         {!isOnboarded ? (
-          <View style={styles.startButtonContainer}>
-            <TouchableOpacity
-              style={styles.startButton}
-              onPress={() => {setModalVisible(true); console.log("pressed")}}
-            >
-              <Text style={styles.startButtonText}>
-                Start your first day of tasks
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <TodayTmrwMessage
+            type={"new user"}
+            setModalVisible={setModalVisible}
+          />
+        ) : onboardStartTmrw ? (
+          <TodayTmrwMessage
+            type={"all set"}
+          />
         ) : isTodayVacation ? (
-          <VacationMessage />
+          <TodayTmrwMessage type={"vacation"} />
         ) : !isTodayActiveDay ? (
-          <RestDayMessage />
+          <TodayTmrwMessage type={"rest day"} />
         ) : (
           <View style={styles.todoContainer}>{renderTodos()}</View>
         )}
@@ -115,7 +106,7 @@ const Today = () => {
       />
     </SafeAreaView>
   );
-}; 
+};
 
 const getStyles = (theme) =>
   StyleSheet.create({
@@ -151,7 +142,7 @@ const getStyles = (theme) =>
       fontSize: 25,
       fontWeight: "bold",
       marginTop: 5,
-    }, 
+    },
     pageContent: {
       height: "75%",
       width: "100%",
@@ -162,14 +153,6 @@ const getStyles = (theme) =>
       marginTop: 20,
       gap: 22,
       width: "100%",
-    },
-    startButton: {
-      
-    },
-    startButtonText: {
-      color: "white",
-      fontWeight: 500,
-      fontSize: 20,
     },
   });
 

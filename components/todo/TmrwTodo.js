@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import { getTodoStyles } from "./TodoStyles";
+import { getTodoStyles, variableFontSize } from "./TodoStyles";
 import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
 import RenderTmrwLock from "./RenderTmrwLock.js";
 import { default as TouchableNipple } from "../TouchableRipple";
@@ -21,12 +21,13 @@ const TmrwTodo = ({
   const styles = getTodoStyles(theme);
 
   return (
-    <View
-      style={styles.infoContainer}
-    >
+    <View style={styles.infoContainer}>
       <TouchableNipple
         onPress={handleOpenBottomSheet}
-        style={[styles.leftContainer, timeStatus === 2 && styles.disabledOpacity]}
+        style={[
+          styles.leftContainer,
+          timeStatus === 2 && styles.disabledOpacity,
+        ]}
       >
         <View style={styles.tagTitleContainer}>
           {tag && (
@@ -35,7 +36,14 @@ const TmrwTodo = ({
             </View>
           )}
           <View style={styles.titleContainer}>
-            <Text style={styles.titleText}>{title}</Text>
+            <Text
+              style={[
+                styles.titleText,
+                { fontSize: variableFontSize(title) },
+              ]}
+            >
+              {title}
+            </Text>
           </View>
         </View>
         {amount && (

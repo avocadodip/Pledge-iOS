@@ -1,7 +1,21 @@
 import { StyleSheet } from "react-native";
 
-const TODO_HEIGHT = 166;
+const TODO_HEIGHT = "31%";
 const BORDER_RADIUS = 24;
+
+export const variableFontSize = (text) => {
+  let length = text.length;
+
+  if (length < 10) {
+    return 35; // Large font size
+  } else if (length < 15) {
+    return 32; // Medium font size
+  } else if (length < 20) {
+    return 27; // Medium font size
+  } else {
+    return 20; // Small font size
+  }
+};
 
 export const getTodoStyles = (theme) =>
   StyleSheet.create({
@@ -46,10 +60,12 @@ export const getTodoStyles = (theme) =>
     },
     infoContainer: {
       flexDirection: "row",
-      width: 352,
-      height: 166,
+      width: "100%",
+      height: TODO_HEIGHT,
       borderRadius: BORDER_RADIUS,
       overflow: "hidden",
+      // borderWidth: 1,
+      // borderColor: "black",
     },
 
     // Left styles (scroll down more for right styles)
@@ -91,7 +107,7 @@ export const getTodoStyles = (theme) =>
       // borderWidth: 1,
       // borderColor: "white",
     },
-    tagText: { 
+    tagText: {
       color: "white",
       fontSize: 12,
       lineHeight: 12,
@@ -115,9 +131,7 @@ export const getTodoStyles = (theme) =>
       backgroundColor:
         "linear-gradient(0deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)), rgba(255, 255, 255, 0.07)",
       borderRadius: 8,
-      paddingHorizontal: 15,
-      // paddingVertical: 10.5,
-      maxWidth: 80,
+      width: 80,
       height: 35,
       // borderWidth: 1,
       // borderColor: "white",

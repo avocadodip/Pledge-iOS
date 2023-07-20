@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { auth } from "../database/firebase";
-import TouchableRipple from "./TouchableRipple";
-import LogoutIcon from "../assets/icons/logout.svg";
-import { Color } from "../GlobalStyles";
+import { auth } from "../../database/firebase";
+import TouchableRipple from "../TouchableRipple";
+import LogoutIcon from "../../assets/icons/logout.svg";
+import { Color } from "../../GlobalStyles";
 
 const LogoutButton = () => {
   const handleLogout = async () => {
