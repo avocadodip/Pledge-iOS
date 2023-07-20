@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Color } from "../GlobalStyles";
+import { Color } from "../../GlobalStyles";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../database/firebase";
+import { db } from "../../database/firebase";
 import ToggleSwitch from "toggle-switch-react-native";
-import { useThemes } from "../hooks/ThemesContext";
+import { useThemes } from "../../hooks/ThemesContext";
 
 const VacationToggle = ({ currentUserID, vacationModeOn }) => {
   const { theme } = useThemes();
@@ -36,19 +36,20 @@ const VacationToggle = ({ currentUserID, vacationModeOn }) => {
   );
 };
 
-const getStyles = (theme) => StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-  },
-  label: {
-    width: 30,
-    marginRight: 15,
-    fontSize: 15, // should match style of theme toggle text
-    color: theme.textMedium,
-    opacity: 0.8, // should match style of theme toggle text
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      justifyContent: "flex-start",
+      alignItems: "center",
+    },
+    label: {
+      width: 30,
+      marginRight: 15,
+      fontSize: 15, // should match style of theme toggle text
+      color: theme.textMedium,
+      opacity: 0.8, // should match style of theme toggle text
+    },
+  });
 
 export default VacationToggle;

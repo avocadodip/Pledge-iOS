@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import OneDayStats from './OneDayStats';
-import { Color } from "../GlobalStyles";
 
 const StatsBundle = ({ even, month, day }) => {
     return (

@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
-import OnboardingPopup from "../components/OnboardingPopup";
 import { useDayStatus } from "../hooks/useDayStatus";
 import { useTmrwTodos } from "../hooks/useTmrwTodos";
 import TmrwTimePicker from "../components/TmrwTimePicker";

@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import Collapsible from "react-native-collapsible";
-import TouchableRipple from "./TouchableRipple";
-import { Color } from "../GlobalStyles";
+import TouchableRipple from "../TouchableRipple";
+import { Color } from "../../GlobalStyles";
 
 const WeekBundle = ({
   weekDateRange,
@@ -13,9 +13,7 @@ const WeekBundle = ({
   noInputFine,
   finedTasks,
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState( 
-    isFirstSection ? false : true
-  );
+  const [isCollapsed, setIsCollapsed] = useState(isFirstSection ? false : true);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);

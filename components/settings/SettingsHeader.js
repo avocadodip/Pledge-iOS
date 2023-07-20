@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
-import { Color, SETTINGS_HORIZONTAL_PADDING } from "../GlobalStyles";
-import LeftChevronIcon from "../assets/icons/chevron-left.svg";
-import TouchableRipple from "./TouchableRipple";
-
+import { Color, SETTINGS_HORIZONTAL_PADDING } from "../../GlobalStyles";
+import LeftChevronIcon from "../../assets/icons/chevron-left.svg";
+import TouchableRipple from "../TouchableRipple";
+ 
 const SettingsHeader = ({ navigation, header, altScreen }) => {
   const handlePress = () => {
     const screenName = altScreen || "SettingsScreen";
@@ -12,10 +12,7 @@ const SettingsHeader = ({ navigation, header, altScreen }) => {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.buttonWrapper}>
-        <TouchableRipple
-          style={styles.backButton}
-          onPress={handlePress}
-        >
+        <TouchableRipple style={styles.backButton} onPress={handlePress}>
           <LeftChevronIcon width={24} height={24} color={Color.white} />
         </TouchableRipple>
       </View>

@@ -4,14 +4,12 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MenuProvider } from "react-native-popup-menu";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { useFonts } from "expo-font";
 import Today from "./screens/Today";
-import Onboard1 from "./screens/Onboard1";
-import Onboard2 from "./screens/Onboard2";
 import Tomorrow from "./screens/Tomorrow";
 import Settings from "./screens/Settings";
 import Signup from "./screens/Signup";
@@ -20,7 +18,6 @@ import Splash from "./screens/Splash";
 import Account from "./screens/Account";
 import PastBets from "./screens/PastBets";
 import TodoBottomSheet from "./components/TodoBottomSheet";
-import OnboardingPopup from "./components/OnboardingPopup";
 import { BOTTOM_TAB_HEIGHT, Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";

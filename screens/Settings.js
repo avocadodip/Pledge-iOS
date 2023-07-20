@@ -9,16 +9,15 @@ import SunThemeIcon from "../assets/icons/sun-theme-icon.svg";
 import GlobeIcon from "../assets/icons/globe-icon.svg";
 import PlaneIcon from "../assets/icons/vacation-plane-icon.svg";
 import DaysActiveIcon from "../assets/icons/days-active-icon.svg";
-import OnboardingPopup from "../components/OnboardingPopup";
 import TouchableRipple from "../components/TouchableRipple";
 import React, { useEffect, useState, useRef } from "react";
 import { auth, db } from "../database/firebase";
-import ThemeToggle from "../components/ThemeToggle";
+import ThemeToggle from "../components/settings/ThemeToggle";
 import DaysActiveModal from "../components/settings/DaysActiveModal";
 import NotificationsModal from "../components/settings/NotificationsModal";
 import { useSettings } from "../hooks/SettingsContext";
 import { useThemes } from "../hooks/ThemesContext";
-import VacationToggle from "../components/VacationToggle";
+import VacationToggle from "../components/settings/VacationToggle";
 import {
   fetchPaymentMethods,
   initializePaymentSheet,

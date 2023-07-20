@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { Color } from "../GlobalStyles";
-import XMarkIcon from "../assets/icons/x-mark.svg";
-import CheckIcon from "../assets/icons/check.svg";
-import ClockIcon from "../assets/icons/clock.svg";
+import { Color } from "../../GlobalStyles";
+import XMarkIcon from "../../assets/icons/x-mark.svg";
+import CheckIcon from "../../assets/icons/check.svg";
+import ClockIcon from "../../assets/icons/clock.svg";
 
 const OneDayStats = ({ taskStatus, taskName, taskFine }) => {
   let taskColor;

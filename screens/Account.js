@@ -7,10 +7,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import OnboardingPopup from "../components/OnboardingPopup";
 import { useSettings } from "../hooks/SettingsContext";
 import DeleteAccountButton from "../components/settings/DeleteAccountButton";
-import SettingsHeader from "../components/SettingsHeader";
+import SettingsHeader from "../components/settings/SettingsHeader";
 import LogoutButton from "../components/settings/LogoutButton";
 import AuthFormButton from "../components/auth/AuthFormButton";
 
