@@ -33,12 +33,13 @@ const renderTodo = (
 );
 
 const Today = () => {
+
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { todayTodos } = useBottomSheet();
   const { dayChanged } = useDayChange();
   const {
-    settings: { isOnboarded },
+    settings: { isOnboarded, timezone },
   } = useSettings();
   const {
     todayDOWAbbrev,
@@ -55,11 +56,15 @@ const Today = () => {
   );
   const [modalVisible, setModalVisible] = useState(false);
 
+  console.log("1");
+  console.log(timezone); 
+
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
   const renderTodos = useCallback(() => {
     return todayTodos.map((todo, index) => {
       return renderTodo(todo, index, timeStatus);
     });
+    
   }, [todayTodos, timeStatus]);
 
   return (
@@ -75,10 +80,14 @@ const Today = () => {
         </View>
 
         {!isTodayVacation && isTodayActiveDay && !isTodoArrayEmpty && (
+          <View style={styles.headerSubtitleContainer}>
           <Text style={styles.headerSubtitle}>
             {todayHeaderSubtitleMessage}
-          </Text>
-        )}
+          </Text> 
+          <Text style={styles.timeZone}>{timezone}</Text>
+          </View>
+        )
+        }
       </View>
 
       <View style={styles.pageContent}>
@@ -124,7 +133,7 @@ const getStyles = (theme) =>
       width: "100%",
       flexDirection: "row",
       alignItems: "flex-end",
-      gap: 15,
+      gap: 10,
     },
     headerTitle: {
       color: theme.textHigh,
@@ -132,7 +141,7 @@ const getStyles = (theme) =>
       fontWeight: "bold",
     },
     headerDayOfWeek: {
-      color: theme.textMedium,
+      color: theme.textLow,
       fontSize: 23,
       fontWeight: "bold",
       paddingBottom: 6,
@@ -154,6 +163,16 @@ const getStyles = (theme) =>
       gap: 22,
       width: "100%",
     },
+    headerSubtitleContainer: {
+      display: "flex",
+      flexDirection: "row",
+      gap: 4,
+    },
+    timeZone: {
+      color: theme.textHigh,
+      fontWeight: "bold",
+      paddingTop: 7,
+    }
   });
 
 export default Today;
