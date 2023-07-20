@@ -4,9 +4,12 @@ import { db } from "../../database/firebase";
 import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Color } from "../../GlobalStyles";
+import { useThemes } from "../../hooks/ThemesContext";
 
 const DeleteAccountButton = ({ currentUserID }) => {
   const auth = getAuth();
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
 
   const handleDelete = async () => {
     Alert.alert(
@@ -72,7 +75,7 @@ const DeleteAccountButton = ({ currentUserID }) => {
         styles.button,
         {
           backgroundColor: "transparent",
-          borderWidth: 2,
+          borderBottomWidth: 2,
           borderColor: "rgba(255, 255, 255, 0.7)",
         },
       ]}
@@ -87,21 +90,23 @@ const DeleteAccountButton = ({ currentUserID }) => {
 
 export default DeleteAccountButton;
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Color.white,
+    backgroundColor: theme.textMedium,
     gap: 15,
-    height: 48,
-    borderRadius: 17,
-    width: "100%",
+    height: 25,
     overflow: "hidden",
+    margin: 8,
+    marginTop: 16,
+    width: 100,
   },
   buttonText: {
-    color: Color.fervo_red,
-    fontSize: 16,
-    fontWeight: 600,
+    color: theme.textMedium,
+    opacity: 0.8,
+    fontSize: 14,
+    textAlign: "left",
   },
 });

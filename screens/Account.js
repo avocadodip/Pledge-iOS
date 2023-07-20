@@ -13,6 +13,8 @@ import SettingsHeader from "../components/settings/SettingsHeader";
 import LogoutButton from "../components/settings/LogoutButton";
 import AuthFormButton from "../components/auth/AuthFormButton";
 
+import TouchableRipple from "../components/TouchableRipple";
+
 const Account = ({ navigation }) => {
   const { currentUserID, currentUserEmail } = useSettings();
 
