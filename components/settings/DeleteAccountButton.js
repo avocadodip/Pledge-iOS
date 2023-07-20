@@ -1,10 +1,9 @@
 import { getAuth, deleteUser, signOut } from "firebase/auth";
 import { doc, deleteDoc } from "firebase/firestore";
-import { db } from "../database/firebase";
+import { db } from "../../database/firebase";
 import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import { Color } from "../GlobalStyles";
-import { reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
+import { Color } from "../../GlobalStyles";
 
 const DeleteAccountButton = ({ currentUserID }) => {
   const auth = getAuth();

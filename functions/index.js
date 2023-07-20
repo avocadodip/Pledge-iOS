@@ -1,10 +1,4 @@
 /* eslint-disable max-len */
-// firebase emulators:start (root dir)
-// firebase deploy --only functions (root dir; run with deploying to prod)
-// KILL LOCAL PORT: lsof -i :5001    kill -9 <PID>
-// LOCAL LINK: http://localhost:5001/fervo-1/us-central1/runDailyUpdate
-// FORMATTER: npx eslint --fix index.js
-
 require("dotenv").config();
 
 const {onRequest} = require("firebase-functions/v2/https");

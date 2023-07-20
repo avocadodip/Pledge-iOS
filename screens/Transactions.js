@@ -12,11 +12,11 @@ import {
   SETTINGS_HORIZONTAL_PADDING,
   settingsPageStyles,
 } from "../GlobalStyles";
-import SettingsHeader from "../components/SettingsHeader";
+import SettingsHeader from "../components/settings/SettingsHeader";
 import { db } from "../database/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useSettings } from "../hooks/SettingsContext";
-import WeekBundle from "../components/WeekBundle";
+import WeekBundle from "../components/stats/WeekBundle";
 import { useThemes } from "../hooks/ThemesContext";
 
 const formatWeekID = (weekID) => {
@@ -192,24 +192,24 @@ const Transactions = ({ navigation }) => {
 export default Transactions;
 
 const getStyles = (theme) =>
- StyleSheet.create({
-  pageContainer: {
-    display: "flex",
-    marginBottom: BOTTOM_TAB_HEIGHT + 90,
-  },
-  sectionList: {
-    width: "100%",
-    height: "100%",
-  },
-  bundleContainer: {
-    marginBottom: 10,
-  },
-  descriptorText: {
-    width: "100%",
-    color: theme.textMedium,
-    fontSize: 14,
-    textAlign: "left",
-    marginLeft: 16,
-    marginBottom: 8,
-  },
-});
+  StyleSheet.create({
+    pageContainer: {
+      display: "flex",
+      marginBottom: BOTTOM_TAB_HEIGHT + 90,
+    },
+    sectionList: {
+      width: "100%",
+      height: "100%",
+    },
+    bundleContainer: {
+      marginBottom: 10,
+    },
+    descriptorText: {
+      width: "100%",
+      color: theme.textMedium,
+      fontSize: 14,
+      textAlign: "left",
+      marginLeft: 16,
+      marginBottom: 8,
+    },
+  });

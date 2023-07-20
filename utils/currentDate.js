@@ -10,7 +10,7 @@
 // Array of week days
 export const daysOfWeek = [
   "Sunday",
-  "Monday",
+  "Monday", 
   "Tuesday",
   "Wednesday",
   "Thursday",

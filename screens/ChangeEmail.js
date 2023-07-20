@@ -11,7 +11,7 @@ import { Color } from "../GlobalStyles";
 import AuthFormInput from "../components/auth/AuthFormInput";
 import AuthFormButton from "../components/auth/AuthFormButton";
 import { useSettings } from "../hooks/SettingsContext";
-import SettingsHeader from "../components/SettingsHeader";
+import SettingsHeader from "../components/settings/SettingsHeader";
 import { doc, updateDoc } from "firebase/firestore";
 
 const ChangeEmail = () => {

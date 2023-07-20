@@ -1,20 +1,19 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import ThreeDotsIcon from "../assets/icons/three-dots.svg";
+import ThreeDotsIcon from "../../assets/icons/three-dots.svg";
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
 } from "react-native-popup-menu";
-import { Color } from "../GlobalStyles";
-import { useThemes } from "../hooks/ThemesContext";
+import { useThemes } from "../../hooks/ThemesContext";
 
 const ThemeToggle = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { currentThemeName, saveTheme } = useThemes();
- 
+
   return (
     <View style={styles.rightSettingsButton}>
       <Text style={styles.currentThemeText}>{currentThemeName}</Text>

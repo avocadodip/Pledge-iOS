@@ -4,8 +4,6 @@ import React from "react";
 import { Color } from "../GlobalStyles";
 import Todo from "../components/todo/Todo";
 // import TimeButton from "../components/TimeButton";
-import NextButton from "../components/NextButton";
-import OnboardingPopup from "../components/OnboardingPopup";
 
 const Today = () => {
   return (
@@ -21,7 +19,6 @@ const Today = () => {
         <Text style={styles.preferenceTitle}> Day End </Text>
         {/* <TimeButton defaultTime="11:00 PM" /> */}
       </View>
-      <NextButton title="Ready to go!" />
       </View>
     </SafeAreaView>
   );

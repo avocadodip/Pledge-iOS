@@ -21,11 +21,11 @@ const RenderTmrwLock = ({ isLocked, handleLockTodo, timeStatus }) => {
         }}
       >
         <View style={timeStatus === 2 ? styles.disabledOpacity : null}>
-          <LockIcon />
+          <LockIcon color={"white"}/>
         </View>
       </View>
     );
-    // Unlock icon: Todo is NOT locked
+    // Unlock icon: Todo is NOT locked [should not show on time status == 2; instead show NumberTodo]
   } else {
     return (
       <TouchableRipple style={styles.rightContainer} onPress={handleLockTodo}>

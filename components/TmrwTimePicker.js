@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   headerButtonText: {
     color: Color.white,
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: 500,
   },
 
   // Modal and modal content styles

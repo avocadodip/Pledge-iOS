@@ -1,7 +1,7 @@
 import { getIdToken } from "firebase/auth";
 import { auth } from "../database/firebase";
 import { initPaymentSheet } from "@stripe/stripe-react-native";
-import { API_URL, MERCHANT_DISPLAY_NAME } from "../constants";
+import { API_URL, MERCHANT_DISPLAY_NAME } from "@env";
 import { Color } from "../GlobalStyles";
 
 // Initiailize payment sheet

@@ -71,61 +71,27 @@ const TodayTodo = ({
     return (
       <View style={[styles.infoContainer]}>
         {/* Left side */}
-        <Animated.View style={leftStyle}>
+        <Animated.View style={[leftStyle]}>
           <TouchableRipple
             onPress={handleOpenBottomSheet}
-            style={animatedStyles.leftButtonContainer}
+            // style={animatedStyles.leftButtonContainer}
+            style={[styles.leftContainer, styles.disabledOpacity]}
           >
-            {/* {shouldRenderTaskInfo && (
-              <>
-                <View
-                  style={[
-                    styles.upperHalfContainer,
-                    styles.disabledOpacity,
-                    { margin: 15 },
-                  ]}
-                >
-                  <View style={styles.numberTitleContainer}>
-                    <Text style={styles.todoNumber}>{todoNumber}</Text>
-                    <Text style={styles.todoTitle}>{title}</Text>
-                  </View>
+            <View style={styles.tagTitleContainer}>
+              {tag && (
+                <View style={styles.tagContainer}>
+                  <Text style={styles.tagText}>{tag}</Text>
                 </View>
-                <View
-                  style={[
-                    styles.lowerHalfContainer,
-                    styles.disabledOpacity,
-                    { margin: 15 },
-                  ]}
-                >
-                  <View style={styles.tagDescriptionContainer}>
-                    {tag && (
-                      <View style={styles.tagContainer}>
-                        <View style={styles.tagBackground}>
-                          <Text style={styles.todoTag}>{tag}</Text>
-                        </View>
-                      </View>
-                    )}
-                    {description && (
-                      <View style={styles.descriptionContainer}>
-                        <DescriptLinesIcon />
-                        <Text
-                          style={styles.todoDescription}
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          {description}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                  {amount && (
-                    <View style={styles.amountContainer}>
-                      <Text style={styles.todoAmount}>${amount}</Text>
-                    </View>
-                  )}
-                </View>
-              </>
-            )} */}
+              )}
+              <View style={styles.titleContainer}>
+                <Text style={styles.titleText}>{title}</Text>
+              </View>
+            </View>
+            {amount && (
+              <View style={styles.amountContainer}>
+                <Text style={styles.amountText}>${amount}</Text>
+              </View>
+            )}
           </TouchableRipple>
         </Animated.View>
         {/* Right side */}
@@ -146,45 +112,30 @@ const TodayTodo = ({
         <Animated.View style={leftStyle}>
           <TouchableRipple
             onPress={handleOpenBottomSheet}
-            style={[animatedStyles.leftButtonContainer]}
+            style={[styles.leftContainer, { padding: 0 }]}
           >
             {shouldRenderTaskInfo && (
-              <>
-                <View style={[styles.upperHalfContainer, { margin: 15 }]}>
-                  <View style={styles.numberTitleContainer}>
-                    <Text style={styles.todoNumber}>{todoNumber}</Text>
-                    <Text style={styles.todoTitle}>{title}</Text>
-                  </View>
-                </View>
-                <View style={[styles.lowerHalfContainer, { margin: 15 }]}>
-                  <View style={styles.tagDescriptionContainer}>
-                    {tag && (
-                      <View style={styles.tagContainer}>
-                        <View style={styles.tagBackground}>
-                          <Text style={styles.todoTag}>{tag}</Text>
-                        </View>
-                      </View>
-                    )}
-                    {description && (
-                      <View style={styles.descriptionContainer}>
-                        <DescriptLinesIcon />
-                        <Text
-                          style={styles.todoDescription}
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          {description}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                  {amount && (
-                    <View style={styles.amountContainer}>
-                      <Text style={styles.todoAmount}>${amount}</Text>
+              <View style={{ width: "100%", padding: 16 }}>
+                <View style={styles.tagTitleContainer}>
+                  {tag && (
+                    <View style={styles.tagContainer}>
+                      <Text style={styles.tagText}>{tag}</Text>
                     </View>
                   )}
+                  <View style={styles.titleContainer}>
+                    <Text style={styles.titleText}>{title}</Text>
+                  </View>
                 </View>
-              </>
+                {amount && (
+                  <View
+                    style={[
+                      styles.amountContainer,
+                    ]}
+                  >
+                    <Text style={styles.amountText}>${amount}</Text>
+                  </View>
+                )}
+              </View>
             )}
           </TouchableRipple>
         </Animated.View>
@@ -219,57 +170,22 @@ const TodayTodo = ({
             <Animated.View style={leftStyle}>
               <TouchableRipple
                 onPress={handleOpenBottomSheet}
-                style={animatedStyles.leftButtonContainer}
+                style={[styles.leftContainer, styles.disabledOpacity]}
               >
-                {shouldRenderTaskInfo && (
-                  <>
-                    <View
-                      style={[
-                        styles.upperHalfContainer,
-                        styles.disabledOpacity,
-                        { margin: 15 },
-                      ]}
-                    >
-                      <View style={styles.numberTitleContainer}>
-                        <Text style={styles.todoNumber}>{todoNumber}</Text>
-                        <Text style={styles.todoTitle}>{title}</Text>
-                      </View>
+                <View style={styles.tagTitleContainer}>
+                  {tag && (
+                    <View style={styles.tagContainer}>
+                      <Text style={styles.tagText}>{tag}</Text>
                     </View>
-                    <View
-                      style={[
-                        styles.lowerHalfContainer,
-                        styles.disabledOpacity,
-                        { margin: 15 },
-                      ]}
-                    >
-                      <View style={styles.tagDescriptionContainer}>
-                        {tag && (
-                          <View style={styles.tagContainer}>
-                            <View style={styles.tagBackground}>
-                              <Text style={styles.todoTag}>{tag}</Text>
-                            </View>
-                          </View>
-                        )}
-                        {description && (
-                          <View style={styles.descriptionContainer}>
-                            <DescriptLinesIcon />
-                            <Text
-                              style={styles.todoDescription}
-                              numberOfLines={1}
-                              ellipsizeMode="tail"
-                            >
-                              {description}
-                            </Text>
-                          </View>
-                        )}
-                      </View>
-                      {amount && (
-                        <View style={styles.amountContainer}>
-                          <Text style={styles.todoAmount}>${amount}</Text>
-                        </View>
-                      )}
-                    </View>
-                  </>
+                  )}
+                  <View style={styles.titleContainer}>
+                    <Text style={styles.titleText}>{title}</Text>
+                  </View>
+                </View>
+                {amount && (
+                  <View style={styles.amountContainer}>
+                    <Text style={styles.amountText}>${amount}</Text>
+                  </View>
                 )}
               </TouchableRipple>
             </Animated.View>

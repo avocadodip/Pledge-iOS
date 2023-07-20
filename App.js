@@ -1,21 +1,15 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
-  Text,
   View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
 } from "react-native";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MenuProvider } from "react-native-popup-menu";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { useFonts } from "expo-font";
 import Today from "./screens/Today";
-import Onboard1 from "./screens/Onboard1";
-import Onboard2 from "./screens/Onboard2";
 import Tomorrow from "./screens/Tomorrow";
 import Settings from "./screens/Settings";
 import Signup from "./screens/Signup";
@@ -24,13 +18,10 @@ import Splash from "./screens/Splash";
 import Account from "./screens/Account";
 import PastBets from "./screens/PastBets";
 import TodoBottomSheet from "./components/TodoBottomSheet";
-import OnboardingPopup from "./components/OnboardingPopup";
 import { BOTTOM_TAB_HEIGHT, Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 import { ThemesProvider, useThemes } from "./hooks/ThemesContext";
-// import { MenuProvider } from "react-native-popup-menu";
-// import { IconRegistry, ApplicationProvider } from "@ui-kitten/components";
 import TodayActiveIcon from "./assets/icons/fire-active-icon.svg";
 import TodayInactiveIcon from "./assets/icons/fire-inactive-icon.svg";
 import TomorrowActiveIcon from "./assets/icons/add-active-icon.svg";
@@ -40,14 +31,12 @@ import SettingsInactiveIcon from "./assets/icons/settings-inactive-icon.svg";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { auth } from "./database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
-import TouchableRipple from "./components/TouchableRipple";
 import useUpdateTimezoneOnAppActive from "./hooks/useUpdateTimezoneOnAppActive";
-import { STRIPE_PUBLISHABLE_KEY } from "./constants";
+import { STRIPE_PUBLISHABLE_KEY } from "@env";
 import Transactions from "./screens/Transactions";
 import EmailVerification from "./screens/EmailVerification";
 import ForgotPassword from "./screens/ForgotPassword";
 import ChangeEmail from "./screens/ChangeEmail";
-import Onboard from "./screens/Onboard";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -77,15 +66,15 @@ const AuthStack = () => (
   </Stack.Navigator>
 );
 
-const OnboardStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen
-      name="OnboardScreen"
-      component={Onboard}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
-);
+// const IntroStack = () => (
+//   <Stack.Navigator screenOptions={{ headerShown: false }}>
+//     <Stack.Screen
+//       name="IntroScreen"
+//       component={Intro}
+//       options={{ headerShown: false }}
+//     />
+//   </Stack.Navigator>
+// );
 
 const TodayStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -218,13 +207,14 @@ function AppContent({ isSignedIn }) {
     if (theme) {
       setThemePalette({
         colors: {
-          background: theme.accent,
+          background: theme.accent
+
         },
-      }); 
+      });
       setStylesState(getStyles(theme));
     }
   }, [theme]);
- 
+
   const {
     setCurrentUserID,
     settings: { isOnboarded },
@@ -239,7 +229,7 @@ function AppContent({ isSignedIn }) {
     }, 2000);
     return () => clearTimeout(timeoutId);
   }, []);
-  
+
   // useEffect(() => {
   //   setHideSplashScreen(!loading);
   // }, [loading]);
@@ -265,91 +255,91 @@ function AppContent({ isSignedIn }) {
       <NavigationContainer theme={themePalette}>
         {hideSplashScreen ? (
           isSignedIn ? (
-            isOnboarded ? (
-              <Tab.Navigator
-                screenOptions={{
-                  headerShown: false,
-                  tabBarStyle: stylesState ? stylesState.tabBar : null,
-                  tabBarShowLabel: false,
+            // isIntroed ? (
+            <Tab.Navigator
+              screenOptions={{
+                headerShown: false,
+                tabBarStyle: stylesState ? stylesState.tabBar : null,
+                tabBarShowLabel: false,
+              }}
+            >
+              <Tab.Screen
+                name="Today"
+                component={TodayStack}
+                options={{
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <TodayActiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ) : (
+                      <TodayInactiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ),
+
+                  // tabBarButton: (props) => (
+                  //   <TouchableRipple {...props}>
+                  //     {props.children}
+                  //   </TouchableRipple>
+                  // ),
                 }}
-              >
-                <Tab.Screen
-                  name="Today"
-                  component={TodayStack}
-                  options={{
-                    tabBarIcon: ({ focused }) =>
-                      focused ? (
-                        <TodayActiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ) : (
-                        <TodayInactiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ),
+              />
+              <Tab.Screen
+                name="Tomorrow"
+                component={TomorrowStack}
+                options={{
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <TomorrowActiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ) : (
+                      <TomorrowInactiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ),
 
-                    // tabBarButton: (props) => (
-                    //   <TouchableRipple {...props}>
-                    //     {props.children}
-                    //   </TouchableRipple>
-                    // ),
-                  }}
-                />
-                <Tab.Screen
-                  name="Tomorrow"
-                  component={TomorrowStack}
-                  options={{
-                    tabBarIcon: ({ focused }) =>
-                      focused ? (
-                        <TomorrowActiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ) : (
-                        <TomorrowInactiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ),
-
-                    // tabBarButton: (props) => (
-                    //   <TouchableRipple {...props}>
-                    //     {props.children}
-                    //   </TouchableRipple>
-                    // ),
-                  }}
-                />
-                <Tab.Screen
-                  name="Settings"
-                  component={SettingsStack}
-                  options={{
-                    tabBarIcon: ({ focused }) =>
-                      focused ? (
-                        <SettingsActiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ) : (
-                        <SettingsInactiveIcon
-                          width={40}
-                          height={40}
-                          color={theme.textHigh}
-                        />
-                      ),
-                  }}
-                />
-              </Tab.Navigator>
-            ) : (
-              <OnboardStack />
-            )
+                  // tabBarButton: (props) => (
+                  //   <TouchableRipple {...props}>
+                  //     {props.children}
+                  //   </TouchableRipple>
+                  // ),
+                }}
+              />
+              <Tab.Screen
+                name="Settings"
+                component={SettingsStack}
+                options={{
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <SettingsActiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ) : (
+                      <SettingsInactiveIcon
+                        width={40}
+                        height={40}
+                        color={theme.textHigh}
+                      />
+                    ),
+                }}
+              />
+            </Tab.Navigator>
           ) : (
+            // ) : (
+            //   <IntroStack />
+            // )
             <AuthStack />
           )
         ) : (

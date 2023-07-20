@@ -7,19 +7,15 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import OnboardingPopup from "../components/OnboardingPopup";
 import { useSettings } from "../hooks/SettingsContext";
-import DeleteAccountButton from "../components/DeleteAccountButton";
-import SettingsHeader from "../components/SettingsHeader";
-import LogoutButton from "../components/LogoutButton";
+import DeleteAccountButton from "../components/settings/DeleteAccountButton";
+import SettingsHeader from "../components/settings/SettingsHeader";
+import LogoutButton from "../components/settings/LogoutButton";
 import AuthFormButton from "../components/auth/AuthFormButton";
 
 const Account = ({ navigation }) => {
-  const {
-    currentUserID,
-    currentUserEmail,
-  } = useSettings();
- 
+  const { currentUserID, currentUserEmail } = useSettings();
+
   return (
     <SafeAreaView style={settingsPageStyles.pageContainer}>
       {/* <OnboardingPopup
@@ -30,7 +26,6 @@ const Account = ({ navigation }) => {
       <SettingsHeader navigation={navigation} header={"Account"} />
       <View style={styles.preferenceContainer}>
         <Text style={styles.emailText}>{currentUserEmail}</Text>
-
       </View>
 
       <TouchableOpacity onPress={() => navigation.navigate("ChangeEmail")}>
@@ -50,7 +45,7 @@ const styles = StyleSheet.create({
     marginHorizontal: SETTINGS_HORIZONTAL_PADDING,
   },
   emailText: {
-    color: "white"
+    color: "white",
   },
 
   signInText: {

@@ -25,6 +25,10 @@ export default {
     authButtonBg: "white",
     authButtonBorder: "#dd4f4f45",
     authButtonText: Color.fervo_red,
+
+    // GetStartedModal step indicator
+    stepStrokeFinishedColor: "#f56565",
+    stepIndicatorUnFinishedColor: "#f97676",
   },
   Dark: {
     accent: Color.black,
@@ -52,6 +56,10 @@ export default {
     authButtonBg: "#eaeaea",
     authButtonBorder: "#ffffff88",
     authButtonText: "#3c3c3c",
+
+    // GetStartedModal step indicator
+    stepStrokeFinishedColor: "#7c7c7c",
+    stepIndicatorUnFinishedColor: "#acacac",
   },
   Light: {
     accent: Color.white,
@@ -78,5 +86,9 @@ export default {
     authButtonBg: "white",
     authButtonBorder: "#dd4f4f00",
     authButtonText: Color.fervo_red,
+
+    // GetStartedModal step indicator
+    stepStrokeUnFinishedColor: "#f56565",
+    stepIndicatorUnFinishedColor: "#f97676",
   },
 };

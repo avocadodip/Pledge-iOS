@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import Collapsible from "react-native-collapsible";
-import TouchableRipple from "./TouchableRipple";
-import { Color } from "../GlobalStyles";
+import TouchableRipple from "../TouchableRipple";
+import { Color } from "../../GlobalStyles";
 
 const WeekBundle = ({
   weekDateRange,
@@ -13,9 +13,7 @@ const WeekBundle = ({
   noInputFine,
   finedTasks,
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState( 
-    isFirstSection ? false : true
-  );
+  const [isCollapsed, setIsCollapsed] = useState(isFirstSection ? false : true);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -92,12 +90,12 @@ const styles = StyleSheet.create({
   weekDateRangeText: {
     fontSize: 15,
     color: "white",
-    fontWeight: "600",
+    fontWeight: 600,
   },
   totalWeeklyFineText: {
     fontSize: 15,
     color: "white",
-    fontWeight: "600",
+    fontWeight: 600,
   },
   // Collapsible content styles
   collapsibleContent: {
@@ -107,7 +105,7 @@ const styles = StyleSheet.create({
   collapsibleText: {
     fontSize: 15,
     color: "white",
-    fontWeight: "400",
+    fontWeight: 400,
     opacity: 0.8,
   },
   unenteredTasksItem: {
@@ -122,7 +120,7 @@ const styles = StyleSheet.create({
   dayDate: {
     fontSize: 15,
     color: "white",
-    fontWeight: "700",
+    fontWeight: 600,
     opacity: 0.8,
   },
   spaceBetween: {
