@@ -1,20 +1,33 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useColorScheme } from 'react-native';
-import themeStyles from '../themes';
+import { useColorScheme } from "react-native";
+import themeStyles from "../themes";
 
 export const ThemeContext = createContext();
 
 export const ThemesProvider = ({ children }) => {
   const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme
- 
+  const [backgroundColor, setBackgroundColor] = useState("");
+
+  const updateBackgroundColor = (timeStatus, allItemsComplete) => {
+    if (currentThemeName === "Classic") {
+      if (timeStatus === 0 || timeStatus === 2) {
+        setBackgroundColor("#6E48D9");
+      } else if (timeStatus === 1 && !allItemsComplete) {
+        setBackgroundColor("#DD4F4F");
+      } else if (timeStatus === 1 && allItemsComplete) {
+        setBackgroundColor("#2FAC52");
+      }
+    }
+  };
+
   // Fetch theme from storage
   const fetchTheme = async () => {
     const storedTheme = await AsyncStorage.getItem("storedTheme");
     setCurrentThemeName(storedTheme);
   };
- 
+
   // Save theme to storage
   const saveTheme = async (themeType) => {
     await AsyncStorage.setItem("storedTheme", themeType);
@@ -28,21 +41,26 @@ export const ThemesProvider = ({ children }) => {
 
   // If current theme is "Auto", select light or dark based on system theme
   let currentTheme;
-  if (currentThemeName === 'Auto') {
-    currentTheme = systemTheme === 'Dark' ? themeStyles.Dark : themeStyles.Light;
+  if (currentThemeName === "Auto") {
+    currentTheme =
+      systemTheme === "Dark" ? themeStyles.Dark : themeStyles.Light;
   } else {
     currentTheme = themeStyles[currentThemeName];
   }
 
-  currentTheme = currentTheme || themeStyles.Light; 
+  currentTheme = currentTheme || themeStyles.Light;
 
   // Prepare the theme data to be provided
-  const themeData = { currentThemeName, saveTheme, theme: currentTheme };
+  const themeData = {
+    currentThemeName,
+    saveTheme,
+    theme: currentTheme,
+    backgroundColor,
+    updateBackgroundColor,
+  };
 
   return (
-    <ThemeContext.Provider value={themeData}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={themeData}>{children}</ThemeContext.Provider>
   );
 };
 
