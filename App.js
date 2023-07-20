@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  View,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MenuProvider } from "react-native-popup-menu";
@@ -183,12 +180,15 @@ export default function App() {
 }
 
 function AppContent({ isSignedIn }) {
-  const { theme } = useThemes();
+  const { theme, currentThemeName, backgroundColor } = useThemes();
+  console.log(currentThemeName);
+  console.log(backgroundColor);
 
-  const getStyles = (theme) =>
+  const getStyles = (theme, backgroundColor) =>
     StyleSheet.create({
       tabBar: {
-        backgroundColor: theme.accent,
+        backgroundColor:
+          currentThemeName === "Classic" ? backgroundColor : theme.accent,
         borderTopWidth: 0,
         position: "absolute",
         left: 0,
@@ -198,22 +198,25 @@ function AppContent({ isSignedIn }) {
         marginBottom: 7,
       },
     });
+
   const styles = getStyles(theme);
 
   const [themePalette, setThemePalette] = useState();
   const [stylesState, setStylesState] = useState();
 
+  // Background color of app
   useEffect(() => {
     if (theme) {
       setThemePalette({
         colors: {
-          background: theme.accent
-
+          // background: theme.accent
+          background:
+            currentThemeName === "Classic" ? backgroundColor : theme.accent,
         },
       });
-      setStylesState(getStyles(theme));
+      setStylesState(getStyles(theme, backgroundColor));
     }
-  }, [theme]);
+  }, [theme, backgroundColor]);
 
   const {
     setCurrentUserID,
