@@ -19,6 +19,7 @@ export default {
     // Text
     textHigh: "rgba(255, 255, 255, 1)",
     textMedium: "rgba(255, 255, 255, 0.8)",
+    textLow: "rgba(255, 255, 255, 0.7)",
     textDisabled: "rgba(255, 255, 255, 0.6)",
 
     // Auth button

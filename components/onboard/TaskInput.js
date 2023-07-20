@@ -51,6 +51,8 @@ const TaskInput = ({ startDay, endTime, todos, setTodos }) => {
             maxLength={40}
             onChangeText={(text) => handleTodoChange(text, index, "amount")}
             value={todos[index].amount}
+            color={"white"}
+            
           />
         </View>
       </View>
