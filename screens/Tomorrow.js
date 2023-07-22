@@ -37,10 +37,8 @@ const Tomorrow = () => {
   const { tmrwTodos } = useBottomSheet();
   const {
     settings: { timezone, vacationModeOn, daysActive, isOnboarded },
-    currentUserID,
   } = useSettings();
   const { dayChanged } = useDayChange();
-  const { dayStart, dayEnd } = useTodayTodos(dayChanged);
   const { tmrwHeaderSubtitleMessage, timeStatus } = useDayStatus();
 
   const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty } =
@@ -60,7 +58,7 @@ const Tomorrow = () => {
           <Text style={styles.headerTitle}>Tmrw</Text>
           <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
         </View>
-
+ 
         {isOnboarded && !vacationModeOn && isTmrwActiveDay && (
           <View>
             <View style={styles.headerSubtitleContainer}>
@@ -73,19 +71,9 @@ const Tomorrow = () => {
               // Show a different time picker message if day has ended and no tasks inputted
               // Instead of tasks will open from...to..., day will start at...to...
               timeStatus == 2 && isTodoArrayEmpty ? (
-                <TmrwTimePicker
-                  currentUserID={currentUserID}
-                  dayStart={dayStart}
-                  dayEnd={dayEnd}
-                  altMessage={true}
-                />
+                <TmrwTimePicker altMessage={true} />
               ) : (
-                <TmrwTimePicker
-                  currentUserID={currentUserID}
-                  dayStart={dayStart}
-                  dayEnd={dayEnd}
-                  altMessage={false}
-                />
+                <TmrwTimePicker altMessage={false} />
               )
             }
           </View>
@@ -177,7 +165,7 @@ const getStyles = (theme) =>
       color: theme.textHigh,
       fontWeight: "bold",
       paddingTop: 7,
-    }
+    },
   });
 
 export default Tomorrow;

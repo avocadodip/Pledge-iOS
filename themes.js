@@ -1,8 +1,12 @@
 import { Color } from "./GlobalStyles";
 
+export const redGradientValues = ["#DB5353", "#E46959"];
+export const purpleGradientValues = ["#5653DB", "#7653DB"];
+export const greenGradientValues = ["#30AD4C", "#2AA746"];
+
 export default {
   Classic: {
-    accent: Color.fervo_red,
+    accent: "E05E56",
     primary: Color.white,
     overlayPrimary: Color.white70,
     halfPrimary: Color.white50,

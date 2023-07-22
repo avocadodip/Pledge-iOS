@@ -7,13 +7,17 @@ import TouchableRipple from "./TouchableRipple";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../database/firebase";
 import ContentLoader, { Rect } from "react-content-loader/native";
+import { useDayStatus } from "../hooks/DayStatusContext";
+import { useSettings } from "../hooks/SettingsContext";
 
 const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
 const CONTENT_LOADER_HEIGHT = 25;
 const CONTENT_LOADER_WIDTH = 60;
 
-const TmrwTimePicker = ({ currentUserID, dayStart, dayEnd, altMessage }) => {
+const TmrwTimePicker = ({ altMessage }) => {
+  const { currentUserID } = useSettings();
+  const { dayStart, dayEnd } = useDayStatus();
   const [isModalVisible, setModalVisible] = useState({
     start: false,
     end: false,

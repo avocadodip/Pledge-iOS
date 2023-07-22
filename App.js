@@ -106,7 +106,7 @@ const SettingsStack = () => (
       name="Account"
       component={Account}
       options={{ headerShown: false }}
-    />
+    /> 
     <Stack.Screen
       name="ChangeEmail"
       component={ChangeEmail}
@@ -200,8 +200,6 @@ function AppContent({ isSignedIn }) {
   const { theme, backgroundGradient } = useThemes();
   const [themePalette, setThemePalette] = useState();
   const [tabStylesState, setTabStylesState] = useState();
-
-  console.log(backgroundGradient);
 
   // Background color of app
   useEffect(() => {
@@ -354,7 +352,7 @@ function AppContent({ isSignedIn }) {
           <Splash />
         )}
       </NavigationContainer>
-      <TodoBottomSheet />
+      <TodoBottomSheet backgroundGradient={backgroundGradient}/>
     </View>
   );
 }

@@ -71,7 +71,7 @@ export const updateTodoListOnboarding = async (
       dayEnd,
       false,
       true
-    );
+    ); 
     // Tmrw doc
     await addTodoArray(
       currentUserID,
@@ -104,7 +104,7 @@ const addTodoArray = async (
 
     if (!todoDoc.exists()) {
       // If the document does not exist, create it
-      const newTodo = {
+      const newTodo = { 
         todos,
         totalTodos: totalTodos,
         totalFine: 0,

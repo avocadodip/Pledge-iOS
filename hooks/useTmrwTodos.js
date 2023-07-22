@@ -61,11 +61,12 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
 
     const unsubscribe = onSnapshot(todoRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-        const todoData = docSnapshot.data().todos;
-        // console.log(todoData);
-        if (todoData) {
-          for (let i = 0; i < todoData.length; i++) {
-            fetchedTodos[todoData[i].todoNumber - 1] = todoData[i];
+        const { isActive, isVacation, todos } = docSnapshot.data();
+
+        setIsTmrwActiveDay(isActive);
+        if (todos) {
+          for (let i = 0; i < todos.length; i++) {
+            fetchedTodos[todos[i].todoNumber - 1] = todos[i];
           }
         }
       } else {

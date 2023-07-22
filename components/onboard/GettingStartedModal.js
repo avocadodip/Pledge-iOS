@@ -39,9 +39,9 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const { currentUserID } = useSettings();
   const [startDay, setStartDay] = useState("");
   const [todos, setTodos] = useState([
-    { todoNumber: 1, title: "", amount: "", isComplete: false },
-    { todoNumber: 2, title: "", amount: "", isComplete: false },
-    { todoNumber: 3, title: "", amount: "", isComplete: false },
+    { todoNumber: 1, title: "", amount: "", isComplete: false, isLocked: true },
+    { todoNumber: 2, title: "", amount: "", isComplete: false, isLocked: true },
+    { todoNumber: 3, title: "", amount: "", isComplete: false, isLocked: true },
   ]);
 
   // Allow step indicator press

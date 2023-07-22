@@ -39,7 +39,7 @@ export const useTodayTodos = (dayChanged) => {
   const getAndSetTodos = () => {
     const fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());
-
+ 
     // The onSnapshot function triggers every time the data changes, including when it's initially loaded.
     const unsubscribe = onSnapshot(todoRef, (docSnapshot) => {
       if (docSnapshot.exists()) {

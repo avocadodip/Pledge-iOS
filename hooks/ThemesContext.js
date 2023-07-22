@@ -1,7 +1,11 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColorScheme } from "react-native";
-import themeStyles from "../themes";
+import themeStyles, {
+  greenGradientValues,
+  purpleGradientValues,
+  redGradientValues,
+} from "../themes";
 import { Color } from "../GlobalStyles";
 import { useDayStatus } from "./DayStatusContext";
 import { useSettings } from "./SettingsContext";
@@ -34,11 +38,11 @@ export const ThemesProvider = ({ children }) => {
           (timeStatus === 1 && !noActionItemsLeft) ||
           currentUserID === null
         ) {
-          setBackgroundGradient(["#DB5353", "#E46959"]);
+          setBackgroundGradient(redGradientValues);
         } else if (timeStatus === 0 || timeStatus === 2) {
-          setBackgroundGradient(["#5653DB", "#7653DB"]);
+          setBackgroundGradient(purpleGradientValues);
         } else if (timeStatus === 1 && noActionItemsLeft) {
-          setBackgroundGradient(["#30AD4C", "#2AA746"]);
+          setBackgroundGradient(greenGradientValues);
         }
         break;
       case "Dark":

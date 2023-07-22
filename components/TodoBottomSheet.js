@@ -7,8 +7,10 @@ import FolderIcon from "../assets/icons/amount-folder-icon.svg";
 import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
 import { Color } from "../GlobalStyles";
 import { useThemes } from "../hooks/ThemesContext";
- 
-export default function TodoBottomSheet() {
+import { LinearGradient } from "expo-linear-gradient";
+
+export default function TodoBottomSheet({ backgroundGradient }) {
+  const { theme } = useThemes();
   const {
     isBottomSheetOpen,
     isBottomSheetEditable,
@@ -21,7 +23,6 @@ export default function TodoBottomSheet() {
   const snapPoints = ["75%"];
   const [todo, setTodo] = useState(selectedTodo || {});
   const todoRef = useRef(todo);
-  const { theme } = useThemes();
   const styles = getStyles(theme);
 
   // Set initial todo object
@@ -45,7 +46,7 @@ export default function TodoBottomSheet() {
     if (index === -1) {
       setIsBottomSheetOpen(false);
     }
-  }
+  };
 
   // Backdrop - when pressed, updates global todo array and closes sheet
   const renderBackdrop = useCallback(
@@ -73,171 +74,193 @@ export default function TodoBottomSheet() {
       index={isBottomSheetOpen ? 0 : -1}
       snapPoints={snapPoints}
       enablePanDownToClose={true}
-      backgroundStyle={{ backgroundColor: theme.accent }}
       backdropComponent={renderBackdrop}
       onChange={handleSheetChange}
-      handleComponent={() => (
-        <View style={styles.dragHandleContainer}>
-          <View style={styles.dragHandle}></View>
-        </View>
-      )}
+      // handleComponent={() => (
+      //   <View style={styles.dragHandleContainer}>
+      //     <View style={styles.dragHandle}></View>
+      //   </View>
+      // )}
+      handleStyle={{ display: "none" }} // hide default handle
+      style={{
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        flex: 1,
+        overflow: "hidden",
+      }}
     >
-      {isBottomSheetEditable ? (
-        // Editable
-        <View style={styles.bottomSheetContainer}>
-          <View style={styles.numberTitleContainer}>
-            <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
-            <TextInput
-              style={styles.title}
-              placeholder="New task"
-              value={todo.title}
-              onChangeText={(text) => handleInputChange("title", text)}
-              placeholderTextColor="rgba(243, 243, 243, 0.8)"
-              textStyle={styles.text}
-              autoCorrect={false}
-              autoCapitalize="none"
-            />
+      <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+        {isBottomSheetEditable ? (
+          // Editable
+          <View style={styles.bottomSheetContainer}>
+            <View style={styles.dragHandleContainer}>
+              <View style={styles.dragHandle}></View>
+            </View>
+            <View style={styles.numberTitleContainer}>
+              <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
+              <TextInput
+                style={styles.title}
+                placeholder="New task"
+                value={todo.title}
+                onChangeText={(text) => handleInputChange("title", text)}
+                placeholderTextColor="rgba(243, 243, 243, 0.8)"
+                textStyle={styles.text}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.amountFolderContainer}>
+              <PledgeDollarIcon />
+              <TextInput
+                style={styles.textInput}
+                // placeholder="Add pledge"
+                value={todo.amount}
+                onChangeText={(text) => handleInputChange("amount", text)}
+                keyboardType="numeric"
+                // placeholderTextColor="rgba(243, 243, 243, 0.8)"
+                textStyle={styles.text}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.amountFolderContainer}>
+              <FolderIcon />
+              <TextInput
+                style={styles.textInput}
+                placeholder="Add tag"
+                value={todo.tag}
+                onChangeText={(text) => handleInputChange("tag", text)}
+                placeholderTextColor="rgba(243, 243, 243, 0.8)"
+                textStyle={styles.text}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.descriptionContainer}>
+              <DescriptLinesIcon />
+              <TextInput
+                style={styles.textInput}
+                placeholder="Add description"
+                value={todo.description}
+                onChangeText={(text) => handleInputChange("description", text)}
+                placeholderTextColor="rgba(243, 243, 243, 0.8)"
+                textStyle={styles.text}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+            </View>
           </View>
-          <View style={styles.horizontalDivider} />
-          <View style={styles.amountFolderContainer}>
-            <PledgeDollarIcon />
-            <TextInput
-              style={styles.textInput}
-              // placeholder="Add pledge"
-              value={todo.amount}
-              onChangeText={(text) => handleInputChange("amount", text)}
-              keyboardType="numeric"
-              // placeholderTextColor="rgba(243, 243, 243, 0.8)"
-              textStyle={styles.text}
-              autoCorrect={false}
-              autoCapitalize="none"
-            />
+        ) : (
+          // Uneditable
+          <View style={styles.bottomSheetContainer}>
+            <View style={styles.dragHandleContainer}>
+              <View style={styles.dragHandle}></View>
+            </View>
+            <View style={styles.numberTitleContainer}>
+              <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
+              <Text style={styles.title}>{selectedTodo.title}</Text>
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.amountFolderContainer}>
+              <PledgeDollarIcon />
+              <Text style={styles.text}>{selectedTodo.amount}</Text>
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.amountFolderContainer}>
+              <FolderIcon />
+              <Text style={styles.text}>{selectedTodo.tag}</Text>
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.descriptionContainer}>
+              <DescriptLinesIcon />
+              <Text style={styles.text}>{selectedTodo.description}</Text>
+            </View>
           </View>
-          <View style={styles.horizontalDivider} />
-          <View style={styles.amountFolderContainer}>
-            <FolderIcon />
-            <TextInput
-              style={styles.textInput}
-              placeholder="Add tag"
-              value={todo.tag}
-              onChangeText={(text) => handleInputChange("tag", text)}
-              placeholderTextColor="rgba(243, 243, 243, 0.8)"
-              textStyle={styles.text}
-              autoCorrect={false}
-              autoCapitalize="none"
-            />
-          </View>
-          <View style={styles.horizontalDivider} />
-          <View style={styles.descriptionContainer}>
-            <DescriptLinesIcon />
-            <TextInput
-              style={styles.textInput}
-              placeholder="Add description"
-              value={todo.description}
-              onChangeText={(text) => handleInputChange("description", text)}
-              placeholderTextColor="rgba(243, 243, 243, 0.8)"
-              textStyle={styles.text}
-              autoCorrect={false}
-              autoCapitalize="none"
-            />
-          </View>
-        </View>
-      ) : (
-        // Uneditable
-        <View style={styles.bottomSheetContainer}>
-          <View style={styles.numberTitleContainer}>
-            <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
-            <Text style={styles.title}>{selectedTodo.title}</Text>
-          </View>
-          <View style={styles.horizontalDivider} />
-          <View style={styles.amountFolderContainer}>
-            <PledgeDollarIcon />
-            <Text style={styles.text}>{selectedTodo.amount}</Text>
-          </View>
-          <View style={styles.horizontalDivider} />
-          <View style={styles.amountFolderContainer}>
-            <FolderIcon />
-            <Text style={styles.text}>{selectedTodo.tag}</Text>
-          </View>
-          <View style={styles.horizontalDivider} />
-          <View style={styles.descriptionContainer}>
-            <DescriptLinesIcon />
-            <Text style={styles.text}>{selectedTodo.description}</Text>
-          </View>
-        </View>
-      )}
+        )}
+      </LinearGradient>
     </BottomSheet>
   ) : null;
 }
 
-const getStyles = (theme) => StyleSheet.create({
-  bottomSheetContainer: {
-    backgroundColor: theme.accent,
-    flex: 1,
-    flexDirection: "col",
-    paddingHorizontal: 20, 
-  },
-  dragHandleContainer: {
-    alignSelf: "center",
-  },
-  dragHandle: {
-    width: 45,
-    height: 4,
-    borderRadius: 3,
-    backgroundColor: "white",
-    marginTop: 15,
-  },
-  horizontalDivider: {
-    borderBottomColor: "white",
-    opacity: 0.3,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  numberTitleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 45,
-    marginBottom: 20,
-    gap: 23,
-  },
-  amountFolderContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 23,
-    marginVertical: 4,
-  },
-  descriptionContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 23,
-    // marginVertical: 18,
-    // borderWidth: 1,
-    // borderColor: 'black',
-  },
-  number: {
-    color: "white",
-    fontSize: 40,
-    fontWeight: "bold",
-  },
-  title: {
-    color: "white",
-    fontSize: 30,
-    fontWeight: "bold",
-    width: "80%",
-  },
-  text: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: 500,
-    lineHeight: 18,
-    width: "80%",
-    paddingVertical: 15,
-  },
-  textInput: {
-    color: "white",
-    fontSize: 16,
-    lineHeight: 18,
-    width: "80%",
-    paddingVertical: 15,
-    // paddingHorizontal: 10,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    bottomSheetContainer: {
+      flex: 1,
+      flexDirection: "col",
+      paddingHorizontal: 20,
+
+      // borderWidth: 1,
+      // borderColor: "black",
+      // borderTopLeftRadius: 10,
+      // borderTopRightRadius: 10,
+      // overflow: "hidden",
+    },
+    dragHandleContainer: {
+      width: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    dragHandle: {
+      backgroundColor: "white",
+      width: 45,
+      height: 4,
+      borderRadius: 3,
+      marginTop: 15,
+    },
+    horizontalDivider: {
+      borderBottomColor: "white",
+      opacity: 0.3,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    numberTitleContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: 45,
+      marginBottom: 20,
+      gap: 23,
+    },
+    amountFolderContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 23,
+      marginVertical: 4,
+    },
+    descriptionContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 23,
+      // marginVertical: 18,
+      // borderWidth: 1,
+      // borderColor: 'black',
+    },
+    number: {
+      color: "white",
+      fontSize: 40,
+      fontWeight: "bold",
+    },
+    title: {
+      color: "white",
+      fontSize: 30,
+      fontWeight: "bold",
+      width: "80%",
+    },
+    text: {
+      color: "white",
+      fontSize: 16,
+      fontWeight: 500,
+      lineHeight: 18,
+      width: "80%",
+      paddingVertical: 15,
+    },
+    textInput: {
+      color: "white",
+      fontSize: 16,
+      lineHeight: 18,
+      width: "80%",
+      paddingVertical: 15,
+      // paddingHorizontal: 10,
+    },
+  });
