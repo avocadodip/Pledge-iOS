@@ -36,7 +36,7 @@ const Tomorrow = () => {
   const styles = getStyles(theme);
   const { tmrwTodos } = useBottomSheet();
   const {
-    settings: { vacationModeOn, daysActive, isOnboarded },
+    settings: { timezone, vacationModeOn, daysActive, isOnboarded },
     currentUserID,
   } = useSettings();
   const { dayChanged } = useDayChange();
@@ -63,9 +63,12 @@ const Tomorrow = () => {
 
         {isOnboarded && !vacationModeOn && isTmrwActiveDay && (
           <View>
-            <Text style={styles.headerSubtitle}>
-              {tmrwHeaderSubtitleMessage}
-            </Text>
+            <View style={styles.headerSubtitleContainer}>
+              <Text style={styles.headerSubtitle}>
+                {tmrwHeaderSubtitleMessage}
+              </Text>
+              <Text style={styles.timeZone}>{timezone}</Text>
+            </View>
             {
               // Show a different time picker message if day has ended and no tasks inputted
               // Instead of tasks will open from...to..., day will start at...to...
@@ -128,7 +131,7 @@ const getStyles = (theme) =>
       width: "100%",
       flexDirection: "row",
       alignItems: "flex-end",
-      gap: 15,
+      gap: 10,
     },
     headerTitle: {
       color: theme.textHigh,
@@ -136,15 +139,16 @@ const getStyles = (theme) =>
       fontWeight: "bold",
     },
     headerDayOfWeek: {
-      color: theme.textMedium,
+      color: theme.textLow,
       fontSize: 23,
       fontWeight: "bold",
       paddingBottom: 6,
     },
     headerSubtitle: {
       color: theme.textHigh,
-      fontSize: 23,
+      fontSize: 25,
       fontWeight: "bold",
+      marginTop: 5,
     },
     pageContent: {
       height: "72%",
@@ -164,6 +168,16 @@ const getStyles = (theme) =>
       fontWeight: 500,
       fontSize: 20,
     },
+    headerSubtitleContainer: {
+      display: "flex",
+      flexDirection: "row",
+      gap: 4,
+    },
+    timeZone: {
+      color: theme.textHigh,
+      fontWeight: "bold",
+      paddingTop: 7,
+    }
   });
 
 export default Tomorrow;
