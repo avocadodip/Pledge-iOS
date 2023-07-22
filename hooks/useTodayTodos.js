@@ -4,13 +4,13 @@ import { getDoc, doc, onSnapshot } from "firebase/firestore";
 import { getTodayAbbrevDOW, getTodayDate } from "../utils/currentDate";
 import { useBottomSheet } from "./BottomSheetContext";
 import { useSettings } from "./SettingsContext";
+import { DayStatusContext, useDayStatus } from "./DayStatusContext";
 
 export const useTodayTodos = (dayChanged) => {
   const { setTodayTodos } = useBottomSheet();
   const { currentUserID } = useSettings();
+  const { setDayStart, setDayEnd } = useDayStatus();
   const [todayDOWAbbrev, setTodayDOWAbbrev] = useState(getTodayAbbrevDOW());
-  const [dayStart, setDayStart] = useState("");
-  const [dayEnd, setDayEnd] = useState("");
   const [isTodayActiveDay, setIsTodayActiveDay] = useState(true);
   const [isTodayVacation, setIsTodayVacation] = useState(false);
   const [onboardStartTmrw, setOnboardStartTmrw] = useState(false); // Lets Today page know to show "all set" message if user elects to start Tmrw in onboarding
@@ -94,8 +94,6 @@ export const useTodayTodos = (dayChanged) => {
 
   return {
     todayDOWAbbrev,
-    dayStart,
-    dayEnd,
     isTodayActiveDay,
     isTodayVacation,
     isTodoArrayEmpty,

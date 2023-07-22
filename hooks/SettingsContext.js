@@ -1,7 +1,6 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { db } from "../database/firebase";
-import { Text } from "react-native";
 
 export const SettingsContext = createContext();
  

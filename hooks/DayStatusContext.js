@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import { dayChanged } from "./useDayChange";
-import { useThemes } from "./ThemesContext";
 
 const getTimeStatus = (dayStart, dayEnd) => {
   const now = new Date();
@@ -27,9 +26,11 @@ const getTimeStatus = (dayStart, dayEnd) => {
   }
 };
 
-export const useDayStatus = (dayStart, dayEnd) => {
-  const { updateBackgroundColor, backgroundColor, currentThemeName } =
-    useThemes();
+export const DayStatusContext = createContext();
+
+export const DayStatusProvider = ({ children }) => {
+  const [dayStart, setDayStart] = useState("");
+  const [dayEnd, setDayEnd] = useState("");
   const [timeStatus, setTimeStatus] = useState(getTimeStatus(dayStart, dayEnd));
   const [tmrwHeaderSubtitleMessage, setTmrwHeaderSubtitleMessage] =
     useState("");
@@ -60,20 +61,23 @@ export const useDayStatus = (dayStart, dayEnd) => {
         setTmrwHeaderSubtitleMessage("");
         setTodayHeaderSubtitleMessage("");
     }
-
-    
   }, [timeStatus, dayChanged, dayStart, dayEnd]);
 
-
-  let tempTimeStatus = 1;
-  let tempNoActionItemsLeft = true;
-  // Update background color for classic
-  useEffect(() => {
-    // Only update the background color if the current theme is "Classic"
-    if (currentThemeName === "Classic") {
-      updateBackgroundColor(tempTimeStatus, tempNoActionItemsLeft);
-    }
-  }, [tempTimeStatus, tempNoActionItemsLeft, currentThemeName]);
-
-  return { todayHeaderSubtitleMessage, tmrwHeaderSubtitleMessage, timeStatus };
+  return (
+    <DayStatusContext.Provider
+      value={{
+        todayHeaderSubtitleMessage,
+        tmrwHeaderSubtitleMessage,
+        timeStatus,
+        dayStart,
+        setDayStart,
+        dayEnd,
+        setDayEnd,
+      }}
+    >
+      {children}
+    </DayStatusContext.Provider>
+  );
 };
+
+export const useDayStatus = () => useContext(DayStatusContext);

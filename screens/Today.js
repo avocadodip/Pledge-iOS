@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useState } from "react";
 import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
-import { useDayStatus } from "../hooks/useDayStatus";
+import { useDayStatus } from "../hooks/DayStatusContext";
 import { useTodayTodos } from "../hooks/useTodayTodos";
 import Loading from "../components/Loading";
 import { useSettings } from "../hooks/SettingsContext";
@@ -42,17 +42,14 @@ const Today = () => {
   } = useSettings();
   const {
     todayDOWAbbrev,
-    dayStart,
-    dayEnd,
     isTodayActiveDay,
     isTodayVacation,
     isTodoArrayEmpty,
     onboardStartTmrw,
   } = useTodayTodos(dayChanged);
-  const { todayHeaderSubtitleMessage, timeStatus } = useDayStatus(
-    dayStart,
-    dayEnd
-  );
+  const { todayHeaderSubtitleMessage, timeStatus } =
+    useDayStatus();
+
   const [modalVisible, setModalVisible] = useState(false);
 
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
@@ -88,9 +85,7 @@ const Today = () => {
             setModalVisible={setModalVisible}
           />
         ) : onboardStartTmrw ? (
-          <TodayTmrwMessage
-            type={"all set"}
-          />
+          <TodayTmrwMessage type={"all set"} />
         ) : isTodayVacation ? (
           <TodayTmrwMessage type={"vacation"} />
         ) : !isTodayActiveDay ? (

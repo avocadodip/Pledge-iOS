@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
-import { useDayStatus } from "../hooks/useDayStatus";
+import { useDayStatus } from "../hooks/DayStatusContext";
 import { useTmrwTodos } from "../hooks/useTmrwTodos";
 import TmrwTimePicker from "../components/TmrwTimePicker";
 import { useTodayTodos } from "../hooks/useTodayTodos";
@@ -41,10 +41,8 @@ const Tomorrow = () => {
   } = useSettings();
   const { dayChanged } = useDayChange();
   const { dayStart, dayEnd } = useTodayTodos(dayChanged);
-  const { tmrwHeaderSubtitleMessage, timeStatus } = useDayStatus(
-    dayStart,
-    dayEnd
-  );
+  const { tmrwHeaderSubtitleMessage, timeStatus } = useDayStatus();
+
   const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty } =
     useTmrwTodos(dayChanged, daysActive);
   const [modalVisible, setModalVisible] = useState(false);

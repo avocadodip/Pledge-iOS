@@ -2,23 +2,51 @@ import { useState, useEffect, createContext, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColorScheme } from "react-native";
 import themeStyles from "../themes";
+import { Color } from "../GlobalStyles";
+import { useDayStatus } from "./DayStatusContext";
+import { useSettings } from "./SettingsContext";
 
 export const ThemeContext = createContext();
 
 export const ThemesProvider = ({ children }) => {
+  const { timeStatus } = useDayStatus();
+  const { currentUserID } = useSettings();
   const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme
-  const [backgroundColor, setBackgroundColor] = useState("");
+  const [backgroundGradient, setBackgroundGradient] = useState([]);
 
-  const updateBackgroundColor = (timeStatus, allItemsComplete) => {
-    if (currentThemeName === "Classic") {
-      if (timeStatus === 0 || timeStatus === 2) {
-        setBackgroundColor("#6E48D9");
-      } else if (timeStatus === 1 && !allItemsComplete) {
-        setBackgroundColor("#DD4F4F");
-      } else if (timeStatus === 1 && allItemsComplete) {
-        setBackgroundColor("#2FAC52");
-      }
+  let noActionItemsLeft = false;
+
+  // Call fetchTheme on initialization
+  useEffect(() => {
+    fetchTheme();
+  }, []);
+
+  // Update appearance when theme is changed or user auth changes
+  useEffect(() => {
+    updateBackgroundGradient();
+  }, [currentThemeName, currentUserID]);
+
+  const updateBackgroundGradient = () => {
+    switch (currentThemeName) {
+      case "Classic":
+        if (
+          (timeStatus === 1 && !noActionItemsLeft) ||
+          currentUserID === null
+        ) {
+          setBackgroundGradient(["#DB5353", "#E46959"]);
+        } else if (timeStatus === 0 || timeStatus === 2) {
+          setBackgroundGradient(["#5653DB", "#7653DB"]);
+        } else if (timeStatus === 1 && noActionItemsLeft) {
+          setBackgroundGradient(["#30AD4C", "#2AA746"]);
+        }
+        break;
+      case "Dark":
+        setBackgroundGradient([Color.black, Color.black]);
+        break;
+      case "Light":
+        setBackgroundGradient([Color.white, Color.white]);
+        break;
     }
   };
 
@@ -33,11 +61,6 @@ export const ThemesProvider = ({ children }) => {
     await AsyncStorage.setItem("storedTheme", themeType);
     setCurrentThemeName(themeType);
   };
-
-  // Call fetchTheme on initialization
-  useEffect(() => {
-    fetchTheme();
-  }, []);
 
   // If current theme is "Auto", select light or dark based on system theme
   let currentTheme;
@@ -55,8 +78,8 @@ export const ThemesProvider = ({ children }) => {
     currentThemeName,
     saveTheme,
     theme: currentTheme,
-    backgroundColor,
-    updateBackgroundColor,
+    updateBackgroundGradient,
+    backgroundGradient,
   };
 
   return (
