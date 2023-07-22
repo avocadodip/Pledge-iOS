@@ -13,6 +13,7 @@ import AuthFormButton from "../components/auth/AuthFormButton";
 import { useSettings } from "../hooks/SettingsContext";
 import SettingsHeader from "../components/settings/SettingsHeader";
 import { doc, updateDoc } from "firebase/firestore";
+import DeleteAccountButton from "../components/settings/DeleteAccountButton";
 
 const ChangeEmail = () => {
   const navigation = useNavigation();
@@ -53,7 +54,7 @@ const ChangeEmail = () => {
           [
             {
               text: "OK",
-              onPress: () => navigation.navigate("Account"),
+              onPress: () => navigation.navigate("Settings"),
             },
           ],
           { cancelable: false }
@@ -104,11 +105,7 @@ const ChangeEmail = () => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <SettingsHeader
-        navigation={navigation}
-        header={"Change Email"}
-        altScreen={"Account"}
-      />
+    <SettingsHeader navigation={navigation} header={"Change Email"} />
 
       {changeEmailStep === "password" && (
         <View style={styles.container}>

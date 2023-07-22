@@ -126,6 +126,7 @@ const getStyles = (theme) =>
       marginTop: 5,
       width: "100%",
       flexDirection: "col",
+      height: 110,
     },
     headerTitleContainer: {
       width: "100%",
@@ -151,7 +152,7 @@ const getStyles = (theme) =>
       marginTop: 5,
     },
     pageContent: {
-      height: "72%",
+      height: "75%",
       width: "100%",
       justifyContent: "center",
       alignItems: "center",

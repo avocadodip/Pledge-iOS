@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { StyleSheet, TouchableOpacity, ScrollView, Text, View, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Color, settingsPageStyles } from "../GlobalStyles";
 import RightChevronIcon from "../assets/icons/chevron-right.svg";
@@ -25,15 +25,19 @@ import {
 import { presentPaymentSheet } from "@stripe/stripe-react-native";
 import ContentLoader, { Rect, Circle, Path } from "react-content-loader/native";
 import PlusIcon from "../assets/icons/plus-icon.svg";
+import MailIcon from "../assets/icons/mail-icon.svg";
 import MoneyIcon from "../assets/icons/money-icon.svg";
+import LogoutIcon from "../assets/icons/logout.svg";
 import NotificationBellIcon from "../assets/icons/notification-bell-icon.svg";
 import { daysOfWeek } from "../utils/currentDate";
 import { doc, updateDoc } from "firebase/firestore";
+import DeleteAccountButton from "../components/settings/DeleteAccountButton";
 
 const BUTTON_HEIGHT = 51;
 const BUTTON_TEXTS = ["S", "M", "T", "W", "T", "F", "S"];
 
 const Settings = ({ navigation }) => {
+  const { currentUserEmail } = useSettings();
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const {
@@ -62,6 +66,14 @@ const Settings = ({ navigation }) => {
     if (action == true) {
       setDaysActiveModalVisible(true);
     } else setDaysActiveModalVisible(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.error("Sign out error", error);
+    }
   };
 
   const handleOpenNotifsModal = (action) => {
@@ -157,6 +169,7 @@ const Settings = ({ navigation }) => {
 
   return (
     <SafeAreaView style={settingsPageStyles.pageContainer}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
       {/* <OnboardingPopup
         texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
         buttonTitle="Back to settings."
@@ -350,18 +363,62 @@ const Settings = ({ navigation }) => {
           </View>
         </TouchableRipple>
         <TouchableRipple
-          style={styles.button}
-          onPress={() => navigation.navigate("Account")}
-        >
-          <View style={styles.leftSettingsButton}>
-            <UserCircleIcon width={24} height={24} color={theme.textHigh} />
-            <Text style={styles.buttonTitle}>Account</Text>
-          </View>
-          <View style={styles.chevronContainer}>
-            <RightChevronIcon width={24} height={24} color={theme.textHigh} />
-          </View>
+            style={styles.button}
+            onPress={() => navigation.navigate("ChangeEmail")}
+          >
+            <View style={styles.leftSettingsButton}>
+              <MailIcon width={25} height={25} color={theme.textHigh} />
+              <Text style={styles.buttonTitle}>Email</Text>
+            </View>
+
+            <View style={styles.chevronContainer}>
+              <View style={styles.daysOfWeekTextContainer}>
+                {Object.values(daysActive).every(Boolean) ? (
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: theme.textHigh,
+                      fontWeight: "500",
+                      opacity: 0.8,
+                      maxWidth: 200, // Set a maximum width for the text before truncation
+                    }}
+                    numberOfLines={1} // Set the maximum number of lines to 1
+                    ellipsizeMode="tail" // Specify truncation with ellipsis at the end of the text
+                  >
+                    {currentUserEmail}
+                  </Text>
+                ) : (
+                  daysOfWeek.map((dayKey, index) => (
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: daysActive[dayKey]
+                          ? theme.textHigh
+                          : theme.textDisabled,
+                        fontWeight: daysActive[dayKey] ? 500 : 400,
+                        opacity: 0.8,
+                      }}
+                      key={index}
+                    >
+                      {BUTTON_TEXTS[index]}
+                    </Text>
+                  ))
+                )}
+              </View>
+            </View>
+        </TouchableRipple>
+        <TouchableRipple
+            style={styles.button}
+            onPress={handleLogout}
+          >
+            <View style={styles.leftSettingsButton}>
+              <LogoutIcon width={25} height={25} color={theme.textHigh} />
+              <Text style={styles.buttonTitle}>Logout</Text>
+            </View>
         </TouchableRipple>
       </View>
+      <DeleteAccountButton/>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -370,6 +427,9 @@ export default Settings;
 
 const getStyles = (theme) =>
   StyleSheet.create({
+    scrollView: {
+      height: "120%",
+    },
     headerContainer: {
       paddingTop: 20,
       paddingLeft: 20,
