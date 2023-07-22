@@ -26,31 +26,34 @@ const TmrwTodo = ({
         onPress={handleOpenBottomSheet}
         style={[
           styles.leftContainer,
+          {padding: 0},
           timeStatus === 2 && styles.disabledOpacity,
         ]}
       >
-        <View style={styles.tagTitleContainer}>
-          {tag && (
-            <View style={styles.tagContainer}>
-              <Text style={styles.tagText}>{tag}</Text>
+        <View style={{ width: "100%", padding: 16 }}>
+          <View style={styles.tagTitleContainer}>
+            {tag && (
+              <View style={styles.tagContainer}>
+                <Text style={styles.tagText}>{tag}</Text>
+              </View>
+            )}
+            <View style={styles.titleContainer}>
+              <Text
+                style={[
+                  styles.titleText,
+                  { fontSize: variableFontSize(title) },
+                ]}
+              >
+                {title}
+              </Text>
             </View>
-          )}
-          <View style={styles.titleContainer}>
-            <Text
-              style={[
-                styles.titleText,
-                { fontSize: variableFontSize(title) },
-              ]}
-            >
-              {title}
-            </Text>
           </View>
-        </View>
-        {amount && (
+          {amount && (
           <View style={styles.amountContainer}>
             <Text style={styles.amountText}>${amount}</Text>
           </View>
-        )}
+        )} 
+        </View>
       </TouchableNipple>
       <RenderTmrwLock
         isLocked={isLocked}
