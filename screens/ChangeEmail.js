@@ -14,8 +14,11 @@ import { useSettings } from "../hooks/SettingsContext";
 import SettingsHeader from "../components/settings/SettingsHeader";
 import { doc, updateDoc } from "firebase/firestore";
 import DeleteAccountButton from "../components/settings/DeleteAccountButton";
+import { useThemes } from "../hooks/ThemesContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ChangeEmail = () => {
+  const { theme, backgroundGradient } = useThemes();
   const navigation = useNavigation();
   const { currentUserEmail, currentUserID } = useSettings();
   const [newEmail, setNewEmail] = useState("");
@@ -104,62 +107,64 @@ const ChangeEmail = () => {
   };
 
   return (
-    <SafeAreaView style={styles.pageContainer}>
-    <SettingsHeader navigation={navigation} header={"Change Email"} />
+    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+      <SafeAreaView style={styles.pageContainer}>
+        <SettingsHeader navigation={navigation} header={"Change Email"} />
 
-      {changeEmailStep === "password" && (
-        <View style={styles.container}>
-          <Text style={styles.promptText}>
-            Re-enter your password in order to change your email.
-          </Text>
-          <View style={styles.formContainer}>
-            <AuthFormInput
-              action={handlePasswordChange}
-              value={password}
-              type="password"
-            />
+        {changeEmailStep === "password" && (
+          <View style={styles.container}>
+            <Text style={styles.promptText}>
+              Re-enter your password in order to change your email.
+            </Text>
+            <View style={styles.formContainer}>
+              <AuthFormInput
+                action={handlePasswordChange}
+                value={password}
+                type="password"
+              />
+              <AuthFormButton
+                action={reauthenticateUser}
+                text={"Confirm"}
+                disabledCondition={!isValidPassword}
+              />
+            </View>
+          </View>
+        )}
+
+        {changeEmailStep === "email" && (
+          <View style={styles.container}>
+            <Text style={styles.promptText}>Enter your new email.</Text>
+            <View style={styles.formContainer}>
+              <AuthFormInput
+                action={handleEmailChange}
+                value={newEmail}
+                type="email"
+              />
+              <AuthFormButton
+                action={changeEmail}
+                text={"Change Email"}
+                disabledCondition={!isValidEmail}
+              />
+            </View>
+          </View>
+        )}
+
+        {changeEmailStep === "verification" && (
+          <View style={styles.container}>
+            <Text style={styles.promptText}>
+              An verification link was sent to {newEmail}
+            </Text>
+            <Text style={styles.promptText}>
+              Once you have verified, click on the confirm button below.
+            </Text>
             <AuthFormButton
-              action={reauthenticateUser}
-              text={"Confirm"}
-              disabledCondition={!isValidPassword}
+              action={checkIfVerified}
+              text={"Confirm Verification"}
             />
           </View>
-        </View>
-      )}
-
-      {changeEmailStep === "email" && (
-        <View style={styles.container}>
-          <Text style={styles.promptText}>Enter your new email.</Text>
-          <View style={styles.formContainer}>
-            <AuthFormInput
-              action={handleEmailChange}
-              value={newEmail}
-              type="email"
-            />
-            <AuthFormButton
-              action={changeEmail}
-              text={"Change Email"}
-              disabledCondition={!isValidEmail}
-            />
-          </View>
-        </View>
-      )}
-
-      {changeEmailStep === "verification" && (
-        <View style={styles.container}>
-          <Text style={styles.promptText}>
-            An verification link was sent to {newEmail}
-          </Text>
-          <Text style={styles.promptText}>
-            Once you have verified, click on the confirm button below.
-          </Text>
-          <AuthFormButton
-            action={checkIfVerified}
-            text={"Confirm Verification"}
-          />
-        </View>
-      )}
-    </SafeAreaView>
+        )}
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 

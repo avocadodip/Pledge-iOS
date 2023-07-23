@@ -31,6 +31,7 @@ export const ThemesProvider = ({ children }) => {
     updateBackgroundGradient();
   }, [currentThemeName, currentUserID]);
 
+
   const updateBackgroundGradient = () => {
     switch (currentThemeName) {
       case "Classic":

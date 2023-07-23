@@ -6,6 +6,7 @@ import Checkbox from "expo-checkbox";
 import { Color } from "../../GlobalStyles";
 import TouchableRipple from "../TouchableRipple";
 import { db } from "../../database/firebase";
+import BottomModal from "../BottomModal";
 
 const DaysActiveModal = ({
   currentUserID,
@@ -35,7 +36,7 @@ const DaysActiveModal = ({
       ...tempDaysActive,
       [dayKey]: !tempDaysActive[dayKey],
     };
-  
+
     if (!Object.values(newTempDaysActive).some(Boolean)) {
       Alert.alert(
         "At least one day must be active.",
@@ -45,7 +46,6 @@ const DaysActiveModal = ({
       setTempDaysActive(newTempDaysActive);
     }
   };
-  
 
   // Handle confirm button click
   const handleConfirm = async () => {
@@ -63,70 +63,33 @@ const DaysActiveModal = ({
   };
 
   return (
-    <Modal
-      style={styles.bottomModal}
+    <BottomModal
       isVisible={isVisible}
-      onBackdropPress={() => {
-        handleConfirm();
-      }}
-      backdropTransitionOutTiming={0}
-      animationOutTiming={500}
+      onBackdropPress={handleConfirm}
+      modalTitle={"Set Days Active"}
     >
-      <View style={styles.modalContainer}>
-        <Text style={styles.modalTitle}>Set Days Active</Text>
-        <View style={styles.daysActiveContainer}>
-          {abbrevDayKeys.map((text, index) => (
-            <View style={styles.dayContainer} key={index}>
-              <Text style={styles.dayText}>{text}</Text>
-              <Checkbox
-                style={styles.checkbox}
-                color={
-                  tempDaysActive[dayKeys[index]]
-                    ? "rgba(255,255,255, 0.4)"
-                    : "rgba(255,255,255, 0.4)"
-                }
-                value={tempDaysActive[dayKeys[index]]}
-                onValueChange={() => handleModalDayToggle(index)}
-              />
-            </View>
-          ))}
-        </View>
-        {/* SAVE BUTTON */}
-        {/* <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
-          <Text style={styles.buttonText}>Confirm</Text>
-        </TouchableOpacity> */}
+      <View style={styles.daysActiveContainer}>
+        {abbrevDayKeys.map((text, index) => (
+          <View style={styles.dayContainer} key={index}>
+            <Text style={styles.dayText}>{text}</Text>
+            <Checkbox
+              style={styles.checkbox}
+              color={
+                tempDaysActive[dayKeys[index]]
+                  ? "rgba(255,255,255, 0.4)"
+                  : "rgba(255,255,255, 0.4)"
+              }
+              value={tempDaysActive[dayKeys[index]]}
+              onValueChange={() => handleModalDayToggle(index)}
+            />
+          </View>
+        ))}
       </View>
-      {/* CANCEL BUTTON */}
-      <View>
-        <TouchableRipple
-          style={styles.cancelButton}
-          onPress={() => {
-            handleToggleModal(false);
-            setTempDaysActive(modalDaysActive);
-          }}
-        >
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableRipple>
-      </View>
-    </Modal>
+    </BottomModal>
   );
 };
 
 const styles = StyleSheet.create({
-  // Modal styles
-  bottomModal: {
-    justifyContent: "flex-end",
-  },
-  modalContainer: {
-    flexDirection: "col",
-    backgroundColor: Color.fervo_red,
-    paddingTop: 22,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-    borderColor: "rgba(0, 0, 0, 0.1)",
-    overflow: "hidden",
-  },
   modalTitle: {
     fontSize: 18,
     fontWeight: 500,
@@ -141,23 +104,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderTopWidth: 1.5,
     borderColor: "rgba(255, 255, 255, 0.1)",
-  },
-  cancelButton: {
-    backgroundColor: Color.fervo_red,
-    width: "100%",
-    marginTop: 10,
-    marginBottom: 10,
-    paddingVertical: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-  },
-  buttonText: {
-    fontSize: 16,
-    lineHeight: 15,
-    textAlignVertical: "bottom",
-    color: Color.white,
-    fontWeight: 500,
   },
 
   // Modal content styles

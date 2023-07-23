@@ -18,9 +18,10 @@ import LoginButton from "../components/auth/AuthFormButton";
 import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
 import { Color } from "../GlobalStyles";
 import { useThemes } from "../hooks/ThemesContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Login = () => {
-  const { theme } = useThemes();
+  const { theme, backgroundGradient } = useThemes();
   const styles = getStyles(theme);
   const navigation = useNavigation();
   const [email, setEmail] = useState(); // New state for email input
@@ -64,32 +65,36 @@ const Login = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.pageContainer}
-    >
-      <LogoAppName />
-      <View style={[styles.formContainer]}>
-        {loading ? <ActivityIndicator size="small" color="white" /> : null}
-        <FormInput action={setEmail} value={email} type="email" />
-        <FormInput action={setPassword} value={password} type="password" />
+    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.pageContainer}
+      >
+        <LogoAppName />
+        <View style={[styles.formContainer]}>
+          {loading ? <ActivityIndicator size="small" color="white" /> : null}
+          <FormInput action={setEmail} value={email} type="email" />
+          <FormInput action={setPassword} value={password} type="password" />
 
-        <TouchableOpacity
-          style={styles.forgotPasswordButton}
-          onPress={() => navigation.navigate("ForgotPassword")}
-        >
-          <Text style={styles.forgotPasswordButtonText}>Forgot Password?</Text>
-        </TouchableOpacity>
-        <LoginButton action={handleLogin} text={"Login"} />
-      </View>
+          <TouchableOpacity
+            style={styles.forgotPasswordButton}
+            onPress={() => navigation.navigate("ForgotPassword")}
+          >
+            <Text style={styles.forgotPasswordButtonText}>
+              Forgot Password?
+            </Text>
+          </TouchableOpacity>
+          <LoginButton action={handleLogin} text={"Login"} />
+        </View>
 
-      <SignInSignUpSwitch
-        navigation={navigation}
-        prompt={"Don't have an account?"}
-        navigateTo={"Signup"}
-        buttonText={"Sign up"}
-      />
-    </KeyboardAvoidingView>
+        <SignInSignUpSwitch
+          navigation={navigation}
+          prompt={"Don't have an account?"}
+          navigateTo={"Signup"}
+          buttonText={"Sign up"}
+        />
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
 
@@ -114,7 +119,7 @@ const getStyles = (theme) =>
       width: "100%",
     },
     forgotPasswordButtonText: {
-      color: theme.textHigh
+      color: theme.textHigh,
     },
   });
 

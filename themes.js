@@ -6,7 +6,7 @@ export const greenGradientValues = ["#30AD4C", "#2AA746"];
 
 export default {
   Classic: {
-    accent: "E05E56",
+    accent: "#E05E56",
     primary: Color.white,
     overlayPrimary: Color.white70,
     halfPrimary: Color.white50,

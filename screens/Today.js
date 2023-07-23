@@ -53,9 +53,6 @@ const Today = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  console.log("1");
-  console.log(timezone); 
-
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
   const renderTodos = useCallback(() => {
     return todayTodos.map((todo, index) => {

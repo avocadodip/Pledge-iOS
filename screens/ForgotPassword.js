@@ -10,8 +10,11 @@ import { useState } from "react";
 import AuthFormInput from "../components/auth/AuthFormInput";
 import { useNavigation } from "@react-navigation/native";
 import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
+import { useThemes } from "../hooks/ThemesContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ForgotPassword = () => {
+  const { theme, backgroundGradient } = useThemes();
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [isChecking, setIsChecking] = useState(false);
@@ -40,34 +43,36 @@ const ForgotPassword = () => {
   };
 
   return (
-    <SafeAreaView style={styles.pageContainer}>
-      <TouchableRipple style={styles.backButton} onPress={handleBackPress}>
-        <LeftChevronIcon width={24} height={24} color={Color.white} />
-      </TouchableRipple>
+    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+      <SafeAreaView style={styles.pageContainer}>
+        <TouchableRipple style={styles.backButton} onPress={handleBackPress}>
+          <LeftChevronIcon width={24} height={24} color={Color.white} />
+        </TouchableRipple>
 
-      <View style={styles.contentContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Forgot Password</Text>
+        <View style={styles.contentContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Forgot Password</Text>
+          </View>
+          <Text style={styles.promptText}>
+            Enter the email address associated with your account and we'll send
+            you a link to reset your password.
+          </Text>
+          <AuthFormInput action={setEmail} value={email} type="email" />
+          <AuthFormButton
+            action={checkEmailVerification}
+            text={"Send"}
+            disabledCondition={isChecking}
+          />
+
+          <SignInSignUpSwitch
+            navigation={navigation}
+            prompt={""}
+            navigateTo={"Login"}
+            buttonText={"Back to login"}
+          />
         </View>
-        <Text style={styles.promptText}>
-          Enter the email address associated with your account and we'll send
-          you a link to reset your password.
-        </Text>
-        <AuthFormInput action={setEmail} value={email} type="email" />
-        <AuthFormButton
-          action={checkEmailVerification}
-          text={"Send"}
-          disabledCondition={isChecking}
-        />
-
-        <SignInSignUpSwitch
-          navigation={navigation}
-          prompt={""}
-          navigateTo={"Login"}
-          buttonText={"Back to login"}
-        />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
@@ -82,7 +87,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     alignItems: "center",
     flex: 1,
-    gap: 20
+    gap: 20,
   },
 
   // Back button

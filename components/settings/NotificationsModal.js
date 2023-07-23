@@ -9,6 +9,7 @@ import * as Notifications from "expo-notifications";
 import { EXPO_PROJECT_ID } from "@env";
 import SelectDropdown from "react-native-select-dropdown";
 // https://github.com/samad324/react-native-animated-multistep
+import BottomModal from "../BottomModal";
 
 const TIME_CHOICES = ["15 min", "30 min", "1 hour", "2 hours", "3 hours"];
 
@@ -79,112 +80,73 @@ const NotificationsModal = ({
   };
 
   return (
-    <Modal
-      style={styles.bottomModal}
+    <BottomModal
       isVisible={isVisible}
-      onBackdropPress={() => {
-        handleConfirm();
-      }}
-      backdropTransitionOutTiming={0}
-      animationOutTiming={500}
+      onBackdropPress={handleConfirm}
+      modalTitle={"Daily Reminder"}
     >
-      <View style={styles.modalContainer}>
-        {notificationsEnabled ? (
-          <>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalHeader}>Daily Reminder</Text>
-              <View style={styles.remindMeContainer}>
-                <Text style={styles.remindMeText}>Remind me</Text>
-                <SelectDropdown
-                  data={TIME_CHOICES}
-                  defaultButtonText={"30 min"}
-                  onSelect={(selectedItem, index) => {
-                    console.log(selectedItem, index);
-                  }}
-                  buttonStyle={styles.timeSelectButton}
-                  buttonTextStyle={styles.timeSelectButtonText}
-                  dropdownStyle={styles.dropdownStyle}
-                  rowStyle={styles.rowStyle}
-                  rowTextStyle={styles.rowTextStyle}
-                />
+      {notificationsEnabled ? (
+        <>
+          <View style={styles.remindMeContainer}>
+            <Text style={styles.remindMeText}>Remind me</Text>
+            <SelectDropdown
+              data={TIME_CHOICES}
+              defaultButtonText={"30 min"}
+              onSelect={(selectedItem, index) => {
+                console.log(selectedItem, index);
+              }}
+              buttonStyle={styles.timeSelectButton}
+              buttonTextStyle={styles.timeSelectButtonText}
+              dropdownStyle={styles.dropdownStyle}
+              rowStyle={styles.rowStyle}
+              rowTextStyle={styles.rowTextStyle}
+            />
 
-                <Text style={styles.remindMeText}>before my day ends</Text>
-              </View>
-              <View style={styles.enableButtonContainer}>
-                <TouchableRipple
-                  style={styles.disableButton}
-                  onPress={disableNotifications}
-                >
-                  <Text style={styles.disableButtonText}>
-                    Turn off notifications
-                  </Text>
-                </TouchableRipple>
-              </View>
-            </View>
-          </>
-        ) : (
-          <>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalHeader}>Daily Reminder</Text>
-              <Text style={styles.modalSubheader}>
-                Get reminded when your day is about to end.
+            <Text style={styles.remindMeText}>before my day ends</Text>
+          </View>
+          <View style={styles.enableButtonContainer}>
+            <TouchableRipple
+              style={styles.disableButton}
+              onPress={disableNotifications}
+            >
+              <Text style={styles.disableButtonText}>
+                Turn off notifications
               </Text>
-              <View style={styles.sampleNotif}>
-                <View style={styles.sampleNotifAppIcon}></View>
-                <View style={styles.sampleNotifContent}>
-                  <View style={styles.sampleNotifTopContent}>
-                    <Text style={styles.appName}>Fervo</Text>
-                    <Text style={styles.timestamp}>now</Text>
-                  </View>
-                  <Text style={styles.sampleNotifMessage}>
-                    You have 30 minutes remaining to complete your tasks!
-                  </Text>
-                </View>
+            </TouchableRipple>
+          </View>
+        </>
+      ) : (
+        <>
+          <Text style={styles.modalSubheader}>
+            Get reminded when your day is about to end.
+          </Text>
+          <View style={styles.sampleNotif}>
+            <View style={styles.sampleNotifAppIcon}></View>
+            <View style={styles.sampleNotifContent}>
+              <View style={styles.sampleNotifTopContent}>
+                <Text style={styles.appName}>Fervo</Text>
+                <Text style={styles.timestamp}>now</Text>
               </View>
-              <View style={styles.enableButtonContainer}>
-                <TouchableRipple
-                  style={styles.enableButton}
-                  onPress={enableNotifications}
-                >
-                  <Text style={styles.enableButtonText}>
-                    Turn on notifications
-                  </Text>
-                </TouchableRipple>
-              </View>
+              <Text style={styles.sampleNotifMessage}>
+                You have 30 minutes remaining to complete your tasks!
+              </Text>
             </View>
-          </>
-        )}
-      </View>
-      {/* CANCEL BUTTON */}
-      <View>
-        <TouchableRipple
-          style={styles.cancelButton}
-          onPress={() => {
-            handleToggleModal(false);
-          }}
-        >
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableRipple>
-      </View>
-    </Modal>
+          </View>
+          <View style={styles.enableButtonContainer}>
+            <TouchableRipple
+              style={styles.enableButton}
+              onPress={enableNotifications}
+            >
+              <Text style={styles.enableButtonText}>Turn on notifications</Text>
+            </TouchableRipple>
+          </View>
+        </>
+      )}
+    </BottomModal>
   );
 };
 
 const styles = StyleSheet.create({
-  // Modal styles
-  bottomModal: {
-    justifyContent: "flex-end",
-  },
-  modalContainer: {
-    flexDirection: "col",
-    backgroundColor: Color.fervo_red,
-    // justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-    borderColor: "rgba(0, 0, 0, 0.1)",
-    overflow: "hidden",
-    height: 350,
-  },
   modalContent: {
     justifyContent: "center",
     alignItems: "center",
@@ -199,23 +161,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderTopWidth: 1.5,
     borderColor: "rgba(255, 255, 255, 0.1)",
-  },
-  cancelButton: {
-    backgroundColor: Color.fervo_red,
-    width: "100%",
-    marginTop: 10,
-    marginBottom: 10,
-    paddingVertical: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-  },
-  buttonText: {
-    fontSize: 16,
-    lineHeight: 15,
-    textAlignVertical: "bottom",
-    color: Color.white,
-    fontWeight: 500,
   },
 
   // Modal content styles

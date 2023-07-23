@@ -11,8 +11,11 @@ import LogoAppName from "../components/auth/LogoAppName";
 import FormInput from "../components/auth/AuthFormInput";
 import SignUpButton from "../components/auth/AuthFormButton";
 import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
+import { LinearGradient } from "expo-linear-gradient";
+import { useThemes } from "../hooks/ThemesContext";
 
 const Signup = () => {
+  const { theme, backgroundGradient } = useThemes();
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -86,6 +89,8 @@ const Signup = () => {
   };
 
   return (
+    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.pageContainer}
@@ -114,6 +119,7 @@ const Signup = () => {
         buttonText={"Sign In"}
       />
     </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
  

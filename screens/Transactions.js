@@ -18,6 +18,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { useSettings } from "../hooks/SettingsContext";
 import WeekBundle from "../components/stats/WeekBundle";
 import { useThemes } from "../hooks/ThemesContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 const formatWeekID = (weekID) => {
   const year = weekID.slice(0, 4);
@@ -30,7 +31,7 @@ const formatWeekID = (weekID) => {
 };
 
 const Transactions = ({ navigation }) => {
-  const { theme } = useThemes();
+  const { theme, backgroundGradient } = useThemes();
   const styles = getStyles(theme);
   const {
     settings: { isPaymentSetup, hasBeenChargedBefore },
@@ -148,46 +149,48 @@ const Transactions = ({ navigation }) => {
   ];
 
   return (
-    <SafeAreaView style={styles.pageContainer}>
-      <View style={{ paddingHorizontal: SETTINGS_HORIZONTAL_PADDING }}>
-        <SettingsHeader navigation={navigation} header={"Transactions"} />
-      </View>
-
-      {/* Show upcoming transaction if user has set up credit card & Show past transactions if user has been charged before */}
-      {hasBeenChargedBefore || true ? (
-        <SectionList
-          sections={DATA}
-          keyExtractor={(item, index) => item + index}
-          renderItem={({ item, section }) => (
-            <View style={styles.bundleContainer}>
-              <WeekBundle
-                weekDateRange={item.weekDateRange}
-                totalWeeklyFine={item.totalWeeklyFine}
-                isCharged={item.isCharged}
-                noInputCount={item.noInputCount}
-                noInputFine={item.noInputFine}
-                finedTasks={item.finedTasks}
-                isFirstSection={DATA.indexOf(section) === 0}
-              />
-            </View>
-          )}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text style={styles.descriptorText}>{title}</Text>
-          )}
-          contentContainerStyle={{
-            paddingHorizontal: SETTINGS_HORIZONTAL_PADDING,
-          }}
-          style={styles.sectionList}
-          renderSectionFooter={() => <View style={{ height: 10 }} />}
-        />
-      ) : (
-        <View>
-          <Text>Attach credit card</Text>
+    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+      <SafeAreaView style={styles.pageContainer}>
+        <View style={{ paddingHorizontal: SETTINGS_HORIZONTAL_PADDING }}>
+          <SettingsHeader navigation={navigation} header={"Transactions"} />
         </View>
-      )}
-    </SafeAreaView>
+
+        {/* Show upcoming transaction if user has set up credit card & Show past transactions if user has been charged before */}
+        {hasBeenChargedBefore || true ? (
+          <SectionList
+            sections={DATA}
+            keyExtractor={(item, index) => item + index}
+            renderItem={({ item, section }) => (
+              <View style={styles.bundleContainer}>
+                <WeekBundle
+                  weekDateRange={item.weekDateRange}
+                  totalWeeklyFine={item.totalWeeklyFine}
+                  isCharged={item.isCharged}
+                  noInputCount={item.noInputCount}
+                  noInputFine={item.noInputFine}
+                  finedTasks={item.finedTasks}
+                  isFirstSection={DATA.indexOf(section) === 0}
+                />
+              </View>
+            )}
+            renderSectionHeader={({ section: { title } }) => (
+              <Text style={styles.descriptorText}>{title}</Text>
+            )}
+            contentContainerStyle={{
+              paddingHorizontal: SETTINGS_HORIZONTAL_PADDING,
+            }}
+            style={styles.sectionList}
+            renderSectionFooter={() => <View style={{ height: 10 }} />}
+          />
+        ) : (
+          <View>
+            <Text>Attach credit card</Text>
+          </View>
+        )}
+      </SafeAreaView>
+    </LinearGradient>
   );
-};
+}; 
 
 export default Transactions;
 

@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, ScrollView, Text, View, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Color, settingsPageStyles } from "../GlobalStyles";
+import { Color, SETTINGS_HORIZONTAL_PADDING, settingsPageStyles } from "../GlobalStyles";
 import RightChevronIcon from "../assets/icons/chevron-right.svg";
 import UserCircleIcon from "../assets/icons/user-profile-circle.svg";
 import HistoryIcon from "../assets/icons/history-icon.svg";
@@ -169,7 +169,7 @@ const Settings = ({ navigation }) => {
 
   return (
     <SafeAreaView style={settingsPageStyles.pageContainer}>
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} indicatorStyle={'white'}>
       {/* <OnboardingPopup
         texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
         buttonTitle="Back to settings."
@@ -370,42 +370,7 @@ const Settings = ({ navigation }) => {
               <MailIcon width={25} height={25} color={theme.textHigh} />
               <Text style={styles.buttonTitle}>Email</Text>
             </View>
-
-            <View style={styles.chevronContainer}>
-              <View style={styles.daysOfWeekTextContainer}>
-                {Object.values(daysActive).every(Boolean) ? (
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: theme.textHigh,
-                      fontWeight: "500",
-                      opacity: 0.8,
-                      maxWidth: 200, // Set a maximum width for the text before truncation
-                    }}
-                    numberOfLines={1} // Set the maximum number of lines to 1
-                    ellipsizeMode="tail" // Specify truncation with ellipsis at the end of the text
-                  >
-                    {currentUserEmail}
-                  </Text>
-                ) : (
-                  daysOfWeek.map((dayKey, index) => (
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        color: daysActive[dayKey]
-                          ? theme.textHigh
-                          : theme.textDisabled,
-                        fontWeight: daysActive[dayKey] ? 500 : 400,
-                        opacity: 0.8,
-                      }}
-                      key={index}
-                    >
-                      {BUTTON_TEXTS[index]}
-                    </Text>
-                  ))
-                )}
-              </View>
-            </View>
+            <Text style={styles.rightSideText}>asdf@gmail.com</Text>
         </TouchableRipple>
         <TouchableRipple
             style={styles.button}
@@ -429,6 +394,7 @@ const getStyles = (theme) =>
   StyleSheet.create({
     scrollView: {
       height: "120%",
+      paddingHorizontal: SETTINGS_HORIZONTAL_PADDING
     },
     headerContainer: {
       paddingTop: 20,

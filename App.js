@@ -106,7 +106,7 @@ const SettingsStack = () => (
       name="Account"
       component={Account}
       options={{ headerShown: false }}
-    /> 
+    />
     <Stack.Screen
       name="ChangeEmail"
       component={ChangeEmail}
@@ -157,7 +157,7 @@ export default function App() {
     Inter_semibold: require("./assets/fonts/Inter_semibold.ttf"),
     Inter_bold: require("./assets/fonts/Inter_bold.ttf"),
   });
- 
+
   if (!fontsLoaded && !error) {
     return null;
   }
@@ -264,6 +264,7 @@ function AppContent({ isSignedIn }) {
                   headerShown: false,
                   tabBarStyle: tabStylesState ? tabStylesState.tabBar : null,
                   tabBarShowLabel: false,
+                  animation: "none", // Add this line to disable animation
                 }}
               >
                 <Tab.Screen
@@ -344,15 +345,13 @@ function AppContent({ isSignedIn }) {
             // ) : (
             //   <IntroStack />
             // )
-            <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-              <AuthStack />
-            </LinearGradient>
+            <AuthStack backgroundGradient={backgroundGradient} />
           )
         ) : (
           <Splash />
         )}
       </NavigationContainer>
-      <TodoBottomSheet backgroundGradient={backgroundGradient}/>
+      <TodoBottomSheet backgroundGradient={backgroundGradient} />
     </View>
   );
 }

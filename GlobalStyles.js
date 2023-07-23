@@ -78,6 +78,6 @@ export const settingsPageStyles = {
     display: "flex",
     marginBottom: BOTTOM_TAB_HEIGHT + 90,
 
-    marginHorizontal: SETTINGS_HORIZONTAL_PADDING,
+    // marginHorizontal: SETTINGS_HORIZONTAL_PADDING,
   },
 };

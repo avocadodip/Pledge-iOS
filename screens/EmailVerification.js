@@ -26,8 +26,11 @@ import LeftChevronIcon from "../assets/icons/chevron-left.svg";
 import { Color } from "../GlobalStyles";
 import AuthFormButton from "../components/auth/AuthFormButton";
 import MailIcon from "../assets/icons/mail-icon.svg";
+import { useThemes } from "../hooks/ThemesContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 const EmailVerification = ({ route, navigation }) => {
+  const { theme, backgroundGradient } = useThemes();
   const [isChecking, setIsChecking] = useState(false);
   const { userData } = route.params;
   const { email, fullName } = userData;
@@ -183,37 +186,39 @@ const EmailVerification = ({ route, navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.pageContainer}>
-      <TouchableRipple style={styles.backButton} onPress={handleBackPress}>
-        <LeftChevronIcon width={24} height={24} color={Color.white} />
-      </TouchableRipple>
+    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+      <SafeAreaView style={styles.pageContainer}>
+        <TouchableRipple style={styles.backButton} onPress={handleBackPress}>
+          <LeftChevronIcon width={24} height={24} color={Color.white} />
+        </TouchableRipple>
 
-      <View style={styles.contentContainer}>
-        <View style={styles.header}>
-          <MailIcon width={60} height={60} color={Color.white} />
-          <Text style={styles.headerText}>Check your email</Text>
-        </View>
-        <Text style={styles.promptText}>
-          An email with a verification link has been sent to
-        </Text>
-        <Text style={styles.emailText}>{email}</Text>
+        <View style={styles.contentContainer}>
+          <View style={styles.header}>
+            <MailIcon width={60} height={60} color={Color.white} />
+            <Text style={styles.headerText}>Check your email</Text>
+          </View>
+          <Text style={styles.promptText}>
+            An email with a verification link has been sent to
+          </Text>
+          <Text style={styles.emailText}>{email}</Text>
 
-        <AuthFormButton
-          action={checkEmailVerification}
-          text={"Confirm"}
-          disabledCondition={isChecking}
-        />
-        <View style={styles.resendContainer}>
-          <Text style={styles.resendText}>Didn't receive a link?</Text>
-          <TouchableOpacity
-            style={styles.resendButton}
-            onPress={resendEmailVerification}
-          >
-            <Text style={styles.resendButtonText}>Resend</Text>
-          </TouchableOpacity>
+          <AuthFormButton
+            action={checkEmailVerification}
+            text={"Confirm"}
+            disabledCondition={isChecking}
+          />
+          <View style={styles.resendContainer}>
+            <Text style={styles.resendText}>Didn't receive a link?</Text>
+            <TouchableOpacity
+              style={styles.resendButton}
+              onPress={resendEmailVerification}
+            >
+              <Text style={styles.resendButtonText}>Resend</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 

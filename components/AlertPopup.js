@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const AlertModal = () => {
+const AlertPopup = () => {
   return (
     <View>
       <Text>AlertModal</Text>
@@ -9,6 +9,6 @@ const AlertModal = () => {
   )
 }
 
-export default AlertModal
+export default AlertPopup
 
 const styles = StyleSheet.create({})

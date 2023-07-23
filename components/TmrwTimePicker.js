@@ -9,6 +9,7 @@ import { db } from "../database/firebase";
 import ContentLoader, { Rect } from "react-content-loader/native";
 import { useDayStatus } from "../hooks/DayStatusContext";
 import { useSettings } from "../hooks/SettingsContext";
+import BottomModal from "./BottomModal";
 
 const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
@@ -123,136 +124,96 @@ const TmrwTimePicker = ({ altMessage }) => {
       </View>
 
       {/* AM MODAL */}
-      <Modal
-        style={styles.bottomModal}
+      <BottomModal
+        // style={styles.bottomModal}
         isVisible={isModalVisible.start}
-        onBackdropPress={() => toggleModal("start")}
-        backdropTransitionOutTiming={0}
-        animationOutTiming={500}
+        onBackdropPress={() => handleTimeSave("start")}
+        modalTitle={"Change start time"}
       >
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Change start time</Text>
-          <View style={styles.timePickerContainer}>
-            <Picker
-              style={styles.timePicker}
-              selectedValue={tempTime.startHour}
-              onValueChange={(itemValue) =>
-                setTempTime((prev) => ({ ...prev, startHour: itemValue }))
-              }
-              selectionColor={"transparent"} // doesn't work
-            >
-              {HOURS.map((time, index) => (
-                <Picker.Item
-                  color={Color.white}
-                  key={index}
-                  label={time}
-                  value={time}
-                />
-              ))}
-            </Picker>
-            <Text style={styles.timePickerText}>:</Text>
-            <Picker
-              style={styles.timePicker}
-              selectedValue={tempTime.startMinute}
-              onValueChange={(itemValue) =>
-                setTempTime((prev) => ({ ...prev, startMinute: itemValue }))
-              }
-            >
-              {MINUTES.map((time, index) => (
-                <Picker.Item
-                  color={Color.white}
-                  key={index}
-                  label={time}
-                  value={time}
-                />
-              ))}
-            </Picker>
-            <Text style={styles.timePickerText}>AM</Text>
-          </View>
-          {/* SAVE BUTTON */}
-          <TouchableRipple
-            style={styles.confirmButton}
-            onPress={() => handleTimeSave("start")}
+        <View style={styles.timePickerContainer}>
+          <Picker
+            style={styles.timePicker}
+            selectedValue={tempTime.startHour}
+            onValueChange={(itemValue) =>
+              setTempTime((prev) => ({ ...prev, startHour: itemValue }))
+            }
+            selectionColor={"transparent"} // doesn't work
           >
-            <Text style={styles.buttonText}>Confirm</Text>
-          </TouchableRipple>
-        </View>
-        {/* CANCEL BUTTON */}
-        <View>
-          <TouchableRipple
-            style={styles.cancelButton}
-            onPress={() => toggleModal("start")}
+            {HOURS.map((time, index) => (
+              <Picker.Item
+                color={Color.white}
+                key={index}
+                label={time}
+                value={time}
+              />
+            ))}
+          </Picker>
+          <Text style={styles.timePickerText}>:</Text>
+          <Picker
+            style={styles.timePicker}
+            selectedValue={tempTime.startMinute}
+            onValueChange={(itemValue) =>
+              setTempTime((prev) => ({ ...prev, startMinute: itemValue }))
+            }
           >
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableRipple>
+            {MINUTES.map((time, index) => (
+              <Picker.Item
+                color={Color.white}
+                key={index}
+                label={time}
+                value={time}
+              />
+            ))}
+          </Picker>
+          <Text style={styles.timePickerText}>AM</Text>
         </View>
-      </Modal>
+      </BottomModal>
 
       {/* PM MODAL */}
-      <Modal
-        style={styles.bottomModal}
+      <BottomModal
         isVisible={isModalVisible.end}
-        onBackdropPress={() => toggleModal("end")}
-        backdropTransitionOutTiming={0}
-        animationOutTiming={500}
+        onBackdropPress={() => handleTimeSave("end")}
+        modalTitle={"Change end time"}
+
       >
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Change end time</Text>
-          <View style={styles.timePickerContainer}>
-            <Picker
-              style={styles.timePicker}
-              selectedValue={tempTime.endHour}
-              onValueChange={(itemValue) =>
-                setTempTime((prev) => ({ ...prev, endHour: itemValue }))
-              }
-              selectionColor={"transparent"} // doesn't work
-            >
-              {HOURS.map((time, index) => (
-                <Picker.Item
-                  color={Color.white}
-                  key={index}
-                  label={time}
-                  value={time}
-                />
-              ))}
-            </Picker>
-            <Text style={styles.timePickerText}>:</Text>
-            <Picker
-              style={styles.timePicker}
-              selectedValue={tempTime.endMinute}
-              onValueChange={(itemValue) =>
-                setTempTime((prev) => ({ ...prev, endMinute: itemValue }))
-              }
-            >
-              {MINUTES.map((time, index) => (
-                <Picker.Item
-                  color={Color.white}
-                  key={index}
-                  label={time}
-                  value={time}
-                />
-              ))}
-            </Picker>
-            <Text style={styles.timePickerText}>PM</Text>
-          </View>
-          {/* SAVE BUTTON */}
-          <TouchableRipple
-            style={styles.confirmButton}
-            onPress={() => handleTimeSave("end")}
+        <View style={styles.timePickerContainer}>
+          <Picker
+            style={styles.timePicker}
+            selectedValue={tempTime.endHour}
+            onValueChange={(itemValue) =>
+              setTempTime((prev) => ({ ...prev, endHour: itemValue }))
+            }
+            selectionColor={"transparent"} // doesn't work
           >
-            <Text style={styles.buttonText}>Confirm</Text>
-          </TouchableRipple>
-        </View>
-        {/* CANCEL BUTTON */}
-        <View>
-          <TouchableRipple
-            style={styles.cancelButton}
-            onPress={() => toggleModal("end")}
+            {HOURS.map((time, index) => (
+              <Picker.Item
+                color={Color.white}
+                key={index}
+                label={time}
+                value={time}
+              />
+            ))}
+          </Picker>
+          <Text style={styles.timePickerText}>:</Text>
+          <Picker
+            style={styles.timePicker}
+            selectedValue={tempTime.endMinute}
+            onValueChange={(itemValue) =>
+              setTempTime((prev) => ({ ...prev, endMinute: itemValue }))
+            }
           >
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableRipple>
+            {MINUTES.map((time, index) => (
+              <Picker.Item
+                color={Color.white}
+                key={index}
+                label={time}
+                value={time}
+              />
+            ))}
+          </Picker>
+          <Text style={styles.timePickerText}>PM</Text>
         </View>
-      </Modal>
+      </BottomModal>
     </View>
   );
 };
@@ -288,26 +249,6 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
 
-  // Modal and modal content styles
-  bottomModal: {
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    flexDirection: "col",
-    backgroundColor: Color.fervo_red,
-    paddingTop: 22,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-    borderColor: "rgba(0, 0, 0, 0.1)",
-    overflow: "hidden",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 500,
-    marginBottom: 1,
-    color: Color.white,
-  },
   timePickerContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -321,30 +262,6 @@ const styles = StyleSheet.create({
   timePickerText: {
     color: Color.white,
     fontSize: 20,
-  },
-  confirmButton: {
-    backgroundColor: Color.fervo_red,
-    width: "100%",
-    paddingVertical: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    borderTopWidth: 1.5,
-    borderColor: "rgba(255, 255, 255, 0.1)",
-  },
-  cancelButton: {
-    backgroundColor: Color.fervo_red,
-    width: "100%",
-    marginTop: 10,
-    marginBottom: 10,
-    paddingVertical: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-    borderColor: "rgba(0, 0, 0, 0.1)",
-  },
-  buttonText: {
-    color: Color.white,
-    fontSize: 18,
   },
 });
 
