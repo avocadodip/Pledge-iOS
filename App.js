@@ -10,19 +10,17 @@ import Login from "./screens/Login";
 import Splash from "./components/Splash";
 import Intro from "./screens/Intro";
 import TodoBottomSheet from "./components/TodoBottomSheet";
-import { Color } from "./GlobalStyles";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 import { ThemesProvider, useThemes } from "./hooks/ThemesContext";
 import { auth } from "./database/firebase";
-import { onAuthStateChanged } from "@firebase/auth";
 import useUpdateTimezoneOnAppActive from "./hooks/useUpdateTimezoneOnAppActive";
 import { STRIPE_PUBLISHABLE_KEY } from "@env";
 import EmailVerification from "./screens/EmailVerification";
 import ForgotPassword from "./screens/ForgotPassword";
-import { LinearGradient } from "expo-linear-gradient";
 import { DayStatusProvider } from "./hooks/DayStatusContext";
 import MainStack from "./components/MainStack";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Stack = createNativeStackNavigator();
 
@@ -62,16 +60,6 @@ const IntroStack = () => (
   </Stack.Navigator>
 );
 
-const SplashStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen
-      name="SplashScreen"
-      component={Splash}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
-);
-
 export default function App() {
   return (
     <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
@@ -92,90 +80,43 @@ export default function App() {
 
 function AppContent() {
   const { theme, backgroundGradient } = useThemes();
-
-  const [isSignedIn, setIsSignedIn] = useState(false);
   const [isSplashScreen, setIsSplashScreen] = useState(true);
-  const [isLoadingData, setIsLoadingData] = useState(true);
-  const {
-    setCurrentUserID,
-    settings: { isOnboarded },
-    loading,
-  } = useSettings();
+  const { isAuthenticated } = useSettings();
 
-  function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
+  // Splash screen and data loading
   useEffect(() => {
-    console.log(isSplashScreen);
-  }, [isSplashScreen]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      // If user signed in:
-      if (user && user.emailVerified) {
-        setIsSignedIn(true);
-        // setIsSplashScreen(true);
-
-        // Load data
-
-        // Hide splash screen
-
-        // If user not signed in:
-      } else {
-        setIsSignedIn(false);
-        await delay(2000);
-        if (backgroundGradient) {
-          console.log(backgroundGradient);
-          setIsSplashScreen(false);
-        }
-      }
-    });
-
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
-  }, [backgroundGradient]);
-
-  // const [hideSplashScreen, setHideSplashScreen] = useState(true);
-
-  // useEffect(() => {
-  //   const timeoutId = setTimeout(() => {
-  //     setHideSplashScreen(true);
-  //   }, 2000);
-  //   return () => clearTimeout(timeoutId);
-  // }, []);
-
-  // useEffect(() => {
-  //   setHideSplashScreen(!loading);
-  // }, [loading]);
-
-  useEffect(() => {
-    if (isSignedIn) {
-      const user = auth.currentUser;
-      if (user) {
-        setCurrentUserID(user.uid);
-      }
+    if (isAuthenticated) {
+      const timerId = setTimeout(() => {
+        // Hide after data loaded... command shift h
+        setIsSplashScreen(false);
+      }, 2000);
+      return () => clearTimeout(timerId);
     } else {
-      console.log("current user: none");
-      setCurrentUserID(null);
+      const timerId = setTimeout(() => {
+        setIsSplashScreen(false);
+      }, 2000);
+      return () => clearTimeout(timerId);
     }
-  }, [isSignedIn, setCurrentUserID]);
+  }, [isAuthenticated]);
 
   // If app state becomes active, update firebase timezone if user is in new timezone
   // useUpdateTimezoneOnAppActive(currentUserID);
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar style="light" backgroundColor={Color.white} />
+      <StatusBar style={theme.statusBar} animated={true} />
       <NavigationContainer theme={{ colors: {} }}>
-        {isSignedIn ? (
+        {isSplashScreen ? (
+          <Splash />
+        ) : isAuthenticated ? (
           <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-            <MainStack theme={theme} />
+            <MainStack theme={theme} backgroundGradient={backgroundGradient} />
           </LinearGradient>
         ) : (
-          <AuthStack backgroundGradient={backgroundGradient} />
+          <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+            <AuthStack backgroundGradient={backgroundGradient} />
+          </LinearGradient>
         )}
-        {/* {isSplashScreen && <SplashStack />} */}
       </NavigationContainer>
       <TodoBottomSheet backgroundGradient={backgroundGradient} />
     </View>

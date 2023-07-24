@@ -58,7 +58,7 @@ export const ThemesProvider = ({ children }) => {
   // Fetch theme from storage
   const fetchTheme = async () => {
     const storedTheme = await AsyncStorage.getItem("storedTheme");
-    setCurrentThemeName(storedTheme);
+    setCurrentThemeName(storedTheme || "Classic"); 
   };
 
   // Save theme to storage

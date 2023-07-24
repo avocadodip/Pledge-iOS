@@ -7,6 +7,7 @@ export const greenGradientValues = ["#30AD4C", "#2AA746"];
 export default {
   Classic: {
     accent: "#E05E56",
+    statusBar: "light",
     primary: Color.white,
     overlayPrimary: Color.white70,
     halfPrimary: Color.white50,
@@ -37,6 +38,8 @@ export default {
   },
   Dark: {
     accent: Color.black,
+    statusBar: "light",
+
     primary: Color.white,
     overlayPrimary: Color.white70,
     halfPrimary: Color.white50,
@@ -68,6 +71,8 @@ export default {
   },
   Light: {
     accent: Color.white,
+    statusBar: "dark",
+
     primary: Color.black,
     overlayPrimary: Color.black55,
     halfPrimary: Color.black35,

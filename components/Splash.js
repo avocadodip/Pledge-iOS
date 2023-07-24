@@ -22,7 +22,8 @@ const Splash = () => {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    ...StyleSheet.absoluteFillObject, // This makes it an overlay
+    flex: 1,
+    // ...StyleSheet.absoluteFillObject, // This makes it an overlay
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 2, // Set zIndex high so it appears above other elements

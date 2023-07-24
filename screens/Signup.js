@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Alert, KeyboardAvoidingView, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Alert,
+  KeyboardAvoidingView,
+  Text,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../database/firebase";
 import {
@@ -89,40 +95,37 @@ const Signup = () => {
   };
 
   return (
-    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.pageContainer}
+      >
+        <LogoAppName />
 
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.pageContainer}
-    >
-      <LogoAppName />
+        <View style={styles.formContainer}>
+          <View style={styles.firstLastContainer}>
+            <View style={styles.textInputContainer}>
+              <FormInput action={setFirstName} value={firstName} type="first" />
+            </View>
+            <View style={styles.textInputContainer}>
+              <FormInput action={setLastName} value={lastName} type="last" />
+            </View>
+          </View>
+          <FormInput action={setEmail} value={email} type="email" />
+          <FormInput action={setPassword} value={password} type="password" />
 
-      <View style={styles.formContainer}>
-        <View style={styles.firstLastContainer}>
-          <View style={styles.textInputContainer}>
-            <FormInput action={setFirstName} value={firstName} type="first" />
-          </View>
-          <View style={styles.textInputContainer}>
-            <FormInput action={setLastName} value={lastName} type="last" />
-          </View>
+          <SignUpButton action={handleSignup} text={"Sign up"} />
         </View>
-        <FormInput action={setEmail} value={email} type="email" />
-        <FormInput action={setPassword} value={password} type="password" />
 
-        <SignUpButton action={handleSignup} text={"Sign up"} />
-      </View>
-
-      <SignInSignUpSwitch
-        navigation={navigation}
-        prompt={"Already have an account?"}
-        navigateTo={"Login"}
-        buttonText={"Sign In"}
-      />
-    </KeyboardAvoidingView>
-    </LinearGradient>
+        <SignInSignUpSwitch
+          navigation={navigation}
+          prompt={"Already have an account?"}
+          navigateTo={"Login"}
+          buttonText={"Sign In"}
+        />
+      </KeyboardAvoidingView>
   );
 };
- 
+
 const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,

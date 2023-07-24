@@ -1,6 +1,17 @@
-import { StyleSheet, TouchableOpacity, ScrollView, Text, View, Alert } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Text,
+  View,
+  Alert,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Color, SETTINGS_HORIZONTAL_PADDING, settingsPageStyles } from "../GlobalStyles";
+import {
+  Color,
+  SETTINGS_HORIZONTAL_PADDING,
+  settingsPageStyles,
+} from "../GlobalStyles";
 import RightChevronIcon from "../assets/icons/chevron-right.svg";
 import UserCircleIcon from "../assets/icons/user-profile-circle.svg";
 import HistoryIcon from "../assets/icons/history-icon.svg";
@@ -56,7 +67,6 @@ const Settings = ({ navigation }) => {
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
   const [notifsModalVisible, setNotifsModalVisible] = useState(false);
   const prevCardCountRef = useRef(0);
-  const userRef = doc(db, "users", currentUserID);
 
   useEffect(() => {
     loadPaymentSheet();
@@ -69,9 +79,13 @@ const Settings = ({ navigation }) => {
   };
 
   const handleLogout = async () => {
+    console.log(auth);
     try {
+      console.log("1");
       await auth.signOut();
     } catch (error) {
+      console.log("2");
+
       console.error("Sign out error", error);
     }
   };
@@ -84,6 +98,8 @@ const Settings = ({ navigation }) => {
 
   // Payment
   const checkIfPaymentInitialized = async () => {
+    const userRef = doc(db, "users", currentUserID);
+
     const paymentMethods = await fetchPaymentMethods(
       stripeCustomerId,
       currentUserID
@@ -169,200 +185,205 @@ const Settings = ({ navigation }) => {
 
   return (
     <SafeAreaView style={settingsPageStyles.pageContainer}>
-      <ScrollView style={styles.scrollView} indicatorStyle={'white'}>
-      {/* <OnboardingPopup
+      <ScrollView style={styles.scrollView} indicatorStyle={"white"}>
+        {/* <OnboardingPopup
         texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
         buttonTitle="Back to settings."
         secondButtonTitle="Log me out."
       /> */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Settings</Text>
-      </View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitle}>Settings</Text>
+        </View>
 
-      <View style={styles.mainContainer}>
-        <View style={styles.sectionContainer}>
-          {loading ? (
-            <ContentLoader
-              speed={0.6}
-              height={BUTTON_HEIGHT}
-              backgroundColor="#e16564"
-              foregroundColor="#f27b7b"
+        <View style={styles.mainContainer}>
+          <View style={styles.sectionContainer}>
+            {loading ? (
+              <ContentLoader
+                speed={0.6}
+                height={BUTTON_HEIGHT}
+                backgroundColor="#e16564"
+                foregroundColor="#f27b7b"
+              >
+                <Rect width="100%" height="100%" />
+              </ContentLoader>
+            ) : (
+              <>
+                <TouchableRipple
+                  style={styles.button}
+                  onPress={openPaymentSheet}
+                >
+                  <View style={styles.leftSettingsButton}>
+                    <CreditCardIcon
+                      width={24}
+                      height={24}
+                      color={theme.textHigh}
+                    />
+
+                    {isPaymentInitialized ? (
+                      <Text style={styles.buttonTitle}>Payment Method</Text>
+                    ) : (
+                      <Text style={styles.buttonTitle}>
+                        Add a payment method
+                      </Text>
+                    )}
+                  </View>
+                  <View style={styles.chevronContainer}>
+                    {isPaymentInitialized ? (
+                      <Text style={styles.rightSideText}>Activated</Text>
+                    ) : (
+                      <PlusIcon width={27} height={27} color={theme.textHigh} />
+                    )}
+                  </View>
+                </TouchableRipple>
+              </>
+            )}
+          </View>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionHeaderText}>App</Text>
+          </View>
+          <View style={styles.sectionContainer}></View>
+
+          <View style={styles.sectionContainer}>
+            <TouchableRipple
+              style={styles.button}
+              onPress={() => handleOpenNotifsModal(true)}
             >
-              <Rect width="100%" height="100%" />
-            </ContentLoader>
-          ) : (
-            <>
-              <TouchableRipple style={styles.button} onPress={openPaymentSheet}>
-                <View style={styles.leftSettingsButton}>
-                  <CreditCardIcon
-                    width={24}
-                    height={24}
-                    color={theme.textHigh}
-                  />
-
-                  {isPaymentInitialized ? (
-                    <Text style={styles.buttonTitle}>Payment Method</Text>
-                  ) : (
-                    <Text style={styles.buttonTitle}>Add a payment method</Text>
-                  )}
-                </View>
-                <View style={styles.chevronContainer}>
-                  {isPaymentInitialized ? (
-                    <Text style={styles.rightSideText}>Activated</Text>
-                  ) : (
-                    <PlusIcon width={27} height={27} color={theme.textHigh} />
-                  )}
-                </View>
-              </TouchableRipple>
-            </>
-          )}
-        </View>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionHeaderText}>App</Text>
-        </View>
-        <View style={styles.sectionContainer}></View>
-
-        <View style={styles.sectionContainer}>
-          <TouchableRipple
-            style={styles.button}
-            onPress={() => handleOpenNotifsModal(true)}
-          >
-            <View style={styles.leftSettingsButton}>
-              <NotificationBellIcon
-                width={24}
-                height={24}
-                color={theme.textHigh}
-              />
-              <Text style={styles.buttonTitle}>Notifications</Text>
-            </View>
-            <View style={styles.chevronContainer}>
-              <View style={styles.daysOfWeekTextContainer}>
-                {notificationsEnabled ? (
-                  <Text style={styles.rightSideText}>On</Text>
-                ) : (
-                  <Text style={styles.rightSideText}>Off</Text>
-                )}
+              <View style={styles.leftSettingsButton}>
+                <NotificationBellIcon
+                  width={24}
+                  height={24}
+                  color={theme.textHigh}
+                />
+                <Text style={styles.buttonTitle}>Notifications</Text>
               </View>
-            </View>
-          </TouchableRipple>
-          <NotificationsModal
-            currentUserID={currentUserID}
-            daysActive={daysActive}
-            isVisible={notifsModalVisible}
-            handleToggleModal={handleOpenNotifsModal}
-            notifsEnabled={notificationsEnabled}
-          />
-          {/* DAYS ACTIVE */}
-          <TouchableRipple
-            style={styles.button}
-            onPress={() => handleOpenDaysActiveModal(true)}
-          >
-            <View style={styles.leftSettingsButton}>
-              <DaysActiveIcon width={25} height={25} color={theme.textHigh} />
-              <Text style={styles.buttonTitle}>Days Active</Text>
-            </View>
+              <View style={styles.chevronContainer}>
+                <View style={styles.daysOfWeekTextContainer}>
+                  {notificationsEnabled ? (
+                    <Text style={styles.rightSideText}>On</Text>
+                  ) : (
+                    <Text style={styles.rightSideText}>Off</Text>
+                  )}
+                </View>
+              </View>
+            </TouchableRipple>
+            <NotificationsModal
+              currentUserID={currentUserID}
+              daysActive={daysActive}
+              isVisible={notifsModalVisible}
+              handleToggleModal={handleOpenNotifsModal}
+              notifsEnabled={notificationsEnabled}
+            />
+            {/* DAYS ACTIVE */}
+            <TouchableRipple
+              style={styles.button}
+              onPress={() => handleOpenDaysActiveModal(true)}
+            >
+              <View style={styles.leftSettingsButton}>
+                <DaysActiveIcon width={25} height={25} color={theme.textHigh} />
+                <Text style={styles.buttonTitle}>Days Active</Text>
+              </View>
 
-            <View style={styles.chevronContainer}>
-              <View style={styles.daysOfWeekTextContainer}>
-                {Object.values(daysActive).every(Boolean) ? (
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: theme.textHigh,
-                      fontWeight: 500,
-                      opacity: 0.8,
-                    }}
-                  >
-                    All
-                  </Text>
-                ) : (
-                  daysOfWeek.map((dayKey, index) => (
+              <View style={styles.chevronContainer}>
+                <View style={styles.daysOfWeekTextContainer}>
+                  {Object.values(daysActive).every(Boolean) ? (
                     <Text
                       style={{
                         fontSize: 15,
-                        color: daysActive[dayKey]
-                          ? theme.textHigh
-                          : theme.textDisabled,
-                        fontWeight: daysActive[dayKey] ? 500 : 400,
+                        color: theme.textHigh,
+                        fontWeight: 500,
                         opacity: 0.8,
                       }}
-                      key={index}
                     >
-                      {BUTTON_TEXTS[index]}
+                      All
                     </Text>
-                  ))
-                )}
+                  ) : (
+                    daysOfWeek.map((dayKey, index) => (
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          color: daysActive[dayKey]
+                            ? theme.textHigh
+                            : theme.textDisabled,
+                          fontWeight: daysActive[dayKey] ? 500 : 400,
+                          opacity: 0.8,
+                        }}
+                        key={index}
+                      >
+                        {BUTTON_TEXTS[index]}
+                      </Text>
+                    ))
+                  )}
+                </View>
+              </View>
+            </TouchableRipple>
+            <DaysActiveModal
+              currentUserID={currentUserID}
+              daysActive={daysActive}
+              isVisible={daysActiveModalVisible}
+              handleToggleModal={handleOpenDaysActiveModal}
+            />
+            {/* VACATION */}
+            <View style={styles.button}>
+              <View style={styles.leftSettingsButton}>
+                <PlaneIcon width={25} height={25} color={theme.textHigh} />
+                <Text style={styles.buttonTitle}>Vacation Mode</Text>
+              </View>
+              <View style={styles.chevronContainer}>
+                <VacationToggle
+                  vacationModeOn={vacationModeOn}
+                  currentUserID={currentUserID}
+                />
               </View>
             </View>
-          </TouchableRipple>
-          <DaysActiveModal
-            currentUserID={currentUserID}
-            daysActive={daysActive}
-            isVisible={daysActiveModalVisible}
-            handleToggleModal={handleOpenDaysActiveModal}
-          />
-          {/* VACATION */}
-          <View style={styles.button}>
-            <View style={styles.leftSettingsButton}>
-              <PlaneIcon width={25} height={25} color={theme.textHigh} />
-              <Text style={styles.buttonTitle}>Vacation Mode</Text>
+            {/* THEME */}
+            <View style={styles.button}>
+              <View style={styles.leftSettingsButton}>
+                <SunThemeIcon width={25} height={25} color={theme.textHigh} />
+                <Text style={styles.buttonTitle}>Theme</Text>
+              </View>
+              <View style={styles.rightSettingsButton}>
+                <ThemeToggle />
+              </View>
             </View>
-            <View style={styles.chevronContainer}>
-              <VacationToggle
-                vacationModeOn={vacationModeOn}
-                currentUserID={currentUserID}
-              />
+            {/* TIMEZONE */}
+            <View style={styles.button}>
+              <View style={styles.leftSettingsButton}>
+                <GlobeIcon width={25} height={25} color={theme.textHigh} />
+                <Text style={styles.buttonTitle}>Time Zone</Text>
+              </View>
+              <Text style={styles.rightSideText}>{timezone}</Text>
             </View>
-          </View>
-          {/* THEME */}
-          <View style={styles.button}>
-            <View style={styles.leftSettingsButton}>
-              <SunThemeIcon width={25} height={25} color={theme.textHigh} />
-              <Text style={styles.buttonTitle}>Theme</Text>
-            </View>
-            <View style={styles.rightSettingsButton}>
-              <ThemeToggle />
-            </View>
-          </View>
-          {/* TIMEZONE */}
-          <View style={styles.button}>
-            <View style={styles.leftSettingsButton}>
-              <GlobeIcon width={25} height={25} color={theme.textHigh} />
-              <Text style={styles.buttonTitle}>Time Zone</Text>
-            </View>
-            <Text style={styles.rightSideText}>{timezone}</Text>
           </View>
         </View>
-      </View>
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>Account</Text>
-      </View>
-      <View style={styles.sectionContainer}>
-        <TouchableRipple
-          style={styles.button}
-          onPress={() => navigation.navigate("PastBets")}
-        >
-          <View style={styles.leftSettingsButton}>
-            <HistoryIcon width={24} height={24} color={theme.textHigh} />
-            <Text style={styles.buttonTitle}>Past Bets</Text>
-          </View>
-          <View style={styles.chevronContainer}>
-            <RightChevronIcon width={24} height={24} color={theme.textHigh} />
-          </View>
-        </TouchableRipple>
-        <TouchableRipple
-          style={styles.button}
-          onPress={() => navigation.navigate("Transactions")}
-        >
-          <View style={styles.leftSettingsButton}>
-            <MoneyIcon width={24} height={24} color={theme.textHigh} />
-            <Text style={styles.buttonTitle}>Transactions</Text>
-          </View>
-          <View style={styles.chevronContainer}>
-            <RightChevronIcon width={24} height={24} color={theme.textHigh} />
-          </View>
-        </TouchableRipple>
-        <TouchableRipple
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionHeaderText}>Account</Text>
+        </View>
+        <View style={styles.sectionContainer}>
+          <TouchableRipple
+            style={styles.button}
+            onPress={() => navigation.navigate("PastBets")}
+          >
+            <View style={styles.leftSettingsButton}>
+              <HistoryIcon width={24} height={24} color={theme.textHigh} />
+              <Text style={styles.buttonTitle}>Past Bets</Text>
+            </View>
+            <View style={styles.chevronContainer}>
+              <RightChevronIcon width={24} height={24} color={theme.textHigh} />
+            </View>
+          </TouchableRipple>
+          <TouchableRipple
+            style={styles.button}
+            onPress={() => navigation.navigate("Transactions")}
+          >
+            <View style={styles.leftSettingsButton}>
+              <MoneyIcon width={24} height={24} color={theme.textHigh} />
+              <Text style={styles.buttonTitle}>Transactions</Text>
+            </View>
+            <View style={styles.chevronContainer}>
+              <RightChevronIcon width={24} height={24} color={theme.textHigh} />
+            </View>
+          </TouchableRipple>
+          <TouchableRipple
             style={styles.button}
             onPress={() => navigation.navigate("ChangeEmail")}
           >
@@ -370,19 +391,16 @@ const Settings = ({ navigation }) => {
               <MailIcon width={25} height={25} color={theme.textHigh} />
               <Text style={styles.buttonTitle}>Email</Text>
             </View>
-            <Text style={styles.rightSideText}>asdf@gmail.com</Text>
-        </TouchableRipple>
-        <TouchableRipple
-            style={styles.button}
-            onPress={handleLogout}
-          >
+            <Text style={styles.rightSideText}>{currentUserEmail}</Text>
+          </TouchableRipple>
+          <TouchableRipple style={styles.button} onPress={handleLogout}>
             <View style={styles.leftSettingsButton}>
               <LogoutIcon width={25} height={25} color={theme.textHigh} />
               <Text style={styles.buttonTitle}>Logout</Text>
             </View>
-        </TouchableRipple>
-      </View>
-      <DeleteAccountButton/>
+          </TouchableRipple>
+        </View>
+        <DeleteAccountButton />
       </ScrollView>
     </SafeAreaView>
   );
@@ -394,7 +412,7 @@ const getStyles = (theme) =>
   StyleSheet.create({
     scrollView: {
       height: "120%",
-      paddingHorizontal: SETTINGS_HORIZONTAL_PADDING
+      paddingHorizontal: SETTINGS_HORIZONTAL_PADDING,
     },
     headerContainer: {
       paddingTop: 20,

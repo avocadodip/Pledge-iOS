@@ -17,6 +17,7 @@ import PastBets from "../screens/PastBets";
 import Transactions from "../screens/Transactions";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Settings from "../screens/Settings";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -84,59 +85,61 @@ const getTabStyles = () =>
     },
   });
 
-export default function MainStack({ theme }) {
+export default function MainStack({ theme, backgroundGradient }) {
   const tabStyles = getTabStyles();
 
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: tabStyles.tabBar,
-        tabBarShowLabel: false,
-      }}
-    >
-      <Tab.Screen
-        name="Today"
-        component={TodayStack}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              focused={focused}
-              activeIcon={TodayActiveIcon}
-              inactiveIcon={TodayInactiveIcon}
-              theme={theme}
-            />
-          ),
+    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: tabStyles.tabBar,
+          tabBarShowLabel: false,
         }}
-      />
-      <Tab.Screen
-        name="Tomorrow"
-        component={TomorrowStack}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              focused={focused}
-              activeIcon={TomorrowActiveIcon}
-              inactiveIcon={TomorrowInactiveIcon}
-              theme={theme}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsStack}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              focused={focused}
-              activeIcon={SettingsActiveIcon}
-              inactiveIcon={SettingsInactiveIcon}
-              theme={theme}
-            />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+      >
+        <Tab.Screen
+          name="Today"
+          component={TodayStack}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon
+                focused={focused}
+                activeIcon={TodayActiveIcon}
+                inactiveIcon={TodayInactiveIcon}
+                theme={theme}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Tomorrow"
+          component={TomorrowStack}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon
+                focused={focused}
+                activeIcon={TomorrowActiveIcon}
+                inactiveIcon={TomorrowInactiveIcon}
+                theme={theme}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Settings"
+          component={SettingsStack}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon
+                focused={focused}
+                activeIcon={SettingsActiveIcon}
+                inactiveIcon={SettingsInactiveIcon}
+                theme={theme}
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </LinearGradient>
   );
 }
