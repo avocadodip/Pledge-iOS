@@ -1,13 +1,13 @@
 /* fonts */
-export const FontFamily = {
-  epilogueBold: "Epilogue_bold",
-  epilogueRegular: "Epilogue_regular",
-  interSemibold: "Inter_semibold",
-  epilogueSemibold: "Epilogue_semibold",
-  interRegular: "Inter_regular",
-  interBold: "Inter_bold",
-  epilogueMedium: "Epilogue_medium",
-};
+// export const FontFamily = {
+//   epilogueBold: "Epilogue_bold",
+//   epilogueRegular: "Epilogue_regular",
+//   interSemibold: "Inter_semibold",
+//   epilogueSemibold: "Epilogue_semibold",
+//   interRegular: "Inter_regular",
+//   interBold: "Inter_bold",
+//   epilogueMedium: "Epilogue_medium",
+// };
 
 /* font sizes */
 export const FontSize = {

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
-import { FontSize, FontFamily } from "../GlobalStyles";
 import { LinearGradient } from "expo-linear-gradient";
 import { redGradientValues } from "../themes";
 
@@ -23,9 +22,10 @@ const Splash = () => {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    ...StyleSheet.absoluteFillObject, // This makes it an overlay
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2, // Set zIndex high so it appears above other elements
   },
   logoIconContainer: {
     justifyContent: "center",
@@ -36,9 +36,8 @@ const styles = StyleSheet.create({
     height: 132,
   },
   appName: {
-    fontSize: FontSize.size_31xl,
+    fontSize: 24,
     fontWeight: "700",
-    fontFamily: FontFamily.epilogueBold,
     textAlign: "left",
     marginTop: 30,
     color: "white",
