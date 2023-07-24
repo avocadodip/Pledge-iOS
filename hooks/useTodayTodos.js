@@ -34,7 +34,7 @@ export const useTodayTodos = (dayChanged) => {
       }
     };
   }, [dayChanged, currentUserID]);
-
+ 
   // Function to fetch todos and set global todayTodos object
   const getAndSetTodos = () => {
     const fetchedTodos = [null, null, null];

@@ -11,7 +11,7 @@ import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
 import TodayTmrwMessage from "../components/TodayTmrwMessage";
-
+ 
 const renderTodo = (
   { title, description, amount, tag, isLocked },
   index,

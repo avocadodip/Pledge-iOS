@@ -128,7 +128,7 @@ const TmrwTimePicker = ({ altMessage }) => {
         // style={styles.bottomModal}
         isVisible={isModalVisible.start}
         onBackdropPress={() => handleTimeSave("start")}
-        modalTitle={"Change start time"}
+        modalTitle={"Edit Start Time"}
       >
         <View style={styles.timePickerContainer}>
           <Picker
@@ -173,7 +173,7 @@ const TmrwTimePicker = ({ altMessage }) => {
       <BottomModal
         isVisible={isModalVisible.end}
         onBackdropPress={() => handleTimeSave("end")}
-        modalTitle={"Change end time"}
+        modalTitle={"Edit End Time"}
 
       >
         <View style={styles.timePickerContainer}>

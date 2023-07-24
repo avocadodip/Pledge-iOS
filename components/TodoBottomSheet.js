@@ -76,11 +76,7 @@ export default function TodoBottomSheet({ backgroundGradient }) {
       enablePanDownToClose={true}
       backdropComponent={renderBackdrop}
       onChange={handleSheetChange}
-      // handleComponent={() => (
-      //   <View style={styles.dragHandleContainer}>
-      //     <View style={styles.dragHandle}></View>
-      //   </View>
-      // )}
+      backgroundComponent={null} // gets rid of white flash
       handleStyle={{ display: "none" }} // hide default handle
       style={{
         borderTopLeftRadius: 20,

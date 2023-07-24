@@ -21,7 +21,10 @@ const getTimeStatus = (dayStart, dayEnd) => {
     (currentHours === endHours && currentMinutes < endMinutes)
   ) {
     return 1; // between day start and day end
-  } else {
+  } else if (
+    currentHours > endHours ||
+    (currentHours === endHours && currentMinutes >= endMinutes)
+  ) {
     return 2; // after day end
   }
 };

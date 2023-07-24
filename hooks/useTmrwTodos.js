@@ -62,7 +62,7 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
     const unsubscribe = onSnapshot(todoRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
         const { isActive, isVacation, todos } = docSnapshot.data();
-
+ 
         setIsTmrwActiveDay(isActive);
         if (todos) {
           for (let i = 0; i < todos.length; i++) {

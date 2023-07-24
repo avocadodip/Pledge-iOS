@@ -1,69 +1,47 @@
 import * as React from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
-import { FontSize, FontFamily, Border, Color } from "../GlobalStyles";
- 
+import { FontSize, FontFamily } from "../GlobalStyles";
+import { LinearGradient } from "expo-linear-gradient";
+import { redGradientValues } from "../themes";
+
 const Splash = () => {
   return (
-    <View style={styles.splash}>
-      <View style={styles.image2} />
-      <View style={styles.splashChild} />
-      <View style={styles.beaconlogo51Parent}>
-        <Image
-          style={styles.beaconlogo51Icon}
-          resizeMode="cover"
-          source={require("../assets/icons/FervoWhite.png")}
-        />
-        <Text style={styles.beacon}>beacon</Text>
+    <LinearGradient colors={redGradientValues} style={styles.pageContainer}>
+      <View style={styles.splash}>
+        <View style={styles.logoIconContainer}>
+          <Image
+            style={styles.logoIcon}
+            resizeMode="cover"
+            source={require("../assets/icons/FervoWhite.png")}
+          />
+          <Text style={styles.appName}>Pledge</Text>
+        </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  image2: {
-    top: 939,
-    left: -19,
-    width: 896,
-    height: 414,
-    transform: [
-      {
-        rotate: "-90deg",
-      },
-    ],
-    position: "absolute",
+  pageContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  splashChild: {
-    top: 459,
-    left: 154,
-    width: 195,
-    position: "absolute",
+  logoIconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
-  beaconlogo51Icon: {
+  logoIcon: {
     width: 132,
-    height: 135,
+    height: 132,
   },
-  beacon: {
+  appName: {
     fontSize: FontSize.size_31xl,
-    lineHeight: 69,
     fontWeight: "700",
     fontFamily: FontFamily.epilogueBold,
     textAlign: "left",
-    marginTop: 11,
-    width: 195,
-  },
-  beaconlogo51Parent: {
-    top: 313,
-    left: 110,
-    alignItems: "center",
-    position: "absolute",
-  },
-  splash: {
-    borderRadius: Border.br_11xl,
-    backgroundColor: Color.white,
-    flex: 1,
-    width: "100%",
-    height: 896,
-    overflow: "hidden",
+    marginTop: 30,
+    color: "white",
   },
 });
 

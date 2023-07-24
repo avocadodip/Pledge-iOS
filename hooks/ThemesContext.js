@@ -29,7 +29,7 @@ export const ThemesProvider = ({ children }) => {
   // Update appearance when theme is changed or user auth changes
   useEffect(() => {
     updateBackgroundGradient();
-  }, [currentThemeName, currentUserID]);
+  }, [currentThemeName, currentUserID, timeStatus]);
 
 
   const updateBackgroundGradient = () => {

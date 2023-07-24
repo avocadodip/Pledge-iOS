@@ -12,6 +12,7 @@ import { useThemes } from "../hooks/ThemesContext";
 import { Modal } from "react-native";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
 import TodayTmrwMessage from "../components/TodayTmrwMessage";
+import { useTmrwTodos } from "../hooks/useTmrwTodos";
 
 const renderTodo = (
   { title, description, amount, tag, isComplete },
@@ -33,13 +34,12 @@ const renderTodo = (
 );
 
 const Today = () => {
-
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { todayTodos } = useBottomSheet();
   const { dayChanged } = useDayChange();
   const {
-    settings: { isOnboarded, timezone },
+    settings: { isOnboarded, timezone, daysActive },
   } = useSettings();
   const {
     todayDOWAbbrev,
@@ -48,8 +48,7 @@ const Today = () => {
     isTodoArrayEmpty,
     onboardStartTmrw,
   } = useTodayTodos(dayChanged);
-  const { todayHeaderSubtitleMessage, timeStatus } =
-    useDayStatus();
+  const { todayHeaderSubtitleMessage, timeStatus } = useDayStatus();
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -58,7 +57,6 @@ const Today = () => {
     return todayTodos.map((todo, index) => {
       return renderTodo(todo, index, timeStatus);
     });
-    
   }, [todayTodos, timeStatus]);
 
   return (
@@ -75,13 +73,12 @@ const Today = () => {
 
         {!isTodayVacation && isTodayActiveDay && !isTodoArrayEmpty && (
           <View style={styles.headerSubtitleContainer}>
-          <Text style={styles.headerSubtitle}>
-            {todayHeaderSubtitleMessage}
-          </Text> 
-          <Text style={styles.timeZone}>{timezone}</Text>
+            <Text style={styles.headerSubtitle}>
+              {todayHeaderSubtitleMessage}
+            </Text>
+            <Text style={styles.timeZone}>{timezone}</Text>
           </View>
-        )
-        }
+        )}
       </View>
 
       <View style={styles.pageContent}>
@@ -165,7 +162,7 @@ const getStyles = (theme) =>
       color: theme.textHigh,
       fontWeight: "bold",
       paddingTop: 7,
-    }
+    },
   });
 
 export default Today;

@@ -4,6 +4,7 @@ import { View, Animated, Easing, StyleSheet } from "react-native";
 import Ripple from "react-native-material-ripple";
 import { Color } from "../GlobalStyles";
 import { useThemes } from "../hooks/ThemesContext";
+import { useDayStatus } from "../hooks/DayStatusContext";
 
 const rippleStyles = StyleSheet.create({
   container: {
@@ -44,6 +45,7 @@ export default function TouchableRipple({
   ...props
 }) {
   const { theme } = useThemes();
+  const { timeStatus } = useDayStatus();
   const styles = getStyles(theme);
   const [focusAnimation, setFocusAnimation] = useState(new Animated.Value(0));
   // const [disableAnimation, setDisableAnimation] = useState(

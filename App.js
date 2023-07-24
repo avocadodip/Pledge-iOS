@@ -128,12 +128,20 @@ const SettingsStack = () => (
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [initializing, setInitializing] = useState(true);
+  const [isSplashScreen, setIsSplashScreen] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // If user signed in:
       if (user && user.emailVerified) {
         setIsSignedIn(true);
+
+        // Show splash screen
+
+        // Load data
+        
         if (initializing) setInitializing(false);
+      // If user not signed in:
       } else {
         setIsSignedIn(false);
         if (initializing) setInitializing(false);
@@ -144,9 +152,8 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    console.log("isSignedIn state has changed: ", isSignedIn);
-  }, [isSignedIn]);
+  console.log("splash");
+  console.log(isSplashScreen);
 
   const [fontsLoaded, error] = useFonts({
     Epilogue_regular: require("./assets/fonts/Epilogue_regular.ttf"),
@@ -173,7 +180,7 @@ export default function App() {
           <DayStatusProvider>
             <ThemesProvider>
               <BottomSheetProvider>
-                <AppContent isSignedIn={isSignedIn} />
+                <AppContent isSignedIn={isSignedIn} isSplashScreen={isSplashScreen}/>
               </BottomSheetProvider>
             </ThemesProvider>
           </DayStatusProvider>
@@ -196,7 +203,7 @@ const getTabStyles = () =>
     },
   });
 
-function AppContent({ isSignedIn }) {
+function AppContent({ isSignedIn, isSplashScreen }) {
   const { theme, backgroundGradient } = useThemes();
   const [themePalette, setThemePalette] = useState();
   const [tabStylesState, setTabStylesState] = useState();
@@ -223,14 +230,14 @@ function AppContent({ isSignedIn }) {
     loading,
   } = useSettings();
 
-  const [hideSplashScreen, setHideSplashScreen] = useState(true);
+  // const [hideSplashScreen, setHideSplashScreen] = useState(true);
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setHideSplashScreen(true);
-    }, 2000);
-    return () => clearTimeout(timeoutId);
-  }, []);
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     setHideSplashScreen(true);
+  //   }, 2000);
+  //   return () => clearTimeout(timeoutId);
+  // }, []);
 
   // useEffect(() => {
   //   setHideSplashScreen(!loading);
@@ -255,7 +262,7 @@ function AppContent({ isSignedIn }) {
     <View style={{ flex: 1 }}>
       <StatusBar style="light" backgroundColor={Color.white} />
       <NavigationContainer theme={themePalette}>
-        {hideSplashScreen ? (
+        {!isSplashScreen ? (
           isSignedIn ? (
             <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
               {/* // isIntroed ? ( */}

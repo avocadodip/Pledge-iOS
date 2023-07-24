@@ -41,7 +41,7 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
         return (
           <>
             <Text style={styles.infoText}>Welcome, Josh.</Text>
-            <Text style={styles.infoText}>It's your day off!</Text>
+            <Text style={styles.infoText}>It's your day off.</Text>
             <TouchableOpacity
               style={styles.todoButton}
               onPress={handleButtonPress}
