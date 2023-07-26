@@ -30,7 +30,7 @@ const TmrwTodo = ({
           timeStatus === 2 && styles.disabledOpacity,
         ]}
       >
-        <View style={{ width: "100%", padding: 16 }}>
+        <View style={[styles.leftContainerInner, {width: "100%", padding: 16 }]}>
           <View style={styles.tagTitleContainer}>
             {tag && (
               <View style={styles.tagContainer}>

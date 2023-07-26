@@ -115,7 +115,7 @@ const TodayTodo = ({
             style={[styles.leftContainer, { padding: 0 }]}
           >
             {shouldRenderTaskInfo && (
-              <View style={{ width: "100%", padding: 16 }}>
+              <View style={[styles.leftContainerInner, {width: "100%", padding: 16 }]}>
                 <View style={styles.tagTitleContainer}>
                   {tag && (
                     <View style={styles.tagContainer}>

@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 12,
     paddingHorizontal: 15,
-    width: "92%",
+    width: "88%",
     marginBottom: 50,
     // shadow
     shadowColor: "#000",
