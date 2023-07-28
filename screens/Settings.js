@@ -198,7 +198,7 @@ const Settings = ({ navigation }) => {
     <View style={settingsPageStyles.pageContainer}>
       <ScrollView
         style={styles.scrollView}
-        indicatorStyle={"white"}
+        indicatorStyle={theme.scrollIndicator}
         onScroll={(event) => {
           setScrollY(event.nativeEvent.contentOffset.y);
         }}

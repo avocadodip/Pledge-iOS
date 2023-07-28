@@ -15,7 +15,7 @@ import SettingsHeader from "../components/settings/SettingsHeader";
 import StatsBundle from "../components/stats/StatsBundle";
 import { useThemes } from "../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
-
+ 
 const PastBets = ({ navigation }) => {
   const { theme, backgroundGradient } = useThemes();
  
@@ -26,7 +26,6 @@ const PastBets = ({ navigation }) => {
         <StatsBundle even={false} month="Jul" day="2" />
         <StatsBundle even={true} month="Jul" day="2" />
         <StatsBundle even={false} month="Jun" day="31" />
-        <StatsBundle even={true} month="Jun" day="30" />
       </SafeAreaView>
     </LinearGradient>
   );

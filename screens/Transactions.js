@@ -145,7 +145,7 @@ const Transactions = ({ navigation }) => {
     {
       title: "Past Charges",
       data: tempData.slice(1),
-    },
+    }, 
   ];
 
   return (
@@ -154,7 +154,7 @@ const Transactions = ({ navigation }) => {
         <View style={{ paddingHorizontal: SETTINGS_HORIZONTAL_PADDING }}>
           <SettingsHeader navigation={navigation} header={"Transactions"} />
         </View>
-
+ 
         {/* Show upcoming transaction if user has set up credit card & Show past transactions if user has been charged before */}
         {hasBeenChargedBefore || true ? (
           <SectionList
