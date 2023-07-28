@@ -103,6 +103,7 @@ export default function TodoBottomSheet() {
                 textStyle={styles.text}
                 autoCorrect={false}
                 autoCapitalize="none"
+                maxLength={46}
               />
             </View>
             <View style={styles.horizontalDivider} />
@@ -118,6 +119,7 @@ export default function TodoBottomSheet() {
                 textStyle={styles.text}
                 autoCorrect={false}
                 autoCapitalize="none"
+                maxLength={2}
               />
             </View>
             <View style={styles.horizontalDivider} />
@@ -132,6 +134,7 @@ export default function TodoBottomSheet() {
                 textStyle={styles.text}
                 autoCorrect={false}
                 autoCapitalize="none"
+                maxLength={30}
               />
             </View>
             <View style={styles.horizontalDivider} />
