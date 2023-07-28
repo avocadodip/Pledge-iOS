@@ -5,15 +5,16 @@ import {
   Text,
   View,
   Alert,
+  StatusBar,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
-  Color,
+  BOTTOM_TAB_HEIGHT,
   SETTINGS_HORIZONTAL_PADDING,
   settingsPageStyles,
 } from "../GlobalStyles";
 import RightChevronIcon from "../assets/icons/chevron-right.svg";
-import UserCircleIcon from "../assets/icons/user-profile-circle.svg";
 import HistoryIcon from "../assets/icons/history-icon.svg";
 import CreditCardIcon from "../assets/icons/credit-card.svg";
 import SunThemeIcon from "../assets/icons/sun-theme-icon.svg";
@@ -43,13 +44,14 @@ import NotificationBellIcon from "../assets/icons/notification-bell-icon.svg";
 import { daysOfWeek } from "../utils/currentDate";
 import { doc, updateDoc } from "firebase/firestore";
 import DeleteAccountButton from "../components/settings/DeleteAccountButton";
+import TaskFineIcon from "../assets/icons/missed-task-fine-icon.svg";
 
 const BUTTON_HEIGHT = 51;
 const BUTTON_TEXTS = ["S", "M", "T", "W", "T", "F", "S"];
 
 const Settings = ({ navigation }) => {
   const { currentUserEmail } = useSettings();
-  const { theme } = useThemes();
+  const { theme, setStatusBarHidden } = useThemes();
   const styles = getStyles(theme);
   const {
     settings: {
@@ -67,6 +69,15 @@ const Settings = ({ navigation }) => {
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
   const [notifsModalVisible, setNotifsModalVisible] = useState(false);
   const prevCardCountRef = useRef(0);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    if (scrollY > 0) {
+      setStatusBarHidden(true);
+    } else {
+      setStatusBarHidden(false);
+    }
+  }, [scrollY]);
 
   useEffect(() => {
     loadPaymentSheet();
@@ -184,8 +195,15 @@ const Settings = ({ navigation }) => {
   }, [isPaymentSetup]);
 
   return (
-    <SafeAreaView style={settingsPageStyles.pageContainer}>
-      <ScrollView style={styles.scrollView} indicatorStyle={"white"}>
+    <View style={settingsPageStyles.pageContainer}>
+      <ScrollView
+        style={styles.scrollView}
+        indicatorStyle={"white"}
+        onScroll={(event) => {
+          setScrollY(event.nativeEvent.contentOffset.y);
+        }}
+        scrollEventThrottle={16}
+      >
         {/* <OnboardingPopup
         texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
         buttonTitle="Back to settings."
@@ -353,6 +371,15 @@ const Settings = ({ navigation }) => {
               </View>
               <Text style={styles.rightSideText}>{timezone}</Text>
             </View>
+            {/* MISSED FINE */}
+            <View style={styles.button}>
+              <View style={styles.leftSettingsButton}>
+                <TaskFineIcon width={23} height={23} color={theme.textHigh} />
+
+                <Text style={styles.buttonTitle}>Missed Task Fine</Text>
+              </View>
+              <Text style={styles.rightSideText}>-$1</Text>
+            </View>
           </View>
         </View>
         <View style={styles.sectionHeader}>
@@ -393,6 +420,7 @@ const Settings = ({ navigation }) => {
             </View>
             <Text style={styles.rightSideText}>{currentUserEmail}</Text>
           </TouchableRipple>
+
           <TouchableRipple style={styles.button} onPress={handleLogout}>
             <View style={styles.leftSettingsButton}>
               <LogoutIcon width={25} height={25} color={theme.textHigh} />
@@ -401,8 +429,9 @@ const Settings = ({ navigation }) => {
           </TouchableRipple>
         </View>
         <DeleteAccountButton />
+        <View style={{ height: 60 }}></View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -411,8 +440,9 @@ export default Settings;
 const getStyles = (theme) =>
   StyleSheet.create({
     scrollView: {
-      height: "120%",
       paddingHorizontal: SETTINGS_HORIZONTAL_PADDING,
+      paddingTop: 40,
+      paddingBottom: 200,
     },
     headerContainer: {
       paddingTop: 20,
@@ -476,7 +506,7 @@ const getStyles = (theme) =>
       gap: 4,
     },
     rightSideText: {
-      fontSize: 14,
+      fontSize: 15,
       color: theme.textMedium,
       marginRight: 12,
     },

@@ -13,7 +13,6 @@ import TodoBottomSheet from "./components/TodoBottomSheet";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 import { ThemesProvider, useThemes } from "./hooks/ThemesContext";
-import { auth } from "./database/firebase";
 import useUpdateTimezoneOnAppActive from "./hooks/useUpdateTimezoneOnAppActive";
 import { STRIPE_PUBLISHABLE_KEY } from "@env";
 import EmailVerification from "./screens/EmailVerification";
@@ -24,13 +23,12 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const Stack = createNativeStackNavigator();
 
-const AuthStack = ({ backgroundGradient }) => (
+const AuthStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen
       name="Signup"
       component={Signup}
       options={{ headerShown: false }}
-      backgroundGradient={backgroundGradient}
     />
     <Stack.Screen
       name="Login"
@@ -79,7 +77,7 @@ export default function App() {
 }
 
 function AppContent() {
-  const { theme, backgroundGradient } = useThemes();
+  const { theme, backgroundGradient, statusBarHidden } = useThemes();
   const [isSplashScreen, setIsSplashScreen] = useState(true);
   const { isAuthenticated } = useSettings();
 
@@ -104,21 +102,25 @@ function AppContent() {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar style={theme.statusBar} animated={true} />
+      <StatusBar
+        style={theme.statusBar}
+        animated={true}
+        hidden={statusBarHidden}
+      />
       <NavigationContainer theme={{ colors: {} }}>
         {isSplashScreen ? (
           <Splash />
         ) : isAuthenticated ? (
           <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-            <MainStack theme={theme} backgroundGradient={backgroundGradient} />
+            <MainStack />
           </LinearGradient>
         ) : (
           <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-            <AuthStack backgroundGradient={backgroundGradient} />
+            <AuthStack />
           </LinearGradient>
         )}
       </NavigationContainer>
-      <TodoBottomSheet backgroundGradient={backgroundGradient} />
+      <TodoBottomSheet />
     </View>
   );
 }

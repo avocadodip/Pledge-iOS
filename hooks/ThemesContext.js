@@ -18,6 +18,7 @@ export const ThemesProvider = ({ children }) => {
   const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme
   const [backgroundGradient, setBackgroundGradient] = useState([]);
+  const [statusBarHidden, setStatusBarHidden] = useState(false); // For settings page scrollview
 
   let noActionItemsLeft = false;
 
@@ -85,6 +86,8 @@ export const ThemesProvider = ({ children }) => {
     theme: currentTheme,
     updateBackgroundGradient,
     backgroundGradient,
+    statusBarHidden,
+    setStatusBarHidden
   };
 
   return (

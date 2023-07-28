@@ -109,4 +109,5 @@ const getStyles = (theme) => StyleSheet.create({
     fontSize: 14,
     textAlign: "left",
   },
+  
 });

@@ -17,11 +17,10 @@ import LogoAppName from "../components/auth/LogoAppName";
 import FormInput from "../components/auth/AuthFormInput";
 import SignUpButton from "../components/auth/AuthFormButton";
 import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
-import { LinearGradient } from "expo-linear-gradient";
 import { useThemes } from "../hooks/ThemesContext";
 
 const Signup = () => {
-  const { theme, backgroundGradient } = useThemes();
+  const { theme } = useThemes();
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

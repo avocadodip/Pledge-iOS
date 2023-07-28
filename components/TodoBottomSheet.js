@@ -9,8 +9,8 @@ import { Color } from "../GlobalStyles";
 import { useThemes } from "../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function TodoBottomSheet({ backgroundGradient }) {
-  const { theme } = useThemes();
+export default function TodoBottomSheet() {
+  const { theme, backgroundGradient } = useThemes();
   const {
     isBottomSheetOpen,
     isBottomSheetEditable,

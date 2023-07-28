@@ -9,6 +9,8 @@
 //   epilogueMedium: "Epilogue_medium",
 // };
 
+import { Dimensions } from "react-native";
+
 /* font sizes */
 export const FontSize = {
   size_lg: 18,
@@ -44,7 +46,6 @@ export const Color = {
   border_white: "rgba(243, 243, 243, 0.32)",
   gray_100: "rgba(0, 0, 0, 0.5)",
   gray_200: "rgba(0, 0, 0, 0.6)",
-
 };
 
 /* Paddings */
@@ -69,14 +70,16 @@ export const Border = {
   br_8xs: 5,
 };
 
-export const BOTTOM_TAB_HEIGHT = 90;
+export const BOTTOM_TAB_HEIGHT = 100;
 export const SETTINGS_HORIZONTAL_PADDING = 20;
 
+const WINDOW_HEIGHT = Dimensions.get("window").height;
 
 export const settingsPageStyles = {
   pageContainer: {
     display: "flex",
-    marginBottom: BOTTOM_TAB_HEIGHT + 90,
+    marginBottom: BOTTOM_TAB_HEIGHT + 70,
+    height: WINDOW_HEIGHT - BOTTOM_TAB_HEIGHT,
 
     // marginHorizontal: SETTINGS_HORIZONTAL_PADDING,
   },
