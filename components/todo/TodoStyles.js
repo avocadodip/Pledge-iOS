@@ -253,7 +253,7 @@ export const getTodoStyles = (theme) =>
     todoButton: {
       flexDirection: "row",
       gap: 10,
-      backgroundColor: theme.lightPrimary,
+      backgroundColor: theme.faintPrimary,
       paddingHorizontal: 20,
       paddingVertical: 10,
       alignItems: "center",

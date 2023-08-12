@@ -37,7 +37,7 @@ export default AuthFormInput;
 
 const getStyles = (theme) => StyleSheet.create({
   textInput: {
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    backgroundColor: theme.faintPrimary,
     color: theme.textHigh,
     flex: 1,
     fontSize: 15,

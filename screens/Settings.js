@@ -418,7 +418,9 @@ const Settings = ({ navigation }) => {
               <MailIcon width={25} height={25} color={theme.textHigh} />
               <Text style={styles.buttonTitle}>Email</Text>
             </View>
-            <Text style={styles.rightSideText}>{currentUserEmail}</Text>
+            <View style={{width: 226}}>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.rightSideText}>{currentUserEmail}</Text>
+            </View>
           </TouchableRipple>
 
           <TouchableRipple style={styles.button} onPress={handleLogout}>

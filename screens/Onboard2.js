@@ -2,10 +2,14 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import { Color } from "../GlobalStyles";
+import { useThemes } from "../hooks/ThemesContext";
 import Todo from "../components/todo/Todo";
 // import TimeButton from "../components/TimeButton";
 
 const Today = () => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
+
   return (
     <SafeAreaView style={styles.pageContainer}>
       <View style={styles.headerContainer}>
@@ -24,7 +28,8 @@ const Today = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme) =>
+StyleSheet.create({
   pageContainer: {
     flex: 1,
     alignItems: "center",
@@ -41,12 +46,12 @@ const styles = StyleSheet.create({
     // borderColor: 'black',
   },
   headerTitle: {
-    color: Color.white,
+    color: theme.primary,
     fontSize: 30,
     fontWeight: "bold",
   },
   descTitle: {
-    color: Color.white,
+    color: theme.primary,
     fontSize: 26,
     lineHeight: 44,
   },
@@ -65,7 +70,7 @@ const styles = StyleSheet.create({
     // borderColor: 'black',
   },
   preferenceTitle: {
-    color: Color.white,
+    color: theme.primary,
     fontSize: 26,
   },
   nextButton: {
@@ -80,7 +85,7 @@ const styles = StyleSheet.create({
     width: 187,
     height: 61,
     borderRadius: 20,
-    backgroundColor: Color.white,
+    backgroundColor: theme.primary,
   },
   nextButtonTitle: {
     fontFamily: 'Epilogue',
