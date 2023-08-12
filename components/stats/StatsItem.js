@@ -1,20 +1,15 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import XMarkIcon from "../../assets/icons/x-mark.svg";
 import CheckIcon from "../../assets/icons/check.svg";
 import ClockIcon from "../../assets/icons/clock.svg";
 
-const StatsBundle = ({ month, day }) => {
+
+
+const StatsItem= ({title}) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.dateText}>
-        {month} {day}
-      </Text>
-      <View style={styles.taskContainer}>
-        <Text>Title</Text>
-        <Text>Tag</Text>
-        <Text>$5</Text>
-      </View>
+      <Text style={styles.dateText}>{title}</Text>
     </View>
   );
 };
@@ -46,4 +41,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StatsBundle;
+export default StatsItem;
