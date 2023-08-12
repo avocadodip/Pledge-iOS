@@ -10,6 +10,7 @@ import ContentLoader, { Rect } from "react-content-loader/native";
 import { useDayStatus } from "../hooks/DayStatusContext";
 import { useSettings } from "../hooks/SettingsContext";
 import BottomModal from "./BottomModal";
+import { useThemes } from "../hooks/ThemesContext";
 
 const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
@@ -17,6 +18,8 @@ const CONTENT_LOADER_HEIGHT = 25;
 const CONTENT_LOADER_WIDTH = 60;
 
 const TmrwTimePicker = ({ altMessage }) => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
   const { currentUserID } = useSettings();
   const { dayStart, dayEnd } = useDayStatus();
   const [isModalVisible, setModalVisible] = useState({
@@ -141,7 +144,7 @@ const TmrwTimePicker = ({ altMessage }) => {
           >
             {HOURS.map((time, index) => (
               <Picker.Item
-                color={Color.white}
+                color={theme.primary}
                 key={index}
                 label={time}
                 value={time}
@@ -158,7 +161,7 @@ const TmrwTimePicker = ({ altMessage }) => {
           >
             {MINUTES.map((time, index) => (
               <Picker.Item
-                color={Color.white}
+                color={theme.primary}
                 key={index}
                 label={time}
                 value={time}
@@ -187,7 +190,7 @@ const TmrwTimePicker = ({ altMessage }) => {
           >
             {HOURS.map((time, index) => (
               <Picker.Item
-                color={Color.white}
+                color={theme.primary}
                 key={index}
                 label={time}
                 value={time}
@@ -204,7 +207,7 @@ const TmrwTimePicker = ({ altMessage }) => {
           >
             {MINUTES.map((time, index) => (
               <Picker.Item
-                color={Color.white}
+                color={theme.primary}
                 key={index}
                 label={time}
                 value={time}
@@ -218,7 +221,8 @@ const TmrwTimePicker = ({ altMessage }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme) =>
+  StyleSheet.create({
   // Header line styles
   headerMessageContainer: {
     marginTop: 5,
@@ -227,24 +231,24 @@ const styles = StyleSheet.create({
   },
   headerMessageText: {
     fontSize: 14,
-    color: Color.white,
+    color: theme.primary,
   },
   contentLoaderContainer: {
     width: CONTENT_LOADER_WIDTH,
     height: CONTENT_LOADER_HEIGHT,
     borderRadius: 5,
     overflow: "hidden",
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    backgroundColor: theme.faintPrimary,
   },
   headerButton: {
     borderRadius: 5,
     overflow: "hidden",
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    backgroundColor: theme.faintPrimary,
     paddingHorizontal: 7,
     paddingVertical: 4,
   },
   headerButtonText: {
-    color: Color.white,
+    color: theme.primary,
     fontSize: 14,
     fontWeight: 500,
   },
@@ -260,7 +264,7 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   timePickerText: {
-    color: Color.white,
+    color: theme.primary,
     fontSize: 20,
   },
 });

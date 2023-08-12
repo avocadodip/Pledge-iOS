@@ -43,6 +43,7 @@ export const Color = {
   black35: "rgba(0, 0, 0, 0.35)",
   black16: "rgba(0, 0, 0, 0.16)",
   black8: "rgba(0, 0, 0, 0.08)",
+  black4: "rgba(0, 0, 0, 0.04)",
   border_white: "rgba(243, 243, 243, 0.32)",
   gray_100: "rgba(0, 0, 0, 0.5)",
   gray_200: "rgba(0, 0, 0, 0.6)",

@@ -82,7 +82,7 @@ export default {
     overlayPrimary: Color.black55,
     halfPrimary: Color.black35,
     lightPrimary: Color.black16,
-    faintPrimary: Color.black8,
+    faintPrimary: Color.black4,
 
     logo: {
       tintColor: "rgba(0, 0, 0, 1)",
