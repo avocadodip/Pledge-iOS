@@ -1,3 +1,5 @@
+// firebase deploy --only functions
+
 /* eslint-disable max-len */
 require("dotenv").config();
 
@@ -20,7 +22,7 @@ const auth = admin.auth();
  */
 function calculateFines(todos, missedTaskFine) {
   let totalFine = 0;
-
+q
   // Count the number of todos that are not complete
   todos.forEach((todo) => {
     if (!todo.isComplete) {
@@ -85,6 +87,7 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
       const nextDay = now.clone().add(1, "days");
       const nextDayFormatted = nextDay.format("YYYYMMDD");
       const nextDayOfWeek = nextDay.format("dddd");
+      const nextDayDateName = nextDay.format("MMM D"); // "Aug 27"
       // Defining past week
       const startOfWeek = now.clone().startOf("week");
       const endOfWeek = startOfWeek.clone().add(6, "days");
@@ -100,6 +103,7 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
       // 2. Set user's tmrwDoc w/ settings data
       await tmrwRef.set(
           {
+            dateName: nextDayDateName, // added dateName
             opensAt: dayStart,
             closesAt: dayEnd,
             isActive: daysActive[nextDayOfWeek],
