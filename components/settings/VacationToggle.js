@@ -26,8 +26,8 @@ const VacationToggle = ({ currentUserID, vacationModeOn }) => {
       <View style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.25 }] }}>
         <ToggleSwitch
           isOn={vacationModeOn}
-          onColor="rgba(243,243,243,0.6)"
-          offColor="rgba(243,243,243,0.2)"
+          onColor={theme.halfPrimary}
+          offColor={theme.lightPrimary}
           size="medium"
           onToggle={handleVacationToggle}
         />

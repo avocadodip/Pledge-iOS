@@ -2,8 +2,11 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import CircleRightArrow from "../assets/icons/circle-right-arrow.svg";
 import { useNavigation } from "@react-navigation/native";
+import { useThemes } from "../hooks/ThemesContext";
 
 const TodayTmrwMessage = ({ type, setModalVisible }) => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
   const navigation = useNavigation();
 
   const handleButtonPress = () => {
@@ -68,10 +71,11 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
 
 export default TodayTmrwMessage;
 
-const styles = StyleSheet.create({
+const getStyles = (theme) =>
+  StyleSheet.create({
   startButton: {},
   startButtonText: {
-    color: "white",
+    color: theme.primary,
     fontWeight: 500,
     fontSize: 20,
   },

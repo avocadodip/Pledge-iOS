@@ -99,7 +99,7 @@ export default function TodoBottomSheet() {
                 placeholder="New task"
                 value={todo.title}
                 onChangeText={(text) => handleInputChange("title", text)}
-                placeholderTextColor="rgba(243, 243, 243, 0.8)"
+                placeholderTextColor={theme.textDisabled}
                 textStyle={styles.text}
                 autoCorrect={false}
                 autoCapitalize="none"
@@ -108,14 +108,16 @@ export default function TodoBottomSheet() {
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
-              <PledgeDollarIcon />
+              <PledgeDollarIcon 
+                color={theme.textHigh}
+              />
               <TextInput
                 style={styles.textInput}
-                // placeholder="Add pledge"
+                placeholder="Add pledge"
                 value={todo.amount}
                 onChangeText={(text) => handleInputChange("amount", text)}
                 keyboardType="numeric"
-                // placeholderTextColor="rgba(243, 243, 243, 0.8)"
+                placeholderTextColor={theme.textDisabled}
                 textStyle={styles.text}
                 autoCorrect={false}
                 autoCapitalize="none"
@@ -124,13 +126,15 @@ export default function TodoBottomSheet() {
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
-              <FolderIcon />
+              <FolderIcon 
+                color={theme.textHigh}
+              />
               <TextInput
                 style={styles.textInput}
                 placeholder="Add tag"
                 value={todo.tag}
                 onChangeText={(text) => handleInputChange("tag", text)}
-                placeholderTextColor="rgba(243, 243, 243, 0.8)"
+                placeholderTextColor={theme.textDisabled}
                 textStyle={styles.text}
                 autoCorrect={false}
                 autoCapitalize="none"
@@ -139,13 +143,15 @@ export default function TodoBottomSheet() {
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.descriptionContainer}>
-              <DescriptLinesIcon />
+              <DescriptLinesIcon
+                color={theme.textHigh}
+              />
               <TextInput
                 style={styles.textInput}
                 placeholder="Add description"
                 value={todo.description}
                 onChangeText={(text) => handleInputChange("description", text)}
-                placeholderTextColor="rgba(243, 243, 243, 0.8)"
+                placeholderTextColor={theme.textDisabled}
                 textStyle={styles.text}
                 autoCorrect={false}
                 autoCapitalize="none"
@@ -164,17 +170,23 @@ export default function TodoBottomSheet() {
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
-              <PledgeDollarIcon />
+              <PledgeDollarIcon 
+                color={theme.textHigh}
+              />
               <Text style={styles.text}>{selectedTodo.amount}</Text>
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
-              <FolderIcon />
+              <FolderIcon 
+                color={theme.textHigh}
+              />
               <Text style={styles.text}>{selectedTodo.tag}</Text>
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.descriptionContainer}>
-              <DescriptLinesIcon />
+              <DescriptLinesIcon 
+                color={theme.textHigh}
+              />
               <Text style={styles.text}>{selectedTodo.description}</Text>
             </View>
           </View>
@@ -203,14 +215,14 @@ const getStyles = (theme) =>
       alignItems: "center",
     },
     dragHandle: {
-      backgroundColor: "white",
+      backgroundColor: theme.primary,
       width: 45,
       height: 4,
       borderRadius: 3,
       marginTop: 15,
     },
     horizontalDivider: {
-      borderBottomColor: "white",
+      borderBottomColor: theme.primary,
       opacity: 0.3,
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
@@ -236,18 +248,18 @@ const getStyles = (theme) =>
       // borderColor: 'black',
     },
     number: {
-      color: "white",
+      color: theme.primary,
       fontSize: 40,
       fontWeight: "bold",
     },
     title: {
-      color: "white",
+      color: theme.primary,
       fontSize: 30,
       fontWeight: "bold",
       width: "80%",
     },
     text: {
-      color: "white",
+      color: theme.primary,
       fontSize: 16,
       fontWeight: 500,
       lineHeight: 18,
@@ -255,7 +267,7 @@ const getStyles = (theme) =>
       paddingVertical: 15,
     },
     textInput: {
-      color: "white",
+      color: theme.primary,
       fontSize: 16,
       lineHeight: 18,
       width: "80%",

@@ -27,12 +27,12 @@ export const getTodoStyles = (theme) =>
       alignItems: "center",
       gap: 20,
       borderRadius: BORDER_RADIUS,
-      backgroundColor: "rgba(255, 255, 255, 0.2)",
+      backgroundColor: theme.faintPrimary,
       padding: 15,
       overflow: "hidden",
     },
     numberText: {
-      color: "white",
+      color: theme.primary,
       fontSize: 70,
       fontWeight: "bold",
     },
@@ -44,7 +44,7 @@ export const getTodoStyles = (theme) =>
       alignItems: "center",
       gap: 20,
       borderRadius: BORDER_RADIUS,
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      backgroundColor: theme.faintPrimary,
       padding: 15,
     },
     oneContainer: {
@@ -55,7 +55,7 @@ export const getTodoStyles = (theme) =>
       alignItems: "center",
       gap: 28,
       borderRadius: 16,
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      backgroundColor: theme.faintPrimary,
       padding: 15,
     },
     infoContainer: {
@@ -70,7 +70,7 @@ export const getTodoStyles = (theme) =>
 
     // Left styles (scroll down more for right styles)
     leftContainer: {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      backgroundColor: theme.faintPrimary,
       height: "100%",
 
       flex: 8,
@@ -106,8 +106,7 @@ export const getTodoStyles = (theme) =>
     amountContainer: {
       justifyContent: "flex-end",
       alignItems: "center",
-      backgroundColor:
-        "linear-gradient(0deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)), rgba(255, 255, 255, 0.07)",
+      backgroundColor: theme.faintPrimary,
       borderRadius: 8,
       // width: 57,
       height: 35,
@@ -122,8 +121,7 @@ export const getTodoStyles = (theme) =>
     tagContainer: {
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor:
-        "linear-gradient(0deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)), rgba(255, 255, 255, 0.07)",
+      backgroundColor: theme.faintPrimary,
       borderRadius: 8,
       // paddingVertical: 8,
       paddingHorizontal: 10,
@@ -132,7 +130,7 @@ export const getTodoStyles = (theme) =>
       // borderColor: "white",
     },
     tagText: {
-      color: "white",
+      color: theme.primary,
       fontSize: 12,
       lineHeight: 12,
       fontWeight: 500,
@@ -145,12 +143,12 @@ export const getTodoStyles = (theme) =>
       // borderColor: "green",
     },
     titleText: {
-      color: "white",
+      color: theme.primary,
       fontSize: 40,
       fontWeight: "700",
     },
     amountText: {
-      color: "white",
+      color: theme.primary,
       fontSize: 20,
       lineHeight: 19,
       fontWeight: "bold",
@@ -160,7 +158,7 @@ export const getTodoStyles = (theme) =>
     rightContainer: {
       borderTopRightRadius: 16,
       borderBottomRightRadius: 16,
-      backgroundColor: "rgba(255, 255, 255, 0.2)",
+      backgroundColor: theme.lightPrimary,
       flex: 2,
       height: "100%",
       justifyContent: "center",
@@ -170,7 +168,7 @@ export const getTodoStyles = (theme) =>
     rightDisabledContainer: {
       borderTopRightRadius: 16,
       borderBottomRightRadius: 16,
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      backgroundColor: theme.faintPrimary,
       flex: 2,
       // width: "20%",
       height: "100%",
@@ -178,12 +176,12 @@ export const getTodoStyles = (theme) =>
       alignItems: "center",
       overflow: "hidden",
       borderLeftWidth: 1.5,
-      borderLeftColor: "rgba(255, 255, 255, 0.1)",
+      borderLeftColor: theme.faintPrimary,
     },
     checkDisabledContainer: {
       borderTopRightRadius: 16,
       borderBottomRightRadius: 16,
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      backgroundColor: theme.faintPrimary,
       flex: 2,
       // width: "20%",
       height: "100%",
@@ -197,7 +195,7 @@ export const getTodoStyles = (theme) =>
     disabledCompleteContainer: {
       borderTopRightRadius: 16,
       borderBottomRightRadius: 16,
-      backgroundColor: "rgba(255, 255, 255, 0.2)",
+      backgroundColor: theme.lightPrimary,
       flex: 2,
       // width: "20%",
       height: "100%",
@@ -221,7 +219,7 @@ export const getTodoStyles = (theme) =>
       justifyContent: "flex-start",
     },
     todoNumber: {
-      color: "white",
+      color: theme.primary,
       fontSize: 30,
       fontWeight: "bold",
     },
@@ -231,7 +229,7 @@ export const getTodoStyles = (theme) =>
       gap: 4,
     },
     todoDescription: {
-      color: "white",
+      color: theme.primary,
       maxWidth: "80%",
       fontWeight: "500",
     },
@@ -243,7 +241,7 @@ export const getTodoStyles = (theme) =>
     },
 
     infoText: {
-      color: "white",
+      color: theme.primary,
       opacity: 1,
       fontSize: 20,
       fontWeight: "bold",
@@ -255,7 +253,7 @@ export const getTodoStyles = (theme) =>
     todoButton: {
       flexDirection: "row",
       gap: 10,
-      backgroundColor: "rgba(0, 0, 0, 0.2)",
+      backgroundColor: theme.lightPrimary,
       paddingHorizontal: 20,
       paddingVertical: 10,
       alignItems: "center",
@@ -265,7 +263,7 @@ export const getTodoStyles = (theme) =>
     },
 
     todoButtonText: {
-      color: "white",
+      color: theme.primary,
       fontWeight: "bold",
       fontSize: 20,
       // borderWidth: 1,

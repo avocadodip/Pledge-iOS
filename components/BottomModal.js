@@ -35,7 +35,7 @@ const BottomModal = ({ isVisible, children, onBackdropPress, modalTitle }) => {
             style={styles.closeButton}
             onPress={throttledOnPress}
           >
-            <XMarkIcon width={20} height={20} color={"white"} />
+            <XMarkIcon width={20} height={20} color={theme.primary} />
           </TouchableOpacity>
         </View>
         <View style={styles.modalContent}>
@@ -78,7 +78,7 @@ const getStyles = (theme) =>
       fontSize: 18,
       fontWeight: 500,
       marginBottom: 1,
-      color: Color.white,
+      color: theme.primary,
     },
 
     // Close button styles

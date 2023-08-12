@@ -2,8 +2,12 @@ import * as React from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { redGradientValues } from "../themes";
+import { useThemes } from "../hooks/ThemesContext";
 
 const Splash = () => {
+  const { theme } = useThemes();
+  const styles = getStyles(theme);
+
   return (
     <LinearGradient colors={redGradientValues} style={styles.pageContainer}>
       <View style={styles.splash}>
@@ -20,7 +24,8 @@ const Splash = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme) =>
+  StyleSheet.create({
   pageContainer: {
     flex: 1,
     // ...StyleSheet.absoluteFillObject, // This makes it an overlay
@@ -41,7 +46,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "left",
     marginTop: 30,
-    color: "white",
+    color: theme.primary,
   },
 });
 
