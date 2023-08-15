@@ -72,7 +72,7 @@ const Login = () => {
       >
         <LogoAppName />
         <View style={[styles.formContainer]}>
-          {loading ? <ActivityIndicator size="small" color="white" /> : null}
+          {loading ? <ActivityIndicator size="small" color={theme.primary} /> : null}
           <FormInput action={setEmail} value={email} type="email" />
           <FormInput action={setPassword} value={password} type="password" />
 

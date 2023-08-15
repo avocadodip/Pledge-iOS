@@ -89,8 +89,8 @@ export default {
     },
 
     // Ripple effect
-    rippleFocus: "#8A1919",
-    rippleColor: "#8A1919",
+    rippleFocus: "rgba(0, 0, 0, 0.08)",
+    rippleColor: "rgba(0, 0, 0, 0.08)",
 
     // Text
     textHigh: "rgba(0, 0, 0, 0.8)",

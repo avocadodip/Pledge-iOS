@@ -3,11 +3,12 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import CircleRightArrow from "../assets/icons/circle-right-arrow.svg";
 import { useNavigation } from "@react-navigation/native";
 import { useThemes } from "../hooks/ThemesContext";
+import { getTodoStyles, styles } from "./todo/TodoStyles";
 
 const TodayTmrwMessage = ({ type, setModalVisible }) => {
   const { theme } = useThemes();
-  const styles = getStyles(theme);
   const navigation = useNavigation();
+  const styles = getTodoStyles(theme);
 
   const handleButtonPress = () => {
     // Navigate to the tomorrow page
@@ -36,7 +37,9 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
             <Text style={styles.infoText}>You're on vacation!</Text>
             <TouchableOpacity style={styles.todoButton}>
               <Text style={styles.todoButtonText}>Turn off vacation mode</Text>
-              <CircleRightArrow />
+              <CircleRightArrow 
+                color={theme.textHigh}
+              />
             </TouchableOpacity>
           </>
         );
@@ -50,7 +53,9 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
               onPress={handleButtonPress}
             >
               <Text style={styles.todoButtonText}> Add steps for </Text>
-              <CircleRightArrow />
+              <CircleRightArrow 
+                color={theme.textHigh}
+              />
             </TouchableOpacity>
           </>
         );

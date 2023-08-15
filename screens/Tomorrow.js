@@ -152,7 +152,7 @@ const getStyles = (theme) =>
 
     startButton: {},
     startButtonText: {
-      color: "white",
+      color: theme.primary,
       fontWeight: 500,
       fontSize: 20,
     },
