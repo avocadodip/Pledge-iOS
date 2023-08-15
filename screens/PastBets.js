@@ -39,7 +39,14 @@ const PastBets = ({ navigation }) => {
   const [allDataFetched, setAllDataFetched] = useState(false);
 
   const fetchData = async () => {
+<<<<<<< Updated upstream
     if (loading || allDataFetched) return; // Prevent infinite loop if loading or all data fetched
+=======
+    if (loading || allDataFetched) {
+      console.log("returned");
+      return; 
+    }
+>>>>>>> Stashed changes
     setLoading(true);
 
     console.log("running");
@@ -47,6 +54,10 @@ const PastBets = ({ navigation }) => {
     console.log(currentUserID);
 
     try {
+<<<<<<< Updated upstream
+=======
+      console.log("running 2");
+>>>>>>> Stashed changes
       let q = query(
         collection(doc(db, "users", currentUserID), "todos"),
         orderBy("date", "desc"),
@@ -69,7 +80,10 @@ const PastBets = ({ navigation }) => {
       const todos = [];
       querySnapshot.forEach((dayDoc) => {
         const dayData = dayDoc.data();
+<<<<<<< Updated upstream
         console.log(dayData);
+=======
+>>>>>>> Stashed changes
         if (dayData.todos) {
           todos.push(...dayData.todos.slice(0, 3));
         }
@@ -91,6 +105,10 @@ const PastBets = ({ navigation }) => {
 
   useEffect(() => {
     if (currentUserID) {
+<<<<<<< Updated upstream
+=======
+      console.log("hi");
+>>>>>>> Stashed changes
       fetchData();
     }
   }, [currentUserID]);
@@ -98,6 +116,8 @@ const PastBets = ({ navigation }) => {
   const handleLoadMore = () => {
     fetchData();
   };
+
+  
 
   const renderFooter = () => {
     if (!loading) return null;

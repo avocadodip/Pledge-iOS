@@ -1,4 +1,6 @@
 // firebase deploy --only functions
+// npx eslint --fix path/to/yourfile.js
+
 
 /* eslint-disable max-len */
 require("dotenv").config();
@@ -22,7 +24,6 @@ const auth = admin.auth();
  */
 function calculateFines(todos, missedTaskFine) {
   let totalFine = 0;
-q
   // Count the number of todos that are not complete
   todos.forEach((todo) => {
     if (!todo.isComplete) {
@@ -103,6 +104,7 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
       // 2. Set user's tmrwDoc w/ settings data
       await tmrwRef.set(
           {
+            date: nextDayFormatted,
             dateName: nextDayDateName, // added dateName
             opensAt: dayStart,
             closesAt: dayEnd,

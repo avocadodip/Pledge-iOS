@@ -4,7 +4,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import {
   getNextActiveDay,
   getTmrwAbbrevDOW,
-  getTmrwDOW,
+  getTmrwDOW, 
   getTmrwDate,
 } from "../utils/currentDate";
 import { useBottomSheet } from "./BottomSheetContext";
@@ -48,8 +48,17 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
     };
   }, [dayChanged, currentUserID]);
 
+  useEffect(() => {
+    console.log("test");
+    console.log(isTmrwActiveDay);
+    console.log(daysActive[getTmrwDOW()]);
+    console.log("finish test");
+  }, [isTmrwActiveDay]);
+
+
   // Second useEffect hook for daysActive
   useEffect(() => {
+    console.log(daysActive);
     setIsTmrwActiveDay(daysActive[getTmrwDOW()]);
     setNextActiveDay(getNextActiveDay(getTmrwDOW(), daysActive));
   }, [daysActive]);

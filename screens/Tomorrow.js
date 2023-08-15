@@ -39,7 +39,7 @@ const Tomorrow = () => {
   } = useSettings();
   const { dayChanged } = useDayChange();
   const { tmrwHeaderSubtitleMessage, timeStatus } = useDayStatus();
-
+ 
   const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty } =
     useTmrwTodos(dayChanged, daysActive);
   const [modalVisible, setModalVisible] = useState(false);
