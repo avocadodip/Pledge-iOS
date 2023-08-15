@@ -18,17 +18,40 @@ export const addTodoItem = async (currentUserID, todo, date) => {
     if (!todoDoc.exists()) {
       // If the document does not exist, create it
       transaction.set(todosRef, {
+        date: getTmrwDate(),
+        dateName: `${
+          [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ][parseInt(getTmrwDate().slice(4, 6), 10) - 1]
+        } ${parseInt(getTmrwDate().slice(6, 8), 10)}`,
         todos: [todo],
         totalTodos: 1,
         totalFine: 0,
+        isActive: true,
+        isVacation: false,
       });
     } else {
-      // If the document exists, update it
-      transaction.update(todosRef, {
+      // If the document exists, update it with only the fields you want to change
+      const updateData = {
         todos: arrayUnion(todo),
         totalTodos: increment(1),
         totalFine: 0,
-      });
+        isActive: true,
+        isVacation: false,
+      };
+
+      transaction.update(todosRef, updateData);
     }
   })
     .then(() => {
@@ -71,7 +94,7 @@ export const updateTodoListOnboarding = async (
       dayEnd,
       false,
       true
-    ); 
+    );
     // Tmrw doc
     await addTodoArray(
       currentUserID,
@@ -104,7 +127,24 @@ const addTodoArray = async (
 
     if (!todoDoc.exists()) {
       // If the document does not exist, create it
-      const newTodo = { 
+      const newTodo = {
+        date: date,
+        dateName: `${
+          [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ][parseInt(date.slice(4, 6), 10) - 1]
+        } ${parseInt(date.slice(6, 8), 10)}`,
         todos,
         totalTodos: totalTodos,
         totalFine: 0,

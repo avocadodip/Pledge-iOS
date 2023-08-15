@@ -18,57 +18,82 @@ import StatsItem from "../components/stats/StatsItem";
 import { useThemes } from "../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { db } from "../database/firebase";
-import { collection, doc, getDocs, limit, orderBy, query, startAfter } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  where,
+} from "firebase/firestore";
 import { useSettings } from "../hooks/SettingsContext";
 
 const PastBets = ({ navigation }) => {
   const { theme, backgroundGradient } = useThemes();
   const [data, setData] = useState([]);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [lastDoc, setLastDoc] = useState(null);
+  const [lastDay, setLastDay] = useState(null);
   const { currentUserID } = useSettings();
-
+  const [allDataFetched, setAllDataFetched] = useState(false);
 
   const fetchData = async () => {
+    if (loading || allDataFetched) return; // Prevent infinite loop if loading or all data fetched
     setLoading(true);
 
-    // Define the base query
-    let q = query(
-      collection(doc(db, "users", currentUserID), "todos"),
-      orderBy("createdAt", "desc"),
-      // Limit the results to a specific number per page
-      limit(10)
-    );
+    console.log("running");
 
-    // If there is a last document, start the query after that document
-    if (lastDoc) {
-      q = query(q, startAfter(lastDoc));
-    }
+    console.log(currentUserID);
 
-    // Execute the query
-    const querySnapshot = await getDocs(q);
+    try {
+      let q = query(
+        collection(doc(db, "users", currentUserID), "todos"),
+        orderBy("date", "desc"),
+        limit(10)
+      );
 
-    // Extract the todos and update the state
-    const todos = [];
-    querySnapshot.forEach((dayDoc) => {
-      const dayData = dayDoc.data();
-      if (dayData.todos) {
-        todos.push(...dayData.todos);
+      if (lastDay) {
+        q = query(q, startAfter(lastDay));
       }
-    });
 
-    // Set the last document for pagination
-    setLastDoc(querySnapshot.docs[querySnapshot.docs.length - 1]);
+      const querySnapshot = await getDocs(q);
 
-    // Update the state with the new todos
-    setData([...data, ...todos]);
-    setLoading(false);
+      // No more todos left
+      if (querySnapshot.empty) {
+        console.log("No more data to fetch.");
+        setAllDataFetched(true);
+        return;
+      }
+
+      const todos = [];
+      querySnapshot.forEach((dayDoc) => {
+        const dayData = dayDoc.data();
+        console.log(dayData);
+        if (dayData.todos) {
+          todos.push(...dayData.todos.slice(0, 3));
+        }
+      });
+
+      if (querySnapshot.docs.length > 0) {
+        setLastDay(
+          querySnapshot.docs[querySnapshot.docs.length - 1].data().date
+        );
+      }
+
+      setData((prevData) => [...prevData, ...todos]);
+    } catch (error) {
+      console.error("An error occurred while fetching todos:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (currentUserID) {
+      fetchData();
+    }
+  }, [currentUserID]);
 
   const handleLoadMore = () => {
     fetchData();
@@ -86,7 +111,7 @@ const PastBets = ({ navigation }) => {
         <FlatList
           data={data}
           renderItem={({ item }) => <StatsItem title={item.title} />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => index.toString()}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={renderFooter}

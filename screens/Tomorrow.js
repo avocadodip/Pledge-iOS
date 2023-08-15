@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
@@ -11,7 +11,7 @@ import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
 import TodayTmrwMessage from "../components/TodayTmrwMessage";
- 
+
 const renderTodo = (
   { title, description, amount, tag, isLocked },
   index,
@@ -57,7 +57,7 @@ const Tomorrow = () => {
           <Text style={styles.headerTitle}>Tmrw</Text>
           <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
         </View>
- 
+
         {isOnboarded && !vacationModeOn && isTmrwActiveDay && (
           <View>
             <View style={styles.headerSubtitleContainer}>
