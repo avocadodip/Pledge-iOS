@@ -108,7 +108,7 @@ export const updateTodoListOnboarding = async (
     );
   }
 };
-
+ 
 // Function to add an array of todos
 const addTodoArray = async (
   currentUserID,
