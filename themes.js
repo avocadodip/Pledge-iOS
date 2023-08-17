@@ -7,7 +7,7 @@ export const greenGradientValues = ["#30AD4C", "#2AA746"];
 export default {
   Classic: {
     accent: "#E05E56",
-    statusBar: "light", 
+    statusBar: "light",
     scrollIndicator: "white",
     primary: Color.white,
     overlayPrimary: Color.white70,
@@ -42,7 +42,6 @@ export default {
     statusBar: "light",
     scrollIndicator: "white",
 
-
     primary: Color.white,
     overlayPrimary: Color.white70,
     halfPrimary: Color.white50,
@@ -61,6 +60,7 @@ export default {
     // high emphasis, medium emphasis, disabled https://uxplanet.org/8-tips-for-dark-theme-design-8dfc2f8f7ab6
     textHigh: "rgba(255, 255, 255, 0.87)",
     textMedium: "rgba(255, 255, 255, 0.6)",
+    textLow: "rgba(255, 255, 255, 0.55)",
     textDisabled: "rgba(255, 255, 255, 0.38)",
 
     // Auth button
@@ -76,7 +76,6 @@ export default {
     accent: Color.white,
     statusBar: "dark",
     scrollIndicator: "black",
-
 
     primary: Color.black,
     overlayPrimary: Color.black55,
@@ -95,6 +94,7 @@ export default {
     // Text
     textHigh: "rgba(0, 0, 0, 0.8)",
     textMedium: "rgba(0, 0, 0, 0.6)",
+    textLow: "rgba(255, 255, 255, 0.5)",
     textDisabled: "rgba(0, 0, 0, 0.3)",
 
     // Auth button

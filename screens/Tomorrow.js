@@ -11,6 +11,7 @@ import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
 import TodayTmrwMessage from "../components/TodayTmrwMessage";
+import { getTimezoneAbbrev } from "../utils/currentDate";
 
 const renderTodo = (
   { title, description, amount, tag, isLocked },
@@ -39,7 +40,7 @@ const Tomorrow = () => {
   } = useSettings();
   const { dayChanged } = useDayChange();
   const { tmrwHeaderSubtitleMessage, timeStatus } = useDayStatus();
- 
+
   const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty } =
     useTmrwTodos(dayChanged, daysActive);
   const [modalVisible, setModalVisible] = useState(false);
@@ -64,7 +65,8 @@ const Tomorrow = () => {
               <Text style={styles.headerSubtitle}>
                 {tmrwHeaderSubtitleMessage}
               </Text>
-              <Text style={styles.timeZone}>{timezone}</Text>
+              <Text style={styles.timeZone}>{getTimezoneAbbrev(timezone)}</Text>
+              {/* <Text style={styles.timeZone}>CST</Text> */}
             </View>
             {
               // Show a different time picker message if day has ended and no tasks inputted

@@ -76,7 +76,7 @@ const Todo = ({
       showMissingFieldAlert("title");
       return;
     }
-
+ 
     if (amount == "") {
       showMissingFieldAlert("amount");
       return;

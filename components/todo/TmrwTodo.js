@@ -22,7 +22,7 @@ const TmrwTodo = ({
 
   return (
     <View style={styles.infoContainer}>
-      <TouchableNipple
+      <TouchableNipple 
         onPress={handleOpenBottomSheet}
         style={[
           styles.leftContainer,

@@ -23,6 +23,7 @@
     "@stripe/stripe-react-native": "0.23.3",
     "dotenv": "^16.3.1",
     "expo": "~48.0.15",
+    "expo-blur": "~12.2.2",
     "expo-checkbox": "~2.3.1",
     "expo-cli": "^6.3.10",
     "expo-crypto": "~12.2.1",
@@ -64,8 +65,7 @@
     "react-native-text-input-interactive": "^0.1.4",
     "react-native-web": "~0.18.10",
     "react-select": "^5.7.3",
-    "toggle-switch-react-native": "^3.3.0",
-    "expo-blur": "~12.2.2"
+    "toggle-switch-react-native": "^3.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

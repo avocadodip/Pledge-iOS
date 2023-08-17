@@ -7,6 +7,12 @@
 // 7. formatDayStart()
 // 8. formatDayEnd()
 
+import moment from 'moment-timezone';
+
+export const getTimezoneAbbrev = (timezone) => {
+  return moment.tz(timezone).format('z');
+}
+
 // Array of week days
 export const daysOfWeek = [
   "Sunday",

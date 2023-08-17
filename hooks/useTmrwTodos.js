@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { db } from "../database/firebase";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import {
   getNextActiveDay,
   getTmrwAbbrevDOW,
@@ -25,11 +25,10 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
 
   // Re-run when it hits 12am or daysActive changes
   useEffect(() => {
-    let unsubscribe;
 
     if (currentUserID) {
       // 1. Get and sets todos to global tmrwTodos variable
-      unsubscribe = getAndSetTodos();
+      getAndSetTodos();
     }
 
     // Set whether tmrw is active, to be returned
@@ -41,11 +40,6 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
     // Set tmrw's abbrev day of week, to be returned
     setTmrwDOWAbbrev(getTmrwAbbrevDOW());
 
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
   }, [dayChanged, currentUserID]);
 
   useEffect(() => {
@@ -64,59 +58,58 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
   }, [daysActive]);
 
   // 1.
-  const getAndSetTodos = () => {
+  const getAndSetTodos = async () => {
     const fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
-
-    const unsubscribe = onSnapshot(todoRef, (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const { isActive, isVacation, todos } = docSnapshot.data();
- 
-        setIsTmrwActiveDay(isActive);
-        if (todos) {
-          for (let i = 0; i < todos.length; i++) {
-            fetchedTodos[todos[i].todoNumber - 1] = todos[i];
-          }
+  
+    const docSnapshot = await getDoc(todoRef);
+  
+    if (docSnapshot.exists()) {
+      const { isActive, isVacation, todos } = docSnapshot.data();
+  
+      setIsTmrwActiveDay(isActive);
+      if (todos) {
+        for (let i = 0; i < todos.length; i++) {
+          fetchedTodos[todos[i].todoNumber - 1] = todos[i];
         }
+      }
+    } else {
+      console.log("Todo document does not exist.");
+      setTmrwTodos([]);
+      setIsTodoArrayEmpty(true);
+    }
+  
+    // Fill in non-inputted todos with empty data
+    for (let i = 0; i < 3; i++) {
+      if (fetchedTodos[i] === null) {
+        fetchedTodos[i] = {
+          id: i,
+          todoNumber: i + 1,
+          title: "",
+          description: "",
+          amount: "3",
+          tag: "",
+          isLocked: false,
+        };
       } else {
-        console.log("Todo document does not exist.");
-        setTmrwTodos([]);
-        setIsTodoArrayEmpty(true);
-      }
-
-      // Fill in non-inputted todos with empty data
-      for (let i = 0; i < 3; i++) {
-        if (fetchedTodos[i] === null) {
-          fetchedTodos[i] = {
-            id: i,
-            todoNumber: i + 1,
-            title: "",
-            description: "",
-            amount: "3",
-            tag: "",
-            isLocked: false,
-          };
-        } else {
-          // If any todo has non-empty title, description or amount, set isTodoArrayEmpty to false
-          if (
-            fetchedTodos[i].title !== "" ||
-            fetchedTodos[i].description !== "" ||
-            fetchedTodos[i].amount !== ""
-          ) {
-            setIsTodoArrayEmpty(false);
-          }
+        // If any todo has non-empty title, description or amount, set isTodoArrayEmpty to false
+        if (
+          fetchedTodos[i].title !== "" ||
+          fetchedTodos[i].description !== "" ||
+          fetchedTodos[i].amount !== ""
+        ) {
+          setIsTodoArrayEmpty(false);
         }
       }
-      console.log("buoy");
-
-      console.log(fetchedTodos);
-
-      // Set state
-      setTmrwTodos(fetchedTodos);
-    });
-
-    return unsubscribe;
+    }
+    console.log("buoy");
+  
+    console.log(fetchedTodos);
+  
+    // Set state
+    setTmrwTodos(fetchedTodos);
   };
+  
 
   return { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty };
 };

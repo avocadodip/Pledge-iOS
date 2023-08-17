@@ -13,6 +13,7 @@ import { Modal } from "react-native";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
 import TodayTmrwMessage from "../components/TodayTmrwMessage";
 import { useTmrwTodos } from "../hooks/useTmrwTodos";
+import { getTimezoneAbbrev } from "../utils/currentDate";
 
 const renderTodo = (
   { title, description, amount, tag, isComplete },
@@ -71,12 +72,13 @@ const Today = () => {
           <Text style={styles.headerDayOfWeek}>{todayDOWAbbrev}</Text>
         </View>
 
-        {!isTodayVacation && isTodayActiveDay && !isTodoArrayEmpty && (
+        {!isTodayVacation && isTodayActiveDay && (
           <View style={styles.headerSubtitleContainer}>
             <Text style={styles.headerSubtitle}>
               {todayHeaderSubtitleMessage}
             </Text>
-            <Text style={styles.timeZone}>{timezone}</Text>
+            <Text style={styles.timeZone}>{getTimezoneAbbrev(timezone)}</Text>
+            {/* <Text style={styles.timeZone}>CST</Text> */}
           </View>
         )}
       </View>

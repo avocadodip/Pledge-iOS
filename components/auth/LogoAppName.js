@@ -9,7 +9,7 @@ const LogoAppName = () => {
         source={require("../../assets/icons/FervoWhite.png")}
         style={{ width: 100, height: 100 }}
       />
-      <Text style={styles.appNameText}>Fervo</Text>
+      <Text style={styles.appNameText}>Pledge</Text>
     </View>
   );
 };

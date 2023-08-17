@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
-import { getTodoStyles, styles } from "./TodoStyles";
+import { getTodoStyles, styles, variableFontSize } from "./TodoStyles";
 import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
 import CheckIcon from "../../assets/icons/check-icon.svg";
 import InfoIcon from "../../assets/icons/info-icon.svg";
@@ -84,7 +84,14 @@ const TodayTodo = ({
                 </View>
               )}
               <View style={styles.titleContainer}>
-                <Text style={styles.titleText}>{title}</Text>
+                <Text
+                  style={[
+                    styles.titleText,
+                    { fontSize: variableFontSize(title) },
+                  ]}
+                >
+                  {title}
+                </Text>
               </View>
             </View>
             {amount && (
@@ -115,7 +122,12 @@ const TodayTodo = ({
             style={[styles.leftContainer, { padding: 0 }]}
           >
             {shouldRenderTaskInfo && (
-              <View style={[styles.leftContainerInner, {width: "100%", padding: 16 }]}>
+              <View
+                style={[
+                  styles.leftContainerInner,
+                  { width: "100%", padding: 16 },
+                ]}
+              >
                 <View style={styles.tagTitleContainer}>
                   {tag && (
                     <View style={styles.tagContainer}>
@@ -123,15 +135,18 @@ const TodayTodo = ({
                     </View>
                   )}
                   <View style={styles.titleContainer}>
-                    <Text style={styles.titleText}>{title}</Text>
+                    <Text
+                      style={[
+                        styles.titleText,
+                        { fontSize: variableFontSize(title) },
+                      ]}
+                    >
+                      {title}
+                    </Text>
                   </View>
                 </View>
                 {amount && (
-                  <View
-                    style={[
-                      styles.amountContainer,
-                    ]}
-                  >
+                  <View style={[styles.amountContainer]}>
                     <Text style={styles.amountText}>${amount}</Text>
                   </View>
                 )}
@@ -179,7 +194,14 @@ const TodayTodo = ({
                     </View>
                   )}
                   <View style={styles.titleContainer}>
-                    <Text style={styles.titleText}>{title}</Text>
+                    <Text
+                      style={[
+                        styles.titleText,
+                        { fontSize: variableFontSize(title) },
+                      ]}
+                    >
+                      {title}
+                    </Text>
                   </View>
                 </View>
                 {amount && (

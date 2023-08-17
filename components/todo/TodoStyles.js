@@ -27,7 +27,7 @@ export const getTodoStyles = (theme) =>
       alignItems: "center",
       gap: 20,
       borderRadius: BORDER_RADIUS,
-      backgroundColor: theme.faintPrimary,
+      backgroundColor: theme.lightPrimary,
       padding: 15,
       overflow: "hidden",
     },
@@ -104,14 +104,14 @@ export const getTodoStyles = (theme) =>
       width: "100%",
     },
     amountContainer: {
-      justifyContent: "flex-end",
+      justifyContent: "center",
       alignItems: "center",
       backgroundColor: theme.faintPrimary,
       borderRadius: 8,
-      // width: 57,
       height: 35,
       padding: 5,
       paddingHorizontal: 12,
+
       // borderWidth: 1,
       // borderColor: "white",
 
@@ -150,7 +150,6 @@ export const getTodoStyles = (theme) =>
     amountText: {
       color: theme.primary,
       fontSize: 20,
-      lineHeight: 19,
       fontWeight: "bold",
     },
 
