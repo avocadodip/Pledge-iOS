@@ -6,12 +6,13 @@ import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayStatus } from "../hooks/DayStatusContext";
 import { useTmrwTodos } from "../hooks/useTmrwTodos";
-import TmrwTimePicker from "../components/TmrwTimePicker";
+import TmrwTimePicker from "../components/todaytmrw/TmrwTimePicker";
 import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
-import TodayTmrwMessage from "../components/TodayTmrwMessage";
+import TodayTmrwMessage from "../components/todaytmrw/TodayTmrwMessage";
 import { getTimezoneAbbrev } from "../utils/currentDate";
+import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
 
 const renderTodo = (
   { title, description, amount, tag, isLocked },
@@ -66,7 +67,6 @@ const Tomorrow = () => {
                 {tmrwHeaderSubtitleMessage}
               </Text>
               <Text style={styles.timeZone}>{getTimezoneAbbrev(timezone)}</Text>
-              {/* <Text style={styles.timeZone}>CST</Text> */}
             </View>
             {
               // Show a different time picker message if day has ended and no tasks inputted
@@ -90,9 +90,12 @@ const Tomorrow = () => {
         ) : vacationModeOn ? (
           <TodayTmrwMessage type={"vacation"} />
         ) : !isTmrwActiveDay ? (
-          <TodayTmrwMessage type={"rest day"} />
+          <TodayTmrwMessage
+            type={"rest day (tmrw screen)"}
+            nextActiveDay={nextActiveDay}
+          />
         ) : (
-          <View style={styles.todoContainer}>{renderTodos()}</View>
+          <View style={styles.todosContainer}>{renderTodos()}</View>
         )}
       </View>
 
@@ -109,7 +112,7 @@ const getStyles = (theme) =>
     pageContainer: {
       flex: 1,
       alignItems: "center",
-      marginHorizontal: 20,
+      marginHorizontal: APP_HORIZONTAL_PADDING,
     },
     headerContainer: {
       marginTop: 5,
@@ -120,23 +123,22 @@ const getStyles = (theme) =>
     headerTitleContainer: {
       width: "100%",
       flexDirection: "row",
-      alignItems: "flex-end",
+      alignItems: "baseline",
       gap: 10,
     },
     headerTitle: {
       color: theme.textHigh,
-      fontSize: 42,
+      fontSize: 40,
       fontWeight: "bold",
     },
     headerDayOfWeek: {
       color: theme.textLow,
       fontSize: 23,
       fontWeight: "bold",
-      paddingBottom: 6,
     },
     headerSubtitle: {
       color: theme.textHigh,
-      fontSize: 25,
+      fontSize: 22,
       fontWeight: "bold",
       marginTop: 5,
     },
@@ -146,9 +148,8 @@ const getStyles = (theme) =>
       justifyContent: "center",
       alignItems: "center",
     },
-    todoContainer: {
-      marginTop: 20,
-      gap: 18,
+    todosContainer: {
+      gap: 14,
       width: "100%",
     },
 

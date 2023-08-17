@@ -4,14 +4,11 @@ import {
   Text,
   View,
   SafeAreaView,
-  TouchableOpacity,
   FlatList,
   ActivityIndicator,
 } from "react-native";
 import {
-  Color,
-  SETTINGS_HORIZONTAL_PADDING,
-  settingsPageStyles,
+  APP_HORIZONTAL_PADDING,
 } from "../GlobalStyles";
 import SettingsHeader from "../components/settings/SettingsHeader";
 import StatsItem from "../components/stats/StatsItem";
@@ -134,6 +131,6 @@ export default PastBets;
 const style = StyleSheet.create({
   pageContainer: {
     display: "flex",
-    marginHorizontal: SETTINGS_HORIZONTAL_PADDING,
+    marginHorizontal: APP_HORIZONTAL_PADDING,
   },
 });

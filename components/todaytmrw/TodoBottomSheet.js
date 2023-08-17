@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { useBottomSheet } from "../hooks/BottomSheetContext";
-import PledgeDollarIcon from "../assets/icons/pledge-dollar-icon.svg";
-import FolderIcon from "../assets/icons/amount-folder-icon.svg";
-import DescriptLinesIcon from "../assets/icons/descript-lines-icon.svg";
-import { Color } from "../GlobalStyles";
-import { useThemes } from "../hooks/ThemesContext";
+import { useBottomSheet } from "../../hooks/BottomSheetContext";
+import PledgeDollarIcon from "../../assets/icons/pledge-dollar-icon.svg";
+import FolderIcon from "../../assets/icons/amount-folder-icon.svg";
+import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
+import { Color } from "../../GlobalStyles";
+import { useThemes } from "../../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function TodoBottomSheet() {
@@ -108,9 +108,7 @@ export default function TodoBottomSheet() {
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
-              <PledgeDollarIcon 
-                color={theme.textHigh}
-              />
+              <PledgeDollarIcon color={theme.textHigh} />
               <TextInput
                 style={styles.textInput}
                 placeholder="Add pledge"
@@ -126,9 +124,7 @@ export default function TodoBottomSheet() {
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
-              <FolderIcon 
-                color={theme.textHigh}
-              />
+              <FolderIcon color={theme.textHigh} />
               <TextInput
                 style={styles.textInput}
                 placeholder="Add tag"
@@ -143,9 +139,7 @@ export default function TodoBottomSheet() {
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.descriptionContainer}>
-              <DescriptLinesIcon
-                color={theme.textHigh}
-              />
+              <DescriptLinesIcon color={theme.textHigh} />
               <TextInput
                 style={styles.textInput}
                 placeholder="Add description"
@@ -155,6 +149,7 @@ export default function TodoBottomSheet() {
                 textStyle={styles.text}
                 autoCorrect={false}
                 autoCapitalize="none"
+                multiline={true}
               />
             </View>
           </View>
@@ -170,23 +165,17 @@ export default function TodoBottomSheet() {
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
-              <PledgeDollarIcon 
-                color={theme.textHigh}
-              />
+              <PledgeDollarIcon color={theme.textHigh} />
               <Text style={styles.text}>{selectedTodo.amount}</Text>
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
-              <FolderIcon 
-                color={theme.textHigh}
-              />
+              <FolderIcon color={theme.textHigh} />
               <Text style={styles.text}>{selectedTodo.tag}</Text>
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.descriptionContainer}>
-              <DescriptLinesIcon 
-                color={theme.textHigh}
-              />
+              <DescriptLinesIcon color={theme.textHigh} />
               <Text style={styles.text}>{selectedTodo.description}</Text>
             </View>
           </View>
@@ -226,26 +215,28 @@ const getStyles = (theme) =>
       opacity: 0.3,
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
+
+    // CONTAINERS
     numberTitleContainer: {
       flexDirection: "row",
       alignItems: "center",
       marginTop: 45,
       marginBottom: 20,
       gap: 23,
+
+
     },
     amountFolderContainer: {
       flexDirection: "row",
       alignItems: "center",
       gap: 23,
-      marginVertical: 4,
-    },
+    }, 
     descriptionContainer: {
+      paddingTop: 10,
       flexDirection: "row",
-      alignItems: "center",
       gap: 23,
-      // marginVertical: 18,
-      // borderWidth: 1,
-      // borderColor: 'black',
+      alignItems: "center"
+
     },
     number: {
       color: theme.primary,
@@ -262,14 +253,12 @@ const getStyles = (theme) =>
       color: theme.primary,
       fontSize: 16,
       fontWeight: 500,
-      lineHeight: 18,
       width: "80%",
       paddingVertical: 15,
     },
     textInput: {
       color: theme.primary,
       fontSize: 16,
-      lineHeight: 18,
       width: "80%",
       paddingVertical: 15,
       // paddingHorizontal: 10,

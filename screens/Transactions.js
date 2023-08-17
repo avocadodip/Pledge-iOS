@@ -7,6 +7,7 @@ import {
   SectionList,
 } from "react-native";
 import {
+  APP_HORIZONTAL_PADDING,
   BOTTOM_TAB_HEIGHT,
   Color,
   SETTINGS_HORIZONTAL_PADDING,
@@ -151,7 +152,7 @@ const Transactions = ({ navigation }) => {
   return (
     <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
       <SafeAreaView style={styles.pageContainer}>
-        <View style={{ paddingHorizontal: SETTINGS_HORIZONTAL_PADDING }}>
+        <View style={{ paddingHorizontal: APP_HORIZONTAL_PADDING }}>
           <SettingsHeader navigation={navigation} header={"Transactions"} />
         </View>
  
@@ -177,7 +178,7 @@ const Transactions = ({ navigation }) => {
               <Text style={styles.descriptorText}>{title}</Text>
             )}
             contentContainerStyle={{
-              paddingHorizontal: SETTINGS_HORIZONTAL_PADDING,
+              paddingHorizontal: APP_HORIZONTAL_PADDING,
             }}
             style={styles.sectionList}
             renderSectionFooter={() => <View style={{ height: 10 }} />}

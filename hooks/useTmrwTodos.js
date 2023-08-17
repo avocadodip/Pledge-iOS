@@ -73,7 +73,7 @@ export const useTmrwTodos = (dayChanged, daysActive) => {
           fetchedTodos[todos[i].todoNumber - 1] = todos[i];
         }
       }
-    } else {
+    } else { 
       console.log("Todo document does not exist.");
       setTmrwTodos([]);
       setIsTodoArrayEmpty(true);

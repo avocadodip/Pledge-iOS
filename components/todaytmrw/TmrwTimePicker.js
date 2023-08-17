@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import Modal from "react-native-modal";
-import { Color } from "../GlobalStyles";
-import TouchableRipple from "./TouchableRipple";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../database/firebase";
+import { db } from "../../database/firebase";
 import ContentLoader, { Rect } from "react-content-loader/native";
-import { useDayStatus } from "../hooks/DayStatusContext";
-import { useSettings } from "../hooks/SettingsContext";
-import BottomModal from "./BottomModal";
-import { useThemes } from "../hooks/ThemesContext";
+import { useDayStatus } from "../../hooks/DayStatusContext";
+import { useSettings } from "../../hooks/SettingsContext";
+import BottomModal from "../BottomModal";
+import { useThemes } from "../../hooks/ThemesContext";
 
 const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
@@ -177,7 +174,6 @@ const TmrwTimePicker = ({ altMessage }) => {
         isVisible={isModalVisible.end}
         onBackdropPress={() => handleTimeSave("end")}
         modalTitle={"Edit End Time"}
-
       >
         <View style={styles.timePickerContainer}>
           <Picker
@@ -223,50 +219,50 @@ const TmrwTimePicker = ({ altMessage }) => {
 
 const getStyles = (theme) =>
   StyleSheet.create({
-  // Header line styles
-  headerMessageContainer: {
-    marginTop: 5,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  headerMessageText: {
-    fontSize: 14,
-    color: theme.primary,
-  },
-  contentLoaderContainer: {
-    width: CONTENT_LOADER_WIDTH,
-    height: CONTENT_LOADER_HEIGHT,
-    borderRadius: 5,
-    overflow: "hidden",
-    backgroundColor: theme.faintPrimary,
-  },
-  headerButton: {
-    borderRadius: 5,
-    overflow: "hidden",
-    backgroundColor: theme.faintPrimary,
-    paddingHorizontal: 7,
-    paddingVertical: 4,
-  },
-  headerButtonText: {
-    color: theme.primary,
-    fontSize: 14,
-    fontWeight: 500,
-  },
+    // Header line styles
+    headerMessageContainer: {
+      marginTop: 5,
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    headerMessageText: {
+      fontSize: 14,
+      color: theme.primary,
+    },
+    contentLoaderContainer: {
+      width: CONTENT_LOADER_WIDTH,
+      height: CONTENT_LOADER_HEIGHT,
+      borderRadius: 5,
+      overflow: "hidden",
+      backgroundColor: theme.faintPrimary,
+    },
+    headerButton: {
+      borderRadius: 5,
+      overflow: "hidden",
+      backgroundColor: theme.faintPrimary,
+      paddingHorizontal: 7,
+      paddingVertical: 4,
+    },
+    headerButtonText: {
+      color: theme.primary,
+      fontSize: 14,
+      fontWeight: 500,
+    },
 
-  timePickerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  timePicker: {
-    // borderColor: "black",
-    // borderWidth: 1,
-    width: 100,
-    marginVertical: 15,
-  },
-  timePickerText: {
-    color: theme.primary,
-    fontSize: 20,
-  },
-});
+    timePickerContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    timePicker: {
+      // borderColor: "black",
+      // borderWidth: 1,
+      width: 100,
+      marginVertical: 15,
+    },
+    timePickerText: {
+      color: theme.primary,
+      fontSize: 20,
+    },
+  });
 
 export default TmrwTimePicker;

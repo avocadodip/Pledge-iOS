@@ -9,7 +9,6 @@ import Signup from "./screens/Signup";
 import Login from "./screens/Login";
 import Splash from "./components/Splash";
 import Intro from "./screens/Intro";
-import TodoBottomSheet from "./components/TodoBottomSheet";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 import { ThemesProvider, useThemes } from "./hooks/ThemesContext";
@@ -20,6 +19,7 @@ import ForgotPassword from "./screens/ForgotPassword";
 import { DayStatusProvider } from "./hooks/DayStatusContext";
 import MainStack from "./components/MainStack";
 import { LinearGradient } from "expo-linear-gradient";
+import TodoBottomSheet from "./components/todaytmrw/TodoBottomSheet";
 
 const Stack = createNativeStackNavigator();
 

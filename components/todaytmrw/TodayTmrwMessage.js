@@ -1,14 +1,18 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import CircleRightArrow from "../assets/icons/circle-right-arrow.svg";
+import CircleRightArrow from "../../assets/icons/circle-right-arrow.svg";
 import { useNavigation } from "@react-navigation/native";
-import { useThemes } from "../hooks/ThemesContext";
-import { getTodoStyles, styles } from "./todo/TodoStyles";
+import { useThemes } from "../../hooks/ThemesContext";
+import { getTodoStyles, styles } from "../todo/TodoStyles";
+import { daysOfWeek } from "../../utils/currentDate";
 
-const TodayTmrwMessage = ({ type, setModalVisible }) => {
+const TodayTmrwMessage = ({ type, setModalVisible, nextActiveDay }) => {
   const { theme } = useThemes();
   const navigation = useNavigation();
   const styles = getTodoStyles(theme);
+
+  const nextActiveDayIndex = daysOfWeek.indexOf(nextActiveDay);
+  const dayBeforeNextActiveDay = daysOfWeek[(nextActiveDayIndex - 1 + 7) % 7];
 
   const handleButtonPress = () => {
     // Navigate to the tomorrow page
@@ -34,16 +38,19 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
       case "vacation":
         return (
           <>
-            <Text style={styles.infoText}>You're on vacation!</Text>
-            <TouchableOpacity style={styles.todoButton}>
+            <Text style={styles.infoText}>You're on vacation.</Text>
+            <TouchableOpacity
+              style={styles.todoButton}
+              onPress={() => {
+                navigation.navigate("Settings");
+              }}
+            >
               <Text style={styles.todoButtonText}>Turn off vacation mode</Text>
-              <CircleRightArrow 
-                color={theme.textHigh}
-              />
+              <CircleRightArrow color={theme.textHigh} />
             </TouchableOpacity>
           </>
         );
-      case "rest day":
+      case "rest day (today screen)":
         return (
           <>
             <Text style={styles.infoText}>Welcome, Josh.</Text>
@@ -53,9 +60,25 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
               onPress={handleButtonPress}
             >
               <Text style={styles.todoButtonText}> Add steps for </Text>
-              <CircleRightArrow 
-                color={theme.textHigh}
-              />
+              <CircleRightArrow color={theme.textHigh} />
+            </TouchableOpacity>
+          </>
+        );
+      case "rest day (tmrw screen)":
+        return (
+          <>
+            <Text style={styles.infoText}>It's your day off.</Text>
+            <Text style={styles.infoText}>
+              Check back in on {dayBeforeNextActiveDay} to lock in tasks for{" "}
+              {nextActiveDay}.
+            </Text>
+
+            <TouchableOpacity
+              style={styles.todoButton}
+              onPress={handleButtonPress}
+            >
+              <Text style={styles.todoButtonText}> Make an exception </Text>
+              <CircleRightArrow color={theme.textHigh} />
             </TouchableOpacity>
           </>
         );
@@ -78,10 +101,10 @@ export default TodayTmrwMessage;
 
 const getStyles = (theme) =>
   StyleSheet.create({
-  startButton: {},
-  startButtonText: {
-    color: theme.primary,
-    fontWeight: 500,
-    fontSize: 20,
-  },
-});
+    startButton: {},
+    startButtonText: {
+      color: theme.primary,
+      fontWeight: 500,
+      fontSize: 20,
+    },
+  });

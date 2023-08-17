@@ -77,7 +77,12 @@ const TodayTodo = ({
             // style={animatedStyles.leftButtonContainer}
             style={[styles.leftContainer, styles.disabledOpacity]}
           >
-            <View style={styles.tagTitleContainer}>
+            <View
+              style={[
+                styles.leftContainerInner,
+                { width: "100%", padding: 16 },
+              ]}
+            >
               {tag && (
                 <View style={styles.tagContainer}>
                   <Text style={styles.tagText}>{tag}</Text>
@@ -90,15 +95,25 @@ const TodayTodo = ({
                     { fontSize: variableFontSize(title) },
                   ]}
                 >
-                  {title}
+                  {title}{" "}
+                  {description !== "" && (
+                    <Text
+                      style={[
+                        styles.moreText,
+                        { fontSize: variableFontSize(title, true) },
+                      ]}
+                    >
+                      {" "}more...
+                    </Text>
+                  )}
                 </Text>
               </View>
+              {amount && (
+                <View style={styles.amountContainer}>
+                  <Text style={styles.amountText}>${amount}</Text>
+                </View>
+              )}
             </View>
-            {amount && (
-              <View style={styles.amountContainer}>
-                <Text style={styles.amountText}>${amount}</Text>
-              </View>
-            )}
           </TouchableRipple>
         </Animated.View>
         {/* Right side */}
@@ -128,25 +143,33 @@ const TodayTodo = ({
                   { width: "100%", padding: 16 },
                 ]}
               >
-                <View style={styles.tagTitleContainer}>
-                  {tag && (
-                    <View style={styles.tagContainer}>
-                      <Text style={styles.tagText}>{tag}</Text>
-                    </View>
-                  )}
-                  <View style={styles.titleContainer}>
-                    <Text
-                      style={[
-                        styles.titleText,
-                        { fontSize: variableFontSize(title) },
-                      ]}
-                    >
-                      {title}
-                    </Text>
+                {tag && (
+                  <View style={styles.tagContainer}>
+                    <Text style={styles.tagText}>{tag}</Text>
                   </View>
+                )}
+                <View style={styles.titleContainer}>
+                  <Text
+                    style={[
+                      styles.titleText,
+                      { fontSize: variableFontSize(title) },
+                    ]}
+                  >
+                    {title}{" "}
+                    {description !== "" && (
+                      <Text
+                        style={[
+                          styles.moreText,
+                          { fontSize: variableFontSize(title, true) },
+                        ]}
+                      >
+                        {" "}more...
+                      </Text>
+                    )}
+                  </Text>
                 </View>
                 {amount && (
-                  <View style={[styles.amountContainer]}>
+                  <View style={styles.amountContainer}>
                     <Text style={styles.amountText}>${amount}</Text>
                   </View>
                 )}
@@ -187,7 +210,12 @@ const TodayTodo = ({
                 onPress={handleOpenBottomSheet}
                 style={[styles.leftContainer, styles.disabledOpacity]}
               >
-                <View style={styles.tagTitleContainer}>
+                <View
+                  style={[
+                    styles.leftContainerInner,
+                    { width: "100%", padding: 16 },
+                  ]}
+                >
                   {tag && (
                     <View style={styles.tagContainer}>
                       <Text style={styles.tagText}>{tag}</Text>
@@ -200,15 +228,25 @@ const TodayTodo = ({
                         { fontSize: variableFontSize(title) },
                       ]}
                     >
-                      {title}
+                      {title}{" "}
+                      {description !== "" && (
+                        <Text
+                          style={[
+                            styles.moreText,
+                            { fontSize: variableFontSize(title, true) },
+                          ]}
+                        >
+                          {" "}more...
+                        </Text>
+                      )}
                     </Text>
                   </View>
+                  {amount && (
+                    <View style={styles.amountContainer}>
+                      <Text style={styles.amountText}>${amount}</Text>
+                    </View>
+                  )}
                 </View>
-                {amount && (
-                  <View style={styles.amountContainer}>
-                    <Text style={styles.amountText}>${amount}</Text>
-                  </View>
-                )}
               </TouchableRipple>
             </Animated.View>
             {/* Right side */}

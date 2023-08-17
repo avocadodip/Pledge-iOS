@@ -22,38 +22,45 @@ const TmrwTodo = ({
 
   return (
     <View style={styles.infoContainer}>
-      <TouchableNipple 
+      <TouchableNipple
         onPress={handleOpenBottomSheet}
         style={[
           styles.leftContainer,
-          {padding: 0},
+          { padding: 0 },
           timeStatus === 2 && styles.disabledOpacity,
         ]}
       >
-        <View style={[styles.leftContainerInner, {width: "100%", padding: 16 }]}>
-          <View style={styles.tagTitleContainer}>
-            {tag && (
-              <View style={styles.tagContainer}>
-                <Text style={styles.tagText}>{tag}</Text>
-              </View>
-            )}
-            <View style={styles.titleContainer}>
-              <Text
-                style={[
-                  styles.titleText,
-                  { fontSize: variableFontSize(title) },
-                ]}
-              >
-                {title}
-              </Text>
+        <View
+          style={[styles.leftContainerInner, { width: "100%", padding: 16 }]}
+        >
+          {tag && (
+            <View style={styles.tagContainer}>
+              <Text style={styles.tagText}>{tag}</Text>
             </View>
+          )}
+          <View style={styles.titleContainer}>
+            <Text
+              style={[styles.titleText, { fontSize: variableFontSize(title) }]}
+            >
+              {title}
+              {description !== "" && (
+                <Text
+                  style={[
+                    styles.moreText,
+                    { fontSize: variableFontSize(title, true) },
+                  ]}
+                >
+                  {" "}more...
+                </Text>
+              )}
+            </Text>
           </View>
-          {amount && (
+        </View>
+        {amount && (
           <View style={styles.amountContainer}>
             <Text style={styles.amountText}>${amount}</Text>
           </View>
-        )} 
-        </View>
+        )}
       </TouchableNipple>
       <RenderTmrwLock
         isLocked={isLocked}

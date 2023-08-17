@@ -10,7 +10,7 @@ const FinedTodo = () => {
   return (
     <View style={styles.finedContainer}>
       <Text style={styles.finedText}>No task entered.</Text>
-      <Text style={styles.finedText}>-$1</Text>
+      {/* <Text style={styles.finedText}>-$1</Text> */}
     </View>
   );
 };

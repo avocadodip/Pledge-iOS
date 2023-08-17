@@ -60,7 +60,6 @@ const getStyles = (theme) =>
       borderRadius: 20,
       borderColor: "rgba(0, 0, 0, 0.1)",
       overflow: "hidden",
-      height: 350,
     },
     modalContent: {
       flexDirection: "col",

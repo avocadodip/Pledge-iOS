@@ -19,6 +19,7 @@ export const ThemesProvider = ({ children }) => {
   const systemTheme = useColorScheme(); // Gets the current system theme
   const [backgroundGradient, setBackgroundGradient] = useState([]);
   const [statusBarHidden, setStatusBarHidden] = useState(false); // For settings page scrollview
+  const [currentClassicColor, setCurrentClassicColor] = useState(""); // purple, red, green
 
   let noActionItemsLeft = false;
 
@@ -32,7 +33,6 @@ export const ThemesProvider = ({ children }) => {
     updateBackgroundGradient();
   }, [currentThemeName, currentUserID, timeStatus]);
 
-
   const updateBackgroundGradient = () => {
     switch (currentThemeName) {
       case "Classic":
@@ -41,10 +41,13 @@ export const ThemesProvider = ({ children }) => {
           currentUserID === null
         ) {
           setBackgroundGradient(redGradientValues);
+          setCurrentClassicColor("red");
         } else if (timeStatus === 0 || timeStatus === 2) {
           setBackgroundGradient(purpleGradientValues);
+          setCurrentClassicColor("purple");
         } else if (timeStatus === 1 && noActionItemsLeft) {
           setBackgroundGradient(greenGradientValues);
+          setCurrentClassicColor("green");
         }
         break;
       case "Dark":
@@ -59,7 +62,7 @@ export const ThemesProvider = ({ children }) => {
   // Fetch theme from storage
   const fetchTheme = async () => {
     const storedTheme = await AsyncStorage.getItem("storedTheme");
-    setCurrentThemeName(storedTheme || "Classic"); 
+    setCurrentThemeName(storedTheme || "Classic");
   };
 
   // Save theme to storage
@@ -87,7 +90,8 @@ export const ThemesProvider = ({ children }) => {
     updateBackgroundGradient,
     backgroundGradient,
     statusBarHidden,
-    setStatusBarHidden
+    setStatusBarHidden,
+    currentClassicColor
   };
 
   return (

@@ -1,8 +1,30 @@
 import { Color } from "./GlobalStyles";
 
+// Backgrounds
 export const redGradientValues = ["#DB5353", "#E46959"];
 export const purpleGradientValues = ["#5653DB", "#7653DB"];
 export const greenGradientValues = ["#30AD4C", "#2AA746"];
+
+// Comes in as "purple", "red", or "green" & name of style like ContentLoaderBackgroundColor
+export const getClassicColor = (color, styleName) => {
+  const colorMap = {
+    red: {
+      ContentLoaderBackgroundColor: "#e16564",
+      ContentLoaderForegroundColor: "#f27b7b"
+    },
+    purple: {
+      ContentLoaderBackgroundColor: "#6967e4",
+      ContentLoaderForegroundColor: "#9c9af9"
+    },
+    green: {
+      ContentLoaderBackgroundColor: "#FFFFFF",
+      ContentLoaderForegroundColor: "#FFFFFF"
+    }
+  };
+
+  return colorMap[color]?.[styleName];
+};
+
 
 export default {
   Classic: {

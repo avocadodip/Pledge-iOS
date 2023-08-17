@@ -1,18 +1,23 @@
 import { StyleSheet } from "react-native";
 
-const TODO_HEIGHT = "31%";
+const TODO_HEIGHT = "30.5%";
 const BORDER_RADIUS = 24;
 
-export const variableFontSize = (text) => {
+// Task name || "more..."
+export const variableFontSize = (text, isMore) => {
   let length = text.length;
 
   if (length < 10) {
+    if (isMore) return 20;
     return 35; // Large font size
   } else if (length < 15) {
-    return 32; // Medium font size
+    if (isMore) return 18;
+    return 30; // Medium font size
   } else if (length < 20) {
-    return 27; // Medium font size
+    if (isMore) return 16;
+    return 25; // Medium font size
   } else {
+    if (isMore) return 14;
     return 20; // Small font size
   }
 };
@@ -72,62 +77,27 @@ export const getTodoStyles = (theme) =>
     leftContainer: {
       backgroundColor: theme.faintPrimary,
       height: "100%",
-
       flex: 8,
-      display: "flex",
-      padding: 16,
-      flexDirection: "column",
-      justifyContent: "flex-end",
-      alignItems: "flex-start",
-      gap: 6,
       // borderWidth: 1,
       // borderColor: "blue",
     },
     leftContainerInner: {
       display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-      height: '100%',
-      // borderWidth: 1,
-      // borderColor: "purple",
-    },
-    tagTitleContainer: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-end",
-      alignItems: "flex-start",
-      gap: 3,
-      height: 93,
-      alignSelf: "stretch",
-      // borderWidth: 1,
-      // borderColor: "white",
-      width: "100%",
-    },
-    amountContainer: {
       justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: theme.faintPrimary,
-      borderRadius: 8,
-      height: 35,
-      padding: 5,
-      paddingHorizontal: 12,
-
-      // borderWidth: 1,
-      // borderColor: "white",
-
-      display: 'flex',
-      alignSelf: 'flex-start',
+      height: "100%",
     },
+
+    // TAG
     tagContainer: {
+      position: "absolute",
+      left: 14,
+      top: 14,
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: theme.faintPrimary,
       borderRadius: 8,
-      // paddingVertical: 8,
-      paddingHorizontal: 10,
-      height: 24,
-      // borderWidth: 1,
-      // borderColor: "white",
+      paddingVertical: 6,
+      paddingHorizontal: 8,
     },
     tagText: {
       color: theme.primary,
@@ -135,17 +105,36 @@ export const getTodoStyles = (theme) =>
       lineHeight: 12,
       fontWeight: 500,
     },
+
+    // TITLE/DESCRIPTION
     titleContainer: {
-      height: 66,
       width: "100%",
-      justifyContent: "center",
-      // borderWidth: 1,
-      // borderColor: "green",
+      flexDirection: "row",
+      alignItems: "baseline",
+    },
+    moreText: {
+      color: "#ffffff83",
+      fontSize: 20,
+      fontWeight: "700",
     },
     titleText: {
       color: theme.primary,
       fontSize: 40,
       fontWeight: "700",
+    },
+
+    // AMOUNT
+    amountContainer: {
+      position: "absolute",
+      left: 14,
+      bottom: 14,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: theme.faintPrimary,
+      borderRadius: 8,
+      height: 35,
+      padding: 5,
+      paddingHorizontal: 12,
     },
     amountText: {
       color: theme.primary,

@@ -11,6 +11,7 @@
 
 import { Dimensions } from "react-native";
 
+
 /* font sizes */
 export const FontSize = {
   size_lg: 18,
@@ -72,7 +73,7 @@ export const Border = {
 };
 
 export const BOTTOM_TAB_HEIGHT = 100;
-export const SETTINGS_HORIZONTAL_PADDING = 20;
+export const APP_HORIZONTAL_PADDING = 18;
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 

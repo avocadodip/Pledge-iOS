@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
+  APP_HORIZONTAL_PADDING,
   BOTTOM_TAB_HEIGHT,
   SETTINGS_HORIZONTAL_PADDING,
   settingsPageStyles,
@@ -45,13 +46,15 @@ import { daysOfWeek } from "../utils/currentDate";
 import { doc, updateDoc } from "firebase/firestore";
 import DeleteAccountButton from "../components/settings/DeleteAccountButton";
 import TaskFineIcon from "../assets/icons/missed-task-fine-icon.svg";
+import { useDayStatus } from "../hooks/DayStatusContext";
+import { getClassicColor } from "../themes";
 
 const BUTTON_HEIGHT = 51;
 const BUTTON_TEXTS = ["S", "M", "T", "W", "T", "F", "S"];
 
 const Settings = ({ navigation }) => {
   const { currentUserEmail } = useSettings();
-  const { theme, setStatusBarHidden } = useThemes();
+  const { theme, setStatusBarHidden, currentClassicColor } = useThemes();
   const styles = getStyles(theme);
   const {
     settings: {
@@ -198,7 +201,7 @@ const Settings = ({ navigation }) => {
     <View style={settingsPageStyles.pageContainer}>
       <ScrollView
         style={styles.scrollView}
-        indicatorStyle={theme.scrollIndicator} 
+        indicatorStyle={theme.scrollIndicator}
         onScroll={(event) => {
           setScrollY(event.nativeEvent.contentOffset.y);
         }}
@@ -219,8 +222,8 @@ const Settings = ({ navigation }) => {
               <ContentLoader
                 speed={0.6}
                 height={BUTTON_HEIGHT}
-                backgroundColor="#e16564"
-                foregroundColor="#f27b7b"
+                backgroundColor={getClassicColor(currentClassicColor, "ContentLoaderBackgroundColor")}
+                foregroundColor={getClassicColor(currentClassicColor, "ContentLoaderForegroundColor")}
               >
                 <Rect width="100%" height="100%" />
               </ContentLoader>
@@ -262,7 +265,8 @@ const Settings = ({ navigation }) => {
           <View style={styles.sectionContainer}></View>
 
           <View style={styles.sectionContainer}>
-            <TouchableRipple
+            {/* NOTIFICATIONS */}
+            {/* <TouchableRipple
               style={styles.button}
               onPress={() => handleOpenNotifsModal(true)}
             >
@@ -290,7 +294,7 @@ const Settings = ({ navigation }) => {
               isVisible={notifsModalVisible}
               handleToggleModal={handleOpenNotifsModal}
               notifsEnabled={notificationsEnabled}
-            />
+            /> */}
             {/* DAYS ACTIVE */}
             <TouchableRipple
               style={styles.button}
@@ -372,14 +376,14 @@ const Settings = ({ navigation }) => {
               <Text style={styles.rightSideText}>{timezone}</Text>
             </View>
             {/* MISSED FINE */}
-            <View style={styles.button}>
+            {/* <View style={styles.button}>
               <View style={styles.leftSettingsButton}>
                 <TaskFineIcon width={23} height={23} color={theme.textHigh} />
 
                 <Text style={styles.buttonTitle}>Missed Task Fine</Text>
               </View>
               <Text style={styles.rightSideText}>-$1</Text>
-            </View>
+            </View> */}
           </View>
         </View>
         <View style={styles.sectionHeader}>
@@ -418,8 +422,14 @@ const Settings = ({ navigation }) => {
               <MailIcon width={25} height={25} color={theme.textHigh} />
               <Text style={styles.buttonTitle}>Email</Text>
             </View>
-            <View style={{width: 226}}>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.rightSideText}>{currentUserEmail}</Text>
+            <View style={{ width: 160 }}>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={{ ...styles.rightSideText, textAlign: "right" }}
+              >
+                {currentUserEmail}
+              </Text>
             </View>
           </TouchableRipple>
 
@@ -442,7 +452,7 @@ export default Settings;
 const getStyles = (theme) =>
   StyleSheet.create({
     scrollView: {
-      paddingHorizontal: SETTINGS_HORIZONTAL_PADDING,
+      paddingHorizontal: APP_HORIZONTAL_PADDING,
       paddingTop: 40,
       paddingBottom: 200,
     },
@@ -469,7 +479,7 @@ const getStyles = (theme) =>
     },
     sectionHeader: {
       width: "100%",
-      marginTop: 20,
+      marginTop: 16,
       marginBottom: 10,
     },
     sectionHeaderText: {
@@ -482,7 +492,6 @@ const getStyles = (theme) =>
     chevronContainer: {
       flexDirection: "row",
       alignItems: "center",
-      marginRight: 4,
       gap: 16,
     },
     button: {
@@ -510,6 +519,5 @@ const getStyles = (theme) =>
     rightSideText: {
       fontSize: 15,
       color: theme.textMedium,
-      marginRight: 12,
     },
   });
