@@ -2,10 +2,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
+import theme from "../../themes";
 
 const SignInSignUpSwitch = ({ navigation, prompt, navigateTo, buttonText }) => {
-  const { theme } = useThemes();
-  const styles = getStyles(theme);
   return (
     <View style={styles.container}>
       <Text style={styles.signInText}>{prompt}</Text>
@@ -18,8 +17,7 @@ const SignInSignUpSwitch = ({ navigation, prompt, navigateTo, buttonText }) => {
 
 export default SignInSignUpSwitch;
 
-const getStyles = (theme) =>
- StyleSheet.create({
+styles = StyleSheet.create({
   // Sign in styles
   container: {
     flexDirection: "row",
@@ -30,11 +28,11 @@ const getStyles = (theme) =>
     marginTop: 30,
   },
   signInText: {
-    color: theme.textMedium,
+    color: theme[["Classic"]].textMedium,
     fontSize: 17,
   },
   signInButtonText: {
-    color: theme.textHigh,
+    color: theme["Classic"].textHigh,
     fontSize: 17,
     fontWeight: 500,
   },

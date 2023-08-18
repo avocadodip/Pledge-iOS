@@ -26,11 +26,10 @@ import LeftChevronIcon from "../assets/icons/chevron-left.svg";
 import { Color } from "../GlobalStyles";
 import AuthFormButton from "../components/auth/AuthFormButton";
 import MailIcon from "../assets/icons/mail-icon.svg";
-import { useThemes } from "../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
+import { redGradientValues } from "../themes";
 
 const EmailVerification = ({ route, navigation }) => {
-  const { theme, backgroundGradient } = useThemes();
   const [isChecking, setIsChecking] = useState(false);
   const { userData } = route.params;
   const { email, fullName } = userData;
@@ -186,7 +185,7 @@ const EmailVerification = ({ route, navigation }) => {
   };
 
   return (
-    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+    <LinearGradient colors={redGradientValues} style={{ flex: 1 }}>
       <SafeAreaView style={styles.pageContainer}>
         <TouchableRipple style={styles.backButton} onPress={handleBackPress}>
           <LeftChevronIcon width={24} height={24} color={Color.white} />

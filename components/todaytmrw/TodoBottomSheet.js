@@ -8,15 +8,16 @@ import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
 import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
-
+import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
+ 
 export default function TodoBottomSheet() {
   const { theme, backgroundGradient } = useThemes();
+  const { updateTodo } = useTmrwTodos();
   const {
     isBottomSheetOpen,
     isBottomSheetEditable,
     setIsBottomSheetOpen,
     selectedTodo,
-    updateTodo,
     isOnboard,
   } = useBottomSheet();
   const bottomSheetRef = useRef(null);

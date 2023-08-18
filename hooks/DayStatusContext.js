@@ -28,7 +28,7 @@ const getTimeStatus = (dayStart, dayEnd) => {
     return 2; // after day end
   }
 };
-
+ 
 export const DayStatusContext = createContext();
 
 export const DayStatusProvider = ({ children }) => {
@@ -40,7 +40,9 @@ export const DayStatusProvider = ({ children }) => {
   const [todayHeaderSubtitleMessage, setTodayHeaderSubtitleMessage] =
     useState("");
 
-  useEffect(() => {
+  const [todayPageCompletedForTheDay, setTodayPageCompletedForTheDay] = useState(false);
+
+  useEffect(() => { 
     setTimeStatus(getTimeStatus(dayStart, dayEnd));
   }, [dayStart, dayEnd]);
 
@@ -66,16 +68,19 @@ export const DayStatusProvider = ({ children }) => {
     }
   }, [timeStatus, dayChanged, dayStart, dayEnd]);
 
-  return (
+  return ( 
     <DayStatusContext.Provider
       value={{
         todayHeaderSubtitleMessage,
-        tmrwHeaderSubtitleMessage,
+        tmrwHeaderSubtitleMessage, 
         timeStatus,
         dayStart,
         setDayStart,
         dayEnd,
         setDayEnd,
+
+        todayPageCompletedForTheDay,
+        setTodayPageCompletedForTheDay,
       }}
     >
       {children}

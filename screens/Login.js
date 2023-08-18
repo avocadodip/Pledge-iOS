@@ -17,12 +17,10 @@ import FormInput from "../components/auth/AuthFormInput";
 import LoginButton from "../components/auth/AuthFormButton";
 import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
 import { Color } from "../GlobalStyles";
-import { useThemes } from "../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
+import theme, { redGradientValues } from "../themes";
 
 const Login = () => {
-  const { theme, backgroundGradient } = useThemes();
-  const styles = getStyles(theme);
   const navigation = useNavigation();
   const [email, setEmail] = useState(); // New state for email input
   const [password, setPassword] = useState();
@@ -65,14 +63,16 @@ const Login = () => {
   };
 
   return (
-    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+    <LinearGradient colors={redGradientValues} style={{ flex: 1 }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.pageContainer}
       >
         <LogoAppName />
         <View style={[styles.formContainer]}>
-          {loading ? <ActivityIndicator size="small" color={theme.primary} /> : null}
+          {loading ? (
+            <ActivityIndicator size="small" color={theme["Classic"].primary} />
+          ) : null}
           <FormInput action={setEmail} value={email} type="email" />
           <FormInput action={setPassword} value={password} type="password" />
 
@@ -98,29 +98,28 @@ const Login = () => {
   );
 };
 
-const getStyles = (theme) =>
-  StyleSheet.create({
-    pageContainer: {
-      flex: 1,
-      flexDirection: "col",
-      justifyContent: "center",
-      alignItems: "center",
-      paddingHorizontal: 20,
-      width: "100%",
-    },
+const styles = StyleSheet.create({
+  pageContainer: {
+    flex: 1,
+    flexDirection: "col",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    width: "100%",
+  },
 
-    formContainer: {
-      gap: 15,
-      width: "100%",
-    },
+  formContainer: {
+    gap: 15,
+    width: "100%",
+  },
 
-    forgotPasswordButton: {
-      alignItems: "flex-end",
-      width: "100%",
-    },
-    forgotPasswordButtonText: {
-      color: theme.textHigh,
-    },
-  });
+  forgotPasswordButton: {
+    alignItems: "flex-end",
+    width: "100%",
+  },
+  forgotPasswordButtonText: {
+    color: theme["Classic"].textHigh,
+  },
+});
 
 export default Login;

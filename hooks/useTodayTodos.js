@@ -9,7 +9,8 @@ import { DayStatusContext, useDayStatus } from "./DayStatusContext";
 export const useTodayTodos = (dayChanged) => {
   const { setTodayTodos } = useBottomSheet();
   const { currentUserID } = useSettings();
-  const { setDayStart, setDayEnd } = useDayStatus();
+  const { setDayStart, setDayEnd, setTodayPageCompletedForTheDay } =
+    useDayStatus();
   const [todayDOWAbbrev, setTodayDOWAbbrev] = useState(getTodayAbbrevDOW());
   const [isTodayActiveDay, setIsTodayActiveDay] = useState(true);
   const [isTodayVacation, setIsTodayVacation] = useState(false);
@@ -34,23 +35,38 @@ export const useTodayTodos = (dayChanged) => {
       }
     };
   }, [dayChanged, currentUserID]);
- 
+
   // Function to fetch todos and set global todayTodos object
   const getAndSetTodos = () => {
     const fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());
- 
+
     // The onSnapshot function triggers every time the data changes, including when it's initially loaded.
     const unsubscribe = onSnapshot(todoRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-        const { opensAt, closesAt, isActive, isVacation, todos, onboardStartTmrw } =
-          docSnapshot.data();
-
+        const {
+          opensAt,
+          closesAt,
+          isActive,
+          isVacation,
+          todos,
+          onboardStartTmrw,
+        } = docSnapshot.data();
+ 
         setIsTodayActiveDay(isActive);
         setIsTodayVacation(isVacation);
         setDayStart(opensAt);
         setDayEnd(closesAt);
         setOnboardStartTmrw(onboardStartTmrw);
+
+        // If all todos are complete, tell dayStatus that today page is complete for the day
+        let allCompleted =
+          todos && todos.every((todo) => todo.isComplete === true);
+        if (allCompleted) {
+          setTodayPageCompletedForTheDay(true);
+        } else {
+          setTodayPageCompletedForTheDay(false);
+        }
 
         if (todos) {
           for (let i = 0; i < todos.length; i++) {

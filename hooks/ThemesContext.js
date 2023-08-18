@@ -9,19 +9,19 @@ import themeStyles, {
 import { Color } from "../GlobalStyles";
 import { useDayStatus } from "./DayStatusContext";
 import { useSettings } from "./SettingsContext";
+import { useTmrwTodos } from "./TmrwTodosContext";
 
 export const ThemeContext = createContext();
 
 export const ThemesProvider = ({ children }) => {
-  const { timeStatus } = useDayStatus();
+  const { timeStatus, todayPageCompletedForTheDay } = useDayStatus();
+  const { tmrwPageCompletedForTheDay } = useTmrwTodos();
   const { currentUserID } = useSettings();
   const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme
   const [backgroundGradient, setBackgroundGradient] = useState([]);
   const [statusBarHidden, setStatusBarHidden] = useState(false); // For settings page scrollview
   const [currentClassicColor, setCurrentClassicColor] = useState(""); // purple, red, green
-
-  let noActionItemsLeft = false;
 
   // Call fetchTheme on initialization
   useEffect(() => {
@@ -31,13 +31,20 @@ export const ThemesProvider = ({ children }) => {
   // Update appearance when theme is changed or user auth changes
   useEffect(() => {
     updateBackgroundGradient();
-  }, [currentThemeName, currentUserID, timeStatus]);
+    console.log("test:" + tmrwPageCompletedForTheDay);
+  }, [
+    currentThemeName,
+    currentUserID,
+    timeStatus,
+    todayPageCompletedForTheDay,
+    tmrwPageCompletedForTheDay,
+  ]);
 
   const updateBackgroundGradient = () => {
     switch (currentThemeName) {
       case "Classic":
         if (
-          (timeStatus === 1 && !noActionItemsLeft) ||
+          (timeStatus === 1 && !todayPageCompletedForTheDay) ||
           currentUserID === null
         ) {
           setBackgroundGradient(redGradientValues);
@@ -45,7 +52,11 @@ export const ThemesProvider = ({ children }) => {
         } else if (timeStatus === 0 || timeStatus === 2) {
           setBackgroundGradient(purpleGradientValues);
           setCurrentClassicColor("purple");
-        } else if (timeStatus === 1 && noActionItemsLeft) {
+        } else if (
+          timeStatus === 1 &&
+          todayPageCompletedForTheDay &&
+          tmrwPageCompletedForTheDay
+        ) {
           setBackgroundGradient(greenGradientValues);
           setCurrentClassicColor("green");
         }
@@ -91,7 +102,7 @@ export const ThemesProvider = ({ children }) => {
     backgroundGradient,
     statusBarHidden,
     setStatusBarHidden,
-    currentClassicColor
+    currentClassicColor,
   };
 
   return (

@@ -12,7 +12,6 @@ import { useThemes } from "../hooks/ThemesContext";
 import { Modal } from "react-native";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
 import TodayTmrwMessage from "../components/todaytmrw/TodayTmrwMessage";
-import { useTmrwTodos } from "../hooks/useTmrwTodos";
 import { getTimezoneAbbrev } from "../utils/currentDate";
 import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
 
@@ -20,7 +19,7 @@ const renderTodo = (
   { title, description, amount, tag, isComplete },
   index,
   timeStatus
-) => (
+) => ( 
   <Todo
     key={index + 1}
     todoNumber={index + 1}

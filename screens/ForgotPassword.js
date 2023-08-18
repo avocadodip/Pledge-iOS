@@ -12,9 +12,9 @@ import { useNavigation } from "@react-navigation/native";
 import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
 import { useThemes } from "../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
+import themes, { redGradientValues } from "../themes";
 
 const ForgotPassword = () => {
-  const { theme, backgroundGradient } = useThemes();
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [isChecking, setIsChecking] = useState(false);
@@ -43,7 +43,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+    <LinearGradient colors={redGradientValues} style={{ flex: 1 }}>
       <SafeAreaView style={styles.pageContainer}>
         <TouchableRipple style={styles.backButton} onPress={handleBackPress}>
           <LeftChevronIcon width={24} height={24} color={Color.white} />

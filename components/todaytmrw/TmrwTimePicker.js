@@ -252,6 +252,7 @@ const getStyles = (theme) =>
     timePickerContainer: {
       flexDirection: "row",
       alignItems: "center",
+      paddingVertical: 15
     },
     timePicker: {
       // borderColor: "black",

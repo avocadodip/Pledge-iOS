@@ -206,7 +206,7 @@ const Settings = ({ navigation }) => {
           setScrollY(event.nativeEvent.contentOffset.y);
         }}
         scrollEventThrottle={16}
-      >
+      > 
         {/* <OnboardingPopup
         texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
         buttonTitle="Back to settings."
@@ -488,7 +488,7 @@ const getStyles = (theme) =>
       fontSize: 14,
       textAlign: "left",
       marginLeft: 16,
-    },
+    }, 
     chevronContainer: {
       flexDirection: "row",
       alignItems: "center",

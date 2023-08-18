@@ -3,17 +3,16 @@ import React from "react";
 import TextInput from "react-native-text-input-interactive";
 import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
-
+import theme from "../../themes";
+ 
 // possible types: first, last, email, password
 const AuthFormInput = ({ action, value, type }) => {
-  const { theme } = useThemes();
-  const styles = getStyles(theme);
   return (
     <TextInput
       mainColor="#ffffffb0"
       originalColor="#ffffff2a"
       textInputStyle={styles.textInput}
-      placeholderTextColor={theme.textMedium}
+      placeholderTextColor={theme["Classic"].textMedium}
       placeholder={
         type === "first"
           ? "First name"
@@ -35,12 +34,13 @@ const AuthFormInput = ({ action, value, type }) => {
 
 export default AuthFormInput;
 
-const getStyles = (theme) => StyleSheet.create({
+
+const styles = StyleSheet.create({
   textInput: {
-    backgroundColor: theme.faintPrimary,
-    color: theme.textHigh,
+    backgroundColor: theme["Classic"].faintPrimary,
+    color: theme["Classic"].textHigh,
     flex: 1,
     fontSize: 15,
     borderWidth: 1.7,
   },
-});
+})

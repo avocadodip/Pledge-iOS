@@ -20,6 +20,8 @@ import { DayStatusProvider } from "./hooks/DayStatusContext";
 import MainStack from "./components/MainStack";
 import { LinearGradient } from "expo-linear-gradient";
 import TodoBottomSheet from "./components/todaytmrw/TodoBottomSheet";
+import { TmrwTodosProvider } from "./hooks/TmrwTodosContext";
+import { redGradientValues } from "./themes";
 
 const Stack = createNativeStackNavigator();
 
@@ -60,24 +62,13 @@ const IntroStack = () => (
 
 export default function App() {
   return (
-    <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
-      <MenuProvider>
-        <SettingsProvider>
-          <DayStatusProvider>
-            <ThemesProvider>
-              <BottomSheetProvider>
-                <AppContent />
-              </BottomSheetProvider>
-            </ThemesProvider>
-          </DayStatusProvider>
-        </SettingsProvider>
-      </MenuProvider>
-    </StripeProvider>
+    <SettingsProvider>
+      <AppContent />
+    </SettingsProvider>
   );
 }
 
 function AppContent() {
-  const { theme, backgroundGradient, statusBarHidden } = useThemes();
   const [isSplashScreen, setIsSplashScreen] = useState(true);
   const { isAuthenticated } = useSettings();
 
@@ -102,25 +93,51 @@ function AppContent() {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar
-        style={theme.statusBar}
-        animated={true}
-        hidden={statusBarHidden}
-      />
       <NavigationContainer theme={{ colors: {} }}>
         {isSplashScreen ? (
           <Splash />
         ) : isAuthenticated ? (
-          <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-            <MainStack />
-          </LinearGradient>
+          <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
+            <MenuProvider>
+              <DayStatusProvider>
+                <TmrwTodosProvider>
+                  <ThemesProvider>
+                    <BottomSheetProvider>
+                      <AuthenticatedApp />
+                    </BottomSheetProvider>
+                  </ThemesProvider>
+                </TmrwTodosProvider>
+              </DayStatusProvider>
+            </MenuProvider>
+          </StripeProvider>
         ) : (
-          <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+          <LinearGradient colors={redGradientValues} style={{ flex: 1 }}>
+            <StatusBar
+              style={"light"}
+              animated={true}
+            />
             <AuthStack />
           </LinearGradient>
         )}
       </NavigationContainer>
-      <TodoBottomSheet />
     </View>
+  );
+}
+
+function AuthenticatedApp() {
+  const { theme, backgroundGradient, statusBarHidden } = useThemes();
+
+  return (
+    <>
+      <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+        <StatusBar
+          style={theme.statusBar}
+          animated={true}
+          hidden={statusBarHidden}
+        />
+        <MainStack />
+      </LinearGradient>
+      <TodoBottomSheet />
+    </>
   );
 }

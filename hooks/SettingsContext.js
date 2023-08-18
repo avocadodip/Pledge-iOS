@@ -12,7 +12,7 @@ export const SettingsProvider = ({ children }) => {
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
-
+ 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.emailVerified) {
@@ -23,7 +23,7 @@ export const SettingsProvider = ({ children }) => {
         setCurrentUserID(null);
         setIsAuthenticated(false); // user is not authenticated
       }
-    });
+    }); 
 
     // Clean up subscription on unmount
     return () => unsubscribe();

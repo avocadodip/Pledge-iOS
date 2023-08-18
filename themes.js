@@ -17,15 +17,15 @@ export const getClassicColor = (color, styleName) => {
       ContentLoaderForegroundColor: "#9c9af9"
     },
     green: {
-      ContentLoaderBackgroundColor: "#FFFFFF",
-      ContentLoaderForegroundColor: "#FFFFFF"
+      ContentLoaderBackgroundColor: "#45c05f",
+      ContentLoaderForegroundColor: "#6ed785"
     }
   };
-
+ 
   return colorMap[color]?.[styleName];
 };
 
-
+  
 export default {
   Classic: {
     accent: "#E05E56",

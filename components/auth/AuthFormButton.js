@@ -3,10 +3,9 @@ import React from "react";
 import TouchableRipple from "../TouchableRipple";
 import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
+import theme from "../../themes";
 
 const AuthFormButton = ({ action, text, disabledCondition }) => {
-  const { theme } = useThemes();
-  const styles = getStyles(theme);
   return (
     <View style={styles.buttonWrapper}>
       <TouchableRipple
@@ -22,7 +21,7 @@ const AuthFormButton = ({ action, text, disabledCondition }) => {
 
 export default AuthFormButton;
 
-const getStyles = (theme) =>
+const styles = 
   StyleSheet.create({
     buttonWrapper: {
       borderRadius: 10,
@@ -35,12 +34,12 @@ const getStyles = (theme) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: theme.authButtonBg,
-      borderColor: theme.authButtonBorder,
+      backgroundColor: theme["Classic"].authButtonBg,
+      borderColor: theme["Classic"].authButtonBorder,
       borderWidth: 1.7,
     },
     buttonText: {
-      color: theme.authButtonText,
+      color: theme["Classic"].authButtonText,
       fontSize: 17,
       fontWeight: 600,
     },
