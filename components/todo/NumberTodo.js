@@ -21,7 +21,7 @@ const NumberTodo = ({ todoNumber }) => {
           ? styles.disabledNumberContainer
           : styles.numberContainer
       }
-      onPress={timeStatus === 0 ? null : () => openBottomSheet(todoNumber)}
+      onPress={timeStatus === 0 ? null : () => openBottomSheet(null, "tmrw", todoNumber)}
     >
       <Text style={styles.numberText}>{todoNumber}</Text>
     </TouchableRipple>

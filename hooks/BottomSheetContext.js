@@ -4,17 +4,15 @@ import { useTmrwTodos } from "./TmrwTodosContext";
 export const BottomSheetContext = createContext();
 
 export const BottomSheetProvider = ({ children }) => {
-  const [todayTodos, setTodayTodos] = useState([]);
   const { tmrwTodos } = useTmrwTodos();
   const [selectedTodo, setSelectedTodo] = useState(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [isBottomSheetEditable, setIsBottomSheetEditable] = useState(false);
 
   // When todo pressed (screen = "today" or "tmrw")
-  const openBottomSheet = (todoNumber) => {
-    let todo = tmrwTodos[todoNumber - 1];
-
-    if (todo == null) {
+  const openBottomSheet = (todoData, screen, todoNumber) => {
+    // For tmrw screen:
+    if (todoData == null && screen == "tmrw") {
       setSelectedTodo({
         todoNumber: todoNumber,
         title: "",
@@ -23,15 +21,15 @@ export const BottomSheetProvider = ({ children }) => {
         tag: "",
         isLocked: false,
       });
-    } else {
-      setSelectedTodo(todo);
-    }
-
-    // Set sheet editable and open
-    if (todo && todo.isLocked == true) {
-      setIsBottomSheetEditable(false);
-    } else {
       setIsBottomSheetEditable(true);
+    } else {
+      setSelectedTodo(todoData);
+      // Set sheet editable and open
+      if (todoData.isLocked) {
+        setIsBottomSheetEditable(false);
+      } else {
+        setIsBottomSheetEditable(true);
+      }
     }
 
     setIsBottomSheetOpen(true);
@@ -40,8 +38,6 @@ export const BottomSheetProvider = ({ children }) => {
   return (
     <BottomSheetContext.Provider
       value={{
-        todayTodos,
-        setTodayTodos,
         selectedTodo,
         setSelectedTodo,
         isBottomSheetOpen,

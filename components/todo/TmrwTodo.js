@@ -10,7 +10,7 @@ import { useDayStatus } from "../../hooks/DayStatusContext";
 // (only shows when timeStatus == 1 || 2)
 const TmrwTodo = ({
   todoData,
-}) => { 
+}) => {  
   const { theme } = useThemes();
   const { openBottomSheet } = useBottomSheet();
   const styles = getTodoStyles(theme);
@@ -20,7 +20,7 @@ const TmrwTodo = ({
   return (
     <View style={styles.infoContainer}>
       <TouchableNipple
-        onPress={() => {openBottomSheet(todoNumber)}}
+        onPress={() => {openBottomSheet(todoData, "tmrw")}}
         style={[
           styles.leftContainer,
           { padding: 0 },

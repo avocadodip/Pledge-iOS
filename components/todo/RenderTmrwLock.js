@@ -74,8 +74,6 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
     // Save local array database
     try {
       await runTransaction(db, async (transaction) => {
-        console.log("running transaction:");
-        console.log(tmrwTodos);
         const todosRef = doc(
           db,
           "users",

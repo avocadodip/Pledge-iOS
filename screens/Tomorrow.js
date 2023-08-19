@@ -50,7 +50,7 @@ const Tomorrow = () => {
         }
       } else {
         return (
-          <TmrwTodo key={index} todoData={todoData} timeStatus={timeStatus} />
+          <TmrwTodo key={index} todoData={todoData} />
         );
       }
     });

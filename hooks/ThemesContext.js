@@ -27,13 +27,13 @@ export const ThemesProvider = ({ children }) => {
   useEffect(() => {
     fetchTheme();
   }, []);
-
+ 
   // Update appearance when theme is changed or user auth changes
   useEffect(() => {
     updateBackgroundGradient();
     setAppReadyToRender(true);
 
-    console.log("completes:");
+    console.log("completes!");
     console.log(todayPageCompletedForTheDay);
     console.log(tmrwPageCompletedForTheDay);
   }, [
@@ -43,8 +43,6 @@ export const ThemesProvider = ({ children }) => {
     todayPageCompletedForTheDay,
     tmrwPageCompletedForTheDay,
   ]);
-
-  console.log("test");
 
   const updateBackgroundGradient = () => {
     switch (currentThemeName) {

@@ -1,7 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
-import { getTodoStyles, styles, variableFontSize } from "./TodoStyles";
-import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
+import { getTodoStyles, variableFontSize } from "./TodoStyles";
 import CheckIcon from "../../assets/icons/check-icon.svg";
 import InfoIcon from "../../assets/icons/info-icon.svg";
 import MoonIcon from "../../assets/icons/moon-icon.svg";
@@ -13,34 +12,64 @@ import Animated, {
 import TouchableRipple from "../TouchableRipple";
 import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
+import { useDayStatus } from "../../hooks/DayStatusContext";
+import { useBottomSheet } from "../../hooks/BottomSheetContext";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../database/firebase";
+import { useSettings } from "../../hooks/SettingsContext";
+import { getTodayDate } from "../../utils/currentDate";
+import { useTodayTodos } from "../../hooks/TodayTodosContext";
 
 // Animation constants
 const OPEN_DURATION = 100;
 const CLOSE_DURATION = 150;
 
-const TodayTodo = ({
-  todoNumber,
-  title,
-  description,
-  amount,
-  tag,
-  isTodoComplete,
-  handleOpenBottomSheet,
-  handleCheckTodo,
-  timeStatus,
-}) => {
+const TodayTodo = ({ todoData }) => {
+  const { todoNumber, title, description, amount, tag, isComplete } = todoData;
+  const { setTodayTodos } = useTodayTodos();
+  const { timeStatus } = useDayStatus();
+  const { openBottomSheet } = useBottomSheet();
+  const { currentUserID } = useSettings();
+
   const { theme } = useThemes();
   const styles = getTodoStyles(theme);
   const leftFlex = useSharedValue(8);
   const rightFlex = useSharedValue(2);
 
-  // State to show or hide task info
-  const [shouldRenderTaskInfo, setShouldRenderTaskInfo] = useState(
-    !isTodoComplete
-  );
+  // ------------- HANDLE CHECK -------------
+  const handleCheckTodo = async (todoNumber, currentBoolean) => {
+    const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());
+    const docSnap = await getDoc(todoRef);
 
+    // Update local array
+    setTodayTodos((prevTodos) => {
+      const updatedTodos = [...prevTodos];
+      const todoToUpdate = updatedTodos[todoNumber - 1];
+      if (todoToUpdate) {
+        todoToUpdate.isComplete = !currentBoolean;
+      }
+      return updatedTodos;
+    });
+
+    // Update database
+    if (docSnap.exists()) {
+      let data = docSnap.data();
+      let todos = data.todos;
+      todos[todoNumber - 1].isComplete = !currentBoolean;
+      await updateDoc(todoRef, {
+        todos: todos,
+      });
+    } else {
+      console.log("No such document!");
+    }
+  };
+
+  // ------------- ANIMATIONS -------------
+  const [shouldRenderTaskInfo, setShouldRenderTaskInfo] = useState(!isComplete);
+
+  // Render animation whenever isComplete changes
   useEffect(() => {
-    if (isTodoComplete) {
+    if (isComplete) {
       // Hide task info and set flex values
       setShouldRenderTaskInfo(false);
       leftFlex.value = 0;
@@ -56,15 +85,16 @@ const TodayTodo = ({
 
       return () => clearTimeout(timeoutId);
     }
-  }, [isTodoComplete]); // Render animation everytime isTodoComplete is changed
+  }, [isComplete]);
 
-  // Declare animated styles that depend on the flex values
   const leftStyle = useAnimatedStyle(() => ({
     flex: withTiming(leftFlex.value, { duration: CLOSE_DURATION }),
   }));
   const rightStyle = useAnimatedStyle(() => ({
     flex: withTiming(rightFlex.value, { duration: OPEN_DURATION }),
   }));
+
+  // ------------- JSX -------------
 
   // Before day, show disabled today todos with moon icon
   if (timeStatus === 0) {
@@ -73,7 +103,9 @@ const TodayTodo = ({
         {/* Left side */}
         <Animated.View style={[leftStyle]}>
           <TouchableRipple
-            onPress={handleOpenBottomSheet}
+            onPress={() => {
+              openBottomSheet(todoData, "today");
+            }}
             // style={animatedStyles.leftButtonContainer}
             style={[styles.leftContainer, styles.disabledOpacity]}
           >
@@ -103,7 +135,8 @@ const TodayTodo = ({
                         { fontSize: variableFontSize(title, true) },
                       ]}
                     >
-                      {" "}more...
+                      {" "}
+                      more...
                     </Text>
                   )}
                 </Text>
@@ -133,7 +166,9 @@ const TodayTodo = ({
         {/* Left side */}
         <Animated.View style={leftStyle}>
           <TouchableRipple
-            onPress={handleOpenBottomSheet}
+            onPress={() => {
+              openBottomSheet(todoData, "today");
+            }}
             style={[styles.leftContainer, { padding: 0 }]}
           >
             {shouldRenderTaskInfo && (
@@ -163,7 +198,8 @@ const TodayTodo = ({
                           { fontSize: variableFontSize(title, true) },
                         ]}
                       >
-                        {" "}more...
+                        {" "}
+                        more...
                       </Text>
                     )}
                   </Text>
@@ -181,7 +217,7 @@ const TodayTodo = ({
         <Animated.View style={rightStyle}>
           <TouchableRipple
             onPress={() => {
-              handleCheckTodo(todoNumber, isTodoComplete);
+              handleCheckTodo(todoNumber, isComplete);
             }}
             style={animatedStyles.rightButtonContainer}
           >
@@ -207,7 +243,9 @@ const TodayTodo = ({
             {/* Left side */}
             <Animated.View style={leftStyle}>
               <TouchableRipple
-                onPress={handleOpenBottomSheet}
+                onPress={() => {
+                  openBottomSheet(todoData, "today");
+                }}
                 style={[styles.leftContainer, styles.disabledOpacity]}
               >
                 <View
@@ -236,7 +274,8 @@ const TodayTodo = ({
                             { fontSize: variableFontSize(title, true) },
                           ]}
                         >
-                          {" "}more...
+                          {" "}
+                          more...
                         </Text>
                       )}
                     </Text>

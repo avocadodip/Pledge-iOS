@@ -22,6 +22,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import TodoBottomSheet from "./components/todaytmrw/TodoBottomSheet";
 import { TmrwTodosProvider } from "./hooks/TmrwTodosContext";
 import { redGradientValues } from "./themes";
+import { TodayTodosProvider } from "./hooks/TodayTodosContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -103,11 +104,13 @@ function AppContent() {
             <MenuProvider>
               <DayStatusProvider>
                 <TmrwTodosProvider>
-                  <ThemesProvider>
-                    <BottomSheetProvider>
-                      <AuthenticatedApp />
-                    </BottomSheetProvider>
-                  </ThemesProvider>
+                  <TodayTodosProvider>
+                    <ThemesProvider>
+                      <BottomSheetProvider>
+                        <AuthenticatedApp />
+                      </BottomSheetProvider>
+                    </ThemesProvider>
+                  </TodayTodosProvider>
                 </TmrwTodosProvider>
               </DayStatusProvider>
             </MenuProvider>

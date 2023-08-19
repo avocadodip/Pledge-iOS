@@ -20,7 +20,6 @@ export const SettingsProvider = ({ children }) => {
         setCurrentUserID(user.uid);
         setIsAuthenticated(true); // user is authenticated
       } else {
-        console.log("logged out");
         setCurrentUserID(null);
         setIsAuthenticated(false); // user is not authenticated
         setUserDataFetched(false);

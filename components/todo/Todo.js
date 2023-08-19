@@ -45,63 +45,6 @@ const Todo = ({
     setIsBottomSheetEditable,
   } = useBottomSheet();
 
-  useEffect(() => {
-    setUpdatedIsLocked(isLocked);
-    setIsTodoComplete(isComplete);
-  }, [isLocked, isComplete]);
-
-
-
-  // When right side lock pressed
-  const handleLockTodo = async () => {
-    // Validation: missing fields
-    if (title == "") {
-      showMissingFieldAlert("title");
-      return;
-    }
- 
-    if (amount == "") {
-      showMissingFieldAlert("amount");
-      return;
-    }
-
-    // Convert string to float
-    const floatAmount = parseFloat(amount);
-
-    const newTodo = {
-      title: title,
-      description: description,
-      tag: tag,
-      amount: floatAmount,
-      createdAt: getTodayDateTime(),
-      isComplete: false,
-      isLocked: true,
-      todoNumber: todoNumber,
-    };
-
-    // Adds doc to 'todos' containing new task info for tomorrow
-    addTodoItem(currentUserID, newTodo, getTmrwDate());
-
-    // Update icon
-    setUpdatedIsLocked(true);
-  };
-
-  // Show alert and open bottom sheet
-  const showMissingFieldAlert = (missingField) => {
-    let message;
-    if (missingField === "title") {
-      message = "Fill in a name for the task to lock it!";
-    } else if (missingField === "amount") {
-      message = "Fill in a pledge amount to lock the task!";
-    }
-    Alert.alert(
-      "Missing fields",
-      message,
-      [{ text: "OK", onPress: () => setIsBottomSheetOpen(true) }],
-      { cancelable: true }
-    );
-  };
-
   // When right side check pressed (costs read + write)
   const handleCheckTodo = async (todoNumber, currentBoolean) => {
     const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());

@@ -17,7 +17,7 @@ export const TmrwTodosProvider = ({ children }) => {
   const {
     settings: { daysActive },
     currentUserID,
-  } = useSettings();
+  } = useSettings(); 
   const { dayChanged } = useDayChange();
   const [tmrwTodos, setTmrwTodos] = useState([]);
   const [tmrwDOWAbbrev, setTmrwDOWAbbrev] = useState(getTmrwAbbrevDOW());
@@ -49,7 +49,7 @@ export const TmrwTodosProvider = ({ children }) => {
     setNextActiveDay(getNextActiveDay(getTmrwDOW(), daysActive));
   }, [daysActive]);
 
-  useEffect(() => {
+  useEffect(() => { 
     // If todo is locked, check if todo page is completed
     let allLocked =
       tmrwTodos &&
@@ -75,9 +75,10 @@ export const TmrwTodosProvider = ({ children }) => {
       const { isActive, isVacation, todos } = data;
       setIsTmrwActiveDay(isActive);
 
-      fetchedTodos = todos;
+      if (todos) {
+        fetchedTodos = todos;
+      }
     } else {
-      console.log("Todo document does not exist.");
       setIsTodoArrayEmpty(true);
     }
 
@@ -93,7 +94,6 @@ export const TmrwTodosProvider = ({ children }) => {
       return updatedTodos;
     });
   };
-
 
   return (
     <TmrwTodosContext.Provider

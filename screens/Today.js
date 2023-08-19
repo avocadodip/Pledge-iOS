@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react";
 import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useDayStatus } from "../hooks/DayStatusContext";
-import { useTodayTodos } from "../hooks/useTodayTodos";
+import { useTodayTodos } from "../hooks/TodayTodosContext";
 import Loading from "../components/Loading";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayChange } from "../hooks/useDayChange";
@@ -14,30 +14,13 @@ import GettingStartedModal from "../components/onboard/GettingStartedModal";
 import TodayTmrwMessage from "../components/todaytmrw/TodayTmrwMessage";
 import { getTimezoneAbbrev } from "../utils/currentDate";
 import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
-
-const renderTodo = (
-  { title, description, amount, tag, isComplete },
-  index,
-  timeStatus
-) => ( 
-  <Todo
-    key={index + 1}
-    todoNumber={index + 1}
-    title={title}
-    description={description}
-    amount={amount.toString()}
-    tag={tag}
-    componentType="today"
-    isLocked={null} // null allows check
-    isComplete={isComplete}
-    timeStatus={timeStatus}
-  />
-);
+import TodayTodo from "../components/todo/TodayTodo";
+import FinedTodo from "../components/todo/FinedTodo";
 
 const Today = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
-  const { todayTodos } = useBottomSheet();
+  const { todayTodos } = useTodayTodos();
   const { dayChanged } = useDayChange();
   const {
     settings: { isOnboarded, timezone, daysActive },
@@ -55,8 +38,17 @@ const Today = () => {
 
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
   const renderTodos = useCallback(() => {
-    return todayTodos.map((todo, index) => {
-      return renderTodo(todo, index, timeStatus);
+    return todayTodos.map((todoData, index) => {
+      if (todoData == null || todoData.title === "") {
+        return <FinedTodo key={index} />;
+      } else {
+        return (
+          <TodayTodo
+            key={index}
+            todoData={todoData}
+          />
+        );
+      }
     });
   }, [todayTodos, timeStatus]);
 
