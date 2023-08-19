@@ -13,31 +13,18 @@ import GettingStartedModal from "../components/onboard/GettingStartedModal";
 import TodayTmrwMessage from "../components/todaytmrw/TodayTmrwMessage";
 import { getTimezoneAbbrev } from "../utils/currentDate";
 import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
+import TmrwTodo from "../components/todo/TmrwTodo";
+import FinedTodo from "../components/todo/FinedTodo";
+import NumberTodo from "../components/todo/NumberTodo";
 
-const renderTodo = (
-  { title, description, amount, tag, isLocked },
-  index,
-  timeStatus
-) => (
-  <Todo
-    key={index + 1}
-    todoNumber={index + 1}
-    title={title}
-    description={description}
-    amount={amount.toString()}
-    tag={tag}
-    componentType="tmrw"
-    isLocked={isLocked}
-    timeStatus={timeStatus}
-  />
-); 
+// amount={amount.toString()}
 
 const Tomorrow = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { tmrwTodos } = useTmrwTodos();
   const {
-    settings: { timezone, vacationModeOn, daysActive, isOnboarded },
+    settings: { timezone, vacationModeOn, isOnboarded },
   } = useSettings();
   const { dayChanged } = useDayChange();
   const { tmrwHeaderSubtitleMessage, timeStatus } = useDayStatus();
@@ -47,10 +34,27 @@ const Tomorrow = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const renderTodos = useCallback(() => {
-    return tmrwTodos.map((todo, index) => {
-      return renderTodo(todo, index, timeStatus);
+    return tmrwTodos.map((todoData, index) => {
+      if (todoData == null) {
+        if (timeStatus == 0 || timeStatus == 1) {
+          // before or during day
+          return (
+            <NumberTodo
+              key={index}
+              todoNumber={index + 1}
+            />
+          );
+        } else if (timeStatus == 2) {
+          // after day
+          return <FinedTodo key={index} />;
+        }
+      } else {
+        return (
+          <TmrwTodo key={index} todoData={todoData} timeStatus={timeStatus} />
+        );
+      }
     });
-  }, [tmrwTodos, dayChanged, timeStatus]);
+  }, [tmrwTodos, dayChanged]);
 
   return (
     <SafeAreaView style={styles.pageContainer}>

@@ -24,6 +24,7 @@ import TmrwTodo from "./TmrwTodo";
 import { addTodoItem } from "../../utils/firebaseUtils";
 
 const Todo = ({
+  todoData,
   todoNumber,
   title,
   description, 
@@ -33,7 +34,7 @@ const Todo = ({
   isComplete,
   timeStatus,
   componentType,
-}) => {
+}) => { 
   const [updatedIsLocked, setUpdatedIsLocked] = useState(null);
   const [isTodoComplete, setIsTodoComplete] = useState(null);
   const { currentUserID } = useSettings();
@@ -49,25 +50,7 @@ const Todo = ({
     setIsTodoComplete(isComplete);
   }, [isLocked, isComplete]);
 
-  // When todo pressed
-  const openBottomSheet = () => {
-    // Set todo info for sheet
-    setSelectedTodo({
-      todoNumber,
-      title,
-      description,
-      amount,
-      tag,
-      // updatedIsTodoComplete,
-    });
-    // Set sheet editable and open
-    if (updatedIsLocked == true || componentType == "today") {
-      setIsBottomSheetEditable(false);
-    } else {
-      setIsBottomSheetEditable(true);
-    }
-    setIsBottomSheetOpen(true);
-  };
+
 
   // When right side lock pressed
   const handleLockTodo = async () => {
@@ -157,55 +140,13 @@ const Todo = ({
             amount={amount}
             tag={tag}
             isTodoComplete={isTodoComplete}
-            handleOpenBottomSheet={openBottomSheet}
             handleCheckTodo={handleCheckTodo}
             timeStatus={timeStatus}
           />
         );
       }
-    case "tmrw":
-      if (title === "") {
-        if (timeStatus == 0 || timeStatus == 1) {
-          // before or during day
-          return (
-            <NumberTodo
-              todoNumber={todoNumber}
-              openBottomSheet={openBottomSheet}
-              timeStatus={timeStatus}
-            />
-          );
-        } else if (timeStatus == 2) {
-          // after day
-          return <FinedTodo />;
-        }
-      } else {
-        return (
-          <TmrwTodo
-            todoNumber={todoNumber}
-            title={title}
-            description={description}
-            amount={amount}
-            tag={tag}
-            isLocked={updatedIsLocked}
-            handleOpenBottomSheet={openBottomSheet}
-            handleLockTodo={handleLockTodo}
-            timeStatus={timeStatus}
-          />
-        );
-      }
 
-    // case "onboard":
-    //   return (
-    //     <OnboardTodo
-    //       todoNumber={todoNumber}
-    //       title={title}
-    //       description={description}
-    //       amount={amount}
-    //       tag={tag}
-    //       isTodoLocked={isLocked}
-    //       handleLockTodo={handleLockTodo}
-    //     />
-    //   );
+
     default:
       return null;
   }

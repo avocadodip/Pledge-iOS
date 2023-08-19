@@ -5,10 +5,14 @@ import UnlockIcon from "../../assets/icons/unlock-icon.svg";
 import { getTodoStyles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
+import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
+import { useDayStatus } from "../../hooks/DayStatusContext";
 
-const RenderTmrwLock = ({ isLocked, handleLockTodo, timeStatus }) => {
+const RenderTmrwLock = ({ isLocked }) => {
   const { theme } = useThemes();
   const styles = getTodoStyles(theme);
+  const { handleLockTodo } = useTmrwTodos();
+  const { timeStatus } = useDayStatus();
 
   // Lock icon: Todo is locked
   // If time status == 2, make it disabled opacity
@@ -21,7 +25,7 @@ const RenderTmrwLock = ({ isLocked, handleLockTodo, timeStatus }) => {
         }}
       >
         <View style={timeStatus === 2 ? styles.disabledOpacity : null}>
-          <LockIcon color={"white"}/>
+          <LockIcon color={"white"} />
         </View>
       </View>
     );

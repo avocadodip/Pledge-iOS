@@ -3,10 +3,13 @@ import { Text, TouchableOpacity } from "react-native";
 import { getTodoStyles, styles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
+import { useBottomSheet } from "../../hooks/BottomSheetContext";
 
-const NumberTodo = ({ todoNumber, openBottomSheet, timeStatus }) => {
+const NumberTodo = ({ todoNumber, timeStatus }) => {
   const { theme } = useThemes();
+  const { openBottomSheet } = useBottomSheet();
   const styles = getTodoStyles(theme);
+  const { timeStatus } = useDayStatus();
 
   // a) Shows disabled button if timeStatus == 0 (day has not started)
   // b) Shows pressable button if timeStatus == 1 (day has started)

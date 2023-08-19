@@ -11,14 +11,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
  
 export default function TodoBottomSheet() {
-  const { theme, backgroundGradient } = useThemes();
+  const { theme, backgroundGradient } = useThemes(); 
   const { updateTodo } = useTmrwTodos();
   const {
     isBottomSheetOpen,
-    isBottomSheetEditable,
     setIsBottomSheetOpen,
+    isBottomSheetEditable,
     selectedTodo,
-    isOnboard,
   } = useBottomSheet();
   const bottomSheetRef = useRef(null);
   const snapPoints = ["75%"];

@@ -16,7 +16,7 @@ export const ThemeContext = createContext();
 export const ThemesProvider = ({ children }) => {
   const { timeStatus, todayPageCompletedForTheDay } = useDayStatus();
   const { tmrwPageCompletedForTheDay } = useTmrwTodos();
-  const { currentUserID } = useSettings();
+  const { currentUserID, setAppReadyToRender } = useSettings();
   const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme
   const [backgroundGradient, setBackgroundGradient] = useState([]);
@@ -31,7 +31,11 @@ export const ThemesProvider = ({ children }) => {
   // Update appearance when theme is changed or user auth changes
   useEffect(() => {
     updateBackgroundGradient();
-    console.log("test:" + tmrwPageCompletedForTheDay);
+    setAppReadyToRender(true);
+
+    console.log("completes:");
+    console.log(todayPageCompletedForTheDay);
+    console.log(tmrwPageCompletedForTheDay);
   }, [
     currentThemeName,
     currentUserID,
@@ -40,11 +44,14 @@ export const ThemesProvider = ({ children }) => {
     tmrwPageCompletedForTheDay,
   ]);
 
+  console.log("test");
+
   const updateBackgroundGradient = () => {
     switch (currentThemeName) {
       case "Classic":
         if (
-          (timeStatus === 1 && !todayPageCompletedForTheDay) ||
+          (timeStatus === 1 &&
+            (!todayPageCompletedForTheDay || !tmrwPageCompletedForTheDay)) ||
           currentUserID === null
         ) {
           setBackgroundGradient(redGradientValues);

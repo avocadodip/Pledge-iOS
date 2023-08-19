@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { db } from "../database/firebase";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import {
   getNextActiveDay,
   getTmrwAbbrevDOW,
@@ -35,109 +35,58 @@ export const TmrwTodosProvider = ({ children }) => {
 
   // Re-run when it hits 12am or daysActive changes
   useEffect(() => {
-    let unsubscribe; // Declare a variable to hold the unsubscribe function
-
     if (currentUserID) {
-      // 1. Get and sets todos to global tmrwTodos variable
-      unsubscribe = getAndSetTodos(); // Assign the returned value (unsubscribe function) from getAndSetTodos
+      getAndSetTodos();
     }
-
-    // Set whether tmrw is active, to be returned
     setIsTmrwActiveDay(daysActive[getTmrwDOW()]);
-
-    // Set DOW of next active day, to be returned
     setNextActiveDay(getNextActiveDay(getTmrwDOW(), daysActive));
-
-    // Set tmrw's abbrev day of week, to be returned
     setTmrwDOWAbbrev(getTmrwAbbrevDOW());
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe(); // Call the unsubscribe function when the component is unmounted or dependencies change
-      }
-    };
   }, [dayChanged, currentUserID]);
 
   // Second useEffect hook for daysActive
   useEffect(() => {
-    console.log(daysActive);
     setIsTmrwActiveDay(daysActive[getTmrwDOW()]);
     setNextActiveDay(getNextActiveDay(getTmrwDOW(), daysActive));
   }, [daysActive]);
 
-  // 1.
-  const getAndSetTodos = () => {
+  useEffect(() => {
+    // If todo is locked, check if todo page is completed
+    let allLocked =
+      tmrwTodos &&
+      tmrwTodos.filter((todo) => todo != null).length === 3 &&
+      tmrwTodos.every((todo) => todo && todo.isLocked === true);
+    if (allLocked || !isTmrwActiveDay) {
+      setTmrwPageCompletedForTheDay(true);
+    } else {
+      setTmrwPageCompletedForTheDay(false);
+    }
+  }, [tmrwTodos]);
+
+  // 1. Get tmrw day data
+  const getAndSetTodos = async () => {
     const fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
 
-    // Declare a flag to ensure code only executes once
-    let firstRun = true;
+    const docSnapshot = await getDoc(todoRef);
 
-    // Listen to changes to the document using onSnapshot
-    const unsubscribe = onSnapshot(todoRef, (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const data = docSnapshot.data();
-        const { isActive, isVacation, todos } = data;
+    if (docSnapshot.exists()) {
+      const data = docSnapshot.data();
 
-        // If it's the first run, set the todos accordingly
-        if (firstRun) {
-          setIsTmrwActiveDay(isActive);
-          if (todos) {
-            for (let i = 0; i < todos.length; i++) {
-              fetchedTodos[todos[i].todoNumber - 1] = todos[i];
-            }
-          }
+      const { isActive, isVacation, todos } = data;
+      setIsTmrwActiveDay(isActive);
 
-          // Fill in non-inputted todos with empty data
-          for (let i = 0; i < 3; i++) {
-            if (fetchedTodos[i] === null) {
-              fetchedTodos[i] = {
-                id: i,
-                todoNumber: i + 1,
-                title: "",
-                description: "",
-                amount: "3",
-                tag: "",
-                isLocked: false,
-              };
-            } else {
-              // If any todo has non-empty title, description, or amount, set isTodoArrayEmpty to false
-              if (
-                fetchedTodos[i].title !== "" ||
-                fetchedTodos[i].description !== "" ||
-                fetchedTodos[i].amount !== ""
-              ) {
-                setIsTodoArrayEmpty(false);
-              }
-            }
-          }
-
-          // Set state
-          setTmrwTodos(fetchedTodos);
-
-          firstRun = false;
+      if (todos) {
+        for (let i = 0; i < todos.length; i++) {
+          fetchedTodos[todos[i].todoNumber - 1] = todos[i];
         }
-
-        // If all todos are locked, and there are exactly 3 of them, tell dayStatus that tmrw page is complete for the day
-        console.log(todos.length);
-        let allLocked =
-          todos &&
-          todos.length === 3 &&
-          todos.every((todo) => todo.isLocked === true);
-        console.log(allLocked);
-        if (allLocked) {
-          setTmrwPageCompletedForTheDay(true);
-        } else {
-          setTmrwPageCompletedForTheDay(false);
-        }
-      } else {
-        console.log("Todo document does not exist.");
-        setTmrwTodos([]);
-        setIsTodoArrayEmpty(true);
       }
-    });
+      // setIsTodoArrayEmpty(false);
+    } else {
+      console.log("Todo document does not exist.");
+      setIsTodoArrayEmpty(true);
+    }
 
-    return unsubscribe;
+    setTmrwTodos(fetchedTodos);
   };
 
   // looks through the array of todos, and when it finds a todo with the same todoNumber as the updated todo, it replaces that old todo with the updated one.
@@ -150,6 +99,40 @@ export const TmrwTodosProvider = ({ children }) => {
     });
   };
 
+  // When right side lock pressed
+  const handleLockTodo = async () => {
+    // Validation: missing fields
+    if (title == "") {
+      showMissingFieldAlert("title");
+      return;
+    }
+
+    if (amount == "") {
+      showMissingFieldAlert("amount");
+      return;
+    }
+
+    // Convert string to float
+    const floatAmount = parseFloat(amount);
+
+    const newTodo = {
+      title: title,
+      description: description,
+      tag: tag,
+      amount: floatAmount,
+      createdAt: getTodayDateTime(),
+      isComplete: false,
+      isLocked: true,
+      todoNumber: todoNumber,
+    };
+
+    // Adds doc to 'todos' containing new task info for tomorrow
+    addTodoItem(currentUserID, newTodo, getTmrwDate());
+
+    // Update icon
+    setUpdatedIsLocked(true);
+  };
+
   return (
     <TmrwTodosContext.Provider
       value={{
@@ -160,7 +143,8 @@ export const TmrwTodosProvider = ({ children }) => {
         tmrwTodos,
         setTmrwTodos,
         updateTodo,
-        tmrwPageCompletedForTheDay
+        tmrwPageCompletedForTheDay,
+        handleLockTodo,
       }}
     >
       {children}

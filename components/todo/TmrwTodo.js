@@ -4,33 +4,30 @@ import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
 import RenderTmrwLock from "./RenderTmrwLock.js";
 import { default as TouchableNipple } from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
+import { useBottomSheet } from "../../hooks/BottomSheetContext";
+import { useDayStatus } from "../../hooks/DayStatusContext";
 
 // (only shows when timeStatus == 1 || 2)
 const TmrwTodo = ({
-  todoNumber,
-  title,
-  description,
-  amount,
-  tag,
-  isLocked,
-  handleOpenBottomSheet,
-  handleLockTodo,
-  timeStatus,
+  todoData,
 }) => {
   const { theme } = useThemes();
+  const { openBottomSheet } = useBottomSheet();
   const styles = getTodoStyles(theme);
+  const { todoNumber, title, description, amount, tag, isLocked } = todoData;
+  const { timeStatus } = useDayStatus();
 
   return (
     <View style={styles.infoContainer}>
       <TouchableNipple
-        onPress={handleOpenBottomSheet}
+        onPress={() => {openBottomSheet(todoNumber)}}
         style={[
           styles.leftContainer,
           { padding: 0 },
           timeStatus === 2 && styles.disabledOpacity,
         ]}
       >
-        <View
+        <View 
           style={[styles.leftContainerInner, { width: "100%", padding: 16 }]}
         >
           {tag && (
@@ -64,9 +61,7 @@ const TmrwTodo = ({
       </TouchableNipple>
       <RenderTmrwLock
         isLocked={isLocked}
-        handleLockTodo={handleLockTodo}
         todoNumber={todoNumber}
-        timeStatus={timeStatus}
       />
     </View>
   );

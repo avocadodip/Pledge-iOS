@@ -19,8 +19,8 @@ import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
 import { Color } from "../GlobalStyles";
 import { LinearGradient } from "expo-linear-gradient";
 import theme, { redGradientValues } from "../themes";
-
-const Login = () => {
+ 
+const Login = () => { 
   const navigation = useNavigation();
   const [email, setEmail] = useState(); // New state for email input
   const [password, setPassword] = useState();
@@ -61,7 +61,7 @@ const Login = () => {
       }
     }
   };
-
+ 
   return (
     <LinearGradient colors={redGradientValues} style={{ flex: 1 }}>
       <KeyboardAvoidingView

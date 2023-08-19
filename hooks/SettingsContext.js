@@ -10,7 +10,8 @@ export const SettingsProvider = ({ children }) => {
   const [currentUserID, setCurrentUserID] = useState(null);
   const [currentUserFullName, setCurrentUserFullName] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [userDataFetched, setUserDataFetched] = useState(false);
+  const [appReadyToRender, setAppReadyToRender] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
  
   useEffect(() => {
@@ -22,6 +23,8 @@ export const SettingsProvider = ({ children }) => {
         console.log("logged out");
         setCurrentUserID(null);
         setIsAuthenticated(false); // user is not authenticated
+        setUserDataFetched(false);
+        setAppReadyToRender(false);
       }
     }); 
 
@@ -41,10 +44,12 @@ export const SettingsProvider = ({ children }) => {
             setSettings(userSettings);
             setCurrentUserFullName(userSettings.fullName);
             setCurrentUserEmail(userSettings.email);
+            setUserDataFetched(true);
+
           } else {
             // Handle the case where the user does not exist or has no settings
           }
-          setLoading(false); // turn off loading
+          // setLoading(false); // turn off loading
         },
         (error) => {
           console.error("Error fetching user settings: ", error);
@@ -66,8 +71,12 @@ export const SettingsProvider = ({ children }) => {
         setCurrentUserFullName,
         currentUserEmail,
         setCurrentUserEmail,
-        loading,
-        isAuthenticated, // include isAuthenticated in the context
+        isAuthenticated,
+        userDataFetched,
+        setUserDataFetched,
+        appReadyToRender,
+        setAppReadyToRender,
+
       }}
     >
       {children}

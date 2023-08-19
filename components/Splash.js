@@ -26,7 +26,7 @@ const getStyles = () =>
   StyleSheet.create({
   pageContainer: {
     flex: 1,
-    // ...StyleSheet.absoluteFillObject, // This makes it an overlay
+    ...StyleSheet.absoluteFillObject, // This makes it an overlay
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 2, // Set zIndex high so it appears above other elements

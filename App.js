@@ -69,34 +69,36 @@ export default function App() {
 }
 
 function AppContent() {
+  const { isAuthenticated, userDataFetched, appReadyToRender } = useSettings();
   const [isSplashScreen, setIsSplashScreen] = useState(true);
-  const { isAuthenticated } = useSettings();
 
-  // Splash screen and data loading
   useEffect(() => {
-    if (isAuthenticated) {
-      const timerId = setTimeout(() => {
-        // Hide after data loaded... command shift h
+    const timerId = setTimeout(() => {
+      if (!isAuthenticated || (isAuthenticated && appReadyToRender)) {
         setIsSplashScreen(false);
-      }, 2000);
-      return () => clearTimeout(timerId);
-    } else {
-      const timerId = setTimeout(() => {
-        setIsSplashScreen(false);
-      }, 2000);
-      return () => clearTimeout(timerId);
-    }
-  }, [isAuthenticated]);
+      }
+    }, 2000);
+    return () => clearTimeout(timerId);
+  }, [isAuthenticated, appReadyToRender]);
 
-  // If app state becomes active, update firebase timezone if user is in new timezone
-  // useUpdateTimezoneOnAppActive(currentUserID);
+  // useEffect(() => {
+  //   console.log("userDataFetched: " + userDataFetched);
+  //   console.log("appReadyToRender: " + appReadyToRender);
+  //   console.log("auth: " + isAuthenticated);
+  //   console.log("isSplash: " + isSplashScreen);
+  // }, [userDataFetched, appReadyToRender, isAuthenticated, isSplashScreen]);
 
   return (
     <View style={{ flex: 1 }}>
       <NavigationContainer theme={{ colors: {} }}>
-        {isSplashScreen ? (
-          <Splash />
-        ) : isAuthenticated ? (
+        {isSplashScreen && (
+          <>
+            <StatusBar style={"light"} animated={true} />
+            <Splash />
+          </>
+        )}
+
+        {isAuthenticated && userDataFetched && (
           <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
             <MenuProvider>
               <DayStatusProvider>
@@ -110,12 +112,11 @@ function AppContent() {
               </DayStatusProvider>
             </MenuProvider>
           </StripeProvider>
-        ) : (
+        )}
+
+        {!isAuthenticated && (
           <LinearGradient colors={redGradientValues} style={{ flex: 1 }}>
-            <StatusBar
-              style={"light"}
-              animated={true}
-            />
+            <StatusBar style={"light"} animated={true} />
             <AuthStack />
           </LinearGradient>
         )}
