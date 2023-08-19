@@ -29,7 +29,7 @@ export default function TodoBottomSheet() {
   useEffect(() => {
     setTodo(selectedTodo || {});
   }, [selectedTodo]);
-
+ 
   useEffect(() => {
     todoRef.current = todo; // Update the mutable ref when todo changes because todo value inside renderBackdrop callback is its initial value when the component is rendered.
   }, [todo]);
@@ -47,7 +47,7 @@ export default function TodoBottomSheet() {
       setIsBottomSheetOpen(false);
     }
   };
-
+ 
   // Backdrop - when pressed, updates global todo array and closes sheet
   const renderBackdrop = useCallback(
     (props) => (

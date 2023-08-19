@@ -4,8 +4,9 @@ import { getTodoStyles, styles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
+import { useDayStatus } from "../../hooks/DayStatusContext";
 
-const NumberTodo = ({ todoNumber, timeStatus }) => {
+const NumberTodo = ({ todoNumber }) => {
   const { theme } = useThemes();
   const { openBottomSheet } = useBottomSheet();
   const styles = getTodoStyles(theme);
@@ -20,7 +21,7 @@ const NumberTodo = ({ todoNumber, timeStatus }) => {
           ? styles.disabledNumberContainer
           : styles.numberContainer
       }
-      onPress={timeStatus === 0 ? null : openBottomSheet}
+      onPress={timeStatus === 0 ? null : () => openBottomSheet(todoNumber)}
     >
       <Text style={styles.numberText}>{todoNumber}</Text>
     </TouchableRipple>

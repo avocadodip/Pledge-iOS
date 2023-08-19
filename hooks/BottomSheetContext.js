@@ -12,12 +12,23 @@ export const BottomSheetProvider = ({ children }) => {
 
   // When todo pressed (screen = "today" or "tmrw")
   const openBottomSheet = (todoNumber) => {
+    let todo = tmrwTodos[todoNumber - 1];
 
-    let todo = tmrwTodos[todoNumber-1];
-    setSelectedTodo(todo);
+    if (todo == null) {
+      setSelectedTodo({
+        todoNumber: todoNumber,
+        title: "",
+        description: "",
+        amount: "",
+        tag: "",
+        isLocked: false,
+      });
+    } else {
+      setSelectedTodo(todo);
+    }
 
     // Set sheet editable and open
-    if (todo.isLocked == true) {
+    if (todo && todo.isLocked == true) {
       setIsBottomSheetEditable(false);
     } else {
       setIsBottomSheetEditable(true);

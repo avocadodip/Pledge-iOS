@@ -64,7 +64,7 @@ export const TmrwTodosProvider = ({ children }) => {
 
   // 1. Get tmrw day data
   const getAndSetTodos = async () => {
-    const fetchedTodos = [null, null, null];
+    let fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
 
     const docSnapshot = await getDoc(todoRef);
@@ -75,12 +75,7 @@ export const TmrwTodosProvider = ({ children }) => {
       const { isActive, isVacation, todos } = data;
       setIsTmrwActiveDay(isActive);
 
-      if (todos) {
-        for (let i = 0; i < todos.length; i++) {
-          fetchedTodos[todos[i].todoNumber - 1] = todos[i];
-        }
-      }
-      // setIsTodoArrayEmpty(false);
+      fetchedTodos = todos;
     } else {
       console.log("Todo document does not exist.");
       setIsTodoArrayEmpty(true);
@@ -89,49 +84,16 @@ export const TmrwTodosProvider = ({ children }) => {
     setTmrwTodos(fetchedTodos);
   };
 
-  // looks through the array of todos, and when it finds a todo with the same todoNumber as the updated todo, it replaces that old todo with the updated one.
+  // looks through the array of todos, and when it finds a todo with the same todoNumber as the updated todo, it replaces that old todo with the updated one. (used in bottom sheet)
   const updateTodo = (updatedTodo) => {
     setTmrwTodos((prevTodos) => {
-      const updatedTodos = prevTodos.map((todo) =>
-        todo.todoNumber === updatedTodo.todoNumber ? updatedTodo : todo
+      const updatedTodos = prevTodos.map((todo, index) =>
+        index + 1 === updatedTodo.todoNumber ? updatedTodo : todo
       );
       return updatedTodos;
     });
   };
 
-  // When right side lock pressed
-  const handleLockTodo = async () => {
-    // Validation: missing fields
-    if (title == "") {
-      showMissingFieldAlert("title");
-      return;
-    }
-
-    if (amount == "") {
-      showMissingFieldAlert("amount");
-      return;
-    }
-
-    // Convert string to float
-    const floatAmount = parseFloat(amount);
-
-    const newTodo = {
-      title: title,
-      description: description,
-      tag: tag,
-      amount: floatAmount,
-      createdAt: getTodayDateTime(),
-      isComplete: false,
-      isLocked: true,
-      todoNumber: todoNumber,
-    };
-
-    // Adds doc to 'todos' containing new task info for tomorrow
-    addTodoItem(currentUserID, newTodo, getTmrwDate());
-
-    // Update icon
-    setUpdatedIsLocked(true);
-  };
 
   return (
     <TmrwTodosContext.Provider
@@ -144,7 +106,6 @@ export const TmrwTodosProvider = ({ children }) => {
         setTmrwTodos,
         updateTodo,
         tmrwPageCompletedForTheDay,
-        handleLockTodo,
       }}
     >
       {children}

@@ -10,7 +10,7 @@ import { useDayStatus } from "../../hooks/DayStatusContext";
 // (only shows when timeStatus == 1 || 2)
 const TmrwTodo = ({
   todoData,
-}) => {
+}) => { 
   const { theme } = useThemes();
   const { openBottomSheet } = useBottomSheet();
   const styles = getTodoStyles(theme);

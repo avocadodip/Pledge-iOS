@@ -35,7 +35,7 @@ const Tomorrow = () => {
 
   const renderTodos = useCallback(() => {
     return tmrwTodos.map((todoData, index) => {
-      if (todoData == null) {
+      if (todoData == null || todoData.title == "") {
         if (timeStatus == 0 || timeStatus == 1) {
           // before or during day
           return (
