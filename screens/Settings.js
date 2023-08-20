@@ -457,8 +457,7 @@ const getStyles = (theme) =>
       paddingBottom: 200,
     },
     headerContainer: {
-      paddingTop: 20,
-      paddingLeft: 20,
+      paddingTop: 30,
       width: "100%",
       flexDirection: "col",
       marginBottom: 13,

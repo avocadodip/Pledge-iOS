@@ -32,10 +32,6 @@ export const ThemesProvider = ({ children }) => {
   useEffect(() => {
     updateBackgroundGradient();
     setAppReadyToRender(true);
-
-    console.log("completes!");
-    console.log(todayPageCompletedForTheDay);
-    console.log(tmrwPageCompletedForTheDay);
   }, [
     currentThemeName,
     currentUserID,

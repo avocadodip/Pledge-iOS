@@ -7,9 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
-import {
-  APP_HORIZONTAL_PADDING,
-} from "../GlobalStyles";
+import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
 import SettingsHeader from "../components/settings/SettingsHeader";
 import StatsItem from "../components/stats/StatsItem";
 import { useThemes } from "../hooks/ThemesContext";
@@ -21,7 +19,7 @@ import {
   getDocs,
   limit,
   orderBy,
-  query, 
+  query,
   startAfter,
   where,
 } from "firebase/firestore";
@@ -36,19 +34,14 @@ const PastBets = ({ navigation }) => {
   const [allDataFetched, setAllDataFetched] = useState(false);
 
   const fetchData = async () => {
-
     if (loading || allDataFetched) {
       console.log("returned");
-      return; 
+      return;
     }
+
     setLoading(true);
 
-    console.log("running");
-
-    console.log(currentUserID);
-
     try {
-
       let q = query(
         collection(doc(db, "users", currentUserID), "todos"),
         orderBy("date", "desc"),
@@ -93,7 +86,6 @@ const PastBets = ({ navigation }) => {
 
   useEffect(() => {
     if (currentUserID) {
-
       fetchData();
     }
   }, [currentUserID]);
@@ -101,8 +93,6 @@ const PastBets = ({ navigation }) => {
   const handleLoadMore = () => {
     fetchData();
   };
-
-  
 
   const renderFooter = () => {
     if (!loading) return null;
