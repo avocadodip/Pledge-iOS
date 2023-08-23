@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { getTodoStyles, styles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
@@ -12,19 +12,23 @@ const NumberTodo = ({ todoNumber }) => {
   const styles = getTodoStyles(theme);
   const { timeStatus } = useDayStatus();
 
+
   // a) Shows disabled button if timeStatus == 0 (day has not started)
   // b) Shows pressable button if timeStatus == 1 (day has started)
+
   return (
-    <TouchableRipple
-      style={
-        timeStatus === 0
-          ? styles.disabledNumberContainer
-          : styles.numberContainer
-      }
-      onPress={timeStatus === 0 ? null : () => openBottomSheet(null, "tmrw", todoNumber)}
-    >
-      <Text style={styles.numberText}>{todoNumber}</Text>
-    </TouchableRipple>
+    timeStatus === 0 ? (
+      <View style={[styles.numberContainer, styles.disabledOpacity]}>
+        <Text style={styles.numberText}>{todoNumber}</Text>
+      </View>
+    ) : (
+      <TouchableRipple
+        style={styles.numberContainer}
+        onPress={() => openBottomSheet(null, "tmrw", todoNumber)}
+      >
+        <Text style={styles.numberText}>{todoNumber}</Text>
+      </TouchableRipple>
+    )
   );
 };
 

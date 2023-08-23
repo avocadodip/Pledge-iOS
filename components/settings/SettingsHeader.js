@@ -1,23 +1,33 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableHighlight } from "react-native";
 import React from "react";
-import { Color, SETTINGS_HORIZONTAL_PADDING } from "../../GlobalStyles";
+import {
+  APP_HORIZONTAL_PADDING,
+  Color,
+  SETTINGS_HORIZONTAL_PADDING,
+} from "../../GlobalStyles";
 import LeftChevronIcon from "../../assets/icons/chevron-left.svg";
 import TouchableRipple from "../TouchableRipple";
- 
+
 const SettingsHeader = ({ navigation, header, altScreen }) => {
   const handlePress = () => {
     const screenName = altScreen || "SettingsScreen";
     navigation.navigate(screenName);
   };
   return (
-    <View style={styles.headerContainer}>
-      <View style={styles.buttonWrapper}>
-        <TouchableRipple style={styles.backButton} onPress={handlePress}>
-          <LeftChevronIcon width={24} height={24} color={Color.white} />
-        </TouchableRipple>
-      </View>
-      <View style={styles.headerTitleWrapper}>
-        <Text style={styles.headerTitle}>{header}</Text>
+    <View style={header !== "Change Email" ? styles.outerContainer : {}}>
+      <View style={styles.headerContainer}>
+        <View style={styles.buttonWrapper}>
+          <TouchableHighlight
+            style={styles.backButton}
+            onPress={handlePress}
+            underlayColor="#00000023"
+          >
+            <LeftChevronIcon width={24} height={24} color={Color.white} />
+          </TouchableHighlight>
+        </View>
+        <View style={styles.headerTitleWrapper}>
+          <Text style={styles.headerTitle}>{header}</Text>
+        </View>
       </View>
     </View>
   );
@@ -26,9 +36,14 @@ const SettingsHeader = ({ navigation, header, altScreen }) => {
 export default SettingsHeader;
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    paddingHorizontal: APP_HORIZONTAL_PADDING,
+    borderBottomColor: "#ffffff18",
+    borderBottomWidth: 1,
+  },
   headerContainer: {
     marginTop: 20,
-    marginBottom: 30,
+    marginBottom: 25,
     paddingHorizontal: 50,
     width: "100%",
     flexDirection: "row",

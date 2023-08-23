@@ -17,6 +17,8 @@ const TmrwTodo = ({
   const { todoNumber, title, description, amount, tag, isLocked } = todoData;
   const { timeStatus } = useDayStatus();
 
+  // amount={amount.toString()}
+
   return (
     <View style={styles.infoContainer}>
       <TouchableNipple

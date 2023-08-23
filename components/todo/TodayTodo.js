@@ -102,7 +102,7 @@ const TodayTodo = ({ todoData }) => {
     return (
       <View style={[styles.infoContainer]}>
         {/* Left side */}
-        <Animated.View style={[leftStyle]}>
+        <View style={[{flex: 8}]}> 
           <TouchableRipple
             onPress={() => {
               openBottomSheet(todoData, "today");
@@ -126,7 +126,7 @@ const TodayTodo = ({ todoData }) => {
                   style={[
                     styles.titleText,
                     { fontSize: variableFontSize(title) },
-                  ]}
+                  ]} 
                 >
                   {title}{" "}
                   {description !== "" && (
@@ -149,7 +149,7 @@ const TodayTodo = ({ todoData }) => {
               )}
             </View>
           </TouchableRipple>
-        </Animated.View>
+        </View>
         {/* Right side */}
         <View style={styles.rightDisabledContainer}>
           <View style={styles.disabledOpacity}>
@@ -233,7 +233,7 @@ const TodayTodo = ({ todoData }) => {
   if (timeStatus === 2) {
     return (
       <View style={[styles.infoContainer]}>
-        {isTodoComplete ? (
+        {isComplete ? (
           <View
             style={[styles.disabledCompleteContainer, styles.disabledOpacity]}
           >

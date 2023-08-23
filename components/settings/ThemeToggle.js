@@ -42,11 +42,11 @@ const ThemeToggle = () => {
               onSelect={() => saveTheme("Classic")}
               text="Classic"
             />
-            <MenuOption
+            {/* <MenuOption
               style={currentThemeName === "Auto" ? styles.selectedOption : {}}
               onSelect={() => saveTheme("Auto")}
               text="Auto"
-            />
+            /> */}
           </MenuOptions>
         </Menu>
       </View>

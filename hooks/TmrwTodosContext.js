@@ -17,13 +17,11 @@ export const TmrwTodosProvider = ({ children }) => {
   const {
     settings: { daysActive },
     currentUserID,
-  } = useSettings(); 
+  } = useSettings();
   const { dayChanged } = useDayChange();
   const [tmrwTodos, setTmrwTodos] = useState([]);
   const [tmrwDOWAbbrev, setTmrwDOWAbbrev] = useState(getTmrwAbbrevDOW());
-  const [isTmrwActiveDay, setIsTmrwActiveDay] = useState(
-    daysActive[getTmrwDOW()]
-  );
+  const [isTmrwActiveDay, setIsTmrwActiveDay] = useState(false);
 
   const [nextActiveDay, setNextActiveDay] = useState(
     getNextActiveDay(getTmrwDOW(), daysActive)
@@ -45,11 +43,11 @@ export const TmrwTodosProvider = ({ children }) => {
 
   // Second useEffect hook for daysActive
   useEffect(() => {
-    setIsTmrwActiveDay(daysActive[getTmrwDOW()]);
+    // setIsTmrwActiveDay(daysActive[getTmrwDOW()]);
     setNextActiveDay(getNextActiveDay(getTmrwDOW(), daysActive));
   }, [daysActive]);
 
-  useEffect(() => { 
+  useEffect(() => {
     // If todo is locked, check if todo page is completed
     let allLocked =
       tmrwTodos &&
@@ -64,6 +62,7 @@ export const TmrwTodosProvider = ({ children }) => {
 
   // 1. Get tmrw day data
   const getAndSetTodos = async () => {
+    let isActive;
     let fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
 

@@ -5,7 +5,7 @@ import Ripple from "react-native-material-ripple";
 import { Color } from "../GlobalStyles";
 import { useThemes } from "../hooks/ThemesContext";
 import { useDayStatus } from "../hooks/DayStatusContext";
-import { getClassicColor } from "../themes";
+import themeStyles, { getClassicColor } from "../themes";
 
 const rippleStyles = StyleSheet.create({
   container: {
@@ -23,28 +23,36 @@ const rippleStyles = StyleSheet.create({
   },
 });
 
-const getStyles = (theme, currentClassicColor) => {
+const getStyles = (theme, currentThemeName, currentClassicColor) => {
   let shadeColor, rippleColor;
-  if (theme === "classic") {
+  if (currentThemeName === "Classic") {
     switch (currentClassicColor) {
       case "purple":
-        shadeColor = "#4e9a47";
-        rippleColor = "#4e9a47";
+        shadeColor = "#33084f";
+        rippleColor = "#33084f";
         break;
       case "red":
-        shadeColor = "#8A1919"; // Replace with the actual value
-        rippleColor = "#8A1919"; // Replace with the actual value
+        shadeColor = "#8A1919";
+        rippleColor = "#8A1919";
         break;
       case "green":
-        shadeColor = "#498044";
-        rippleColor = "#4c8747";
+        shadeColor = "#083e03";
+        rippleColor = "#083e03";
         break;
       default:
         break;
     }
   } else {
-    shadeColor = theme ? theme.rippleFocus : "transparent";
-    rippleColor = theme ? theme.rippleColor : "transparent";
+    if (!currentThemeName) {
+      shadeColor = "#083e03";
+      rippleColor = "#083e03";
+    } else if (currentThemeName === "Auto") {
+      shadeColor = theme.rippleColor;
+      rippleColor = theme.rippleFocus;
+    } else {
+      shadeColor = themeStyles[currentThemeName].rippleColor;
+      rippleColor = themeStyles[currentThemeName].rippleFocus;
+    }
   }
 
   return StyleSheet.create({
@@ -57,15 +65,15 @@ const getStyles = (theme, currentClassicColor) => {
 
 const useConditionalThemes = () => {
   try {
-    const { theme, currentClassicColor } = useThemes();
+    const { theme, currentThemeName, currentClassicColor } = useThemes();
 
     // You can customize the logic to check authentication here if needed
 
-    return { theme, currentClassicColor };
+    return { theme, currentThemeName, currentClassicColor };
   } catch {
     // Return default Classic theme if not authenticated
     return {
-      theme: "Classic",
+      currentThemeName: "Classic",
       currentClassicColor: null, // Set appropriate default value if needed
     };
   }
@@ -84,9 +92,10 @@ export default function TouchableRipple({
   disableAnimationDuration = 225,
   disabled = false,
   ...props
-}) { 
-  const { theme, currentClassicColor } = useConditionalThemes();
-  const styles = getStyles(theme, getClassicColor(currentClassicColor));
+}) {
+  const { theme, currentThemeName, currentClassicColor } =
+    useConditionalThemes();
+  const styles = getStyles(theme, currentThemeName, currentClassicColor);
   const [focusAnimation, setFocusAnimation] = useState(new Animated.Value(0));
   // const [disableAnimation, setDisableAnimation] = useState(
   //   new Animated.Value(disabled ? 1 : 0)

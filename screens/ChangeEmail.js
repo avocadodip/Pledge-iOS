@@ -7,7 +7,7 @@ import {
   reauthenticateWithCredential,
   verifyBeforeUpdateEmail,
 } from "@firebase/auth";
-import { Color } from "../GlobalStyles";
+import { APP_HORIZONTAL_PADDING, Color } from "../GlobalStyles";
 import AuthFormInput from "../components/auth/AuthFormInput";
 import AuthFormButton from "../components/auth/AuthFormButton";
 import { useSettings } from "../hooks/SettingsContext";
@@ -173,7 +173,7 @@ export default ChangeEmail;
 const styles = StyleSheet.create({
   pageContainer: {
     display: "flex",
-    marginHorizontal: 20,
+    marginHorizontal: APP_HORIZONTAL_PADDING,
     flex: 1,
   },
   formContainer: {

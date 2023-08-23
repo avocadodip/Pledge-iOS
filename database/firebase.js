@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, initializeFirestore } from 'firebase/firestore';
 import {
   API_KEY,
   AUTH_DOMAIN,
@@ -19,8 +19,12 @@ const firebaseConfig = {
   appId: APP_ID
 };
 
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+
 
 export const auth = getAuth();
 export const googleProvider = new GoogleAuthProvider();
-export const db = getFirestore();
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true
+  })
+// export const db = getFirestore();

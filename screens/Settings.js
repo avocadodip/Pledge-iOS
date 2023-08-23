@@ -54,7 +54,8 @@ const BUTTON_TEXTS = ["S", "M", "T", "W", "T", "F", "S"];
 
 const Settings = ({ navigation }) => {
   const { currentUserEmail } = useSettings();
-  const { theme, setStatusBarHidden, currentClassicColor } = useThemes();
+  const { theme, setStatusBarHidden, currentClassicColor, currentThemeName } =
+    useThemes();
   const styles = getStyles(theme);
   const {
     settings: {
@@ -206,7 +207,7 @@ const Settings = ({ navigation }) => {
           setScrollY(event.nativeEvent.contentOffset.y);
         }}
         scrollEventThrottle={16}
-      > 
+      >
         {/* <OnboardingPopup
         texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
         buttonTitle="Back to settings."
@@ -222,8 +223,28 @@ const Settings = ({ navigation }) => {
               <ContentLoader
                 speed={0.6}
                 height={BUTTON_HEIGHT}
-                backgroundColor={getClassicColor(currentClassicColor, "ContentLoaderBackgroundColor")}
-                foregroundColor={getClassicColor(currentClassicColor, "ContentLoaderForegroundColor")}
+                backgroundColor={
+                  currentThemeName === "Classic"
+                    ? getClassicColor(
+                        currentClassicColor,
+                        "ContentLoaderBackgroundColor"
+                      )
+                    : getClassicColor(
+                        currentThemeName,
+                        "ContentLoaderBackgroundColor"
+                      )
+                }
+                foregroundColor={
+                  currentThemeName === "Classic"
+                    ? getClassicColor(
+                        currentClassicColor,
+                        "ContentLoaderForegroundColor"
+                      )
+                    : getClassicColor(
+                        currentThemeName,
+                        "ContentLoaderForegroundColor"
+                      )
+                }
               >
                 <Rect width="100%" height="100%" />
               </ContentLoader>
@@ -487,7 +508,7 @@ const getStyles = (theme) =>
       fontSize: 14,
       textAlign: "left",
       marginLeft: 16,
-    }, 
+    },
     chevronContainer: {
       flexDirection: "row",
       alignItems: "center",

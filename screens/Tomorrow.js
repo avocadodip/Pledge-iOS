@@ -17,12 +17,10 @@ import TmrwTodo from "../components/todo/TmrwTodo";
 import FinedTodo from "../components/todo/FinedTodo";
 import NumberTodo from "../components/todo/NumberTodo";
 
-// amount={amount.toString()}
-
 const Tomorrow = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
-  const { tmrwTodos } = useTmrwTodos();
+  const { tmrwTodos } = useTmrwTodos(); 
   const {
     settings: { timezone, vacationModeOn, isOnboarded },
   } = useSettings();
@@ -38,20 +36,13 @@ const Tomorrow = () => {
       if (todoData == null || todoData.title == "") {
         if (timeStatus == 0 || timeStatus == 1) {
           // before or during day
-          return (
-            <NumberTodo
-              key={index}
-              todoNumber={index + 1}
-            />
-          );
+          return <NumberTodo key={index} todoNumber={index + 1} />;
         } else if (timeStatus == 2) {
           // after day
           return <FinedTodo key={index} />;
         }
       } else {
-        return (
-          <TmrwTodo key={index} todoData={todoData} />
-        );
+        return <TmrwTodo key={index} todoData={todoData} />;
       }
     });
   }, [tmrwTodos, dayChanged]);
@@ -72,15 +63,15 @@ const Tomorrow = () => {
               </Text>
               <Text style={styles.timeZone}>{getTimezoneAbbrev(timezone)}</Text>
             </View>
-            {
+
+            {(timeStatus === 1 || timeStatus === 2) &&
               // Show a different time picker message if day has ended and no tasks inputted
               // Instead of tasks will open from...to..., day will start at...to...
-              timeStatus == 2 && isTodoArrayEmpty ? (
+              (timeStatus == 2 && isTodoArrayEmpty ? (
                 <TmrwTimePicker altMessage={true} />
               ) : (
                 <TmrwTimePicker altMessage={false} />
-              )
-            }
+              ))}
           </View>
         )}
       </View>

@@ -1,4 +1,13 @@
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
+} from "firebase/firestore";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
@@ -13,7 +22,16 @@ export const SettingsProvider = ({ children }) => {
   const [userDataFetched, setUserDataFetched] = useState(false);
   const [appReadyToRender, setAppReadyToRender] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
- 
+  // Past bets data fetching:
+  const [pastBetsArray, setPastBetsArray] = useState([]);
+  const [fetchingPastBets, setFetchingPastBets] = useState(false);
+  const [lastDay, setLastDay] = useState([]);
+  const [allPastBetsDataFetched, setAllPastBetsDataFetched] = useState(false);
+  // Fetching transactions:
+  const [transactionsArray, setTransactionsArray] = useState([]);
+  const [fetchingTransactions, setFetchingTransactions] = useState(false);
+  
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.emailVerified) {
@@ -25,7 +43,7 @@ export const SettingsProvider = ({ children }) => {
         setUserDataFetched(false);
         setAppReadyToRender(false);
       }
-    }); 
+    });
 
     // Clean up subscription on unmount
     return () => unsubscribe();
@@ -44,7 +62,6 @@ export const SettingsProvider = ({ children }) => {
             setCurrentUserFullName(userSettings.fullName);
             setCurrentUserEmail(userSettings.email);
             setUserDataFetched(true);
-
           } else {
             // Handle the case where the user does not exist or has no settings
           }
@@ -59,6 +76,96 @@ export const SettingsProvider = ({ children }) => {
       return () => unsubscribe();
     }
   }, [isAuthenticated]);
+
+  // Past Bets data fetching (to prevent fetching data every time)
+  const fetchPastBets = async () => {
+    if (fetchingPastBets || allPastBetsDataFetched) {
+      return;
+    }
+
+    setFetchingPastBets(true);
+
+    try {
+      const q = query(
+        collection(doc(db, "users", currentUserID), "todos"),
+        orderBy("date", "desc"),
+        limit(10),
+        lastDay ? startAfter(lastDay) : undefined // startAfter if lastDay exists
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      // No more todos left
+      if (querySnapshot.empty) {
+        console.log("No more data to fetch.");
+        setAllPastBetsDataFetched(true);
+        return;
+      }
+
+      // Push days into array
+      const daysArray = [];
+      querySnapshot.forEach((dayDoc) => {
+        daysArray.push(dayDoc.data());
+      });
+
+      // Set last day
+      if (querySnapshot.docs.length > 0) {
+        setLastDay(
+          querySnapshot.docs[querySnapshot.docs.length - 1].data().date
+        );
+      }
+
+      // Append to data state
+      setPastBetsArray((prevData) => [...prevData, ...daysArray]);
+    } catch (error) {
+      console.error("An error occurred while fetching todos:", error);
+    } finally {
+      setFetchingPastBets(false);
+    }
+  };
+
+  // Fetching weeks:
+  const formatWeekID = (weekID) => {
+    const year = weekID.slice(0, 4);
+    const month = weekID.slice(4, 6);
+    const dayStart = weekID.slice(6, 8);
+    const dayEnd = weekID.slice(9, 11);
+    return `${parseInt(month)}/${parseInt(dayStart)}/${year} - ${parseInt(
+      month
+    )}/${parseInt(dayEnd)}/${year}`;
+  };
+
+  const formatWeeksList = (weeksList) => {
+    // Format the data as needed for your SectionList
+    const upcoming = weeksList.filter((week) => week.data.isCharged === false);
+    const pastCharges = weeksList.filter((week) => week.data.isCharged === true);
+  
+    return [
+      {
+        title: "Upcoming",
+        data: upcoming,
+      },
+      {
+        title: "Past Charges",
+        data: pastCharges,
+      },
+    ];
+  };
+
+  const fetchTransactions = async () => {
+    console.log("hi");
+    setFetchingTransactions(true);
+    const finesCol = collection(db, "users", currentUserID, "fines");
+    const finesSnapshot = await getDocs(finesCol);
+    const weeksData = finesSnapshot.docs.map((doc) => ({
+      id: formatWeekID(doc.id),
+      data: doc.data(),
+    }));
+    console.log("Raw Weeks Data:", weeksData); // Log the raw data here
+    setTransactionsArray(formatWeeksList(weeksData));
+    setFetchingTransactions(false);
+  };
+  
 
   return (
     <SettingsContext.Provider
@@ -75,7 +182,12 @@ export const SettingsProvider = ({ children }) => {
         setUserDataFetched,
         appReadyToRender,
         setAppReadyToRender,
-
+        fetchPastBets,
+        pastBetsArray,
+        fetchingPastBets,
+        transactionsArray,
+        fetchingTransactions,
+        fetchTransactions,
       }}
     >
       {children}

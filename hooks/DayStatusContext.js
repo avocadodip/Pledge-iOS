@@ -44,6 +44,7 @@ export const DayStatusProvider = ({ children }) => {
 
   useEffect(() => { 
     setTimeStatus(getTimeStatus(dayStart, dayEnd));
+    console.log(getTimeStatus(dayStart, dayEnd));
   }, [dayStart, dayEnd]);
 
   useEffect(() => {

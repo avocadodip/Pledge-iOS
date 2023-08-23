@@ -13,12 +13,14 @@ const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
 const CONTENT_LOADER_HEIGHT = 25;
 const CONTENT_LOADER_WIDTH = 60;
-
+ 
 const TmrwTimePicker = ({ altMessage }) => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { currentUserID } = useSettings();
-  const { dayStart, dayEnd } = useDayStatus();
+  const {
+    settings: { dayStart, dayEnd },
+  } = useSettings();  
   const [isModalVisible, setModalVisible] = useState({
     start: false,
     end: false,

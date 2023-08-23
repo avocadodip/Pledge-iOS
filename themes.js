@@ -11,7 +11,7 @@ export const getClassicColor = (color, styleName) => {
     red: {
       ContentLoaderBackgroundColor: "#e16564",
       ContentLoaderForegroundColor: "#f27b7b"
-    },
+    },  
     purple: {
       ContentLoaderBackgroundColor: "#6967e4",
       ContentLoaderForegroundColor: "#9c9af9"
@@ -19,7 +19,15 @@ export const getClassicColor = (color, styleName) => {
     green: {
       ContentLoaderBackgroundColor: "#45c05f",
       ContentLoaderForegroundColor: "#6ed785"
-    }
+    },
+    Light: {
+      ContentLoaderBackgroundColor: "#cccccc",
+      ContentLoaderForegroundColor: "#a2a2a2"
+    },
+    Dark: {
+      ContentLoaderBackgroundColor: "#212121",
+      ContentLoaderForegroundColor: "#363636",
+    },
   };
  
   return colorMap[color]?.[styleName];
@@ -93,6 +101,8 @@ export default {
     // GetStartedModal step indicator
     stepStrokeFinishedColor: "#7c7c7c",
     stepIndicatorUnFinishedColor: "#acacac",
+
+    vacationToggleDisabled: "#6b6b6b"
   },
   Light: {
     accent: Color.white,

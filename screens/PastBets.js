@@ -7,95 +7,27 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
-import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
+import { APP_HORIZONTAL_PADDING, BOTTOM_TAB_HEIGHT } from "../GlobalStyles";
 import SettingsHeader from "../components/settings/SettingsHeader";
 import StatsItem from "../components/stats/StatsItem";
 import { useThemes } from "../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
-import { db } from "../database/firebase";
-import {
-  collection,
-  doc,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  startAfter,
-  where,
-} from "firebase/firestore";
 import { useSettings } from "../hooks/SettingsContext";
 
 const PastBets = ({ navigation }) => {
-  const { theme, backgroundGradient } = useThemes();
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [lastDay, setLastDay] = useState(null);
-  const { currentUserID } = useSettings();
-  const [allDataFetched, setAllDataFetched] = useState(false);
-
-  const fetchData = async () => {
-    if (loading || allDataFetched) {
-      console.log("returned");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      let q = query(
-        collection(doc(db, "users", currentUserID), "todos"),
-        orderBy("date", "desc"),
-        limit(10)
-      );
-
-      if (lastDay) {
-        q = query(q, startAfter(lastDay));
-      }
-
-      const querySnapshot = await getDocs(q);
-
-      // No more todos left
-      if (querySnapshot.empty) {
-        console.log("No more data to fetch.");
-        setAllDataFetched(true);
-        return;
-      }
-
-      const todos = [];
-      querySnapshot.forEach((dayDoc) => {
-        const dayData = dayDoc.data();
-
-        if (dayData.todos) {
-          todos.push(...dayData.todos.slice(0, 3));
-        }
-      });
-
-      if (querySnapshot.docs.length > 0) {
-        setLastDay(
-          querySnapshot.docs[querySnapshot.docs.length - 1].data().date
-        );
-      }
-
-      setData((prevData) => [...prevData, ...todos]);
-    } catch (error) {
-      console.error("An error occurred while fetching todos:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { backgroundGradient } = useThemes();
+  const { fetchPastBets, pastBetsArray, fetchingPastBets } = useSettings();
 
   useEffect(() => {
-    if (currentUserID) {
-      fetchData();
-    }
-  }, [currentUserID]);
+    fetchPastBets();
+  }, []);
 
   const handleLoadMore = () => {
-    fetchData();
+    fetchPastBets();
   };
 
   const renderFooter = () => {
-    if (!loading) return null;
+    if (!fetchingPastBets) return null;
     return <ActivityIndicator style={{ color: "#000" }} />;
   };
 
@@ -104,12 +36,15 @@ const PastBets = ({ navigation }) => {
       <SafeAreaView style={style.pageContainer}>
         <SettingsHeader navigation={navigation} header={"Past Bets"} />
         <FlatList
-          data={data}
-          renderItem={({ item }) => <StatsItem title={item.title} />}
+          data={pastBetsArray}
+          renderItem={({ item: dayData, index }) => (
+            <StatsItem dayData={dayData} index={index} />
+          )}
           keyExtractor={(item, index) => index.toString()}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={renderFooter}
+          contentContainerStyle={{ paddingHorizontal: APP_HORIZONTAL_PADDING }} // Horizontal padding of 16
         />
       </SafeAreaView>
     </LinearGradient>
@@ -121,6 +56,6 @@ export default PastBets;
 const style = StyleSheet.create({
   pageContainer: {
     display: "flex",
-    marginHorizontal: APP_HORIZONTAL_PADDING,
+    marginBottom: BOTTOM_TAB_HEIGHT + 90,
   },
 });

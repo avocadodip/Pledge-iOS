@@ -78,8 +78,6 @@ export const getTodoStyles = (theme) =>
       backgroundColor: theme.faintPrimary,
       height: "100%",
       flex: 8,
-      // borderWidth: 1,
-      // borderColor: "blue",
     },
     leftContainerInner: {
       display: "flex",
@@ -158,7 +156,6 @@ export const getTodoStyles = (theme) =>
       borderBottomRightRadius: 16,
       backgroundColor: theme.faintPrimary,
       flex: 2,
-      // width: "20%",
       height: "100%",
       justifyContent: "center",
       alignItems: "center",

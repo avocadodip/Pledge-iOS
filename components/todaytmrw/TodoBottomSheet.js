@@ -1,5 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  KeyboardAvoidingView,
+} from "react-native";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
 import PledgeDollarIcon from "../../assets/icons/pledge-dollar-icon.svg";
@@ -9,9 +15,9 @@ import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
- 
+
 export default function TodoBottomSheet() {
-  const { theme, backgroundGradient } = useThemes(); 
+  const { theme, backgroundGradient } = useThemes();
   const { updateTodo } = useTmrwTodos();
   const {
     isBottomSheetOpen,
@@ -29,7 +35,7 @@ export default function TodoBottomSheet() {
   useEffect(() => {
     setTodo(selectedTodo || {});
   }, [selectedTodo]);
- 
+
   useEffect(() => {
     todoRef.current = todo; // Update the mutable ref when todo changes because todo value inside renderBackdrop callback is its initial value when the component is rendered.
   }, [todo]);
@@ -47,7 +53,7 @@ export default function TodoBottomSheet() {
       setIsBottomSheetOpen(false);
     }
   };
- 
+
   // Backdrop - when pressed, updates global todo array and closes sheet
   const renderBackdrop = useCallback(
     (props) => (
@@ -70,118 +76,133 @@ export default function TodoBottomSheet() {
 
   return isBottomSheetOpen ? (
     <BottomSheet
-      ref={bottomSheetRef}
-      index={isBottomSheetOpen ? 0 : -1}
-      snapPoints={snapPoints}
-      enablePanDownToClose={true}
-      backdropComponent={renderBackdrop}
-      onChange={handleSheetChange}
-      backgroundComponent={null} // gets rid of white flash
-      handleStyle={{ display: "none" }} // hide default handle
-      style={{
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        flex: 1,
-        overflow: "hidden",
-      }}
+    ref={bottomSheetRef}
+    index={isBottomSheetOpen ? 0 : -1}
+    snapPoints={snapPoints}
+    enablePanDownToClose={true}
+    backdropComponent={renderBackdrop}
+    onChange={handleSheetChange}
+    backgroundComponent={null} // gets rid of white flash
+    handleStyle={{ display: "none" }} // hide default handle
+    style={{
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      flex: 1,
+      overflow: "hidden",
+    }}
     >
-      <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-        {isBottomSheetEditable ? (
-          // Editable
-          <View style={styles.bottomSheetContainer}>
-            <View style={styles.dragHandleContainer}>
-              <View style={styles.dragHandle}></View>
+        <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+          {isBottomSheetEditable ? (
+            // Editable
+            <View style={styles.bottomSheetContainer}>
+              <View style={styles.dragHandleContainer}>
+                <View style={styles.dragHandle}></View>
+              </View>
+              <View style={styles.numberTitleContainer}>
+                <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
+                <TextInput
+                  style={styles.title}
+                  placeholder="New task"
+                  value={todo.title}
+                  onChangeText={(text) =>
+                    handleInputChange(
+                      "title",
+                      text.charAt(0).toUpperCase() + text.slice(1)
+                    )
+                  }
+                  placeholderTextColor={theme.textDisabled}
+                  textStyle={styles.text}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  maxLength={46}
+                />
+              </View>
+              <View style={styles.horizontalDivider} />
+              <View style={styles.amountFolderContainer}>
+                <PledgeDollarIcon color={theme.textHigh} />
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Add pledge"
+                  value={todo.amount}
+                  onChangeText={(text) => handleInputChange("amount", text)}
+                  keyboardType="numeric"
+                  placeholderTextColor={theme.textDisabled}
+                  textStyle={styles.text}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  maxLength={2}
+                />
+              </View>
+              <View style={styles.horizontalDivider} />
+              <View style={styles.amountFolderContainer}>
+                <FolderIcon color={theme.textHigh} />
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Add tag"
+                  value={todo.tag}
+                  onChangeText={(text) =>
+                    handleInputChange(
+                      "tag",
+                      text.charAt(0).toUpperCase() + text.slice(1)
+                    )
+                  }
+                  placeholderTextColor={theme.textDisabled}
+                  textStyle={styles.text}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  maxLength={30}
+                />
+              </View>
+              <View style={styles.horizontalDivider} />
+              <View style={styles.descriptionContainer}>
+                <DescriptLinesIcon color={theme.textHigh} />
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Add description"
+                  value={todo.description}
+                  onChangeText={(text) =>
+                    handleInputChange(
+                      "description",
+                      text.charAt(0).toUpperCase() + text.slice(1)
+                    )
+                  }
+                  placeholderTextColor={theme.textDisabled}
+                  textStyle={styles.text}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  multiline={false} // temp
+                />
+              </View>
             </View>
-            <View style={styles.numberTitleContainer}>
-              <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
-              <TextInput
-                style={styles.title}
-                placeholder="New task"
-                value={todo.title}
-                onChangeText={(text) => handleInputChange("title", text)}
-                placeholderTextColor={theme.textDisabled}
-                textStyle={styles.text}
-                autoCorrect={false}
-                autoCapitalize="none"
-                maxLength={46}
-              />
+          ) : (
+            // Uneditable
+            <View style={styles.bottomSheetContainer}>
+              <View style={styles.dragHandleContainer}>
+                <View style={styles.dragHandle}></View>
+              </View>
+              <View style={styles.numberTitleContainer}>
+                <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
+                <Text style={styles.title}>{selectedTodo.title}</Text>
+              </View>
+              <View style={styles.horizontalDivider} />
+              <View style={styles.amountFolderContainer}>
+                <PledgeDollarIcon color={theme.textHigh} />
+                <Text style={styles.text}>{selectedTodo.amount}</Text>
+              </View>
+              <View style={styles.horizontalDivider} />
+              <View style={styles.amountFolderContainer}>
+                <FolderIcon color={theme.textHigh} />
+                <Text style={styles.text}>{selectedTodo.tag}</Text>
+              </View>
+              <View style={styles.horizontalDivider} />
+              <View style={styles.descriptionContainer}>
+                <DescriptLinesIcon color={theme.textHigh} />
+                <Text style={styles.text}>{selectedTodo.description}</Text>
+              </View>
             </View>
-            <View style={styles.horizontalDivider} />
-            <View style={styles.amountFolderContainer}>
-              <PledgeDollarIcon color={theme.textHigh} />
-              <TextInput
-                style={styles.textInput}
-                placeholder="Add pledge"
-                value={todo.amount}
-                onChangeText={(text) => handleInputChange("amount", text)}
-                keyboardType="numeric"
-                placeholderTextColor={theme.textDisabled}
-                textStyle={styles.text}
-                autoCorrect={false}
-                autoCapitalize="none"
-                maxLength={2}
-              />
-            </View>
-            <View style={styles.horizontalDivider} />
-            <View style={styles.amountFolderContainer}>
-              <FolderIcon color={theme.textHigh} />
-              <TextInput
-                style={styles.textInput}
-                placeholder="Add tag"
-                value={todo.tag}
-                onChangeText={(text) => handleInputChange("tag", text)}
-                placeholderTextColor={theme.textDisabled}
-                textStyle={styles.text}
-                autoCorrect={false}
-                autoCapitalize="none"
-                maxLength={30}
-              />
-            </View>
-            <View style={styles.horizontalDivider} />
-            <View style={styles.descriptionContainer}>
-              <DescriptLinesIcon color={theme.textHigh} />
-              <TextInput
-                style={styles.textInput}
-                placeholder="Add description"
-                value={todo.description}
-                onChangeText={(text) => handleInputChange("description", text)}
-                placeholderTextColor={theme.textDisabled}
-                textStyle={styles.text}
-                autoCorrect={false}
-                autoCapitalize="none"
-                multiline={true}
-              />
-            </View>
-          </View>
-        ) : (
-          // Uneditable
-          <View style={styles.bottomSheetContainer}>
-            <View style={styles.dragHandleContainer}>
-              <View style={styles.dragHandle}></View>
-            </View>
-            <View style={styles.numberTitleContainer}>
-              <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
-              <Text style={styles.title}>{selectedTodo.title}</Text>
-            </View>
-            <View style={styles.horizontalDivider} />
-            <View style={styles.amountFolderContainer}>
-              <PledgeDollarIcon color={theme.textHigh} />
-              <Text style={styles.text}>{selectedTodo.amount}</Text>
-            </View>
-            <View style={styles.horizontalDivider} />
-            <View style={styles.amountFolderContainer}>
-              <FolderIcon color={theme.textHigh} />
-              <Text style={styles.text}>{selectedTodo.tag}</Text>
-            </View>
-            <View style={styles.horizontalDivider} />
-            <View style={styles.descriptionContainer}>
-              <DescriptLinesIcon color={theme.textHigh} />
-              <Text style={styles.text}>{selectedTodo.description}</Text>
-            </View>
-          </View>
-        )}
-      </LinearGradient>
-    </BottomSheet>
+          )}
+        </LinearGradient>
+      </BottomSheet>
   ) : null;
 }
 
@@ -223,20 +244,17 @@ const getStyles = (theme) =>
       marginTop: 45,
       marginBottom: 20,
       gap: 23,
-
-
     },
     amountFolderContainer: {
       flexDirection: "row",
       alignItems: "center",
       gap: 23,
-    }, 
+    },
     descriptionContainer: {
       paddingTop: 10,
       flexDirection: "row",
       gap: 23,
-      alignItems: "center"
-
+      alignItems: "center",
     },
     number: {
       color: theme.primary,
