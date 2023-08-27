@@ -19,6 +19,11 @@ import {
   updateTodoListOnboarding,
   updateUserIsOnboarded,
 } from "../../utils/firebaseUtils";
+import { getTmrwDate, getTodayDate } from "../../utils/currentDate";
+import { doc, runTransaction, setDoc } from "firebase/firestore";
+import { db } from "../../database/firebase";
+import { useTodayTodos } from "../../hooks/TodayTodosContext";
+import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
 
 const steps = ["Set daily deadline", "Set start day", "Lock in 3 tasks"];
 const FADE_OUT_OPACITY = -7;
@@ -43,6 +48,8 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
     { todoNumber: 2, title: "", amount: "", isComplete: false, isLocked: true },
     { todoNumber: 3, title: "", amount: "", isComplete: false, isLocked: true },
   ]);
+  const { getAndSetTodayTodos } = useTodayTodos();
+  const { getAndSetTmrwTodos } = useTmrwTodos();
 
   // Allow step indicator press
   useEffect(() => {
@@ -148,27 +155,68 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   };
 
   // Next button press
-  const onNextPress = () => {
-    // Save todos if last page
+  const onNextPress = async () => {
     if (currentPage === 2) {
       // Get rid of AM/PM at end of string
       let dayStart = timePickerText.start.replace(/(AM|PM)/g, "").trim();
       let dayEnd = timePickerText.end.replace(/(AM|PM)/g, "").trim();
 
-      // Update todos collection
-      updateTodoListOnboarding(
-        currentUserID,
-        todos,
-        startDay,
-        dayStart,
-        dayEnd
-      );
+      let todayDate = getTodayDate();
+      let tmrwDate = getTmrwDate();
+      const todayRef = doc(db, "users", currentUserID, "todos", todayDate);
+      const tmrwRef = doc(db, "users", currentUserID, "todos", tmrwDate);
 
-      // Update firebase isOnboarded field to true
-      updateUserIsOnboarded(currentUserID);
-      // Close modal
-      setModalVisible(false);
+      const createTodoObject = (date, todos, isActive) => {
+        return {
+          date,
+          dateName: `${
+            [
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun",
+              "Jul",
+              "Aug",
+              "Sep",
+              "Oct",
+              "Nov",
+              "Dec",
+            ][parseInt(date.slice(4, 6), 10) - 1]
+          } ${parseInt(date.slice(6, 8), 10)}`,
+          todos,
+          totalFine: 0,
+          opensAt: dayStart,
+          closesAt: dayEnd,
+          isActive,
+          isVacation: false,
+        };
+      };
+
+      const createEmptyTodos = () => [null, null, null];
+
+      const todayTodo =
+        startDay === "Today"
+          ? createTodoObject(todayDate, todos, true)
+          : createTodoObject(todayDate, createEmptyTodos(), false);
+
+      const tmrwTodo =
+        startDay === "Today"
+          ? createTodoObject(tmrwDate, createEmptyTodos(), true)
+          : createTodoObject(tmrwDate, todos, true);
+
+      await setDoc(todayRef, todayTodo);
+      await setDoc(tmrwRef, tmrwTodo);
+
+      
+      updateUserIsOnboarded(currentUserID); // Update firebase isOnboarded field to true
+      getAndSetTodayTodos(); // re-fetch today todos to update Today
+      getAndSetTmrwTodos(); // re-fetch tmrw todos to update Tmrw
+      setModalVisible(false); // Close modal
+
     }
+
     if (currentPage < steps.length - 1) {
       flatListRef.current.scrollToIndex({
         animated: true,

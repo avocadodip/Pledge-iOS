@@ -7,6 +7,7 @@ import {
   orderBy,
   query,
   startAfter,
+  where,
 } from "firebase/firestore";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../database/firebase";
@@ -30,7 +31,8 @@ export const SettingsProvider = ({ children }) => {
   // Fetching transactions:
   const [transactionsArray, setTransactionsArray] = useState([]);
   const [fetchingTransactions, setFetchingTransactions] = useState(false);
-  
+  const [allTransactionsDataFetched, setAllTransactionsDataFetched] =
+    useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -136,10 +138,12 @@ export const SettingsProvider = ({ children }) => {
   };
 
   const formatWeeksList = (weeksList) => {
+    console.log("!");
+    console.log(weeksList);
     // Format the data as needed for your SectionList
-    const upcoming = weeksList.filter((week) => week.data.isCharged === false);
-    const pastCharges = weeksList.filter((week) => week.data.isCharged === true);
-  
+    const upcoming = weeksList.filter((week) => week.isCharged === false);
+    const pastCharges = weeksList.filter((week) => week.isCharged === true);
+
     return [
       {
         title: "Upcoming",
@@ -153,19 +157,52 @@ export const SettingsProvider = ({ children }) => {
   };
 
   const fetchTransactions = async () => {
-    console.log("hi");
     setFetchingTransactions(true);
-    const finesCol = collection(db, "users", currentUserID, "fines");
-    const finesSnapshot = await getDocs(finesCol);
-    const weeksData = finesSnapshot.docs.map((doc) => ({
-      id: formatWeekID(doc.id),
-      data: doc.data(),
-    }));
-    console.log("Raw Weeks Data:", weeksData); // Log the raw data here
-    setTransactionsArray(formatWeeksList(weeksData));
-    setFetchingTransactions(false);
+
+    try {
+      const q = query(
+        collection(doc(db, "users", currentUserID), "fines"),
+        where("isCharged", "==", true),
+        orderBy("id", "desc"),
+        limit(10),
+        lastDay ? startAfter(lastDay) : undefined // startAfter if lastDay exists
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      // No more todos left
+      if (querySnapshot.empty) {
+        console.log("No more data to fetch.");
+        setAllTransactionsDataFetched(true);
+        return;
+      }
+
+      // Push days into array
+      const finesArray = [];
+      querySnapshot.forEach((weekDoc) => {
+        finesArray.push(weekDoc.data());
+      });
+
+      // Set last day
+      if (querySnapshot.docs.length > 0) {
+        setLastDay(querySnapshot.docs[querySnapshot.docs.length - 1].data().id);
+      }
+
+      console.log("Raw Weeks Data:", finesArray); // Log the raw data here
+      // Append to existing data state
+      setTransactionsArray((prevData) => {
+        // Concatenate old and new data
+        const combinedData = [...prevData, ...finesArray];
+
+        // Apply the formatWeeksList function on the combined data
+        return formatWeeksList(combinedData);
+      });
+    } catch (error) {
+      console.error("An error occurred while fetching todos:", error);
+    } finally {
+      setFetchingTransactions(false);
+    }
   };
-  
 
   return (
     <SettingsContext.Provider

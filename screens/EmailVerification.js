@@ -106,7 +106,7 @@ const EmailVerification = ({ route, navigation }) => {
         },
         vacationModeOn: false,
         theme: "Classic",
-        missedTaskFine: 1,
+        missedTaskFine: 0,
         timezone: timeZone,
         isActiveUser: true,
         currency: "usd",

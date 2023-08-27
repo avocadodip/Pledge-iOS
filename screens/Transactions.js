@@ -125,27 +125,37 @@ const Transactions = ({ navigation }) => {
               <ActivityIndicator color={theme.textMedium} style={{ flex: 1 }} />
             </View>
           ) : transactionsArray ? (
-            <SectionList
-              sections={transactionsArray}
-              keyExtractor={(item, index) => item + index}
-              renderItem={({ item, section }) => (
-                <View style={styles.bundleContainer}>
-                  <WeekBundle
-                    transactionsData={item}
-                    isFirstSection={transactionsArray.indexOf(section) === 0}
-                  />
-                </View>
-              )}
-              renderSectionHeader={({ section: { title } }) => (
-                <Text style={styles.descriptorText}>{title}</Text>
-              )}
-              contentContainerStyle={{
-                paddingHorizontal: APP_HORIZONTAL_PADDING,
-                paddingTop: 7,
-              }}
-              style={styles.sectionList}
-              renderSectionFooter={() => <View style={{ height: 10 }} />}
-            />
+            transactionsArray.length > 0 ? (
+              <SectionList
+                sections={transactionsArray}
+                keyExtractor={(item, index) => item + index}
+                renderItem={({ item, section }) => (
+                  <View style={styles.bundleContainer}>
+                    <WeekBundle
+                      transactionsData={item}
+                      isFirstSection={transactionsArray.indexOf(section) === 0}
+                    />
+                  </View>
+                )}
+                renderSectionHeader={({ section: { title } }) => (
+                  <Text style={styles.descriptorText}>{title}</Text>
+                )}
+                contentContainerStyle={{
+                  paddingHorizontal: APP_HORIZONTAL_PADDING,
+                  paddingTop: 7,
+                }}
+                style={styles.sectionList}
+                renderSectionFooter={() => <View style={{ height: 10 }} />}
+              />
+            ) : (
+              <View style={styles.textBox}>
+                <Text style={styles.infoText}>
+                  Weekly charges will appear here.{"\n\n"}
+                  When a credit card is set up, charges will occur every
+                  Saturday at 11:45pm.
+                </Text>
+              </View>
+            )
           ) : (
             <View>
               <Text>Attach credit card</Text>
@@ -183,5 +193,18 @@ const getStyles = (theme) =>
       textAlign: "left",
       marginLeft: 16,
       marginBottom: 8,
+    },
+
+    textBox: {
+      height: "90%",
+      justifyContent: "center",
+      alignItems: "center",
+      paddingHorizontal: 20,
+    },
+    infoText: {
+      textAlign: "center",
+      color: theme.textHigh,
+      fontSize: 16,
+      fontWeight: 500,
     },
   });

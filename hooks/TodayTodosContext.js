@@ -8,7 +8,7 @@ import { DayStatusContext, useDayStatus } from "./DayStatusContext";
 import { useDayChange } from "./useDayChange";
 
 export const TodayTodosContext = createContext();
-
+ 
 export const TodayTodosProvider = ({ children }) => {
   const [todayTodos, setTodayTodos] = useState([]);
   const { currentUserID } = useSettings();
@@ -24,7 +24,7 @@ export const TodayTodosProvider = ({ children }) => {
   // In your useEffect call
   useEffect(() => {
     if (currentUserID) {
-      getAndSetTodos();
+      getAndSetTodayTodos();
     }
     setTodayDOWAbbrev(getTodayAbbrevDOW());
   }, [dayChanged, currentUserID]);
@@ -42,7 +42,7 @@ export const TodayTodosProvider = ({ children }) => {
   }, [todayTodos]);
 
   // Function to fetch todos and set global todayTodos object
-  const getAndSetTodos = async () => {
+  const getAndSetTodayTodos = async () => {
     let fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());
 
@@ -84,6 +84,7 @@ export const TodayTodosProvider = ({ children }) => {
         isTodayVacation,
         isTodoArrayEmpty,
         onboardStartTmrw,
+        getAndSetTodayTodos,
       }}
     >
       {children}

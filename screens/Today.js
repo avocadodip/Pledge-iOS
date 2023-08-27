@@ -64,7 +64,7 @@ const Today = () => {
           <Text style={styles.headerDayOfWeek}>{todayDOWAbbrev}</Text>
         </View>
 
-        {!isTodayVacation && isTodayActiveDay && (
+        {isOnboarded && !isTodayVacation && isTodayActiveDay && (
           <View style={styles.headerSubtitleContainer}>
             <Text style={styles.headerSubtitle}>
               {todayHeaderSubtitleMessage}
@@ -73,7 +73,7 @@ const Today = () => {
           </View>
         )}
       </View>
-
+ 
       <View style={styles.pageContent}>
         {!isOnboarded ? (
           <TodayTmrwMessage

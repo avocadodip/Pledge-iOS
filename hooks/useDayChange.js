@@ -1,25 +1,57 @@
 import { useEffect, useState } from "react";
 
 export const useDayChange = () => {
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const todayIndex = new Date().getDay();
+  const [todayDOWIndex, setTodayDOWIndex] = useState(todayIndex);
+  const [todayDOW, setTodayDOW] = useState(daysOfWeek[todayIndex]);
+  const [tmrwDOW, setTmrwDOW] = useState(daysOfWeek[(todayIndex + 1) % 7]);
   const [dayChanged, setDayChanged] = useState(false);
 
+  const checkDayChange = () => {
+    const now = new Date();
+    const dayOfWeekI = now.getDay();
+    if (dayOfWeekI !== todayDOWIndex) {
+      setDayChanged(true);
+      setTodayDOWIndex(dayOfWeekI);
+      setTodayDOW(daysOfWeek[dayOfWeekI]);
+      setTmrwDOW(daysOfWeek[(dayOfWeekI + 1) % 7]);
+    } else {
+      setDayChanged(false);
+    }
+  };
+
   useEffect(() => {
-    const checkDayChange = () => {
+    const getTimeUntilMidnight = () => {
       const now = new Date();
-      const currentDay = now.getDate();
-      const isNewDay = dayChanged !== currentDay;
-      setDayChanged(isNewDay); // true if day changes
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 0);
+      return midnight - now;
     };
 
-    // initial call to set the correct values
+    // Initial call to set correct values
     checkDayChange();
 
-    // check day change every second
-    const timerId = setInterval(checkDayChange, 1000);
+    // Schedule the first check at midnight
+    const timeoutId = setTimeout(() => {
+      checkDayChange();
 
-    // cleanup on component unmount
-    return () => clearInterval(timerId);
-  }, [dayChanged]);
+      // Schedule repeated checks every 24 hours
+      const intervalId = setInterval(checkDayChange, 24 * 60 * 60 * 1000);
 
-  return { dayChanged };
+      return () => clearInterval(intervalId);
+    }, getTimeUntilMidnight());
+
+    return () => clearTimeout(timeoutId);
+  }, [todayDOWIndex]);
+
+  return { todayDOWIndex, todayDOW, tmrwDOW, dayChanged };
 };

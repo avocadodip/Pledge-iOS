@@ -54,7 +54,7 @@ const TodayTmrwMessage = ({ type, setModalVisible, nextActiveDay }) => {
         return (
           <>
             <Text style={styles.infoText}>Welcome, Josh.</Text>
-            <Text style={styles.infoText}>It's your day off.</Text>
+            <Text style={styles.infoText}>It's your rest day.</Text>
             <TouchableOpacity
               style={styles.todoButton}
               onPress={handleButtonPress}
@@ -67,9 +67,9 @@ const TodayTmrwMessage = ({ type, setModalVisible, nextActiveDay }) => {
       case "rest day (tmrw screen)":
         return (
           <>
-            <Text style={styles.infoText}>It's your day off.</Text>
+            <Text style={styles.infoText}>Tomorrow is your day off.</Text>
             <Text style={styles.infoText}>
-              Check back in on {dayBeforeNextActiveDay} to lock in tasks for{" "}
+              Come back on {dayBeforeNextActiveDay} to lock in tasks for{" "}
               {nextActiveDay}.
             </Text>
 

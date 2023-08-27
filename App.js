@@ -67,7 +67,7 @@ export default function App() {
       <AppContent />
     </SettingsProvider>
   );
-}
+} 
 
 function AppContent() {
   const { isAuthenticated, userDataFetched, appReadyToRender } = useSettings();

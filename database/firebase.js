@@ -19,12 +19,16 @@ const firebaseConfig = {
   appId: APP_ID
 };
 
-const app = initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig);
 
-
-export const auth = getAuth();
-export const googleProvider = new GoogleAuthProvider();
-export const db = initializeFirestore(app, {
+  const auth = getAuth(app)
+  
+  const db = initializeFirestore(app, {
   experimentalForceLongPolling: true
   })
-// export const db = getFirestore();
+  
+  export const googleProvider = new GoogleAuthProvider();
+
+  export { db, auth };
+
+

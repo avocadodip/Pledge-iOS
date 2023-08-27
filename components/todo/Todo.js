@@ -21,7 +21,6 @@ import FinedTodo from "./FinedTodo";
 // import OnboardTodo from "./OnboardTodo";
 import TodayTodo from "./TodayTodo";
 import TmrwTodo from "./TmrwTodo";
-import { addTodoItem } from "../../utils/firebaseUtils";
 
 const Todo = ({
   todoData,

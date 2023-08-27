@@ -26,9 +26,17 @@ const PastBets = ({ navigation }) => {
     fetchPastBets();
   };
 
+  useEffect(() => {
+    console.log("logging");
+  }, [pastBetsArray]);
+
   const renderFooter = () => {
     if (!fetchingPastBets) return null;
-    return <ActivityIndicator style={{ color: "#000" }} />;
+    return (
+      <View style={{ marginTop: 30 }}>
+        <ActivityIndicator style={{ color: "#000" }} />
+      </View>
+    );
   };
 
   return (

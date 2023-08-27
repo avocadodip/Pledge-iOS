@@ -50,6 +50,9 @@ export default function TodoBottomSheet() {
 
   const handleSheetChange = (index) => {
     if (index === -1) {
+      if (isBottomSheetEditable) {
+        updateTodo(todoRef.current);
+      }
       setIsBottomSheetOpen(false);
     }
   };
@@ -76,133 +79,133 @@ export default function TodoBottomSheet() {
 
   return isBottomSheetOpen ? (
     <BottomSheet
-    ref={bottomSheetRef}
-    index={isBottomSheetOpen ? 0 : -1}
-    snapPoints={snapPoints}
-    enablePanDownToClose={true}
-    backdropComponent={renderBackdrop}
-    onChange={handleSheetChange}
-    backgroundComponent={null} // gets rid of white flash
-    handleStyle={{ display: "none" }} // hide default handle
-    style={{
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
-      flex: 1,
-      overflow: "hidden",
-    }}
+      ref={bottomSheetRef}
+      index={isBottomSheetOpen ? 0 : -1}
+      snapPoints={snapPoints}
+      enablePanDownToClose={true}
+      backdropComponent={renderBackdrop}
+      onChange={handleSheetChange}
+      backgroundComponent={null} // gets rid of white flash
+      handleStyle={{ display: "none" }} // hide default handle
+      style={{
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        flex: 1,
+        overflow: "hidden",
+      }}
     >
-        <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-          {isBottomSheetEditable ? (
-            // Editable
-            <View style={styles.bottomSheetContainer}>
-              <View style={styles.dragHandleContainer}>
-                <View style={styles.dragHandle}></View>
-              </View>
-              <View style={styles.numberTitleContainer}>
-                <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
-                <TextInput
-                  style={styles.title}
-                  placeholder="New task"
-                  value={todo.title}
-                  onChangeText={(text) =>
-                    handleInputChange(
-                      "title",
-                      text.charAt(0).toUpperCase() + text.slice(1)
-                    )
-                  }
-                  placeholderTextColor={theme.textDisabled}
-                  textStyle={styles.text}
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                  maxLength={46}
-                />
-              </View>
-              <View style={styles.horizontalDivider} />
-              <View style={styles.amountFolderContainer}>
-                <PledgeDollarIcon color={theme.textHigh} />
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Add pledge"
-                  value={todo.amount}
-                  onChangeText={(text) => handleInputChange("amount", text)}
-                  keyboardType="numeric"
-                  placeholderTextColor={theme.textDisabled}
-                  textStyle={styles.text}
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                  maxLength={2}
-                />
-              </View>
-              <View style={styles.horizontalDivider} />
-              <View style={styles.amountFolderContainer}>
-                <FolderIcon color={theme.textHigh} />
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Add tag"
-                  value={todo.tag}
-                  onChangeText={(text) =>
-                    handleInputChange(
-                      "tag",
-                      text.charAt(0).toUpperCase() + text.slice(1)
-                    )
-                  }
-                  placeholderTextColor={theme.textDisabled}
-                  textStyle={styles.text}
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                  maxLength={30}
-                />
-              </View>
-              <View style={styles.horizontalDivider} />
-              <View style={styles.descriptionContainer}>
-                <DescriptLinesIcon color={theme.textHigh} />
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Add description"
-                  value={todo.description}
-                  onChangeText={(text) =>
-                    handleInputChange(
-                      "description",
-                      text.charAt(0).toUpperCase() + text.slice(1)
-                    )
-                  }
-                  placeholderTextColor={theme.textDisabled}
-                  textStyle={styles.text}
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                  multiline={false} // temp
-                />
-              </View>
+      <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+        {isBottomSheetEditable ? (
+          // Editable
+          <View style={styles.bottomSheetContainer}>
+            <View style={styles.dragHandleContainer}>
+              <View style={styles.dragHandle}></View>
             </View>
-          ) : (
-            // Uneditable
-            <View style={styles.bottomSheetContainer}>
-              <View style={styles.dragHandleContainer}>
-                <View style={styles.dragHandle}></View>
-              </View>
-              <View style={styles.numberTitleContainer}>
-                <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
-                <Text style={styles.title}>{selectedTodo.title}</Text>
-              </View>
-              <View style={styles.horizontalDivider} />
-              <View style={styles.amountFolderContainer}>
-                <PledgeDollarIcon color={theme.textHigh} />
-                <Text style={styles.text}>{selectedTodo.amount}</Text>
-              </View>
-              <View style={styles.horizontalDivider} />
-              <View style={styles.amountFolderContainer}>
-                <FolderIcon color={theme.textHigh} />
-                <Text style={styles.text}>{selectedTodo.tag}</Text>
-              </View>
-              <View style={styles.horizontalDivider} />
-              <View style={styles.descriptionContainer}>
-                <DescriptLinesIcon color={theme.textHigh} />
-                <Text style={styles.text}>{selectedTodo.description}</Text>
-              </View>
+            <View style={styles.numberTitleContainer}>
+              <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
+              <TextInput
+                style={styles.title}
+                placeholder="New task"
+                value={todo.title}
+                onChangeText={(text) =>
+                  handleInputChange(
+                    "title",
+                    text.charAt(0).toUpperCase() + text.slice(1)
+                  )
+                }
+                placeholderTextColor={theme.textDisabled}
+                textStyle={styles.text}
+                autoCorrect={false}
+                autoCapitalize="none"
+                maxLength={46}
+              />
             </View>
-          )}
-        </LinearGradient>
-      </BottomSheet>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.amountFolderContainer}>
+              <PledgeDollarIcon color={theme.textHigh} />
+              <TextInput
+                style={styles.textInput}
+                placeholder="Add pledge"
+                value={todo.amount}
+                onChangeText={(text) => handleInputChange("amount", text)}
+                keyboardType="numeric"
+                placeholderTextColor={theme.textDisabled}
+                textStyle={styles.text}
+                autoCorrect={false}
+                autoCapitalize="none"
+                maxLength={2}
+              />
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.amountFolderContainer}>
+              <FolderIcon color={theme.textHigh} />
+              <TextInput
+                style={styles.textInput}
+                placeholder="Add tag"
+                value={todo.tag}
+                onChangeText={(text) =>
+                  handleInputChange(
+                    "tag",
+                    text.charAt(0).toUpperCase() + text.slice(1)
+                  )
+                }
+                placeholderTextColor={theme.textDisabled}
+                textStyle={styles.text}
+                autoCorrect={false}
+                autoCapitalize="none"
+                maxLength={30}
+              />
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.descriptionContainer}>
+              <DescriptLinesIcon color={theme.textHigh} />
+              <TextInput
+                style={styles.textInput}
+                placeholder="Add description"
+                value={todo.description}
+                onChangeText={(text) =>
+                  handleInputChange(
+                    "description",
+                    text.charAt(0).toUpperCase() + text.slice(1)
+                  )
+                }
+                placeholderTextColor={theme.textDisabled}
+                textStyle={styles.text}
+                autoCorrect={false}
+                autoCapitalize="none"
+                multiline={false} // temp
+              />
+            </View>
+          </View>
+        ) : (
+          // Uneditable
+          <View style={styles.bottomSheetContainer}>
+            <View style={styles.dragHandleContainer}>
+              <View style={styles.dragHandle}></View>
+            </View>
+            <View style={styles.numberTitleContainer}>
+              <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
+              <Text style={styles.title}>{selectedTodo.title}</Text>
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.amountFolderContainer}>
+              <PledgeDollarIcon color={theme.textHigh} />
+              <Text style={styles.text}>{selectedTodo.amount}</Text>
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.amountFolderContainer}>
+              <FolderIcon color={theme.textHigh} />
+              <Text style={styles.text}>{selectedTodo.tag}</Text>
+            </View>
+            <View style={styles.horizontalDivider} />
+            <View style={styles.descriptionContainer}>
+              <DescriptLinesIcon color={theme.textHigh} />
+              <Text style={styles.text}>{selectedTodo.description}</Text>
+            </View>
+          </View>
+        )}
+      </LinearGradient>
+    </BottomSheet>
   ) : null;
 }
 

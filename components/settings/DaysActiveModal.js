@@ -7,6 +7,9 @@ import { Color } from "../../GlobalStyles";
 import TouchableRipple from "../TouchableRipple";
 import { db } from "../../database/firebase";
 import BottomModal from "../BottomModal";
+import { getTmrwDate } from "../../utils/currentDate";
+import { useDayChange } from "../../hooks/useDayChange";
+import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
 
 const DaysActiveModal = ({
   currentUserID,
@@ -28,6 +31,8 @@ const DaysActiveModal = ({
   // Local state for changes made in the modal
   const [modalDaysActive, setModalDaysActive] = useState({ ...daysActive });
   const [tempDaysActive, setTempDaysActive] = useState({ ...daysActive });
+  const { todayDOW, tmrwDOW } = useDayChange();
+  const { noTmrwTodoLocked, setIsTmrwActiveDay } = useTmrwTodos();
 
   // Handle day toggle in modal
   const handleModalDayToggle = (index) => {
@@ -50,7 +55,34 @@ const DaysActiveModal = ({
   // Handle confirm button click
   const handleConfirm = async () => {
     setModalDaysActive(tempDaysActive);
+
     const userRef = doc(db, "users", currentUserID);
+    const tmrwChangedFromFalseToTrue =
+      !daysActive[tmrwDOW] && tempDaysActive[tmrwDOW];
+    const tmrwChangedFromTrueToFalse =
+      daysActive[tmrwDOW] && !tempDaysActive[tmrwDOW];
+
+    const tmrwDocRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
+
+    // If next day's isActive is changed, need to handle tmrwDoc and local changes
+    const shouldUpdateIsActive =
+      tmrwChangedFromFalseToTrue ||
+      (tmrwChangedFromTrueToFalse && noTmrwTodoLocked);
+
+    if (shouldUpdateIsActive) {
+
+      try {
+        await updateDoc(tmrwDocRef, {
+          isActive: tmrwChangedFromFalseToTrue,
+        });
+
+        setIsTmrwActiveDay(tmrwChangedFromFalseToTrue);
+      } catch (error) {
+        console.error("Error updating document: ", error.message);
+      }
+    }
+
+    // Handle user settings update
     try {
       await updateDoc(userRef, {
         daysActive: tempDaysActive,
