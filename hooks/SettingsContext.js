@@ -19,6 +19,7 @@ export const SettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState({ isOnboarded: false });
   const [currentUserID, setCurrentUserID] = useState(null);
   const [currentUserFullName, setCurrentUserFullName] = useState(null);
+  const [currentUserFirstName, setCurrentUserFirstName] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userDataFetched, setUserDataFetched] = useState(false);
   const [appReadyToRender, setAppReadyToRender] = useState(false);
@@ -62,6 +63,7 @@ export const SettingsProvider = ({ children }) => {
             const userSettings = docSnapshot.data();
             setSettings(userSettings);
             setCurrentUserFullName(userSettings.fullName);
+            setCurrentUserFirstName(userSettings.fullName.split(" ")[0]);
             setCurrentUserEmail(userSettings.email);
             setUserDataFetched(true);
           } else {
@@ -212,6 +214,7 @@ export const SettingsProvider = ({ children }) => {
         setCurrentUserID,
         currentUserFullName,
         setCurrentUserFullName,
+        currentUserFirstName,
         currentUserEmail,
         setCurrentUserEmail,
         isAuthenticated,

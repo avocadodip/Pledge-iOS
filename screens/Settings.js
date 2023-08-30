@@ -85,7 +85,7 @@ const Settings = ({ navigation }) => {
 
   useEffect(() => {
     loadPaymentSheet();
-  }, [theme]);
+  }, []);
 
   const handleOpenDaysActiveModal = (action) => {
     if (action == true) {
@@ -120,6 +120,8 @@ const Settings = ({ navigation }) => {
       currentUserID
     );
 
+    // console.log(JSON.stringify(paymentMethods, null, 2));
+
     const cardCount = paymentMethods.data.length;
     if (cardCount === 0) {
       setIsPaymentInitialized(false);
@@ -150,7 +152,7 @@ const Settings = ({ navigation }) => {
 
   const loadPaymentSheet = async () => {
     try {
-      await initializePaymentSheet(stripeCustomerId, currentUserID, theme);
+      const { setupIntent } = await initializePaymentSheet(stripeCustomerId, currentUserID, theme);
     } catch (error) {
       // Handle the error if initialization fails
       console.error(error);
@@ -161,27 +163,20 @@ const Settings = ({ navigation }) => {
   // Opens payment sheet
   const openPaymentSheet = async () => {
     setTimeout(() => {}, 300);
-    const { error } = await presentPaymentSheet();
+    const { paymentOption, error } = await presentPaymentSheet();
 
-    // Result: Error
-    if (error) {
-      if (error.code !== "Canceled") {
-        Alert.alert(`Error code: ${error.code}`, error.message);
-      }
-
-      // User may have removed credit card and dismissed/canceled the sheet
-      checkIfPaymentInitialized();
-    }
-
-    // Result: Success - payment has been setup
-    else {
+    if (!error) {
+      // Check SetupIntent
       setLoading(true);
       checkIfPaymentInitialized();
       loadPaymentSheet();
-      // Alert.alert(
-      //   "Success",
-      //   "Your payment method is successfully set up for future payments!"
-      // );
+    } else {
+      if (error.code !== "Canceled") {
+        Alert.alert(`Error code: ${error.code}`, error.message);
+      } else if (error.code === "Canceled") {
+        // User may have removed credit card and dismissed/canceled the sheet
+        checkIfPaymentInitialized();
+      }
     }
   };
 

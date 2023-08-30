@@ -9,13 +9,9 @@ require("dotenv").config();
 const {onRequest} = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const moment = require("moment-timezone");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const {initializeApp} = require("firebase-admin/app");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const schedulerKey = process.env.SCHEDULER_KEY;
-
-console.log("keys");
-console.log(schedulerKey);
-console.log(process.env.STRIPE_SECRET_KEY);
 
 initializeApp();
 const auth = admin.auth();
@@ -113,6 +109,9 @@ function formatDateRange(start, end) {
  */
 
 exports.runDailyUpdate = onRequest(async (req, res) => {
+  console.log("test");
+  console.log(req.header.authorization);
+
   if (req.headers.authorization !== schedulerKey) {
     res.status(403).send("Unauthorized");
     return;
@@ -241,48 +240,57 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
 
           console.log(`Updated fines for user ${userid} on ${todayFormatted}`);
 
-          console.log(process.env.STRIPE_SECRET_KEY);
-          console.log(todayDOW);
-          console.log(updatedTotalWeeklyFine);
-          console.log(userDoc.stripeCustomerId);
-          console.log(isPaymentSetup);
-
           // 5. Charge user with weekly fine if it's Saturday
           if (
-            todayDOW === "Sunday" && // TEMP
+            todayDOW === "Monday" && // TEMP
           updatedTotalWeeklyFine !== 0 &&
           userDoc.stripeCustomerId &&
           isPaymentSetup
           ) {
-          // Convert the fine amount to cents (Stripe uses cents instead of dollars)
+            const customer = await stripe.customers.retrieve(userDoc.stripeCustomerId);
+            console.log("Customer:", customer);
+            // Convert the fine amount to cents (Stripe uses cents instead of dollars)
 
-            const amount = Math.round(updatedTotalWeeklyFine * 100); // Ensure it's an integer
-            if (amount <= 0) {
+            const formattedAmount = Math.round(updatedTotalWeeklyFine * 100); // Ensure it's an integer
+            if (formattedAmount <= 0) {
               throw new Error(`Invalid amount for user ${doc.id}`);
             }
+            //       description: `Weekly fines for ${pastWeek}`,
 
             // Create a Stripe charge
+            const paymentMethods = await stripe.paymentMethods.list({
+              customer: userDoc.stripeCustomerId,
+              type: "card",
+            });
+            const firstPaymentMethodId = paymentMethods.data[0].id;
 
-            const charge = await stripe.charges.create(
-                {
-                  amount,
-                  currency: userDoc.currency || "usd", // Default to "usd" if not set
-                  customer: userDoc.stripeCustomerId,
-                  description: `Weekly fines for ${pastWeek}`,
-                },
-                {
-                  idempotencyKey: `weekly_fines_${pastWeek}_${doc.id}`, // Ensure idempotency
-                },
-            );
+            try {
+              // const paymentIntent =
+              await stripe.paymentIntents.create({
+                amount: formattedAmount,
+                currency: userDoc.currency,
+                // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+                automatic_payment_methods: {enabled: true},
+                customer: userDoc.stripeCustomerId,
+                payment_method: firstPaymentMethodId,
+                return_url: "https://example.com/order/123/complete",
+                off_session: true,
+                confirm: true,
+              });
+            } catch (err) {
+              // Error code will be authentication_required if authentication is needed
+              console.log("Error code is: ", err.code);
+              const paymentIntentRetrieved = await stripe.paymentIntents.retrieve(err.raw.payment_intent.id);
+              console.log("PI retrieved: ", paymentIntentRetrieved.id);
+            }
 
             // If the charge was successful, update the fines document
-
-            if (charge.paid) {
-              await weekRef.update({isCharged: true});
-              console.log(`Charged user ${doc.id} for ${updatedTotalWeeklyFine}`);
-            } else {
-              console.log(`Failed to charge user ${doc.id}`);
-            }
+            // if (charge.paid) {
+            //   await weekRef.update({isCharged: true});
+            //   console.log(`Charged user ${doc.id} for ${updatedTotalWeeklyFine}`);
+            // } else {
+            //   console.log(`Failed to charge user ${doc.id}`);
+            // }
           }
         }),
     );

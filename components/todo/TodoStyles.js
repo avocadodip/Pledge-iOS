@@ -72,7 +72,7 @@ export const getTodoStyles = (theme) =>
       // borderWidth: 1,
       // borderColor: "black",
     },
-
+ 
     // Left styles (scroll down more for right styles)
     leftContainer: {
       backgroundColor: theme.faintPrimary,
@@ -225,33 +225,5 @@ export const getTodoStyles = (theme) =>
       fontWeight: "bold",
     },
 
-    infoText: {
-      color: theme.primary,
-      opacity: 1,
-      fontSize: 20,
-      fontWeight: "bold",
-      lineHeight: 20,
-      // borderColor: "black",
-      // borderWidth: 1,
-    },
 
-    todoButton: {
-      flexDirection: "row",
-      gap: 10,
-      backgroundColor: theme.faintPrimary,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      alignItems: "center",
-      borderRadius: 10,
-      // borderWidth: 1,
-      // borderColor: "black",
-    },
-
-    todoButtonText: {
-      color: theme.primary,
-      fontWeight: "bold",
-      fontSize: 20,
-      // borderWidth: 1,
-      // borderColor: "black",
-    },
   });

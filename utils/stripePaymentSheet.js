@@ -59,6 +59,8 @@ export const initializePaymentSheet = async (
 
   // Handle response from your server.
   if (!response.ok) {
+    const responseData = await response.json();
+    console.log("Response:", responseData);
     throw new Error("Failed to setup intent.");
   }
 
@@ -77,6 +79,8 @@ export const initializePaymentSheet = async (
     throw error; // Throw the error if initialization fails
   }
   // Promise resolves successfully if no error
+
+  return setupIntent;
 };
 
 // Fetch payment methods
@@ -104,3 +108,5 @@ export const fetchPaymentMethods = async (stripeCustomerId, currentUserID) => {
 
   return paymentMethods;
 };
+
+export const retrieveSetupIntent = async (clientSecret) => {};
