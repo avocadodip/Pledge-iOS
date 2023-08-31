@@ -18,9 +18,9 @@ export const initializePaymentSheet = async (
       shadow: 0,
     },
     colors: {
-      primary: "#fcfdff",
-      background: theme.accent,
-      componentBackground: "#e86464",
+      primary: theme.paymentSheetPrimary,
+      background: theme.paymentSheetBackground,
+      componentBackground: theme.paymentSheetComponentBackground,
       componentBorder: "#f3f8fa",
       componentDivider: Color.white,
       primaryText: Color.white,
@@ -32,7 +32,7 @@ export const initializePaymentSheet = async (
     },
     primaryButton: {
       colors: {
-        background: "#e86464",
+        background: theme.paymentSheetSetupButton,
         text: Color.white,
       },
       shapes: {
@@ -99,7 +99,6 @@ export const fetchPaymentMethods = async (stripeCustomerId, currentUserID) => {
     }),
   });
 
-  // Handle response from your server.
   if (!response.ok) {
     throw new Error("Failed to fetch payment methods.");
   }
@@ -109,4 +108,3 @@ export const fetchPaymentMethods = async (stripeCustomerId, currentUserID) => {
   return paymentMethods;
 };
 
-export const retrieveSetupIntent = async (clientSecret) => {};

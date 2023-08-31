@@ -16,6 +16,9 @@ const schedulerKey = process.env.SCHEDULER_KEY;
 initializeApp();
 const auth = admin.auth();
 
+// (test secret)
+const endpointSecret = "whsec_vS3nH9E0sb2U2KWQDLFaf6Sz91ZLW2vG";
+
 /**
  * Calculates total fines for a user based on their tasks.
  *
@@ -109,7 +112,6 @@ function formatDateRange(start, end) {
  */
 
 exports.runDailyUpdate = onRequest(async (req, res) => {
-  console.log("test");
   console.log(req.header.authorization);
 
   if (req.headers.authorization !== schedulerKey) {
@@ -146,6 +148,8 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
             vacationModeOn,
             missedTaskFine,
             isPaymentSetup,
+            stripeCustomerId,
+            paymentMethodId,
           } = userDoc;
           const userid = doc.id;
           const userRef = db.collection("users").doc(userid);
@@ -242,12 +246,16 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
 
           // 5. Charge user with weekly fine if it's Saturday
           if (
-            todayDOW === "Monday" && // TEMP
-          updatedTotalWeeklyFine !== 0 &&
-          userDoc.stripeCustomerId &&
-          isPaymentSetup
+            todayDOW === "Thursday" && // TEMP
+            stripeCustomerId &&
+            paymentMethodId &&
+            isPaymentSetup &&
+            updatedTotalWeeklyFine !== 0 &&
+            !isCharged
           ) {
-            const customer = await stripe.customers.retrieve(userDoc.stripeCustomerId);
+            const customer = await stripe.customers.retrieve(
+                userDoc.stripeCustomerId,
+            );
             console.log("Customer:", customer);
             // Convert the fine amount to cents (Stripe uses cents instead of dollars)
 
@@ -258,12 +266,6 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
             //       description: `Weekly fines for ${pastWeek}`,
 
             // Create a Stripe charge
-            const paymentMethods = await stripe.paymentMethods.list({
-              customer: userDoc.stripeCustomerId,
-              type: "card",
-            });
-            const firstPaymentMethodId = paymentMethods.data[0].id;
-
             try {
               // const paymentIntent =
               await stripe.paymentIntents.create({
@@ -272,25 +274,29 @@ exports.runDailyUpdate = onRequest(async (req, res) => {
                 // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
                 automatic_payment_methods: {enabled: true},
                 customer: userDoc.stripeCustomerId,
-                payment_method: firstPaymentMethodId,
+                payment_method: paymentMethodId,
                 return_url: "https://example.com/order/123/complete",
                 off_session: true,
                 confirm: true,
               });
+
+              await weekRef.update({isCharged: true});
             } catch (err) {
-              // Error code will be authentication_required if authentication is needed
+            // Error code will be authentication_required if authentication is needed
               console.log("Error code is: ", err.code);
-              const paymentIntentRetrieved = await stripe.paymentIntents.retrieve(err.raw.payment_intent.id);
+              const paymentIntentRetrieved = await stripe.paymentIntents.retrieve(
+                  err.raw.payment_intent.id,
+              );
               console.log("PI retrieved: ", paymentIntentRetrieved.id);
             }
 
-            // If the charge was successful, update the fines document
-            // if (charge.paid) {
-            //   await weekRef.update({isCharged: true});
-            //   console.log(`Charged user ${doc.id} for ${updatedTotalWeeklyFine}`);
-            // } else {
-            //   console.log(`Failed to charge user ${doc.id}`);
-            // }
+          // If the charge was successful, update the fines document
+          // if (charge.paid) {
+          //   await weekRef.update({isCharged: true});
+          //   console.log(`Charged user ${doc.id} for ${updatedTotalWeeklyFine}`);
+          // } else {
+          //   console.log(`Failed to charge user ${doc.id}`);
+          // }
           }
         }),
     );
@@ -434,5 +440,73 @@ exports.listPaymentMethods = onRequest(async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Failed to list payment methods: " + error.message);
+  }
+});
+
+exports.stripeWebhook = onRequest(async (req, res) => {
+  if (req.method === "POST") {
+    const sig = req.headers["stripe-signature"];
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
+    } catch (err) {
+      res.status(400).send(`Webhook Error: ${err.message}`);
+      return;
+    }
+
+    // Handle the event
+    switch (event.type) {
+      case "setup_intent.succeeded": {
+        const setupIntentSucceeded = event.data.object;
+        const paymentMethodId = setupIntentSucceeded.payment_method;
+        const stripeCustomerId = setupIntentSucceeded.customer;
+
+        const db = admin.firestore();
+
+        // Query to find the Firestore document with this Stripe customer ID
+        const usersRef = db.collection("users");
+        const snapshot = await usersRef
+            .where("stripeCustomerId", "==", stripeCustomerId)
+            .get();
+
+        if (snapshot.empty) {
+          console.log(
+              `No matching user found for Stripe customer ID: ${stripeCustomerId}`,
+          );
+          return;
+        }
+
+        // Assuming there's only one matching doc, or you'll otherwise handle multiple
+        const userDoc = snapshot.docs[0];
+        const userId = userDoc.id;
+        const userRef = db.collection("users").doc(userId);
+
+        try {
+          // Update Firestore user document with the new payment method ID
+          await userRef.update({
+            paymentMethodId: paymentMethodId,
+            isPaymentSetup: true,
+          });
+          console.log(
+              `Updated paymentMethodId and isPaymentSetup for user: ${userId}`,
+          );
+        } catch (err) {
+          console.error(`Failed to update user: ${err}`);
+        }
+
+        break;
+      }
+      // ... handle other event types
+      default: {
+        console.log(`Unhandled event type ${event.type}`);
+      }
+    }
+
+    // Return a 200 response to acknowledge receipt of the event
+    res.send();
+  } else {
+    // Handle other HTTP methods
+    res.status(405).end();
   }
 });

@@ -10,30 +10,29 @@ export const getClassicColor = (color, styleName) => {
   const colorMap = {
     red: {
       ContentLoaderBackgroundColor: "#e16564",
-      ContentLoaderForegroundColor: "#f27b7b"
-    },  
+      ContentLoaderForegroundColor: "#f27b7b",
+    },
     purple: {
       ContentLoaderBackgroundColor: "#6967e4",
-      ContentLoaderForegroundColor: "#9c9af9"
+      ContentLoaderForegroundColor: "#9c9af9",
     },
     green: {
       ContentLoaderBackgroundColor: "#45c05f",
-      ContentLoaderForegroundColor: "#6ed785"
+      ContentLoaderForegroundColor: "#6ed785",
     },
     Light: {
       ContentLoaderBackgroundColor: "#cccccc",
-      ContentLoaderForegroundColor: "#a2a2a2"
+      ContentLoaderForegroundColor: "#a2a2a2",
     },
     Dark: {
       ContentLoaderBackgroundColor: "#212121",
       ContentLoaderForegroundColor: "#363636",
     },
   };
- 
+
   return colorMap[color]?.[styleName];
 };
 
-  
 export default {
   Classic: {
     accent: "#E05E56",
@@ -66,6 +65,13 @@ export default {
     // GetStartedModal step indicator
     stepStrokeFinishedColor: "#f56565",
     stepIndicatorUnFinishedColor: "#f97676",
+
+    // Payment sheet
+    paymentSheetComponentBackground: "#E05E56",
+    paymentSheetComponentBackground: "#FFFFFF",
+    paymentSheetSetupButton: "#4b4b4b",
+    paymentSheetPrimary: "#fcfdff",
+
   },
   Dark: {
     accent: Color.black,
@@ -102,7 +108,14 @@ export default {
     stepStrokeFinishedColor: "#7c7c7c",
     stepIndicatorUnFinishedColor: "#acacac",
 
-    vacationToggleDisabled: "#6b6b6b"
+    vacationToggleDisabled: "#6b6b6b",
+
+    // Payment sheet
+    paymentSheetBackground: Color.black,
+    paymentSheetComponentBackground: "#5c5c5c",
+    paymentSheetSetupButton: "#474747",
+    paymentSheetPrimary: "#fcfdff",
+
   },
   Light: {
     accent: Color.white,
@@ -137,5 +150,13 @@ export default {
     // GetStartedModal step indicator
     stepStrokeUnFinishedColor: "#f56565",
     stepIndicatorUnFinishedColor: "#f97676",
+
+    // Payment sheet
+    paymentSheetBackground: "#FFFFFF",
+    paymentSheetComponentBackground: "#999999",
+    paymentSheetSetupButton: "#4b4b4b",
+    paymentSheetPrimary: "#616161",
+
+
   },
 };

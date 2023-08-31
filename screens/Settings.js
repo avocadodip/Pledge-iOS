@@ -43,7 +43,6 @@ import MoneyIcon from "../assets/icons/money-icon.svg";
 import LogoutIcon from "../assets/icons/logout.svg";
 import NotificationBellIcon from "../assets/icons/notification-bell-icon.svg";
 import { daysOfWeek } from "../utils/currentDate";
-import { doc, updateDoc } from "firebase/firestore";
 import DeleteAccountButton from "../components/settings/DeleteAccountButton";
 import TaskFineIcon from "../assets/icons/missed-task-fine-icon.svg";
 import { useDayStatus } from "../hooks/DayStatusContext";
@@ -64,15 +63,14 @@ const Settings = ({ navigation }) => {
       timezone,
       stripeCustomerId,
       isPaymentSetup,
-      notificationsEnabled,
+      // notificationsEnabled,
     },
     currentUserID,
   } = useSettings();
   const [loading, setLoading] = useState(false);
   const [isPaymentInitialized, setIsPaymentInitialized] = useState(false);
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
-  const [notifsModalVisible, setNotifsModalVisible] = useState(false);
-  const prevCardCountRef = useRef(0);
+  // const [notifsModalVisible, setNotifsModalVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -85,7 +83,7 @@ const Settings = ({ navigation }) => {
 
   useEffect(() => {
     loadPaymentSheet();
-  }, []);
+  }, [currentThemeName, currentClassicColor]);
 
   const handleOpenDaysActiveModal = (action) => {
     if (action == true) {
@@ -96,63 +94,21 @@ const Settings = ({ navigation }) => {
   const handleLogout = async () => {
     console.log(auth);
     try {
-      console.log("1");
       await auth.signOut();
     } catch (error) {
-      console.log("2");
-
       console.error("Sign out error", error);
     }
   };
 
-  const handleOpenNotifsModal = (action) => {
-    if (action == true) {
-      setNotifsModalVisible(true);
-    } else setNotifsModalVisible(false);
-  };
-
-  // Payment
-  const checkIfPaymentInitialized = async () => {
-    const userRef = doc(db, "users", currentUserID);
-
-    const paymentMethods = await fetchPaymentMethods(
-      stripeCustomerId,
-      currentUserID
-    );
-
-    // console.log(JSON.stringify(paymentMethods, null, 2));
-
-    const cardCount = paymentMethods.data.length;
-    if (cardCount === 0) {
-      setIsPaymentInitialized(false);
-      await updateDoc(userRef, {
-        isPaymentSetup: false,
-      });
-    } else if (cardCount > 0) {
-      setIsPaymentInitialized(true);
-      if (isPaymentSetup == false) {
-        await updateDoc(userRef, {
-          isPaymentSetup: true,
-        });
-      }
-    }
-
-    // Check if card count has decreased
-    if (prevCardCountRef.current > cardCount) {
-      setLoading(true);
-
-      setTimeout(() => {
-        setLoading(false);
-      }, 300);
-    }
-
-    // Update the previous card count after the check
-    prevCardCountRef.current = cardCount;
-  };
+  // const handleOpenNotifsModal = (action) => {
+  //   if (action == true) {
+  //     setNotifsModalVisible(true);
+  //   } else setNotifsModalVisible(false);
+  // };
 
   const loadPaymentSheet = async () => {
     try {
-      const { setupIntent } = await initializePaymentSheet(stripeCustomerId, currentUserID, theme);
+      await initializePaymentSheet(stripeCustomerId, currentUserID, theme);
     } catch (error) {
       // Handle the error if initialization fails
       console.error(error);
@@ -163,19 +119,16 @@ const Settings = ({ navigation }) => {
   // Opens payment sheet
   const openPaymentSheet = async () => {
     setTimeout(() => {}, 300);
-    const { paymentOption, error } = await presentPaymentSheet();
-
+    const { error } = await presentPaymentSheet();
+    
     if (!error) {
-      // Check SetupIntent
       setLoading(true);
-      checkIfPaymentInitialized();
-      loadPaymentSheet();
+      loadPaymentSheet(); 
     } else {
       if (error.code !== "Canceled") {
         Alert.alert(`Error code: ${error.code}`, error.message);
       } else if (error.code === "Canceled") {
         // User may have removed credit card and dismissed/canceled the sheet
-        checkIfPaymentInitialized();
       }
     }
   };
@@ -183,7 +136,6 @@ const Settings = ({ navigation }) => {
   useEffect(() => {
     setLoading(true);
     loadPaymentSheet();
-    checkIfPaymentInitialized();
   }, []);
 
   // Set state when isPaymentSetup is fetched

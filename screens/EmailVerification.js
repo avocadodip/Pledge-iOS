@@ -114,6 +114,7 @@ const EmailVerification = ({ route, navigation }) => {
         isPaymentSetup: false,
         hasBeenChargedBefore: false,
         isOnboarded: false,
+        paymentMethodId: null,
       });
     } catch (error) {
       console.error(error);
