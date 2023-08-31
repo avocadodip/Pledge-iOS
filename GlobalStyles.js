@@ -36,6 +36,7 @@ export const Color = {
   white70: "rgba(243, 243, 243, 0.7)", //maybe change back
   white50: "rgba(243, 243, 243, 0.5)",
   white20: "rgba(243, 243, 243, 0.2)",
+  white18: "rgba(243, 243, 243, 0.18)",
   white12: "rgba(243, 243, 243, 0.12)",
 
   // Dark

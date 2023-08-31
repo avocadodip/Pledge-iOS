@@ -24,6 +24,16 @@ export const variableFontSize = (text, isMore) => {
 
 export const getTodoStyles = (theme) =>
   StyleSheet.create({
+    leftButtonContainer: {
+      backgroundColor: theme.faintishPrimary,
+      height: "100%",
+    },
+    rightButtonContainer: {
+      backgroundColor: theme.faintishPrimary,
+      height: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+    },
     numberContainer: {
       flexDirection: "column",
       width: "100%",
@@ -32,7 +42,7 @@ export const getTodoStyles = (theme) =>
       alignItems: "center",
       gap: 20,
       borderRadius: BORDER_RADIUS,
-      backgroundColor: theme.lightPrimary,
+      backgroundColor: theme.faintishPrimary,
       padding: 15,
       overflow: "hidden",
     },
@@ -111,7 +121,7 @@ export const getTodoStyles = (theme) =>
       alignItems: "baseline",
     },
     moreText: {
-      color: "#ffffff83",
+      color: theme.lightPrimary,
       fontSize: 20,
       fontWeight: "700",
     },
@@ -144,7 +154,7 @@ export const getTodoStyles = (theme) =>
     rightContainer: {
       borderTopRightRadius: 16,
       borderBottomRightRadius: 16,
-      backgroundColor: theme.lightPrimary,
+      backgroundColor: theme.faintishPrimary,
       flex: 2,
       height: "100%",
       justifyContent: "center",

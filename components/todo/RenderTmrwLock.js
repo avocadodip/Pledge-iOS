@@ -134,7 +134,7 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
         }}
       >
         <View style={timeStatus === 2 ? styles.disabledOpacity : null}>
-          <LockIcon color={"white"} />
+          <LockIcon color={theme.primary} />
         </View>
       </View>
     );
@@ -147,7 +147,7 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
           handleLockTodo(todoNumber);
         }}
       >
-        <UnlockIcon />
+        <UnlockIcon color={theme.primary} />
       </TouchableOpacity>
     );
   }

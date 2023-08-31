@@ -107,7 +107,6 @@ const TodayTodo = ({ todoData }) => {
             onPress={() => {
               openBottomSheet(todoData, "today");
             }}
-            // style={animatedStyles.leftButtonContainer}
             style={[styles.leftContainer, styles.disabledOpacity]}
           >
             <View
@@ -220,9 +219,9 @@ const TodayTodo = ({ todoData }) => {
             onPress={() => {
               handleCheckTodo(todoNumber, isComplete);
             }}
-            style={animatedStyles.rightButtonContainer}
+            style={styles.rightButtonContainer}
           >
-            <CheckIcon />
+            <CheckIcon color={theme.primary}/>
           </TouchableRipple>
         </Animated.View>
       </View>
@@ -308,7 +307,6 @@ const animatedStyles = StyleSheet.create({
     height: "100%",
   },
   rightButtonContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
     height: "100%",
     alignItems: "center",
     justifyContent: "center",

@@ -43,6 +43,7 @@ export default {
     overlayPrimary: Color.white70,
     halfPrimary: Color.white50,
     lightPrimary: Color.white20,
+    faintishPrimary: Color.white18,
     faintPrimary: Color.white12,
     logo: {
       tintColor: "rgba(255, 255, 255, 1)",
@@ -84,6 +85,7 @@ export default {
     overlayPrimary: Color.white70,
     halfPrimary: Color.white50,
     lightPrimary: Color.white20,
+    faintishPrimary: Color.white18,
     faintPrimary: Color.white12,
 
     logo: {
@@ -129,6 +131,7 @@ export default {
     overlayPrimary: Color.black55,
     halfPrimary: Color.black35,
     lightPrimary: Color.black16,
+    faintishPrimary: Color.black8,
     faintPrimary: Color.black4,
 
     logo: {
