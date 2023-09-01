@@ -151,7 +151,7 @@ const Transactions = ({ navigation }) => {
               <View style={styles.textBox}>
                 <Text style={styles.infoText}>
                   Weekly charges will appear here.{"\n\n"}
-                  When a credit card is set up, charges will occur every
+                  When a credit card is set up, a charge will occur on
                   Saturday at 11:45pm.
                 </Text>
               </View>
