@@ -36,12 +36,14 @@ export const getClassicColor = (color, styleName) => {
 export default {
   Classic: {
     accent: "#E05E56",
+    accent2: "#80E05E56",
     statusBar: "light",
     scrollIndicator: "white",
     primary: Color.white,
     overlayPrimary: Color.white70,
     halfPrimary: Color.white50,
     lightPrimary: Color.white20,
+    faintishPrimary: Color.white18,
     faintPrimary: Color.white12,
     logo: {
       tintColor: "rgba(255, 255, 255, 1)",
@@ -75,6 +77,7 @@ export default {
   },
   Dark: {
     accent: Color.black,
+    accent2: "#80121212",
     statusBar: "light",
     scrollIndicator: "white",
 
@@ -82,6 +85,7 @@ export default {
     overlayPrimary: Color.white70,
     halfPrimary: Color.white50,
     lightPrimary: Color.white20,
+    faintishPrimary: Color.white18,
     faintPrimary: Color.white12,
 
     logo: {
@@ -119,6 +123,7 @@ export default {
   },
   Light: {
     accent: Color.white,
+    accent2: "#80F3F3F3",
     statusBar: "dark",
     scrollIndicator: "black",
 
@@ -126,6 +131,7 @@ export default {
     overlayPrimary: Color.black55,
     halfPrimary: Color.black35,
     lightPrimary: Color.black16,
+    faintishPrimary: Color.black8,
     faintPrimary: Color.black4,
 
     logo: {

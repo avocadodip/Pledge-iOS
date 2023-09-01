@@ -3,6 +3,7 @@ import { auth } from "../database/firebase";
 import { initPaymentSheet } from "@stripe/stripe-react-native";
 import { API_URL, MERCHANT_DISPLAY_NAME } from "@env";
 import { Color } from "../GlobalStyles";
+import { useThemes } from "../hooks/ThemesContext";
 
 // Initiailize payment sheet
 export const initializePaymentSheet = async (
@@ -18,17 +19,17 @@ export const initializePaymentSheet = async (
       shadow: 0,
     },
     colors: {
-      primary: theme.paymentSheetPrimary,
-      background: theme.paymentSheetBackground,
-      componentBackground: theme.paymentSheetComponentBackground,
+      primary: theme.primary,
+      background: theme.accent,
+      componentBackground: theme.primary,
       componentBorder: "#f3f8fa",
-      componentDivider: Color.white,
-      primaryText: Color.white,
-      secondaryText: Color.white,
-      componentText: Color.white,
-      placeholderText: Color.white,
-      icon: Color.white,
-      error: "#e1e1e1",
+      componentDivider: theme.accent,
+      primaryText: theme.primary,
+      secondaryText: theme.primary,
+      componentText: theme.accent,
+      placeholderText: theme.accent2,
+      icon: theme.primary,
+      error: "#474747",
     },
     primaryButton: {
       colors: {
