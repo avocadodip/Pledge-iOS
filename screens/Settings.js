@@ -63,6 +63,7 @@ const Settings = ({ navigation }) => {
       timezone,
       stripeCustomerId,
       isPaymentSetup,
+      last4Digits,
       // notificationsEnabled,
     },
     currentUserID,
@@ -110,7 +111,6 @@ const Settings = ({ navigation }) => {
     try {
       await initializePaymentSheet(stripeCustomerId, currentUserID, theme);
     } catch (error) {
-      // Handle the error if initialization fails
       console.error(error);
     }
     setLoading(false);
@@ -127,9 +127,7 @@ const Settings = ({ navigation }) => {
     } else {
       if (error.code !== "Canceled") {
         Alert.alert(`Error code: ${error.code}`, error.message);
-      } else if (error.code === "Canceled") {
-        // User may have removed credit card and dismissed/canceled the sheet
-      }
+      } 
     }
   };
 
@@ -218,7 +216,7 @@ const Settings = ({ navigation }) => {
                   </View>
                   <View style={styles.chevronContainer}>
                     {isPaymentInitialized ? (
-                      <Text style={styles.rightSideText}>Activated</Text>
+                      <Text style={styles.rightSideText}>{last4Digits}</Text>
                     ) : (
                       <PlusIcon width={27} height={27} color={theme.textHigh} />
                     )}
