@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "fervo-mobile",
-    "slug": "fervo",
+    "name": "Pledge",
+    "slug": "pledge",
     "plugins": [
       "@react-native-google-signin/google-signin"
     ],
@@ -9,7 +9,7 @@
     "orientation": "portrait",
     "icon": "",
     "splash": {
-      "image": "../assets/icons/FervoWhite.png",
+      "image": "",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,9 +18,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cewidiupleek.pledge"
     },
     "android": {
+      "package": "com.cewidiupleek.pledge"
     },
     "packagerOpts": {
       "config": "metro.config.js",
