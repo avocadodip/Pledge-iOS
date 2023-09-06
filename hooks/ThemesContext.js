@@ -10,7 +10,7 @@ import { Color } from "../GlobalStyles";
 import { useDayStatus } from "./DayStatusContext";
 import { useSettings } from "./SettingsContext";
 import { useTmrwTodos } from "./TmrwTodosContext";
- 
+
 export const ThemeContext = createContext();
 
 export const ThemesProvider = ({ children }) => {
@@ -27,7 +27,7 @@ export const ThemesProvider = ({ children }) => {
   useEffect(() => {
     fetchTheme();
   }, []);
- 
+
   // Update appearance when theme is changed or user auth changes
   useEffect(() => {
     updateBackgroundGradient();

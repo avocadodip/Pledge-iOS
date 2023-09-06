@@ -35,7 +35,7 @@ export const getClassicColor = (color, styleName) => {
 
 export default {
   Classic: {
-    accent: "#E05E56",
+    accent: "#E05E56", 
     accent2: "#80E05E56",
     statusBar: "light",
     scrollIndicator: "white",
