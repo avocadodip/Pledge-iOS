@@ -1,5 +1,5 @@
 {
-  "name": "fervo-mobile",
+  "name": "pledge",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start --dev-client",
