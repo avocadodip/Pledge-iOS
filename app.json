@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Pledge",
+    "name": "Pledge - Bet On Yourself",
     "slug": "pledge",
     "plugins": [
       "@react-native-google-signin/google-signin"
@@ -36,6 +36,11 @@
         "svg"
       ]
     },
-    "owner": "cewidiupleek"
+    "owner": "cewidiupleek",
+    "extra": {
+      "eas": {
+        "projectId": "4d655c1e-0a69-4e8d-9502-2cd45c722f4d"
+      }
+    }
   }
 }

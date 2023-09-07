@@ -1,4 +1,4 @@
-rootProject.name = 'Pledge'
+rootProject.name = 'Pledge - Bet On Yourself'
 
 apply from: new File(["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(), "../scripts/autolinking.gradle");
 useExpoModules()
