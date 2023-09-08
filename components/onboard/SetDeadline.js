@@ -52,7 +52,7 @@ const SetDeadline = ({ timePickerText, setTimePickerText }) => {
             in next day's tasks.
           </Text>
           <Text style={[styles.explainerText, {marginTop: 15}]}>
-            After this time, the app will total up incomplete pledges and fines for unentered tasks. (Charges occur on Saturdays at 11:45 PM)
+            After this time, the app will total up incomplete pledges for unentered tasks. (Total weekly charges occur on Saturdays at 11:45 PM).
           </Text>
         </View>
       </View>

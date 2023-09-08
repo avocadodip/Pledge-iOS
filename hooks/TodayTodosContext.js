@@ -85,6 +85,7 @@ export const TodayTodosProvider = ({ children }) => {
         isTodoArrayEmpty,
         onboardStartTmrw,
         getAndSetTodayTodos,
+        setOnboardStartTmrw,
       }}
     >
       {children}

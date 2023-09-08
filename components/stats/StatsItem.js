@@ -6,22 +6,30 @@ import ClockIcon from "../../assets/icons/clock.svg";
 import Collapsible from "react-native-collapsible";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
+import { useDayChange } from "../../hooks/useDayChange";
 
 const StatsItem = ({ dayData, index }) => {
   const { theme } = useThemes();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { dateName, todos, isActive, isVacation } = dayData;
+  const { todayDate, tmrwDate } = useDayChange();
+  const { dateName, todos, isActive, isVacation, date } = dayData;
 
   // Upcoming day
   let upcomingDay = false;
   if (index == 0) {
     upcomingDay = true;
   }
-
+  
   // toggle collapse
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
+
+  const isPastBet = date !== todayDate && date !== tmrwDate;
+
+  if (!isPastBet) {
+    return null;
+  }
 
   if (dayData && todos && todos.some((todo) => todo !== null)) {
     return (

@@ -109,16 +109,16 @@ export const getTmrwDate = () => {
 };
 
 // 3 - returns "20221231" if today is January 1, 2023
-// export const getYesterdayDate = () => {
-//   const todayDate = new Date();
-//   const yesterDate = new Date();
-//   yesterDate.setDate(todayDate.getDate() - 1);
-//   const dateTime =
-//     yesterDate.getFullYear() +
-//     ("0" + (yesterDate.getMonth() + 1)).slice(-2) +
-//     ("0" + yesterDate.getDate()).slice(-2);
-//   return dateTime;
-// };
+export const getYesterdayDate = () => {
+  const todayDate = new Date();
+  const yesterDate = new Date();
+  yesterDate.setDate(todayDate.getDate() - 1);
+  const dateTime =
+    yesterDate.getFullYear() +
+    ("0" + (yesterDate.getMonth() + 1)).slice(-2) +
+    ("0" + yesterDate.getDate()).slice(-2);
+  return dateTime;
+};
 
 // 5 - today.svelte
 // given "10:00"(pm), returns timestamp of next @ 10pm (could be today or tmrw)

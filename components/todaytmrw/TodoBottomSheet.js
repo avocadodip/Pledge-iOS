@@ -5,19 +5,27 @@ import {
   TextInput,
   StyleSheet,
   KeyboardAvoidingView,
+  TouchableHighlight,
+  TouchableOpacity,
 } from "react-native";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
 import PledgeDollarIcon from "../../assets/icons/pledge-dollar-icon.svg";
 import FolderIcon from "../../assets/icons/amount-folder-icon.svg";
 import DescriptLinesIcon from "../../assets/icons/descript-lines-icon.svg";
+import RightArrowIcon from "../../assets/icons/arrow-small-right.svg";
 import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
+import { useSettings } from "../../hooks/SettingsContext";
+import { useNavigation } from "@react-navigation/native";
 
 export default function TodoBottomSheet() {
   const { theme, backgroundGradient } = useThemes();
+  const {
+    settings: { isPaymentSetup },
+  } = useSettings();
   const { updateTodo } = useTmrwTodos();
   const {
     isBottomSheetOpen,
@@ -30,6 +38,7 @@ export default function TodoBottomSheet() {
   const [todo, setTodo] = useState(selectedTodo || {});
   const todoRef = useRef(todo);
   const styles = getStyles(theme);
+  const navigation = useNavigation();
 
   // Set initial todo object
   useEffect(() => {
@@ -77,6 +86,17 @@ export default function TodoBottomSheet() {
     [isBottomSheetEditable]
   );
 
+  const handleNavigateToAddPayment = () => {
+    updateTodo(todoRef.current);
+
+    bottomSheetRef.current.close();
+    setIsBottomSheetOpen(false);
+
+    setTimeout(() => {
+      navigation.navigate("Settings");
+    }, 500);
+  };
+
   return isBottomSheetOpen ? (
     <BottomSheet
       ref={bottomSheetRef}
@@ -123,18 +143,38 @@ export default function TodoBottomSheet() {
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
               <PledgeDollarIcon color={theme.textHigh} />
-              <TextInput
-                style={styles.textInput}
-                placeholder="Add pledge"
-                value={todo.amount}
-                onChangeText={(text) => handleInputChange("amount", text)}
-                keyboardType="numeric"
-                placeholderTextColor={theme.textDisabled}
-                textStyle={styles.text}
-                autoCorrect={false}
-                autoCapitalize="none"
-                maxLength={2}
-              />
+              {isPaymentSetup ? (
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Add pledge"
+                  value={todo.amount}
+                  onChangeText={(text) => handleInputChange("amount", text)}
+                  keyboardType="numeric"
+                  placeholderTextColor={theme.textDisabled}
+                  textStyle={styles.text}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  maxLength={2}
+                />
+              ) : (
+                <TouchableOpacity onPress={handleNavigateToAddPayment}>
+                  <View
+                    style={[
+                      styles.addPaymentButton,
+                      { flexDirection: "row", alignItems: "center", gap: 4 },
+                    ]}
+                  >
+                    <Text style={styles.addPaymentButtonText}>
+                      To make a pledge, add payment method
+                    </Text>
+                    <RightArrowIcon
+                      width={17}
+                      height={17}
+                      color={theme.accent}
+                    />
+                  </View>
+                </TouchableOpacity>
+              )}
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
@@ -252,6 +292,7 @@ const getStyles = (theme) =>
       flexDirection: "row",
       alignItems: "center",
       gap: 23,
+      height: 50,
     },
     descriptionContainer: {
       paddingTop: 10,
@@ -283,5 +324,16 @@ const getStyles = (theme) =>
       width: "80%",
       paddingVertical: 15,
       // paddingHorizontal: 10,
+    },
+
+    addPaymentButton: {
+      paddingVertical: 6,
+      paddingHorizontal: 9,
+      backgroundColor: "#ffffff",
+      borderRadius: 6,
+    },
+    addPaymentButtonText: {
+      color: theme.accent,
+      fontWeight: 500,
     },
   });

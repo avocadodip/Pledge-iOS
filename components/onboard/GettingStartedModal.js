@@ -44,9 +44,9 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const { currentUserID } = useSettings();
   const [startDay, setStartDay] = useState("");
   const [todos, setTodos] = useState([
-    { todoNumber: 1, title: "", amount: "", isComplete: false, isLocked: true },
-    { todoNumber: 2, title: "", amount: "", isComplete: false, isLocked: true },
-    { todoNumber: 3, title: "", amount: "", isComplete: false, isLocked: true },
+    { todoNumber: 1, title: "", amount: "", isComplete: false, isLocked: true, description: "" },
+    { todoNumber: 2, title: "", amount: "", isComplete: false, isLocked: true, description: "" },
+    { todoNumber: 3, title: "", amount: "", isComplete: false, isLocked: true, description: "" },
   ]);
   const { getAndSetTodayTodos } = useTodayTodos();
   const { getAndSetTmrwTodos } = useTmrwTodos();
@@ -166,7 +166,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       const todayRef = doc(db, "users", currentUserID, "todos", todayDate);
       const tmrwRef = doc(db, "users", currentUserID, "todos", tmrwDate);
 
-      const createTodoObject = (date, todos, isActive) => {
+      const createTodoObject = (date, todos, isActive, onboardStartTmrw) => {
         return {
           date,
           dateName: `${
@@ -191,6 +191,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
           closesAt: dayEnd,
           isActive,
           isVacation: false,
+          onboardStartTmrw: !!onboardStartTmrw,
         };
       };
 
@@ -199,7 +200,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       const todayTodo =
         startDay === "Today"
           ? createTodoObject(todayDate, todos, true)
-          : createTodoObject(todayDate, createEmptyTodos(), false);
+          : createTodoObject(todayDate, createEmptyTodos(), false, true);
 
       const tmrwTodo =
         startDay === "Today"
@@ -208,7 +209,6 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
 
       await setDoc(todayRef, todayTodo);
       await setDoc(tmrwRef, tmrwTodo);
-
       
       updateUserIsOnboarded(currentUserID); // Update firebase isOnboarded field to true
       getAndSetTodayTodos(); // re-fetch today todos to update Today
@@ -276,7 +276,8 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       );
     } else {
       // Disable lock button if any fields unentered
-      nextButtonDisabled = todos.some((todo) => !todo.title || !todo.amount);
+      nextButtonDisabled = todos.some((todo) => !todo.title);
+      // nextButtonDisabled = todos.some((todo) => !todo.title || !todo.amount);
       PageContent = (
         <TaskInput
           startDay={startDay}

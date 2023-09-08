@@ -21,7 +21,6 @@ const Today = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { todayTodos } = useTodayTodos();
-  const { dayChanged } = useDayChange();
   const {
     settings: { isOnboarded, timezone, daysActive },
   } = useSettings();
@@ -31,8 +30,9 @@ const Today = () => {
     isTodayVacation,
     isTodoArrayEmpty,
     onboardStartTmrw,
-  } = useTodayTodos(dayChanged);
+  } = useTodayTodos();
   const { todayHeaderSubtitleMessage, timeStatus } = useDayStatus();
+
 
   const [modalVisible, setModalVisible] = useState(false);
 

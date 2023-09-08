@@ -43,7 +43,7 @@ const TaskInput = ({ startDay, endTime, todos, setTodos }) => {
             onChangeText={(text) => handleTodoChange(text, index, "title")}
             value={todos[index].title}
           />
-          <TextInput
+          {/* <TextInput
             autoCorrect={false}
             style={styles.amountInput} // Create a new style for this
             placeholder="Amount"
@@ -52,21 +52,23 @@ const TaskInput = ({ startDay, endTime, todos, setTodos }) => {
             onChangeText={(text) => handleTodoChange(text, index, "amount")}
             value={todos[index].amount}
             color={"white"}
-            
-          />
+          /> */}
         </View>
       </View>
     ));
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.headerTitleContainer}>
         <Text style={styles.headerTitle}>{startDay}</Text>
         <Text style={styles.headerDayOfWeek}>{DOWAbbrev}</Text>
       </View>
       <Text style={styles.headerSubtitle}>Due @ {endTime}</Text>
-      <View style={styles.todoContainer}>{renderTodos()}</View>
+      <View style={styles.todosContainer}>{renderTodos()}</View>
+      <Text style={styles.explainerText}>
+        Making pledges will be available after you successfully lock in this first day of tasks.
+      </Text>
     </View>
   );
 };
@@ -75,10 +77,13 @@ export default TaskInput;
 
 const getStyles = (theme) =>
   StyleSheet.create({
-    todoContainer: {
-      marginTop: 40,
+    container: {
+      height: "100%",
+    },
+    todosContainer: {
       gap: 22,
       width: "100%",
+      
     },
     headerTitleContainer: {
       width: "100%",
@@ -102,6 +107,7 @@ const getStyles = (theme) =>
       fontSize: 25,
       fontWeight: "bold",
       marginTop: 5,
+      marginBottom: 20,
     },
 
     // todo styles
@@ -122,5 +128,12 @@ const getStyles = (theme) =>
       color: theme.textHigh,
       fontSize: 24,
       // fontWeight:" 600",
+    },
+
+    explainerText: {
+      marginTop: 40,
+      fontSize: 15,
+      color: theme.textMedium,
+      lineHeight: 22,
     },
   });

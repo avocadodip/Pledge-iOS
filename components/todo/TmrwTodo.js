@@ -17,7 +17,7 @@ const TmrwTodo = ({
   const { todoNumber, title, description, amount, tag, isLocked } = todoData;
   const { timeStatus } = useDayStatus();
 
-  // amount={amount.toString()}
+  const formattedAmount = (!isNaN(amount) && amount) ? amount.toString() : '';
 
   return (
     <View style={styles.infoContainer}>
@@ -55,9 +55,9 @@ const TmrwTodo = ({
             </Text>
           </View>
         </View>
-        {amount && (
+        {formattedAmount && (
           <View style={styles.amountContainer}>
-            <Text style={styles.amountText}>${amount}</Text>
+            <Text style={styles.amountText}>${formattedAmount}</Text>
           </View>
         )}
       </TouchableNipple>

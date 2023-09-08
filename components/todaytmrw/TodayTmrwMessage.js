@@ -82,9 +82,12 @@ const TodayTmrwMessage = ({ type, setModalVisible, nextActiveDay }) => {
       // When user selected tmrw option in onboarding (tmrw page is set; today should show "You're all set! Check in tomorrow.")
       case "all set":
         return (
-          <Text style={styles.infoText}>
-            You're all set! The tasks you've set will appear here tomorrow.
-          </Text>
+          <>
+            <Text style={styles.infoText}>You're all set!</Text>
+            <Text style={styles.subText}>
+              The tasks you've set will appear here tomorrow.
+            </Text>
+          </>
         );
       default:
         return null;

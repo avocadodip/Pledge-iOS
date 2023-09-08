@@ -75,7 +75,7 @@ const Settings = ({ navigation }) => {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    if (scrollY > 0) {
+    if (scrollY > 0) { 
       setStatusBarHidden(true);
     } else {
       setStatusBarHidden(false);

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getTmrwDate, getTodayDate } from "../utils/currentDate";
 
 export const useDayChange = () => {
   const daysOfWeek = [
@@ -8,13 +9,16 @@ export const useDayChange = () => {
     "Wednesday",
     "Thursday",
     "Friday",
-    "Saturday",
+    "Saturday", 
   ];
   const todayIndex = new Date().getDay();
   const [todayDOWIndex, setTodayDOWIndex] = useState(todayIndex);
   const [todayDOW, setTodayDOW] = useState(daysOfWeek[todayIndex]);
   const [tmrwDOW, setTmrwDOW] = useState(daysOfWeek[(todayIndex + 1) % 7]);
   const [dayChanged, setDayChanged] = useState(false);
+
+   const [todayDate, setTodayDate] = useState(getTodayDate());
+   const [tmrwDate, setTmrwDate] = useState(getTmrwDate());
 
   const checkDayChange = () => {
     const now = new Date();
@@ -24,6 +28,8 @@ export const useDayChange = () => {
       setTodayDOWIndex(dayOfWeekI);
       setTodayDOW(daysOfWeek[dayOfWeekI]);
       setTmrwDOW(daysOfWeek[(dayOfWeekI + 1) % 7]);
+      setTodayDate(getTodayDate());
+      setTmrwDate(getTmrwDate());
     } else {
       setDayChanged(false);
     }
@@ -53,5 +59,5 @@ export const useDayChange = () => {
     return () => clearTimeout(timeoutId);
   }, [todayDOWIndex]);
 
-  return { todayDOWIndex, todayDOW, tmrwDOW, dayChanged };
+  return { todayDOWIndex, todayDOW, tmrwDOW, dayChanged, todayDate, tmrwDate };
 };

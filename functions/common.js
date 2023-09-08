@@ -5,6 +5,7 @@ const admin = require("firebase-admin");
 const moment = require("moment-timezone");
 const {initializeApp} = require("firebase-admin/app");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const schedulerKey = process.env.SCHEDULER_KEY;
 
 initializeApp();
 const auth = admin.auth();
@@ -18,4 +19,5 @@ module.exports = {
   stripe,
   auth,
   endpointSecret,
+  schedulerKey,
 };

@@ -95,8 +95,6 @@ function formatDateRange(start, end) {
  */
 
 const runDailyUpdate = onRequest(async (req, res) => {
-  console.log(req.header.authorization);
-
   if (req.headers.authorization !== schedulerKey) {
     res.status(403).send("Unauthorized");
     return;
