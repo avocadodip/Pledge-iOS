@@ -7,7 +7,7 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "../assets/logos/1024ios.png",
+    "icon": "./assets/logos/1024ios.png",
     "splash": {
       "image": "",
       "resizeMode": "contain",
