@@ -21,7 +21,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.cewidiupleek.pledge",
       "infoPlist": {
-        "NSCameraUsageDescription": "We need access to your camera so Stripe can scan your card information.",
+        "NSCameraUsageDescription": "We need access to your camera so Stripe can scan your card information."
       },
       "buildNumber": "2"
     },
