@@ -47,7 +47,7 @@ export const SettingsProvider = ({ children }) => {
         setAppReadyToRender(false);
       }
     });
-
+ 
     // Clean up subscription on unmount
     return () => unsubscribe();
   }, []);

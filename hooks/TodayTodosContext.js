@@ -11,7 +11,7 @@ export const TodayTodosContext = createContext();
  
 export const TodayTodosProvider = ({ children }) => {
   const [todayTodos, setTodayTodos] = useState([]);
-  const { currentUserID } = useSettings();
+  const { settings, currentUserID } = useSettings();
   const { setDayStart, setDayEnd, setTodayPageCompletedForTheDay } =
     useDayStatus();
   const { dayChanged } = useDayChange();
@@ -39,7 +39,7 @@ export const TodayTodosProvider = ({ children }) => {
     } else {
       setTodayPageCompletedForTheDay(false);
     }
-  }, [todayTodos]);
+  }, [todayTodos, settings]);
 
   // Function to fetch todos and set global todayTodos object
   const getAndSetTodayTodos = async () => {
@@ -57,7 +57,7 @@ export const TodayTodosProvider = ({ children }) => {
         todos,
         onboardStartTmrw,
       } = docSnapshot.data();
-
+ 
       setIsTodayActiveDay(isActive);
       setIsTodayVacation(isVacation);
       setDayStart(opensAt);

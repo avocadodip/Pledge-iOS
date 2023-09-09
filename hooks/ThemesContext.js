@@ -16,7 +16,7 @@ export const ThemeContext = createContext();
 export const ThemesProvider = ({ children }) => {
   const { timeStatus, todayPageCompletedForTheDay } = useDayStatus();
   const { tmrwPageCompletedForTheDay } = useTmrwTodos();
-  const { currentUserID, setAppReadyToRender } = useSettings();
+  const { settings, currentUserID, setAppReadyToRender } = useSettings();
   const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme
   const [backgroundGradient, setBackgroundGradient] = useState([]);

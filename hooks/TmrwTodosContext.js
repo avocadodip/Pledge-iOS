@@ -15,7 +15,7 @@ export const TmrwTodosContext = createContext();
 // Sets tmrwTodos, tmrwDOWAbbrev, nextActiveDay
 export const TmrwTodosProvider = ({ children }) => {
   const {
-    settings: { daysActive },
+    settings, settings: { daysActive, vacationModeOn },
     currentUserID,
   } = useSettings();
   const { dayChanged } = useDayChange();
@@ -29,9 +29,8 @@ export const TmrwTodosProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    console.log("is it?");
-    console.log(isTmrwActiveDay);
-  }, [isTmrwActiveDay]);
+    console.log("settings changed");
+  }, [settings]);
 
   const [isTodoArrayEmpty, setIsTodoArrayEmpty] = useState(true);
   const [tmrwPageCompletedForTheDay, setTmrwPageCompletedForTheDay] =
@@ -63,11 +62,11 @@ export const TmrwTodosProvider = ({ children }) => {
     // Check if there is at least one non-null item with isLocked true
     let noTmrwTodoLocked =
       tmrwTodos && !tmrwTodos.some((todo) => todo && todo.isLocked === true);
-
+ 
       console.log("4");
       console.log(noTmrwTodoLocked);
 
-    if (allLocked || !isTmrwActiveDay) {
+    if (allLocked || !isTmrwActiveDay || vacationModeOn) {
       setTmrwPageCompletedForTheDay(true);
     } else {
       setTmrwPageCompletedForTheDay(false);
@@ -75,7 +74,7 @@ export const TmrwTodosProvider = ({ children }) => {
 
     // Set the state for noTmrwTodoLocked
     setNoTmrwTodoLocked(noTmrwTodoLocked);
-  }, [tmrwTodos]);
+  }, [tmrwTodos, settings]);
 
   // 1. Get tmrw day data
   const getAndSetTmrwTodos = async () => {
