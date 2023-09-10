@@ -66,7 +66,8 @@
     "react-native-web": "~0.18.10",
     "react-select": "^5.7.3",
     "toggle-switch-react-native": "^3.3.0",
-    "expo-splash-screen": "~0.18.2"
+    "expo-splash-screen": "~0.18.2",
+    "react-native-screens": "~3.20.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
