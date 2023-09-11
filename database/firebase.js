@@ -1,14 +1,16 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore, initializeFirestore } from 'firebase/firestore';
+import { getApp, getApps, initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, initializeAuth } from "firebase/auth";
+import { getReactNativePersistence } from "firebase/auth/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { initializeFirestore } from "firebase/firestore";
 import {
   API_KEY,
   AUTH_DOMAIN,
   PROJECT_ID,
   STORAGE_BUCKET,
   MESSAGING_SENDER_ID,
-  APP_ID
-} from '@env';
+  APP_ID,
+} from "@env";
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -16,19 +18,29 @@ const firebaseConfig = {
   projectId: PROJECT_ID,
   storageBucket: STORAGE_BUCKET,
   messagingSenderId: MESSAGING_SENDER_ID,
-  appId: APP_ID
+  appId: APP_ID,
 };
 
-  const app = initializeApp(firebaseConfig);
+let app, auth;
 
-  const auth = getAuth()
-  
-  const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true
-  })
-  
-  export const googleProvider = new GoogleAuthProvider();
+if (!getApps().length) {
+  try {
+    app = initializeApp(firebaseConfig);
+    auth = initializeAuth(app, {
+      persistence: getReactNativePersistence(AsyncStorage),
+    });
+  } catch (error) {
+    console.log("Error initializing app: " + error);
+  }
+} else {
+  app = getApp();
+  auth = getAuth(app);
+}
 
-  export { db, auth };
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+});
 
+export const googleProvider = new GoogleAuthProvider();
 
+export { db, auth };
