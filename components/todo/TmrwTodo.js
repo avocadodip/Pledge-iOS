@@ -52,7 +52,7 @@ const TmrwTodo = ({
                   {" "}more...
                 </Text>
               )}
-            </Text>
+            </Text> 
           </View>
         </View>
         {formattedAmount && (

@@ -69,7 +69,7 @@ export const getTodoStyles = (theme) =>
       justifyContent: "center",
       alignItems: "center",
       gap: 28,
-      borderRadius: 16,
+      borderRadius: BORDER_RADIUS,
       backgroundColor: theme.faintPrimary,
       padding: 15,
     },
@@ -88,11 +88,22 @@ export const getTodoStyles = (theme) =>
       backgroundColor: theme.faintPrimary,
       height: "100%",
       flex: 8,
+      // Chris 9/13/23 - very strange behavior; adding these 2 lines hides the tiny notch between left/right container, but changes left container color
+      // borderTopRightRadius: 0,
+      // borderBottomRightRadius: 0, 
     },
     leftContainerInner: {
       display: "flex",
       justifyContent: "center",
       height: "100%",
+    },
+    rightContainer: {
+      backgroundColor: theme.faintishPrimary,
+      flex: 2,
+      height: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+      overflow: "hidden",
     },
 
     // TAG
@@ -151,19 +162,9 @@ export const getTodoStyles = (theme) =>
     },
 
     // Right styles
-    rightContainer: {
-      borderTopRightRadius: 16,
-      borderBottomRightRadius: 16,
-      backgroundColor: theme.faintishPrimary,
-      flex: 2,
-      height: "100%",
-      justifyContent: "center",
-      alignItems: "center",
-      overflow: "hidden",
-    },
     rightDisabledContainer: {
-      borderTopRightRadius: 16,
-      borderBottomRightRadius: 16,
+      borderTopRightRadius: BORDER_RADIUS,
+      borderBottomRightRadius: BORDER_RADIUS,
       backgroundColor: theme.faintPrimary,
       flex: 2,
       height: "100%",
@@ -174,8 +175,8 @@ export const getTodoStyles = (theme) =>
       borderLeftColor: theme.faintPrimary,
     },
     checkDisabledContainer: {
-      borderTopRightRadius: 16,
-      borderBottomRightRadius: 16,
+      borderTopRightRadius: BORDER_RADIUS,
+      borderBottomRightRadius: BORDER_RADIUS,
       backgroundColor: theme.faintPrimary,
       flex: 2,
       // width: "20%",
@@ -188,8 +189,8 @@ export const getTodoStyles = (theme) =>
       opacity: 0.6,
     },
     disabledCompleteContainer: {
-      borderTopRightRadius: 16,
-      borderBottomRightRadius: 16,
+      borderTopRightRadius: BORDER_RADIUS,
+      borderBottomRightRadius: BORDER_RADIUS,
       backgroundColor: theme.lightPrimary,
       flex: 2,
       // width: "20%",
@@ -233,7 +234,7 @@ export const getTodoStyles = (theme) =>
       color: theme.textDisabled,
       fontSize: 22,
       fontWeight: "bold",
-    },
+    }, 
 
 
   });

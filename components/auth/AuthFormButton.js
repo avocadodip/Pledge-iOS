@@ -27,7 +27,7 @@ const styles =
       borderRadius: 10,
       width: "100%",
       overflow: "hidden",
-      marginBottom: 40,
+      marginBottom: 5,
     },
     button: {
       height: 52,

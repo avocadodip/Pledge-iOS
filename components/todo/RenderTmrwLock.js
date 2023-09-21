@@ -47,7 +47,7 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
     // Validate title & amount fields
     if (title == "") {
       showMissingFieldAlert("title");
-      return;
+      return; 
     } 
     // else if (amount == "") {
     //   showMissingFieldAlert("amount");

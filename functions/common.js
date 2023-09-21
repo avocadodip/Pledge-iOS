@@ -6,11 +6,10 @@ const moment = require("moment-timezone");
 const {initializeApp} = require("firebase-admin/app");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const schedulerKey = process.env.SCHEDULER_KEY;
+const endpointSecret = process.env.STRIPE_WEBHOOK_KEY;
 
 initializeApp();
 const auth = admin.auth();
-
-const endpointSecret = "whsec_vS3nH9E0sb2U2KWQDLFaf6Sz91ZLW2vG";
 
 module.exports = {
   onRequest,

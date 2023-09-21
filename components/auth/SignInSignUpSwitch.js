@@ -4,6 +4,7 @@ import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 import theme from "../../themes";
 
+
 const SignInSignUpSwitch = ({ navigation, prompt, navigateTo, buttonText }) => {
   return (
     <View style={styles.container}>
@@ -25,7 +26,7 @@ styles = StyleSheet.create({
     alignItems: "center",
     gap: 5,
     width: "100%",
-    marginTop: 30,
+    marginTop: 50,
   },
   signInText: {
     color: theme[["Classic"]].textMedium,

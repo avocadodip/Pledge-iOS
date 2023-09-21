@@ -5,6 +5,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Text,
+  Linking,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../database/firebase";
@@ -20,6 +21,7 @@ import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
 import { useThemes } from "../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { redGradientValues } from "../themes";
+import theme from "../themes";
 
 const Signup = () => {
   // const { theme, backgroundGradient } = useThemes();
@@ -116,6 +118,28 @@ const Signup = () => {
           <FormInput action={setPassword} value={password} type="password" />
 
           <SignUpButton action={handleSignup} text={"Sign up"} />
+
+          <Text style={styles.legalText}>
+            By signing up, you agree to our{" "}
+            <Text
+              style={styles.linkText}
+              onPress={() =>
+                Linking.openURL("https://joshuawolk.com/pledgepolicy.html")
+              }
+            >
+              Privacy Policy
+            </Text>
+            {" "}and{" "}
+            <Text
+              style={styles.linkText}
+              onPress={() =>
+                Linking.openURL("https://joshuawolk.com/pledgepolicy.html")
+              }
+            >
+              Terms of Service
+            </Text>
+            .
+          </Text>
         </View>
 
         <SignInSignUpSwitch
@@ -151,6 +175,15 @@ const styles = StyleSheet.create({
   },
   textInputContainer: {
     flex: 1,
+  },
+
+  legalText: {
+    color: theme[["Classic"]].textMedium,
+    lineHeight: 20,
+    textAlign: "center",
+  },
+  linkText: {
+    textDecorationLine: 'underline'
   },
 });
 
