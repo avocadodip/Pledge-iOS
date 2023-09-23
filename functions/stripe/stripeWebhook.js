@@ -1,3 +1,5 @@
+// firebase deploy --only functions
+
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
 const {onRequest, admin, stripe, endpointSecret} = require("../common");
@@ -7,39 +9,39 @@ const stripeWebhook = onRequest(async (req, res) => {
     const sig = req.headers["stripe-signature"];
     let event;
 
+    const rawBody = req.rawBody.toString("utf-8");
+    const trimmedEndpointSecret = endpointSecret.trim();
+
     try {
-      event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
+      event = stripe.webhooks.constructEvent(rawBody, sig, trimmedEndpointSecret);
+      console.log("Event constructed successfully");
     } catch (err) {
+      console.log(`Webhook Error: ${err.message}`);
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
 
     const db = admin.firestore();
     const usersRef = db.collection("users");
-
     // From setup intent succeeded structure
     let stripeCustomerId = event.data.object.customer;
-
     // For payment method detached structure
     if (!stripeCustomerId && event.data.previous_attributes) {
       stripeCustomerId = event.data.previous_attributes.customer;
     }
-
     // Query to find the Firestore document with this Stripe customer ID
     const snapshot = await usersRef
         .where("stripeCustomerId", "==", stripeCustomerId)
         .get();
-
     if (snapshot.empty) {
       console.log(`No user match Stripe customer ID: ${stripeCustomerId}`);
       return;
     }
-
     // Assuming there's only one matching doc, or otherwise handle multiple
     const userDoc = snapshot.docs[0];
     const userId = userDoc.id;
     const userRef = db.collection("users").doc(userId);
-
+    console.log("5");
     // Handle the event
     switch (event.type) {
       case "setup_intent.succeeded": {

@@ -59,7 +59,7 @@ const EmailVerification = ({ route, navigation }) => {
   };
 
   const createFirebaseUserDoc = async () => {
-    try {
+    try { 
       // Get user's local timezone
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

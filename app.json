@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Pledge - Bet On Yourself",
+    "name": "Chris - Bet On Yourself",
     "slug": "pledge",
     "plugins": [
       "@react-native-google-signin/google-signin"
     ],
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/logos/1024ios.png",
     "splash": {
@@ -23,7 +23,7 @@
       "infoPlist": {
         "NSCameraUsageDescription": "We need access to your camera so Stripe can scan your card information."
       },
-      "buildNumber": "4"
+      "buildNumber": "5"
     },
     "android": {
       "package": "com.cewidiupleek.pledge"
