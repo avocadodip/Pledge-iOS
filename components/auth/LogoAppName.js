@@ -6,7 +6,7 @@ const LogoAppName = () => {
   return (
     <View style={styles.logoContainer}>
       <Image
-        source={require("../../assets/icons/FervoWhite.png")}
+        source={require("../../assets/icons/pledgetransparent.png")}
         style={{ width: 100, height: 100 }}
       />
       <Text style={styles.appNameText}>Pledge</Text>
