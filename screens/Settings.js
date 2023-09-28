@@ -342,14 +342,14 @@ const Settings = ({ navigation }) => {
               <Text style={styles.rightSideText}>{timezone}</Text>
             </View>
             {/* MISSED FINE */}
-            {/* <View style={styles.button}>
+            <View style={styles.button}>
               <View style={styles.leftSettingsButton}>
                 <TaskFineIcon width={23} height={23} color={theme.textHigh} />
 
                 <Text style={styles.buttonTitle}>Missed Task Fine</Text>
               </View>
-              <Text style={styles.rightSideText}>-$1</Text>
-            </View> */}
+              <Text style={styles.rightSideText}>$1</Text>
+            </View>
           </View>
         </View>
         <View style={styles.sectionHeader}>

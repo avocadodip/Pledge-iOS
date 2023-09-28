@@ -140,8 +140,6 @@ export const SettingsProvider = ({ children }) => {
   };
 
   const formatWeeksList = (weeksList) => {
-    console.log("!");
-    console.log(weeksList);
     // Format the data as needed for your SectionList
     const upcoming = weeksList.filter((week) => week.isCharged === false);
     const pastCharges = weeksList.filter((week) => week.isCharged === true);

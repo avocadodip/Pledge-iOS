@@ -19,42 +19,49 @@ const WeekBundle = ({ isFirstSection, transactionsData }) => {
     setIsCollapsed(!isCollapsed);
   };
 
-  // Group tasks by date
-  const tasksByDate = finedTasks.reduce((acc, task) => {
-    (acc[task.date] = acc[task.date] || []).push(task);
-    return acc;
-  }, {});
-  const tasksArray = Object.entries(tasksByDate).map(([date, tasks]) => ({
-    date,
-    tasks,
-  }));
+  console.log(finedTasks);
+
+// Group tasks by date
+const tasksByDate = finedTasks.reduce((acc, task) => {
+  (acc[task.date] = acc[task.date] || []).push(task);
+  return acc;
+}, {});
+
+const tasksArray = Object.entries(tasksByDate).map(([date, tasks]) => ({
+  date,
+  dateName: tasks[0].dateName,  // Assuming dateName is consistent across tasks for the same date
+  tasks,
+}));
+
+  console.log("ello");
+  console.log(tasksArray);
 
   return (
     <View style={styles.bundle}>
       <TouchableRipple onPress={toggleCollapse} style={styles.weekRowButton}>
         <View style={styles.weekRow}>
           <Text style={styles.weekDateRangeText}>{weekDateRange}</Text>
-          <Text style={styles.totalWeeklyFineText}>{totalWeeklyFine}</Text>
+          <Text style={styles.totalWeeklyFineText}>-${totalWeeklyFine}.00</Text>
         </View>
         <Collapsible collapsed={isCollapsed} style={styles.collapsibleContent}>
-          <View style={styles.unenteredTasksItem}>
+          {/* <View style={styles.unenteredTasksItem}>
             <Text style={styles.collapsibleText}>
               {noInputCount} unentered tasks
             </Text>
             <Text style={styles.collapsibleText}>{noInputFine}</Text>
-          </View>
+          </View> */}
 
           <View style={styles.dayContainer}>
             {tasksArray.map((item, index) => (
               <View key={index} style={styles.dayItem}>
                 {/* Date */}
-                <Text style={styles.dayDate}>{item.date}</Text>
+                <Text style={styles.dayDate}>{item.dateName}</Text>
                 {/* Tasks under that date */}
                 {item.tasks.map((task, taskIndex) => (
                   <View key={taskIndex}>
                     <View style={styles.spaceBetween}>
                       <Text style={styles.collapsibleText}>{task.title}</Text>
-                      <Text style={styles.collapsibleText}>{task.amount}</Text>
+                      <Text style={styles.collapsibleText}>${task.amount}.00</Text>
                     </View>
                   </View>
                 ))}

@@ -69,7 +69,6 @@ const TodayTodo = ({ todoData }) => {
 
   // Render animation whenever isComplete changes
   useEffect(() => {
-    console.log(isComplete);
     if (isComplete) {
       // Hide task info and set flex values
       setShouldRenderTaskInfo(false);

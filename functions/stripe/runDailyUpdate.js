@@ -1,4 +1,8 @@
 /* eslint-disable max-len */
+// firebase deploy --only functions
+// cd functions/stripe npx eslint --fix runDailyUpdate.js
+
+// fix duplicating todos when being charged
 
 const {onRequest, stripe, moment, admin, schedulerKey} = require("../common");
 
@@ -6,36 +10,39 @@ const {onRequest, stripe, moment, admin, schedulerKey} = require("../common");
  * Calculates total fines for a user based on their tasks.
  *
  * @param {Array} todos - isComplete, amount properties, or null for no input.
+ * @param {String} dateName - The name of the date for which the fines are being calculated.
  * @param {Number} missedTaskFine - Fine for each missed task.
  * @return {Object} contains several variables
  */
-function calculateFines(todos, missedTaskFine) {
+function calculateFines(todos, dateName) {
   let todayTotalFine = 0;
-  let todayNoInputCount = 0;
-  let todayNoInputFine = 0;
+  // let todayNoInputCount = 0;
+  // let todayNoInputFine = 0;
   const todayFinedTasks = [];
 
   // Count the number of todos that are not complete and those with no input
   todos.forEach((todo) => {
     if (todo === null) {
-      todayNoInputCount += 1;
-      todayNoInputFine += missedTaskFine; // Assign a fine for no input
+      // todayNoInputCount += 1;
+      // todayNoInputFine += missedTaskFine; // Commented out: Assign a fine for no input
     } else if (!todo.isComplete) {
-      todayTotalFine += todo.amount;
+      todayTotalFine += parseInt(todo.amount); // Convert amount to integer before addition
+      todo.dateName = dateName;
       todayFinedTasks.push(todo);
     }
   });
 
-  // Add fine for missing todos
-  todayTotalFine += (3 - todos.length) * missedTaskFine;
+  // Commented out: Add fine for missing todos
+  // todayTotalFine += (3 - todos.length) * missedTaskFine;
 
   return {
     todayTotalFine,
-    todayNoInputCount,
-    todayNoInputFine,
+    // todayNoInputCount,
+    // todayNoInputFine,
     todayFinedTasks,
   };
 }
+
 
 /**
  * Formats a date range in the format "Aug 20 - Aug 26, 2023".
@@ -181,14 +188,14 @@ const runDailyUpdate = onRequest(async (req, res) => {
           if (!todayDoc.exists) {
             return console.log(`No ${todayFormatted} doc for ${userid}`);
           }
-          const {todos = []} = todayDoc.data(); // Get todos array
+          const {todos = [], dateName} = todayDoc.data(); // Get todos array
 
           const {
             todayTotalFine,
             todayNoInputCount,
             todayNoInputFine,
             todayFinedTasks,
-          } = calculateFines(todos, missedTaskFine);
+          } = calculateFines(todos, dateName, missedTaskFine);
           await todayRef.update({totalFine: todayTotalFine}); // Update todayDoc totalFine
 
           // 4. Update week fine count
@@ -231,21 +238,13 @@ const runDailyUpdate = onRequest(async (req, res) => {
             stripeCustomerId &&
             paymentMethodId &&
             isPaymentSetup &&
-            updatedTotalWeeklyFine !== 0 &&
+            updatedTotalWeeklyFine > 0 &&
             !isCharged
           ) {
-            // const customer = await stripe.customers.retrieve(
-            //     userDoc.stripeCustomerId,
-            // );
-            // console.log("Customer:", customer);
-            // Convert the fine amount to cents (Stripe uses cents instead of dollars)
-
             const formattedAmount = Math.round(updatedTotalWeeklyFine * 100); // Ensure it's an integer
             if (formattedAmount <= 0) {
-              throw new Error(`Invalid amount for user ${doc.id}`);
+              throw new Error(`Invalid amount for user ${userid}`);
             }
-            //       description: `Weekly fines for ${pastWeek}`,
-
             // Create a Stripe charge
             try {
               // const paymentIntent =
@@ -265,19 +264,19 @@ const runDailyUpdate = onRequest(async (req, res) => {
             } catch (err) {
             // Error code will be authentication_required if authentication is needed
               console.log("Error code is: ", err.code);
-              const paymentIntentRetrieved = await stripe.paymentIntents.retrieve(
-                  err.raw.payment_intent.id,
-              );
-              console.log("PI retrieved: ", paymentIntentRetrieved.id);
+              if (err.code == "incorrect_zip") {
+                console.log("incorrect zip");
+              }
+              // Used to retrieve the details of a Stripe PaymentIntent when an error occurs during the creation of a PaymentIntent.
+              if (err.raw && err.raw.payment_intent) {
+                const paymentIntentRetrieved = await stripe.paymentIntents.retrieve(
+                    err.raw.payment_intent.id,
+                );
+                console.log("PI retrieved: ", paymentIntentRetrieved.id);
+              } else {
+                console.log("Error does not contain a payment intent");
+              }
             }
-
-          // If the charge was successful, update the fines document
-          // if (charge.paid) {
-          //   await weekRef.update({isCharged: true});
-          //   console.log(`Charged user ${doc.id} for ${updatedTotalWeeklyFine}`);
-          // } else {
-          //   console.log(`Failed to charge user ${doc.id}`);
-          // }
           }
         }),
     );
