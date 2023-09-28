@@ -33,8 +33,7 @@ const tasksArray = Object.entries(tasksByDate).map(([date, tasks]) => ({
   tasks,
 }));
 
-  console.log("ello");
-  console.log(tasksArray);
+
 
   return (
     <View style={styles.bundle}>

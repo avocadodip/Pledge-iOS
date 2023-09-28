@@ -198,7 +198,9 @@ export default function TodoBottomSheet() {
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.descriptionContainer}>
-              <DescriptLinesIcon color={theme.textHigh} />
+              <View style={{marginTop: 2}}>
+                <DescriptLinesIcon color={theme.textHigh} />
+              </View>
               <TextInput
                 style={styles.textInput}
                 placeholder="Add description"
@@ -213,7 +215,7 @@ export default function TodoBottomSheet() {
                 textStyle={styles.text}
                 autoCorrect={false}
                 autoCapitalize="none"
-                multiline={false} // temp
+                multiline={true}
               />
             </View>
           </View>
@@ -298,7 +300,7 @@ const getStyles = (theme) =>
       paddingTop: 10,
       flexDirection: "row",
       gap: 23,
-      alignItems: "center",
+      // alignItems: "center",
     },
     number: {
       color: theme.primary,

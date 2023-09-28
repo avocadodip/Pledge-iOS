@@ -16,6 +16,7 @@ import { getTimezoneAbbrev } from "../utils/currentDate";
 import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
 import TodayTodo from "../components/todo/TodayTodo";
 import FinedTodo from "../components/todo/FinedTodo";
+import ClockIcon from "../assets/icons/clock.svg";
 
 const Today = () => {
   const { theme } = useThemes();
@@ -33,7 +34,6 @@ const Today = () => {
   } = useTodayTodos();
   const { todayHeaderSubtitleMessage, timeStatus } = useDayStatus();
 
-
   const [modalVisible, setModalVisible] = useState(false);
 
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
@@ -42,12 +42,7 @@ const Today = () => {
       if (todoData == null || todoData.title === "") {
         return <FinedTodo key={index} />;
       } else {
-        return (
-          <TodayTodo
-            key={index}
-            todoData={todoData}
-          />
-        );
+        return <TodayTodo key={index} todoData={todoData} />;
       }
     });
   }, [todayTodos, timeStatus]);
@@ -58,24 +53,38 @@ const Today = () => {
         texts={['This is the Today page.', 'Your three tasks planned the night before will show up here.','Your only mission is to check them off before the day ends!']}
         buttonTitle="Cool, what's next?"
       /> */}
+      {isOnboarded &&
+        !isTodayVacation &&
+        isTodayActiveDay &&
+        !isTodoArrayEmpty && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                alignSelf: "flex-start",
+                gap: 7,
+                backgroundColor: "#e7322f",
+                paddingHorizontal: 9,
+                borderRadius: 16,
+              }}
+            >
+              <Text style={styles.headerSubtitle}>
+                {todayHeaderSubtitleMessage}
+              </Text>
+              <View>
+                <ClockIcon color={theme.textHigh} height={19} width={19} />
+              </View>
+            </View>
+
+        )}
+
       <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Today</Text>
           <Text style={styles.headerDayOfWeek}>{todayDOWAbbrev}</Text>
         </View>
-
-
-
-        {isOnboarded && !isTodayVacation && isTodayActiveDay && !isTodoArrayEmpty && (
-          <View style={styles.headerSubtitleContainer}>
-            <Text style={styles.headerSubtitle}>
-              {todayHeaderSubtitleMessage}
-            </Text>
-            <Text style={styles.timeZone}>{getTimezoneAbbrev(timezone)}</Text>
-          </View>
-        )}
       </View>
- 
+
       <View style={styles.pageContent}>
         {!isOnboarded ? (
           <TodayTmrwMessage
@@ -112,7 +121,8 @@ const getStyles = (theme) =>
       marginTop: 5,
       width: "100%",
       flexDirection: "col",
-      height: 110,
+      height: 75,
+
     },
     headerTitleContainer: {
       width: "100%",
@@ -132,7 +142,8 @@ const getStyles = (theme) =>
     },
     headerSubtitle: {
       color: theme.textHigh,
-      fontSize: 22,
+      fontSize: 15,
+      paddingBottom: 4, //temp
       fontWeight: "bold",
       marginTop: 5,
     },

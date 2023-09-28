@@ -16,11 +16,12 @@ import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
 import TmrwTodo from "../components/todo/TmrwTodo";
 import FinedTodo from "../components/todo/FinedTodo";
 import NumberTodo from "../components/todo/NumberTodo";
+import ClockIcon from "../assets/icons/clock.svg";
 
 const Tomorrow = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
-  const { tmrwTodos } = useTmrwTodos(); 
+  const { tmrwTodos } = useTmrwTodos();
   const {
     settings: { timezone, vacationModeOn, isOnboarded },
   } = useSettings();
@@ -49,7 +50,25 @@ const Tomorrow = () => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <View style={styles.headerContainer}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          alignSelf: "flex-start",
+          gap: 7,
+          backgroundColor: "#e7322f",
+          paddingHorizontal: 9,
+          borderRadius: 16,
+        }}
+      >
+        <Text style={styles.headerSubtitle}>{tmrwHeaderSubtitleMessage}</Text>
+        <View>
+          <ClockIcon color={theme.textHigh} height={19} width={19} />
+        </View>
+      </View>
+
+      <View style={[styles.headerContainer]}>
+        <View></View>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Tmrw</Text>
           <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
@@ -57,17 +76,9 @@ const Tomorrow = () => {
 
         {isOnboarded && !vacationModeOn && isTmrwActiveDay && (
           <View>
-            <View style={styles.headerSubtitleContainer}>
-              <Text style={styles.headerSubtitle}>
-                {tmrwHeaderSubtitleMessage}
-              </Text>
-              <Text style={styles.timeZone}>{getTimezoneAbbrev(timezone)}</Text>
-            </View>
 
             {(timeStatus === 1 || timeStatus === 2) &&
-              // Show a different time picker message if day has ended and no tasks inputted
-              // Instead of tasks will open from...to..., day will start at...to...
-              (timeStatus == 2 && isTodoArrayEmpty ? (
+              (timeStatus === 2 && isTodoArrayEmpty ? (
                 <TmrwTimePicker altMessage={true} />
               ) : (
                 <TmrwTimePicker altMessage={false} />
@@ -113,7 +124,7 @@ const getStyles = (theme) =>
       marginTop: 5,
       width: "100%",
       flexDirection: "col",
-      height: 110,
+      height: 75,
     },
     headerTitleContainer: {
       width: "100%",
@@ -133,7 +144,8 @@ const getStyles = (theme) =>
     },
     headerSubtitle: {
       color: theme.textHigh,
-      fontSize: 22,
+      fontSize: 15, // 22
+      paddingBottom: 4, //temp
       fontWeight: "bold",
       marginTop: 5,
     },

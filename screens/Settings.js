@@ -347,6 +347,7 @@ const Settings = ({ navigation }) => {
                 <TaskFineIcon width={23} height={23} color={theme.textHigh} />
 
                 <Text style={styles.buttonTitle}>Missed Task Fine</Text>
+                <Text style={{...styles.buttonTitle, opacity: 0.5}}>(Coming soon)</Text>
               </View>
               <Text style={styles.rightSideText}>$1</Text>
             </View>

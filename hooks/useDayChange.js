@@ -10,7 +10,7 @@ export const useDayChange = () => {
     "Thursday",
     "Friday",
     "Saturday", 
-  ];
+  ]; 
   const todayIndex = new Date().getDay();
   const [todayDOWIndex, setTodayDOWIndex] = useState(todayIndex);
   const [todayDOW, setTodayDOW] = useState(daysOfWeek[todayIndex]);

@@ -19,7 +19,7 @@ const StatsItem = ({ dayData, index }) => {
   if (index == 0) {
     upcomingDay = true;
   }
-  
+
   // toggle collapse
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -71,7 +71,9 @@ const StatsItem = ({ dayData, index }) => {
                     </View>
                     <View style={styles.row}>
                       <Text style={styles.tagText}>{tag}</Text>
-                      <Text style={styles.titleText}>${amount}</Text>
+                      {amount && (
+                        <Text style={styles.titleText}>${amount}</Text>
+                      )}
                     </View>
                   </View>
                 );

@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../database/firebase";
+import { db } from "../../database/firebase"; 
 import ContentLoader, { Rect } from "react-content-loader/native";
 import { useDayStatus } from "../../hooks/DayStatusContext";
 import { useSettings } from "../../hooks/SettingsContext";
 import BottomModal from "../BottomModal";
 import { useThemes } from "../../hooks/ThemesContext";
+import { useDayChange } from "../../hooks/useDayChange";
 
 const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
@@ -18,6 +19,7 @@ const TmrwTimePicker = ({ altMessage }) => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { currentUserID } = useSettings();
+  const { tmrwDOW } = useDayChange();
   const {
     settings: { dayStart, dayEnd },
   } = useSettings();  
@@ -73,7 +75,7 @@ const TmrwTimePicker = ({ altMessage }) => {
         {altMessage ? (
           <Text style={styles.headerMessageText}>Day will open at </Text>
         ) : (
-          <Text style={styles.headerMessageText}>Tasks will open at </Text>
+          <Text style={styles.headerMessageText}>Day will start at </Text>
         )}
 
         {dayStart == "" || !dayStart ? (
@@ -99,7 +101,7 @@ const TmrwTimePicker = ({ altMessage }) => {
           </TouchableOpacity>
         )}
 
-        <Text style={styles.headerMessageText}> and close at </Text>
+        <Text style={styles.headerMessageText}> and end at </Text>
 
         {dayEnd == "" || !dayEnd ? (
           <View style={styles.contentLoaderContainer}>
@@ -175,7 +177,7 @@ const TmrwTimePicker = ({ altMessage }) => {
       <BottomModal
         isVisible={isModalVisible.end}
         onBackdropPress={() => handleTimeSave("end")}
-        modalTitle={"Edit End Time"}
+        modalTitle={"Edit Deadline"}
       >
         <View style={styles.timePickerContainer}>
           <Picker
