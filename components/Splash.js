@@ -13,7 +13,7 @@ const Splash = () => {
           <Image
             style={styles.logoIcon}
             resizeMode="cover"
-            source={require("../assets/icons/FervoWhite.png")}
+            source={require("../assets/icons/pledgetransparent.png")}
           />
           <Text style={styles.appName}>Pledge</Text>
         </View>
