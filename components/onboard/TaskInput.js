@@ -67,7 +67,7 @@ const TaskInput = ({ startDay, endTime, todos, setTodos }) => {
       <Text style={styles.headerSubtitle}>Due @ {endTime}</Text>
       <View style={styles.todosContainer}>{renderTodos()}</View>
       <Text style={styles.explainerText}>
-        Making pledges will be available after you successfully lock in this first day of tasks.
+        Setting pledges will be available after this first set of tasks.
       </Text>
     </View>
   );

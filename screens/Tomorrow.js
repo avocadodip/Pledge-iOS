@@ -50,10 +50,11 @@ const Tomorrow = () => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <DayStatusIndicator message={tmrwHeaderSubtitleMessage}/>
+      {isOnboarded && (
+        <DayStatusIndicator message={tmrwHeaderSubtitleMessage} />
+      )}
 
       <View style={[styles.headerContainer]}>
-        <View></View>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Tmrw</Text>
           <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
@@ -61,7 +62,6 @@ const Tomorrow = () => {
 
         {isOnboarded && !vacationModeOn && isTmrwActiveDay && (
           <View>
-
             {(timeStatus === 1 || timeStatus === 2) &&
               (timeStatus === 2 && isTodoArrayEmpty ? (
                 <TmrwTimePicker altMessage={true} />

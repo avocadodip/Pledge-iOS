@@ -60,7 +60,7 @@ export const DayStatusProvider = ({ children }) => {
         setTodayHeaderSubtitleMessage(`Due @ ${dayEnd} PM`);
         break;
       case 2:
-        setTmrwHeaderSubtitleMessage(`Locked @ ${dayEnd} PM`);
+        setTmrwHeaderSubtitleMessage(`Ended @ ${dayEnd} PM`);
         setTodayHeaderSubtitleMessage(`Ended @ ${dayEnd} PM`);
         break;
       default:

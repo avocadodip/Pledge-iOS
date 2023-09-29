@@ -116,18 +116,29 @@ const Settings = ({ navigation }) => {
     setLoading(false);
   };
 
+  const MAX_RETRIES = 2; // maximum number of retries
   // Opens payment sheet
-  const openPaymentSheet = async () => {
+  const openPaymentSheet = async (retryCount = 0) => {
+    if (retryCount >= MAX_RETRIES) {
+      // Alert.alert('Max retries reached.');
+      return;
+    }
+  
     setTimeout(() => {}, 300);
     const { error } = await presentPaymentSheet();
     
     if (!error) {
       setLoading(true);
-      loadPaymentSheet(); 
+      loadPaymentSheet();
     } else {
       if (error.code !== "Canceled") {
-        Alert.alert(`Error code: ${error.code}`, error.message);
-      } 
+        if (error.code === "Failed") {
+          setLoading(true);
+          loadPaymentSheet();
+          openPaymentSheet(retryCount + 1);
+        }
+        // Alert.alert(`Error code: ${error.code}`, error.message);
+      }
     }
   };
 

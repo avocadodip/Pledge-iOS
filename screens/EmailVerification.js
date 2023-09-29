@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
 
   // Resend line styles
   resendContainer: {
+    marginTop: 20,
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 25,
