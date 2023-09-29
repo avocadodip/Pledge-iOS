@@ -131,7 +131,7 @@ const getStyles = (theme) =>
       paddingVertical: 12,
       paddingHorizontal: 15,
       borderRadius: 10,
-      borderWidth: 1,
+      borderWidth: 2,
       borderColor: "#4a4a4a",
 
       // Adding glow effect
