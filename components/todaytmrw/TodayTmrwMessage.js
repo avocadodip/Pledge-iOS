@@ -132,7 +132,7 @@ const getStyles = (theme) =>
       paddingHorizontal: 15,
       borderRadius: 10,
       borderWidth: 2,
-      borderColor: "#4a4a4a",
+      borderColor: theme.buttonBorder,
 
       // Adding glow effect
       shadowColor: "#ffffff", // You can also use a different color for the glow

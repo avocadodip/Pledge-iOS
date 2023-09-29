@@ -35,7 +35,7 @@ export const getClassicColor = (color, styleName) => {
 
 export default {
   Classic: {
-    accent: "#E05E56", 
+    accent: "#E05E56",
     accent2: "#80E05E56",
     statusBar: "light",
     scrollIndicator: "white",
@@ -77,6 +77,8 @@ export default {
     // Day Status indicator
     dayStatusIndicatorBg: "#e7322f",
 
+    // Start first day button border
+    buttonBorder: "#feb3b33d",
   },
   Dark: {
     accent: Color.black,
@@ -123,10 +125,11 @@ export default {
     paymentSheetSetupButton: "#474747",
     paymentSheetPrimary: "#fcfdff",
 
-
     // Day Status indicator
     dayStatusIndicatorBg: "#df3a3a",
-
+    
+    // Start first day button border
+    buttonBorder: "#4a4a4a",
   },
   Light: {
     accent: Color.white,
@@ -173,5 +176,7 @@ export default {
     // Day Status indicator
     dayStatusIndicatorBg: "#ff7d7a",
 
+    // Start first day button border
+    buttonBorder: "#d0d0d0",
   },
 };
