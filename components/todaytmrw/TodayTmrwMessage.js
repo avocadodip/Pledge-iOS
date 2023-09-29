@@ -23,22 +23,20 @@ const TodayTmrwMessage = ({ type, setModalVisible, nextActiveDay }) => {
     switch (type) {
       case "new user":
         return (
-          <View style={styles.startButtonContainer}>
-            <TouchableOpacity
-              style={styles.startButton}
-              onPress={() => {
-                setModalVisible(true);
-              }}
-            >
-              <Text style={styles.startButtonText}>
-                Start your first day of tasks
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={styles.startButton}
+            onPress={() => {
+              setModalVisible(true);
+            }}
+          >
+            <Text style={styles.startButtonText}>
+              Set up your first day of tasks
+            </Text>
+          </TouchableOpacity>
         );
       case "vacation":
         return (
-          <>
+          <View style={styles.container}>
             <Text style={styles.infoText}>Welcome, Josh.</Text>
             <Text style={styles.infoText}>You're on vacation.</Text>
             <TouchableOpacity
@@ -50,11 +48,11 @@ const TodayTmrwMessage = ({ type, setModalVisible, nextActiveDay }) => {
               <Text style={styles.startButtonText}>Turn off vacation mode</Text>
               <CircleRightArrow color={theme.textHigh} />
             </TouchableOpacity>
-          </>
+          </View>
         );
       case "rest day (today screen)":
         return (
-          <>
+          <View style={styles.container}>
             <Text style={styles.infoText}>Welcome, Josh.</Text>
             <Text style={styles.infoText}>It's your rest day.</Text>
             <TouchableOpacity
@@ -64,11 +62,11 @@ const TodayTmrwMessage = ({ type, setModalVisible, nextActiveDay }) => {
               <Text style={styles.todoButtonText}> Add steps for </Text>
               <CircleRightArrow color={theme.textHigh} />
             </TouchableOpacity>
-          </>
+          </View>
         );
       case "rest day (tmrw screen)":
         return (
-          <>
+          <View style={styles.container}>
             <Text style={styles.infoText}>
               Welcome, {currentUserFirstName}.
             </Text>
@@ -77,24 +75,24 @@ const TodayTmrwMessage = ({ type, setModalVisible, nextActiveDay }) => {
               Come back on {dayBeforeNextActiveDay} to lock in tasks for{" "}
               {nextActiveDay}.
             </Text>
-          </>
+          </View>
         );
       // When user selected tmrw option in onboarding (tmrw page is set; today should show "You're all set! Check in tomorrow.")
       case "all set":
         return (
-          <>
+          <View style={styles.container}>
             <Text style={styles.infoText}>You're all set!</Text>
             <Text style={styles.subText}>
               The tasks you've set will appear here tomorrow.
             </Text>
-          </>
+          </View>
         );
       default:
         return null;
     }
   };
 
-  return <View style={styles.container}>{renderMessage()}</View>;
+  return renderMessage();
 };
 
 export default TodayTmrwMessage;
@@ -125,7 +123,26 @@ const getStyles = (theme) =>
       textAlign: "center",
     },
 
-    startButton: {},
+    startButton: {
+      color: theme.primary,
+      fontSize: 20,
+      fontWeight: "600",
+      backgroundColor: theme.faintPrimary,
+      paddingVertical: 12,
+      paddingHorizontal: 15,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: "#4a4a4a",
+
+      // Adding glow effect
+      shadowColor: "#ffffff", // You can also use a different color for the glow
+      shadowOffset: {
+        width: 0,
+        height: 0,
+      },
+      shadowOpacity: 0.5, 
+      shadowRadius: 10, 
+    },
     startButtonText: {
       color: theme.primary,
       fontWeight: 500,

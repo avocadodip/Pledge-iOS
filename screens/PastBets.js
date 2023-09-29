@@ -15,7 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useSettings } from "../hooks/SettingsContext";
 
 const PastBets = ({ navigation }) => {
-  const { backgroundGradient } = useThemes();
+  const { backgroundGradient, theme } = useThemes();
   const { fetchPastBets, pastBetsArray, fetchingPastBets } = useSettings();
 
   useEffect(() => {
@@ -26,10 +26,6 @@ const PastBets = ({ navigation }) => {
     fetchPastBets();
   };
 
-  useEffect(() => {
-    console.log("logging");
-  }, [pastBetsArray]);
-
   const renderFooter = () => {
     if (!fetchingPastBets) return null;
     return (
@@ -39,21 +35,47 @@ const PastBets = ({ navigation }) => {
     );
   };
 
+  console.log(pastBetsArray.length);
+
   return (
     <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
       <SafeAreaView style={style.pageContainer}>
         <SettingsHeader navigation={navigation} header={"Past Bets"} />
-        <FlatList
-          data={pastBetsArray}
-          renderItem={({ item: dayData, index }) => (
-            <StatsItem dayData={dayData} index={index} />
-          )}
-          keyExtractor={(item, index) => index.toString()}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={renderFooter}
-          contentContainerStyle={{ paddingHorizontal: APP_HORIZONTAL_PADDING }} // Horizontal padding of 16
-        />
+        {pastBetsArray.length === 0 ? (
+          <View
+            style={{
+              height: "75%",
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 20,
+            }}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                color: theme.textHigh,
+                fontSize: 16,
+                fontWeight: 500,
+              }}
+            >
+              Previous bets will appear here. 
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={pastBetsArray}
+            renderItem={({ item: dayData, index }) => (
+              <StatsItem dayData={dayData} index={index} />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
+            contentContainerStyle={{
+              paddingHorizontal: APP_HORIZONTAL_PADDING,
+            }} // Horizontal padding of 16
+          />
+        )}
       </SafeAreaView>
     </LinearGradient>
   );
@@ -65,5 +87,6 @@ const style = StyleSheet.create({
   pageContainer: {
     display: "flex",
     marginBottom: BOTTOM_TAB_HEIGHT + 90,
+    height: "100%",
   },
 });
