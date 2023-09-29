@@ -74,6 +74,9 @@ export default {
     paymentSheetSetupButton: "#4b4b4b",
     paymentSheetPrimary: "#fcfdff",
 
+    // Day Status indicator
+    dayStatusIndicatorBg: "#e7322f",
+
   },
   Dark: {
     accent: Color.black,
@@ -120,6 +123,10 @@ export default {
     paymentSheetSetupButton: "#474747",
     paymentSheetPrimary: "#fcfdff",
 
+
+    // Day Status indicator
+    dayStatusIndicatorBg: "#df3a3a",
+
   },
   Light: {
     accent: Color.white,
@@ -163,6 +170,8 @@ export default {
     paymentSheetSetupButton: "#4b4b4b",
     paymentSheetPrimary: "#616161",
 
+    // Day Status indicator
+    dayStatusIndicatorBg: "#ff7d7a",
 
   },
 };

@@ -16,7 +16,7 @@ import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
 import TmrwTodo from "../components/todo/TmrwTodo";
 import FinedTodo from "../components/todo/FinedTodo";
 import NumberTodo from "../components/todo/NumberTodo";
-import ClockIcon from "../assets/icons/clock.svg";
+import DayStatusIndicator from "../components/todaytmrw/DayStatusIndicator";
 
 const Tomorrow = () => {
   const { theme } = useThemes();
@@ -50,22 +50,7 @@ const Tomorrow = () => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          alignSelf: "flex-start",
-          gap: 7,
-          backgroundColor: "#e7322f",
-          paddingHorizontal: 9,
-          borderRadius: 16,
-        }}
-      >
-        <Text style={styles.headerSubtitle}>{tmrwHeaderSubtitleMessage}</Text>
-        <View>
-          <ClockIcon color={theme.textHigh} height={19} width={19} />
-        </View>
-      </View>
+      <DayStatusIndicator message={tmrwHeaderSubtitleMessage}/>
 
       <View style={[styles.headerContainer]}>
         <View></View>
@@ -142,13 +127,7 @@ const getStyles = (theme) =>
       fontSize: 23,
       fontWeight: "bold",
     },
-    headerSubtitle: {
-      color: theme.textHigh,
-      fontSize: 15, // 22
-      paddingBottom: 4, //temp
-      fontWeight: "bold",
-      marginTop: 5,
-    },
+
     pageContent: {
       height: "75%",
       width: "100%",

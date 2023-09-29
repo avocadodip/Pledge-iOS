@@ -16,7 +16,7 @@ import { getTimezoneAbbrev } from "../utils/currentDate";
 import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
 import TodayTodo from "../components/todo/TodayTodo";
 import FinedTodo from "../components/todo/FinedTodo";
-import ClockIcon from "../assets/icons/clock.svg";
+import DayStatusIndicator from "../components/todaytmrw/DayStatusIndicator";
 
 const Today = () => {
   const { theme } = useThemes();
@@ -57,24 +57,7 @@ const Today = () => {
         !isTodayVacation &&
         isTodayActiveDay &&
         !isTodoArrayEmpty && (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                alignSelf: "flex-start",
-                gap: 7,
-                backgroundColor: "#e7322f",
-                paddingHorizontal: 9,
-                borderRadius: 16,
-              }}
-            >
-              <Text style={styles.headerSubtitle}>
-                {todayHeaderSubtitleMessage}
-              </Text>
-              <View>
-                <ClockIcon color={theme.textHigh} height={19} width={19} />
-              </View>
-            </View>
+          <DayStatusIndicator message={todayHeaderSubtitleMessage}/>
 
         )}
 
