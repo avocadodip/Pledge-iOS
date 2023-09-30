@@ -11,7 +11,7 @@ export const TodayTodosContext = createContext();
  
 export const TodayTodosProvider = ({ children }) => {
   const [todayTodos, setTodayTodos] = useState([]);
-  const { settings, currentUserID } = useSettings();
+  const { settings, currentUserID } = useSettings(); 
   const { setDayStart, setDayEnd, setTodayPageCompletedForTheDay } =
     useDayStatus();
   const { dayChanged } = useDayChange();
@@ -20,12 +20,13 @@ export const TodayTodosProvider = ({ children }) => {
   const [isTodayVacation, setIsTodayVacation] = useState(false);
   const [onboardStartTmrw, setOnboardStartTmrw] = useState(false); // Lets Today page know to show "all set" message if user elects to start Tmrw in onboarding
   const [isTodoArrayEmpty, setIsTodoArrayEmpty] = useState(true);
+  
 
   // In your useEffect call
   useEffect(() => {
     if (currentUserID) {
       getAndSetTodayTodos();
-    }
+    } 
     setTodayDOWAbbrev(getTodayAbbrevDOW());
   }, [dayChanged, currentUserID]);
 
@@ -69,7 +70,6 @@ export const TodayTodosProvider = ({ children }) => {
       }
       setIsTodoArrayEmpty(false);
     } else {
-      console.log("nope!");
       setIsTodoArrayEmpty(true);
     }
 

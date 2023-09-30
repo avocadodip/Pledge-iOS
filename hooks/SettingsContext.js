@@ -27,7 +27,8 @@ export const SettingsProvider = ({ children }) => {
   // Past bets data fetching:
   const [pastBetsArray, setPastBetsArray] = useState([]);
   const [fetchingPastBets, setFetchingPastBets] = useState(false);
-  const [lastDay, setLastDay] = useState([]);
+  const [lastPastBetsDay, setLastPastBetsDay] = useState([]);
+  const [lastTransactionsDay, setLastTransactionsDay] = useState([]);
   const [allPastBetsDataFetched, setAllPastBetsDataFetched] = useState(false);
   // Fetching transactions:
   const [transactionsArray, setTransactionsArray] = useState([]);
@@ -45,6 +46,13 @@ export const SettingsProvider = ({ children }) => {
         setIsAuthenticated(false); // user is not authenticated
         setUserDataFetched(false);
         setAppReadyToRender(false);
+
+        setAllPastBetsDataFetched(false);
+        setAllTransactionsDataFetched(false);
+        setPastBetsArray([]);
+        setTransactionsArray([]);
+        setLastPastBetsDay([]);
+        setLastTransactionsDay([]);
       }
     });
  
@@ -83,7 +91,7 @@ export const SettingsProvider = ({ children }) => {
 
   // Past Bets data fetching (to prevent fetching data every time)
   const fetchPastBets = async () => {
-    if (fetchingPastBets || allPastBetsDataFetched) {
+    if (allPastBetsDataFetched) {
       return;
     }
 
@@ -94,7 +102,7 @@ export const SettingsProvider = ({ children }) => {
         collection(doc(db, "users", currentUserID), "todos"),
         orderBy("date", "desc"),
         limit(10),
-        lastDay ? startAfter(lastDay) : undefined // startAfter if lastDay exists
+        lastPastBetsDay ? startAfter(lastPastBetsDay) : undefined // startAfter if lastDay exists
       );
 
       const querySnapshot = await getDocs(q);
@@ -114,7 +122,7 @@ export const SettingsProvider = ({ children }) => {
 
       // Set last day
       if (querySnapshot.docs.length > 0) {
-        setLastDay(
+        setLastPastBetsDay(
           querySnapshot.docs[querySnapshot.docs.length - 1].data().date
         );
       }
@@ -126,17 +134,6 @@ export const SettingsProvider = ({ children }) => {
     } finally {
       setFetchingPastBets(false);
     }
-  };
-
-  // Fetching weeks:
-  const formatWeekID = (weekID) => {
-    const year = weekID.slice(0, 4);
-    const month = weekID.slice(4, 6);
-    const dayStart = weekID.slice(6, 8);
-    const dayEnd = weekID.slice(9, 11);
-    return `${parseInt(month)}/${parseInt(dayStart)}/${year} - ${parseInt(
-      month
-    )}/${parseInt(dayEnd)}/${year}`;
   };
 
   const formatWeeksList = (weeksList) => {
@@ -157,6 +154,9 @@ export const SettingsProvider = ({ children }) => {
   };
 
   const fetchTransactions = async () => {
+    if (allTransactionsDataFetched) {
+      return;
+    }
     setFetchingTransactions(true);
 
     try {
@@ -165,7 +165,7 @@ export const SettingsProvider = ({ children }) => {
         where("isCharged", "==", true),
         orderBy("id", "desc"),
         limit(10),
-        lastDay ? startAfter(lastDay) : undefined // startAfter if lastDay exists
+        lastTransactionsDay ? startAfter(lastTransactionsDay) : undefined // startAfter if lastDay exists
       );
 
       const querySnapshot = await getDocs(q);
@@ -185,7 +185,7 @@ export const SettingsProvider = ({ children }) => {
 
       // Set last day
       if (querySnapshot.docs.length > 0) {
-        setLastDay(querySnapshot.docs[querySnapshot.docs.length - 1].data().id);
+        setLastTransactionsDay(querySnapshot.docs[querySnapshot.docs.length - 1].data().id);
       }
 
       console.log("Raw Weeks Data:", finesArray); // Log the raw data here

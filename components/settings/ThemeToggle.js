@@ -25,11 +25,11 @@ const ThemeToggle = () => {
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={menuOptionsStyles}>
-            <MenuOption
+            {/* <MenuOption
               style={currentThemeName === "Light" ? styles.selectedOption : {}}
               onSelect={() => saveTheme("Light")}
               text="Light"
-            />
+            /> */}
             <MenuOption
               style={currentThemeName === "Dark" ? styles.selectedOption : {}}
               onSelect={() => saveTheme("Dark")}

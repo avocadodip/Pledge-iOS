@@ -9,7 +9,7 @@ import SettingsActiveIcon from "../assets/icons/settings-active-icon.svg";
 import SettingsInactiveIcon from "../assets/icons/settings-inactive-icon.svg";
 import { BOTTOM_TAB_HEIGHT } from "../GlobalStyles";
 import { StyleSheet } from "react-native";
-import Today from "../screens/Today";
+import Today from "../screens/Today"; 
 import Tomorrow from "../screens/Tomorrow";
 import Account from "../screens/Account";
 import ChangeEmail from "../screens/ChangeEmail";

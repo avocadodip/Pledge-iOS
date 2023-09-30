@@ -9,13 +9,11 @@ import themeStyles, {
 import { Color } from "../GlobalStyles";
 import { useDayStatus } from "./DayStatusContext";
 import { useSettings } from "./SettingsContext";
-import { useTmrwTodos } from "./TmrwTodosContext";
 
 export const ThemeContext = createContext();
 
 export const ThemesProvider = ({ children }) => {
-  const { timeStatus, todayPageCompletedForTheDay } = useDayStatus();
-  const { tmrwPageCompletedForTheDay } = useTmrwTodos();
+  const { timeStatus, dayCompleted } = useDayStatus();
   const { settings, currentUserID, setAppReadyToRender } = useSettings();
   const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme
@@ -36,8 +34,7 @@ export const ThemesProvider = ({ children }) => {
     currentThemeName,
     currentUserID,
     timeStatus,
-    todayPageCompletedForTheDay,
-    tmrwPageCompletedForTheDay,
+    dayCompleted
   ]);
 
   const updateBackgroundGradient = () => {
@@ -45,7 +42,7 @@ export const ThemesProvider = ({ children }) => {
       case "Classic":
         if (
           (timeStatus === 1 &&
-            (!todayPageCompletedForTheDay || !tmrwPageCompletedForTheDay)) ||
+            (!dayCompleted)) ||
           currentUserID === null
         ) {
           setBackgroundGradient(redGradientValues);
@@ -55,8 +52,7 @@ export const ThemesProvider = ({ children }) => {
           setCurrentClassicColor("purple");
         } else if (
           timeStatus === 1 &&
-          todayPageCompletedForTheDay &&
-          tmrwPageCompletedForTheDay
+          dayCompleted
         ) {
           setBackgroundGradient(greenGradientValues);
           setCurrentClassicColor("green");

@@ -35,13 +35,30 @@ const PastBets = ({ navigation }) => {
     );
   };
 
-  console.log(pastBetsArray.length);
-
   return (
     <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
       <SafeAreaView style={style.pageContainer}>
         <SettingsHeader navigation={navigation} header={"Past Bets"} />
-        {pastBetsArray.length === 0 ? (
+        {fetchingPastBets ? (
+            <View style={{ marginTop: 30 }}>
+              <ActivityIndicator color={theme.textMedium} style={{ flex: 1 }} />
+            </View>
+          ) : pastBetsArray ? (
+            pastBetsArray.length > 0 ? (
+              <FlatList
+              data={pastBetsArray}
+              renderItem={({ item: dayData, index }) => (
+                <StatsItem dayData={dayData} index={index} />
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={renderFooter}
+              contentContainerStyle={{
+                paddingHorizontal: APP_HORIZONTAL_PADDING,
+              }} // Horizontal padding of 16
+            />
+            ) : (
           <View
             style={{
               height: "75%",
@@ -61,21 +78,9 @@ const PastBets = ({ navigation }) => {
               Previous bets will appear here. 
             </Text>
           </View>
-        ) : (
-          <FlatList
-            data={pastBetsArray}
-            renderItem={({ item: dayData, index }) => (
-              <StatsItem dayData={dayData} index={index} />
-            )}
-            keyExtractor={(item, index) => index.toString()}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter}
-            contentContainerStyle={{
-              paddingHorizontal: APP_HORIZONTAL_PADDING,
-            }} // Horizontal padding of 16
-          />
-        )}
+            )
+          ) : null
+        }
       </SafeAreaView>
     </LinearGradient>
   );

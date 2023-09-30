@@ -446,7 +446,7 @@ const getStyles = (theme) =>
       fontWeight: "bold",
     },
     mainContainer: {
-      width: "100%",
+      width: "100%", 
     },
     sectionContainer: {
       backgroundColor: theme.faintPrimary,

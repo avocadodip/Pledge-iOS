@@ -32,7 +32,7 @@ const Today = () => {
     isTodoArrayEmpty,
     onboardStartTmrw,
   } = useTodayTodos();
-  const { todayHeaderSubtitleMessage, timeStatus } = useDayStatus();
+  const { timeStatus } = useDayStatus();
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -57,7 +57,7 @@ const Today = () => {
         !isTodayVacation &&
         isTodayActiveDay &&
         !isTodoArrayEmpty && (
-          <DayStatusIndicator message={todayHeaderSubtitleMessage}/>
+          <DayStatusIndicator />
 
         )}
 

@@ -67,7 +67,7 @@ export default {
     // GetStartedModal step indicator
     stepStrokeFinishedColor: "#f56565",
     stepIndicatorUnFinishedColor: "#f97676",
-
+ 
     // Payment sheet
     paymentSheetComponentBackground: "#E05E56",
     paymentSheetComponentBackground: "#FFFFFF",

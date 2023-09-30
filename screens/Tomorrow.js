@@ -26,7 +26,7 @@ const Tomorrow = () => {
     settings: { timezone, vacationModeOn, isOnboarded },
   } = useSettings();
   const { dayChanged } = useDayChange();
-  const { tmrwHeaderSubtitleMessage, timeStatus } = useDayStatus();
+  const { timeStatus } = useDayStatus();
 
   const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty } =
     useTmrwTodos();
@@ -51,7 +51,7 @@ const Tomorrow = () => {
   return (
     <SafeAreaView style={styles.pageContainer}>
       {isOnboarded && (
-        <DayStatusIndicator message={tmrwHeaderSubtitleMessage} />
+        <DayStatusIndicator />
       )}
 
       <View style={[styles.headerContainer]}>

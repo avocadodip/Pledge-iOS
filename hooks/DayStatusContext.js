@@ -41,14 +41,23 @@ export const DayStatusProvider = ({ children }) => {
     useState("");
 
   const [todayPageCompletedForTheDay, setTodayPageCompletedForTheDay] = useState(false);
+  const [tmrwPageCompletedForTheDay, setTmrwPageCompletedForTheDay] = useState(false);
+  const [dayCompleted, setDayCompleted] = useState(false);
+
+  useEffect(() => {
+    setDayCompleted(todayPageCompletedForTheDay && tmrwPageCompletedForTheDay);
+  }, [todayPageCompletedForTheDay, tmrwPageCompletedForTheDay]);
+
 
   useEffect(() => { 
     setTimeStatus(getTimeStatus(dayStart, dayEnd));
-    console.log(getTimeStatus(dayStart, dayEnd));
   }, [dayStart, dayEnd]);
 
   useEffect(() => {
     // Change message when timeStatus or dayChanged changes
+    const doneMessages = ["All done for today!", "Boom! Nailed it!", "Crushed it, as usual", "Tasks completed!"];
+    const randomDoneMessage = doneMessages[Math.floor(Math.random() * doneMessages.length)];
+
     switch (timeStatus) {
       case 0:
         setTmrwHeaderSubtitleMessage(`Opens @ ${dayStart} AM`);
@@ -56,18 +65,26 @@ export const DayStatusProvider = ({ children }) => {
 
         break;
       case 1:
-        setTmrwHeaderSubtitleMessage(`Due @ ${dayEnd} PM`);
-        setTodayHeaderSubtitleMessage(`Due @ ${dayEnd} PM`);
+        if (dayCompleted) {
+          setTodayHeaderSubtitleMessage(randomDoneMessage);
+        } else {
+          setTmrwHeaderSubtitleMessage(`Due @ ${dayEnd} PM`);
+          setTodayHeaderSubtitleMessage(`Due @ ${dayEnd} PM`);
+        }
         break;
       case 2:
-        setTmrwHeaderSubtitleMessage(`Ended @ ${dayEnd} PM`);
-        setTodayHeaderSubtitleMessage(`Ended @ ${dayEnd} PM`);
+        if (dayCompleted) {
+          setTodayHeaderSubtitleMessage(randomDoneMessage);
+        } else {
+          setTmrwHeaderSubtitleMessage(`Ended @ ${dayEnd} PM`);
+          setTodayHeaderSubtitleMessage(`Ended @ ${dayEnd} PM`);
+        }
         break;
       default:
         setTmrwHeaderSubtitleMessage("");
         setTodayHeaderSubtitleMessage("");
     }
-  }, [timeStatus, dayChanged, dayStart, dayEnd]);
+  }, [timeStatus, dayChanged, dayStart, dayEnd, dayCompleted]);
 
   return ( 
     <DayStatusContext.Provider
@@ -82,6 +99,9 @@ export const DayStatusProvider = ({ children }) => {
 
         todayPageCompletedForTheDay,
         setTodayPageCompletedForTheDay,
+        tmrwPageCompletedForTheDay,
+        setTmrwPageCompletedForTheDay,
+        dayCompleted,
       }}
     >
       {children}

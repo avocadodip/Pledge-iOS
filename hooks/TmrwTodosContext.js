@@ -9,11 +9,12 @@ import {
 } from "../utils/currentDate";
 import { useSettings } from "./SettingsContext";
 import { useDayChange } from "./useDayChange";
+import { useDayStatus } from "./DayStatusContext";
 
 export const TmrwTodosContext = createContext();
  
 // Sets tmrwTodos, tmrwDOWAbbrev, nextActiveDay
-export const TmrwTodosProvider = ({ children }) => {
+export const TmrwTodosProvider = ({ children }) => { 
   const {
     settings, settings: { daysActive, vacationModeOn },
     currentUserID,
@@ -23,18 +24,14 @@ export const TmrwTodosProvider = ({ children }) => {
   const [tmrwDOWAbbrev, setTmrwDOWAbbrev] = useState(getTmrwAbbrevDOW());
   const [isTmrwActiveDay, setIsTmrwActiveDay] = useState(false);
   const [noTmrwTodoLocked, setNoTmrwTodoLocked] = useState(false);
+  const { setTmrwPageCompletedForTheDay } =
+  useDayStatus();
 
   const [nextActiveDay, setNextActiveDay] = useState(
     getNextActiveDay(getTmrwDOW(), daysActive)
   );
 
-  useEffect(() => {
-    console.log("settings changed");
-  }, [settings]);
-
   const [isTodoArrayEmpty, setIsTodoArrayEmpty] = useState(true);
-  const [tmrwPageCompletedForTheDay, setTmrwPageCompletedForTheDay] =
-    useState(false);
 
   // Re-run when it hits 12am or daysActive changes
   useEffect(() => {
@@ -120,7 +117,6 @@ export const TmrwTodosProvider = ({ children }) => {
         tmrwTodos,
         setTmrwTodos,
         updateTodo,
-        tmrwPageCompletedForTheDay,
         noTmrwTodoLocked,
         getAndSetTmrwTodos,
         setIsTmrwActiveDay
