@@ -91,7 +91,7 @@ export const SettingsProvider = ({ children }) => {
 
   // Past Bets data fetching (to prevent fetching data every time)
   const fetchPastBets = async () => {
-    if (allPastBetsDataFetched) {
+    if (allPastBetsDataFetched || fetchingPastBets) {
       return;
     }
 

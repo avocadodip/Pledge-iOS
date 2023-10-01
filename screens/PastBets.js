@@ -28,40 +28,21 @@ const PastBets = ({ navigation }) => {
   };
 
   const renderFooter = () => {
-    if (!fetchingPastBets) return null;
-    return (
-      <View style={{ marginTop: 30 }}>
-        <ActivityIndicator style={{ color: "#000" }} />
-      </View>
-    );
+    if (fetchingPastBets) {
+      return (
+        <View style={{ marginTop: 30 }}>
+          <ActivityIndicator color={theme.textMedium} />
+        </View>
+      );
+    }
+    return null;
   };
 
   return (
     <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
       <SafeAreaView style={style.pageContainer}>
         <SettingsHeader navigation={navigation} header={"Past Bets"} />
-        {fetchingPastBets ? (
-            <View style={{ marginTop: 30 }}>
-              <ActivityIndicator color={theme.textMedium} style={{ flex: 1 }} />
-            </View>
-          ) : pastBetsArray ? (
-            pastBetsArray.length > 0 ? (
-              <FlatList
-              data={pastBetsArray}
-              renderItem={({ item: dayData, index }) => (
-                <StatsItem dayData={dayData} index={index} />
-              )}
-              keyExtractor={(item, index) => index.toString()}
-              onEndReached={handleLoadMore}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={renderFooter}
-              contentContainerStyle={{
-                paddingHorizontal: APP_HORIZONTAL_PADDING,
-              }} // Horizontal padding of 16
-              showsVerticalScrollIndicator={false}
-
-            />
-            ) : (
+        {pastBetsArray.length === 0 && !fetchingPastBets ? (
           <View
             style={{
               height: "75%",
@@ -78,12 +59,25 @@ const PastBets = ({ navigation }) => {
                 fontWeight: 500,
               }}
             >
-              Previous bets will appear here. 
+              Previous bets will appear here.
             </Text>
           </View>
-            )
-          ) : null
-        }
+        ) : (
+          <FlatList
+            data={pastBetsArray}
+            renderItem={({ item: dayData, index }) => (
+              <StatsItem dayData={dayData} index={index} />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
+            contentContainerStyle={{
+              paddingHorizontal: APP_HORIZONTAL_PADDING,
+            }} // Horizontal padding of 16
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </SafeAreaView>
     </LinearGradient>
   );
