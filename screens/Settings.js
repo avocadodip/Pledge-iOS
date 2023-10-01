@@ -158,7 +158,8 @@ const Settings = ({ navigation }) => {
     <View style={settingsPageStyles.pageContainer}>
       <ScrollView
         style={styles.scrollView}
-        indicatorStyle={theme.scrollIndicator}
+        // indicatorStyle={theme.scrollIndicator}
+        showsVerticalScrollIndicator={false}
         onScroll={(event) => {
           setScrollY(event.nativeEvent.contentOffset.y);
         }}
@@ -357,7 +358,7 @@ const Settings = ({ navigation }) => {
               <View style={styles.leftSettingsButton}>
                 <TaskFineIcon width={23} height={23} color={theme.textHigh} />
 
-                <Text style={styles.buttonTitle}>Missed Task Fine</Text>
+                <Text style={styles.buttonTitle}>Baller Mode</Text>
                 <Text style={{...styles.buttonTitle, opacity: 0.5}}>(Coming soon)</Text>
               </View>
               <Text style={styles.rightSideText}>$1</Text>

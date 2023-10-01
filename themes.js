@@ -67,7 +67,7 @@ export default {
     // GetStartedModal step indicator
     stepStrokeFinishedColor: "#f56565",
     stepIndicatorUnFinishedColor: "#f97676",
- 
+
     // Payment sheet
     paymentSheetComponentBackground: "#E05E56",
     paymentSheetComponentBackground: "#FFFFFF",
@@ -75,7 +75,8 @@ export default {
     paymentSheetPrimary: "#fcfdff",
 
     // Day Status indicator
-    dayStatusIndicatorBg: "#e7322f",
+    dayStatusIndicatorBgIncomplete: "#e7322f",
+    dayStatusIndicatorBgComplete: Color.white18,
 
     // Start first day button border
     buttonBorder: "#feb3b33d",
@@ -126,7 +127,8 @@ export default {
     paymentSheetPrimary: "#fcfdff",
 
     // Day Status indicator
-    dayStatusIndicatorBg: "#df3a3a",
+    dayStatusIndicatorBgIncomplete: "#df3a3a",
+    dayStatusIndicatorBgComplete: "#29a12f",
     
     // Start first day button border
     buttonBorder: "#4a4a4a",

@@ -210,6 +210,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
             noInputFine = 0,
             finedTasks = [],
             id = startOfWeekFormatted,
+            chargeErrorType = null,
           } = weekDoc.exists ? weekDoc.data() : {};
 
           // Make updates
@@ -226,6 +227,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
                 noInputFine: noInputFine + todayNoInputFine,
                 finedTasks: updatedFinedTasks,
                 id,
+                chargeErrorType,
               },
               {merge: true},
           );
@@ -267,6 +269,8 @@ const runDailyUpdate = onRequest(async (req, res) => {
               if (err.code == "incorrect_zip") {
                 console.log("incorrect zip");
               }
+              await weekRef.update({chargeErrorType: err.code});
+
               // Used to retrieve the details of a Stripe PaymentIntent when an error occurs during the creation of a PaymentIntent.
               if (err.raw && err.raw.payment_intent) {
                 const paymentIntentRetrieved = await stripe.paymentIntents.retrieve(

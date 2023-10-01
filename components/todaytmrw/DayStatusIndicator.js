@@ -21,8 +21,8 @@ const DayStatusIndicator = ({ message }) => {
         gap: 7,
         backgroundColor:
           dayCompleted
-            ? theme.lightPrimary
-            : theme.dayStatusIndicatorBg,
+            ? theme.dayStatusIndicatorBgComplete
+            : theme.dayStatusIndicatorBgIncomplete,
         paddingHorizontal: 9,
         borderRadius: 16,
       }}

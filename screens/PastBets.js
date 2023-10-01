@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   FlatList,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import { APP_HORIZONTAL_PADDING, BOTTOM_TAB_HEIGHT } from "../GlobalStyles";
 import SettingsHeader from "../components/settings/SettingsHeader";
@@ -91,7 +92,6 @@ export default PastBets;
 const style = StyleSheet.create({
   pageContainer: {
     display: "flex",
-    marginBottom: BOTTOM_TAB_HEIGHT + 90,
-    height: "100%",
+    marginBottom: BOTTOM_TAB_HEIGHT + 90,  
   },
 });

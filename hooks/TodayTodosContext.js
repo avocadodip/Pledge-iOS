@@ -51,7 +51,7 @@ export const TodayTodosProvider = ({ children }) => {
 
     if (docSnapshot.exists()) {
       const {
-        opensAt,
+        opensAt, 
         closesAt,
         isActive,
         isVacation,

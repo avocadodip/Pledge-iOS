@@ -33,7 +33,9 @@ const Today = () => {
     onboardStartTmrw,
   } = useTodayTodos();
   const { timeStatus } = useDayStatus();
-
+  console.log("asdf");
+  console.log(isTodoArrayEmpty);
+ 
   const [modalVisible, setModalVisible] = useState(false);
 
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
