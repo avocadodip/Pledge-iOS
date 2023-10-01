@@ -51,40 +51,42 @@ export default function TodoBottomSheet() {
 
   // Updates todo object when a field is edited
   const handleInputChange = (field, value) => {
-    setTodo({
-      ...todo,
-      [field]: value,
+    setTodo((prevTodo) => {
+      const updatedTodo = {
+        ...prevTodo,
+        [field]: value,
+      };
+      todoRef.current = updatedTodo; // Update todoRef here
+      return updatedTodo;
     });
   };
 
-  const handleSheetChange = (index) => {
-    if (index === -1) {
-      if (isBottomSheetEditable) {
-        updateTodo(todoRef.current);
-      }
-      setIsBottomSheetOpen(false);
-    }
-  };
-
   // Backdrop - when pressed, updates global todo array and closes sheet
-  const renderBackdrop = useCallback(
-    (props) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        onPress={() => {
-          if (isBottomSheetEditable) {
-            updateTodo(todoRef.current);
+const renderBackdrop = useCallback(
+  (props) => (
+    <BottomSheetBackdrop
+      {...props}
+      disappearsOnIndex={-1}
+      appearsOnIndex={0}
+      onPress={() => {
+        if (isBottomSheetEditable) {
+          console.log(todo);
+          if (todo.amount === "") {
+            setTodo((prevTodo) => ({
+              ...prevTodo,
+              amount: "0",
+            }));
           }
-          setTimeout(() => {
-            setIsBottomSheetOpen(false);
-          }, 100); // Need to wait for animation to finish
-        }}
-      />
-    ),
-    [isBottomSheetEditable]
-  );
+          updateTodo(todoRef.current);
+        }
+        setTimeout(() => {
+          setIsBottomSheetOpen(false);
+        }, 100); // Need to wait for animation to finish
+      }}
+    />
+  ),
+  [isBottomSheetEditable, todo]
+);
 
   const handleNavigateToAddPayment = () => {
     updateTodo(todoRef.current);
@@ -104,7 +106,6 @@ export default function TodoBottomSheet() {
       snapPoints={snapPoints}
       enablePanDownToClose={true}
       backdropComponent={renderBackdrop}
-      onChange={handleSheetChange}
       backgroundComponent={null} // gets rid of white flash
       handleStyle={{ display: "none" }} // hide default handle
       style={{
@@ -198,7 +199,7 @@ export default function TodoBottomSheet() {
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.descriptionContainer}>
-              <View style={{marginTop: 2}}>
+              <View style={{ marginTop: 2 }}>
                 <DescriptLinesIcon color={theme.textHigh} />
               </View>
               <TextInput

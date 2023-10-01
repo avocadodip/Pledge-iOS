@@ -75,7 +75,6 @@ export const TmrwTodosProvider = ({ children }) => {
 
   // 1. Get tmrw day data
   const getAndSetTmrwTodos = async () => {
-    let isActive;
     let fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
 

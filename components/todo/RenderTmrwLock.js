@@ -57,7 +57,7 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
     // Convert string to float
     if (amount !== "") {
       formattedAmount = parseFloat(amount);
-    }
+    } 
 
     // Format new todo
     const newTodo = {

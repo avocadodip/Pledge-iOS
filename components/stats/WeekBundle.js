@@ -23,7 +23,10 @@ const WeekBundle = ({ isFirstSection, transactionsData }) => {
 
 // Group tasks by date
 const tasksByDate = finedTasks.reduce((acc, task) => {
-  (acc[task.date] = acc[task.date] || []).push(task);
+  if (!acc[task.dateName]) {
+    acc[task.dateName] = [];
+  }
+  acc[task.dateName].push(task);
   return acc;
 }, {});
 

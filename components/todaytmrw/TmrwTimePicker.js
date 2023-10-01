@@ -75,7 +75,7 @@ const TmrwTimePicker = ({ altMessage }) => {
         {altMessage ? (
           <Text style={styles.headerMessageText}>Day will open at </Text>
         ) : (
-          <Text style={styles.headerMessageText}>Day will start at </Text>
+          <Text style={styles.headerMessageText}>Tmrw will start at </Text>
         )}
 
         {dayStart == "" || !dayStart ? (
