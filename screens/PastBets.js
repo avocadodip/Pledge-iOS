@@ -58,6 +58,8 @@ const PastBets = ({ navigation }) => {
               contentContainerStyle={{
                 paddingHorizontal: APP_HORIZONTAL_PADDING,
               }} // Horizontal padding of 16
+              showsVerticalScrollIndicator={false}
+
             />
             ) : (
           <View

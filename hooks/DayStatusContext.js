@@ -55,7 +55,8 @@ export const DayStatusProvider = ({ children }) => {
 
   useEffect(() => {
     // Change message when timeStatus or dayChanged changes
-    const doneMessages = ["All done for today!", "Boom! Nailed it!", "Crushed it, as usual", "Tasks completed!"];
+    const doneMessages = ["You're done for today!"];
+    // "Boom! Nailed it!", "Crushed it, as usual", 
     const randomDoneMessage = doneMessages[Math.floor(Math.random() * doneMessages.length)];
 
     switch (timeStatus) {

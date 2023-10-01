@@ -146,6 +146,7 @@ const Transactions = ({ navigation }) => {
                 }}
                 style={styles.sectionList}
                 renderSectionFooter={() => <View style={{ height: 10 }} />}
+                showsVerticalScrollIndicator={false}
               />
             ) : (
               <View style={styles.textBox}>

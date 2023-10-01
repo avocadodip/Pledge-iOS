@@ -31,6 +31,13 @@ const StatsItem = ({ dayData, index }) => {
     return null;
   }
 
+
+  // Filter out null values and count the number of completed tasks
+  const completedTasks = todos.filter((todo) => todo && todo.isComplete).length;
+
+  // Filter out null values and count the total number of tasks
+  const totalTasks = todos.filter((todo) => todo !== null).length;
+
   if (dayData && todos && todos.some((todo) => todo !== null)) {
     return (
       <>
@@ -43,7 +50,9 @@ const StatsItem = ({ dayData, index }) => {
             {upcomingDay ? (
               <ClockIcon height={24} width={24} color={"white"} />
             ) : (
-              <Text style={styles.fractionText}>{todos.length}/3</Text>
+              <Text style={styles.fractionText}>
+               {completedTasks}/{totalTasks}
+              </Text>
             )}
           </View>
           {/* BUTTON CONTENT */}
@@ -92,7 +101,7 @@ const StatsItem = ({ dayData, index }) => {
           <View style={styles.button}>
             <Text style={styles.dateText}>{dateName}</Text>
             <Text style={styles.fractionText}>
-              {isVacation ? "Vacation" : !isActive ? "Day off" : "0/3"}
+              {isVacation ? "Vacation" : !isActive ? "Day off" : "0/0"}
             </Text>
           </View>
         </View>
