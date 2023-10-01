@@ -17,8 +17,7 @@ const TmrwTodo = ({
   const { todoNumber, title, description, amount, tag, isLocked } = todoData;
   const { timeStatus } = useDayStatus();
 
-  const formattedAmount = (!isNaN(amount) && amount) ? amount.toString() : '';
-
+  const formattedAmount = (amount !== null && amount !== undefined) ? amount.toString() : '';
   return (
     <View style={styles.infoContainer}>
       <TouchableNipple

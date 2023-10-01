@@ -47,17 +47,10 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
     // Validate title & amount fields
     if (title == "") {
       showMissingFieldAlert("title");
-      return; 
-    } 
-    // else if (amount == "") {
-    //   showMissingFieldAlert("amount");
-    //   return;
-    // }
+      return;
+    }
 
-    // Convert string to float
-    if (amount !== "") {
-      formattedAmount = parseFloat(amount);
-    } 
+    formattedAmount = parseFloat(amount);
 
     // Format new todo
     const newTodo = {
