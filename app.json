@@ -5,7 +5,7 @@
     "plugins": [
       "@react-native-google-signin/google-signin"
     ],
-    "version": "1.0.7",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/logos/1024ios.png",
     "splash": {
@@ -23,7 +23,7 @@
       "infoPlist": {
         "NSCameraUsageDescription": "We need access to your camera so Stripe can scan your card information."
       },
-      "buildNumber": "8"
+      "buildNumber": "9"
     },
     "android": {
       "package": "com.cewidiupleek.pledge"

@@ -64,6 +64,7 @@ export const TodayTodosProvider = ({ children }) => {
       setDayStart(opensAt);
       setDayEnd(closesAt);
       setOnboardStartTmrw(onboardStartTmrw);
+
       
       if (todos) {
         fetchedTodos = todos;
