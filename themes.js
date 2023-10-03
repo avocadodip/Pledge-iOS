@@ -75,7 +75,7 @@ export default {
     paymentSheetPrimary: "#fcfdff",
 
     // Day Status indicator
-    dayStatusIndicatorBgIncomplete: "#e7322f",
+    dayStatusIndicatorBgIncomplete: Color.white18,
     dayStatusIndicatorBgComplete: Color.white18,
 
     // Start first day button border

@@ -25,11 +25,14 @@ const OPEN_DURATION = 100;
 const CLOSE_DURATION = 150;
 
 const TodayTodo = ({ todoData }) => {
-  const { todoNumber, title, description, amount, tag, isComplete } = todoData;
+  const { todoNumber, title, description, amount, tag, isComplete } =
+    todoData;
   const { setTodayTodos } = useTodayTodos();
   const { timeStatus } = useDayStatus();
   const { openBottomSheet } = useBottomSheet();
   const { currentUserID } = useSettings();
+
+  const stringAmount = (amount !== null && amount !== undefined) ? amount.toString() : '';
 
   const { theme } = useThemes();
   const styles = getTodoStyles(theme);
@@ -101,7 +104,7 @@ const TodayTodo = ({ todoData }) => {
     return (
       <View style={[styles.infoContainer]}>
         {/* Left side */}
-        <View style={[{flex: 8}]}> 
+        <View style={[{ flex: 8 }]}>
           <TouchableRipple
             onPress={() => {
               openBottomSheet(todoData, "today");
@@ -124,7 +127,7 @@ const TodayTodo = ({ todoData }) => {
                   style={[
                     styles.titleText,
                     { fontSize: variableFontSize(title) },
-                  ]} 
+                  ]}
                 >
                   {title}{" "}
                   {description !== "" && (
@@ -140,9 +143,11 @@ const TodayTodo = ({ todoData }) => {
                   )}
                 </Text>
               </View>
-              {amount && (
+              {stringAmount && (
                 <View style={styles.amountContainer}>
-                  <Text style={styles.amountText}>${amount}</Text>
+                  <Text style={styles.amountText}>
+                    {"$" + stringAmount.toString()}
+                  </Text>
                 </View>
               )}
             </View>
@@ -203,9 +208,11 @@ const TodayTodo = ({ todoData }) => {
                     )}
                   </Text>
                 </View>
-                {amount && (
+                {stringAmount && (
                   <View style={styles.amountContainer}>
-                    <Text style={styles.amountText}>${amount}</Text>
+                    <Text style={styles.amountText}>
+                      {"$" + stringAmount.toString()}
+                    </Text>
                   </View>
                 )}
               </View>
@@ -220,7 +227,7 @@ const TodayTodo = ({ todoData }) => {
             }}
             style={styles.rightButtonContainer}
           >
-            <CheckIcon color={theme.primary}/>
+            <CheckIcon color={theme.primary} />
           </TouchableRipple>
         </Animated.View>
       </View>
@@ -279,9 +286,11 @@ const TodayTodo = ({ todoData }) => {
                       )}
                     </Text>
                   </View>
-                  {amount && (
+                  {stringAmount && (
                     <View style={styles.amountContainer}>
-                      <Text style={styles.amountText}>${amount}</Text>
+                      <Text style={styles.amountText}>
+                        {"$" + stringAmount.toString()}
+                      </Text>
                     </View>
                   )}
                 </View>

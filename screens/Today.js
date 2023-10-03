@@ -1,7 +1,6 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useState } from "react";
-import Todo from "../components/todo/Todo";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useDayStatus } from "../hooks/DayStatusContext";
 import { useTodayTodos } from "../hooks/TodayTodosContext";
@@ -33,8 +32,6 @@ const Today = () => {
     onboardStartTmrw,
   } = useTodayTodos();
   const { timeStatus } = useDayStatus();
-  console.log("asdf");
-  console.log(isTodoArrayEmpty);
  
   const [modalVisible, setModalVisible] = useState(false);
 

@@ -80,8 +80,8 @@ const StatsItem = ({ dayData, index }) => {
                     </View>
                     <View style={styles.row}>
                       <Text style={styles.tagText}>{tag}</Text>
-                      {amount && (
-                        <Text style={styles.titleText}>${amount}</Text>
+                      {amount.toString() && (
+                        <Text style={styles.titleText}>${amount.toString()}</Text>
                       )}
                     </View>
                   </View>

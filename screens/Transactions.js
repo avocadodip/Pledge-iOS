@@ -27,10 +27,6 @@ const Transactions = ({ navigation }) => {
   useEffect(() => {
     fetchTransactions();
   }, []);
-  useEffect(() => {
-    console.log("trans array");
-    console.log(transactionsArray);
-  }, [transactionsArray]);
 
   // const tempData = [
   //   {

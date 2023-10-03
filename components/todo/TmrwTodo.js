@@ -16,7 +16,7 @@ const TmrwTodo = ({
   const styles = getTodoStyles(theme);
   const { todoNumber, title, description, amount, tag, isLocked } = todoData;
   const { timeStatus } = useDayStatus();
-
+ 
   const formattedAmount = (amount !== null && amount !== undefined) ? amount.toString() : '';
   return (
     <View style={styles.infoContainer}>

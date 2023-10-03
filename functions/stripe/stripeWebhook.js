@@ -41,7 +41,7 @@ const stripeWebhook = onRequest(async (req, res) => {
     const userDoc = snapshot.docs[0];
     const userId = userDoc.id;
     const userRef = db.collection("users").doc(userId);
-    console.log("5");
+
     // Handle the event
     switch (event.type) {
       case "setup_intent.succeeded": {

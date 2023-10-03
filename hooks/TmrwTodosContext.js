@@ -59,9 +59,6 @@ export const TmrwTodosProvider = ({ children }) => {
     // Check if there is at least one non-null item with isLocked true
     let noTmrwTodoLocked =
       tmrwTodos && !tmrwTodos.some((todo) => todo && todo.isLocked === true);
- 
-      console.log("4");
-      console.log(noTmrwTodoLocked);
 
     if (allLocked || !isTmrwActiveDay || vacationModeOn) {
       setTmrwPageCompletedForTheDay(true);
