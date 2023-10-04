@@ -45,7 +45,6 @@ function calculateFines(todos, dateName) {
   };
 }
 
-
 /**
  * Formats a date range in the format "Aug 20 - Aug 26, 2023".
  *
@@ -118,7 +117,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
   // Get time zones where current time is between 11:45pm and 12:00am
   const desiredTimeZones = timeZones.filter((tz) => {
     const currentTime = moment().tz(tz).format("HH:mm");
-    return currentTime >= "23:45" && currentTime <= "24:00"; // 23:45 TEMP CHANGE
+    return currentTime >= "00:45" && currentTime <= "24:00"; // 23:45 TEMP CHANGE
   });
 
   const db = admin.firestore();
@@ -144,7 +143,6 @@ const runDailyUpdate = onRequest(async (req, res) => {
             isPaymentSetup,
             stripeCustomerId,
             paymentMethodId,
-            notificationTimes,
           } = userDoc;
           const userid = doc.id;
           const userRef = db.collection("users").doc(userid);
@@ -153,6 +151,9 @@ const runDailyUpdate = onRequest(async (req, res) => {
           const now = moment().tz(tz);
           const todayFormatted = now.format("YYYYMMDD");
           const todayDOW = now.format("dddd");
+          // Next day (for notifications - we pull isActive & closesAt and set to user settings doc)
+          const nextDay = now.clone().add(1, "days");
+          const nextDayFormatted = nextDay.format("YYYYMMDD");
           // Next next day (for which we will create the todo doc)
           const nextNextDay = now.clone().add(2, "days");
           const nextNextDayFormatted = nextNextDay.format("YYYYMMDD");
@@ -171,10 +172,25 @@ const runDailyUpdate = onRequest(async (req, res) => {
 
           // Defining doc references
           const todayRef = userRef.collection("todos").doc(todayFormatted);
+          const nextDayRef = userRef.collection("todos").doc(nextDayFormatted);
           const nextNextDayRef = userRef
               .collection("todos")
               .doc(nextNextDayFormatted);
           const weekRef = userRef.collection("fines").doc(pastWeek);
+
+          // For notifications: set next day's isActive and opensAt fields to user's doc
+          if (nextDayRef.exists) {
+          // Extract the isActive and dayEnd fields
+            const {isActive, closesAt} = nextDayRef.data();
+
+            // Update the user document
+            await userRef.update({
+              "isTodayActive": isActive,
+              "todayDayEnd": closesAt,
+            });
+          } else {
+            console.log(`No document for next day ${nextDayFormatted} for user ${userid}`);
+          }
 
           // 3. Set user's nextnextdayDoc w/ settings data
           await nextNextDayRef.set(
@@ -186,7 +202,6 @@ const runDailyUpdate = onRequest(async (req, res) => {
                 isActive: daysActive[nextNextDOW],
                 isVacation: vacationModeOn,
                 todos: [null, null, null],
-                notificationTimes: notificationTimes,
               },
               {merge: true},
           ); // merge true to avoid overwriting existing data
@@ -244,12 +259,12 @@ const runDailyUpdate = onRequest(async (req, res) => {
 
           // 6. Charge user with weekly fine if it's Saturday
           if (
-            todayDOW === "Saturday" && // TEMP
-            stripeCustomerId &&
-            paymentMethodId &&
-            isPaymentSetup &&
-            updatedTotalWeeklyFine > 0 &&
-            !isCharged
+            todayDOW === "Wednesday" && // TEMP
+          stripeCustomerId &&
+          paymentMethodId &&
+          isPaymentSetup &&
+          updatedTotalWeeklyFine > 0 &&
+          !isCharged
           ) {
             const formattedAmount = Math.round(updatedTotalWeeklyFine * 100); // Ensure it's an integer
             if (formattedAmount <= 0) {
@@ -257,7 +272,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
             }
             // Create a Stripe charge
             try {
-              // const paymentIntent =
+            // const paymentIntent =
               await stripe.paymentIntents.create({
                 amount: formattedAmount,
                 currency: userDoc.currency,
@@ -281,9 +296,8 @@ const runDailyUpdate = onRequest(async (req, res) => {
 
               // Used to retrieve the details of a Stripe PaymentIntent when an error occurs during the creation of a PaymentIntent.
               if (err.raw && err.raw.payment_intent) {
-                const paymentIntentRetrieved = await stripe.paymentIntents.retrieve(
-                    err.raw.payment_intent.id,
-                );
+                const paymentIntentRetrieved =
+                await stripe.paymentIntents.retrieve(err.raw.payment_intent.id);
                 console.log("PI retrieved: ", paymentIntentRetrieved.id);
               } else {
                 console.log("Error does not contain a payment intent");

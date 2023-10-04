@@ -36,11 +36,9 @@ const NotificationsModal = ({
   notifsEnabled,
   notificationTimes,
 }) => {
-  console.log(notificationTimes);
   const [notificationsEnabled, setNotificationsEnabled] =
     useState(notifsEnabled);
   const [timeChoiceStates, setTimeChoiceStates] = useState(notificationTimes);
-  const { tmrwDate } = useDayChange();
 
   const enableNotifications = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
@@ -87,12 +85,8 @@ const NotificationsModal = ({
   // Use the function when updating the document
   const updateTimeChoices = async (newState) => {
     const userRef = doc(db, "users", currentUserID);
-    const tmrwDocRef = doc(db, "users", currentUserID, "todos", tmrwDate);
     try {
       await updateDoc(userRef, {
-        notificationTimes: convertToMinutes(newState),
-      });
-      await updateDoc(tmrwDocRef, {
         notificationTimes: convertToMinutes(newState),
       });
     } catch (error) {

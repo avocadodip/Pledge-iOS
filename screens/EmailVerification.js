@@ -116,6 +116,12 @@ const EmailVerification = ({ route, navigation }) => {
         isOnboarded: false,
         paymentMethodId: null,
         last4Digits: null,
+        // for notifs:
+        notificationsEnabled: false,
+        todayIsActive: false,
+        todayDayEnd: "",
+        notifsAllSent: false,
+
       });
     } catch (error) {
       console.error(error);

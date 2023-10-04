@@ -6,56 +6,6 @@
 const {admin} = require("../common");
 
 /**
- * Checks and sends notifications to users.
- * @async
- * @return {Object} contains several variables
- */
-const checkAndSendNotifications = async () => {
-  const currentTime = admin.firestore.Timestamp.now();
-  const maxTime = currentTime + 3 * 60 * 60 * 1000; // 3 hours into the future
-
-  const usersSnapshot = await admin.firestore().collection("users").get();
-
-  usersSnapshot.forEach(async (userDoc) => {
-    const uid = userDoc.id;
-    const notificationTimes = userDoc.data().notificationTimes;
-    const userTimeZone = userDoc.data().timezone;
-
-    const todosSnapshot = await admin
-        .firestore()
-        .collection("users")
-        .doc(uid)
-        .collection("todos")
-        .where("deadline", "<=", maxTime)
-        .get();
-
-    todosSnapshot.forEach((todoDoc) => {
-      const todoData = todoDoc.data();
-      let deadline = todoData.deadline;
-
-      // Convert deadline to user's local time
-      deadline = convertToUserLocalTime(deadline, userTimeZone);
-
-      const notified = todoData.notified || {};
-
-      for (const [time, isActive] of Object.entries(notificationTimes)) {
-        if (isActive && !notified[time]) {
-          const notifyTime = deadline - parseTimeToMillis(time);
-          if (currentTime >= notifyTime) {
-            // Send notification
-            sendNotification(uid, todoData);
-            notified[time] = true;
-          }
-        }
-      }
-
-      // Update the notified flags in Firestore
-      todoDoc.ref.update({notified});
-    });
-  });
-};
-
-/**
  * Converts UTC time to user's local time based on their time zone.
  * @param {number} utcTime - The UTC time.
  * @param {string} userTimeZone - The user's time zone.
@@ -93,6 +43,57 @@ function sendNotification(uid, todoData) {
   // set notificationStatus here
   return notificationStatus;
 }
+
+/**
+ * Checks and sends notifications to users.
+ * @async
+ * @return {Object} contains several variables
+ */
+const checkAndSendNotifications = async () => {
+  const currentTime = admin.firestore.Timestamp.now();
+  const maxTime = currentTime + 6 * 60 * 60 * 1000; // 6 hours into the future
+
+  // Get all users
+  const usersSnapshot = await admin.firestore().collection("users").get();
+
+  usersSnapshot.forEach(async (userDoc) => {
+    const uid = userDoc.id;
+    const notificationTimes = userDoc.data().notificationTimes;
+    const userTimeZone = userDoc.data().timezone;
+
+    const todosSnapshot = await admin
+        .firestore()
+        .collection("users")
+        .doc(uid)
+        .collection("todos")
+        .where("closesAt", "<=", maxTime)
+        .get();
+
+    todosSnapshot.forEach((todoDoc) => {
+      const todoData = todoDoc.data();
+      let deadline = todoData.deadline;
+
+      // Convert deadline to user's local time
+      deadline = convertToUserLocalTime(deadline, userTimeZone);
+
+      const notified = todoData.notified || {};
+
+      for (const [time, isActive] of Object.entries(notificationTimes)) {
+        if (isActive && !notified[time]) {
+          const notifyTime = deadline - parseTimeToMillis(time);
+          if (currentTime >= notifyTime) {
+            // Send notification
+            sendNotification(uid, todoData);
+            notified[time] = true;
+          }
+        }
+      }
+
+      // Update the notified flags in Firestore
+      todoDoc.ref.update({notified});
+    });
+  });
+};
 
 module.exports = {
   checkAndSendNotifications,
