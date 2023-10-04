@@ -6,12 +6,14 @@ import { db } from "../../database/firebase";
 import ToggleSwitch from "toggle-switch-react-native";
 import { useThemes } from "../../hooks/ThemesContext";
 import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
+import { useDayChange } from "../../hooks/useDayChange";
 
 const VacationToggle = ({ currentUserID, vacationModeOn }) => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { tmrwTodos } = useTmrwTodos();
   const [tmrwTodoLocked, setTmrwTodoLocked] = useState(false);
+  const { tmrwDate } = useDayChange();
 
   useEffect(() => {
     if (tmrwTodos.some(item => item && item.isLocked === true)) {
@@ -29,9 +31,14 @@ const VacationToggle = ({ currentUserID, vacationModeOn }) => {
     }
 
     const userRef = doc(db, "users", currentUserID);
+    const tmrwDocRef = doc(db, "users", currentUserID, "todos", tmrwDate);
+
     try {
       await updateDoc(userRef, {
         vacationModeOn: updatedBool,
+      });
+      await updateDoc(tmrwDocRef, {
+        isVacation: updatedBool,
       });
     } catch (error) {
       console.error("Error updating document: ", error);

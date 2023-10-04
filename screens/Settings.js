@@ -64,18 +64,19 @@ const Settings = ({ navigation }) => {
       stripeCustomerId,
       isPaymentSetup,
       last4Digits,
-      // notificationsEnabled,
+      notificationsEnabled,
+      notificationTimes,
     },
     currentUserID,
   } = useSettings();
   const [loading, setLoading] = useState(false);
   const [isPaymentInitialized, setIsPaymentInitialized] = useState(false);
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
-  // const [notifsModalVisible, setNotifsModalVisible] = useState(false);
+  const [notifsModalVisible, setNotifsModalVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    if (scrollY > 0) { 
+    if (scrollY > 0) {
       setStatusBarHidden(true);
     } else {
       setStatusBarHidden(false);
@@ -101,11 +102,11 @@ const Settings = ({ navigation }) => {
     }
   };
 
-  // const handleOpenNotifsModal = (action) => {
-  //   if (action == true) {
-  //     setNotifsModalVisible(true);
-  //   } else setNotifsModalVisible(false);
-  // };
+  const handleOpenNotifsModal = (action) => {
+    if (action == true) {
+      setNotifsModalVisible(true);
+    } else setNotifsModalVisible(false);
+  };
 
   const loadPaymentSheet = async () => {
     try {
@@ -123,10 +124,10 @@ const Settings = ({ navigation }) => {
       // Alert.alert('Max retries reached.');
       return;
     }
-  
+
     setTimeout(() => {}, 300);
     const { error } = await presentPaymentSheet();
-    
+
     if (!error) {
       setLoading(true);
       loadPaymentSheet();
@@ -244,7 +245,7 @@ const Settings = ({ navigation }) => {
 
           <View style={styles.sectionContainer}>
             {/* NOTIFICATIONS */}
-            {/* <TouchableRipple
+            <TouchableRipple
               style={styles.button}
               onPress={() => handleOpenNotifsModal(true)}
             >
@@ -272,7 +273,8 @@ const Settings = ({ navigation }) => {
               isVisible={notifsModalVisible}
               handleToggleModal={handleOpenNotifsModal}
               notifsEnabled={notificationsEnabled}
-            /> */}
+              notificationTimes={notificationTimes}
+            />
             {/* DAYS ACTIVE */}
             <TouchableRipple
               style={styles.button}
@@ -354,15 +356,17 @@ const Settings = ({ navigation }) => {
               <Text style={styles.rightSideText}>{timezone}</Text>
             </View>
             {/* MISSED FINE */}
-            <View style={styles.button}>
+            {/* <View style={styles.button}>
               <View style={styles.leftSettingsButton}>
                 <TaskFineIcon width={23} height={23} color={theme.textHigh} />
 
                 <Text style={styles.buttonTitle}>Baller Mode</Text>
-                <Text style={{...styles.buttonTitle, opacity: 0.5}}>(Coming soon)</Text>
+                <Text style={{ ...styles.buttonTitle, opacity: 0.5 }}>
+                  (Coming soon)
+                </Text>
               </View>
               <Text style={styles.rightSideText}>$1</Text>
-            </View>
+            </View> */}
           </View>
         </View>
         <View style={styles.sectionHeader}>
@@ -447,13 +451,14 @@ const getStyles = (theme) =>
       fontWeight: "bold",
     },
     mainContainer: {
-      width: "100%", 
+      width: "100%",
     },
     sectionContainer: {
       backgroundColor: theme.faintPrimary,
       borderRadius: 16,
       width: "100%",
       overflow: "hidden",
+
     },
     sectionHeader: {
       width: "100%",

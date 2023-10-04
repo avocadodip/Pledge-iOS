@@ -5,6 +5,7 @@ import { Color } from "../GlobalStyles";
 import { useThemes } from "../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
 import XMarkIcon from "../assets/icons/x-mark.svg";
+import { Button } from "react-native";
 
 const BottomModal = ({ isVisible, children, onBackdropPress, modalTitle }) => {
   const { theme, backgroundGradient } = useThemes();
@@ -16,10 +17,11 @@ const BottomModal = ({ isVisible, children, onBackdropPress, modalTitle }) => {
     if (!timerRef.current) {
       timerRef.current = setTimeout(() => {
         timerRef.current = null;
-      }, 500); 
+      }, 500);
       onBackdropPress();
     }
   };
+
 
   return (
     <Modal
@@ -30,15 +32,13 @@ const BottomModal = ({ isVisible, children, onBackdropPress, modalTitle }) => {
       animationOutTiming={500}
     >
       <LinearGradient colors={backgroundGradient} style={styles.modalContainer}>
-        <View style={styles.closeButtonContainer}>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={throttledOnPress}
-          >
-            <XMarkIcon width={20} height={20} color={theme.primary} />
-          </TouchableOpacity>
-        </View>
         <View style={styles.modalContent}>
+          <View style={styles.closeButtonContainer}>
+            <TouchableOpacity style={styles.closeButton} onPress={throttledOnPress}>
+              <XMarkIcon width={20} height={20} color={theme.primary} />
+            </TouchableOpacity>
+          </View>
+
           <Text style={styles.modalTitle}>{modalTitle}</Text>
           {children}
         </View>
@@ -60,23 +60,24 @@ const getStyles = (theme) =>
       borderRadius: 20,
       borderColor: "rgba(0, 0, 0, 0.1)",
       overflow: "hidden",
+
+      borderWidth: 3,
+      borderColor: "#ffffff0b",
     },
     modalContent: {
+      width: "100%",
+      paddingHorizontal: 17,
+      paddingVertical: 17,
       flexDirection: "col",
-      paddingTop: 22,
       justifyContent: "center",
       alignItems: "center",
       borderRadius: 20,
-      borderColor: "rgba(0, 0, 0, 0.1)",
       overflow: "hidden",
-
-      //   borderColor: "black",
-      //   borderWidth: 1,
     },
     modalTitle: {
       fontSize: 18,
       fontWeight: 500,
-      marginBottom: 1,
+      marginBottom: 20,
       color: theme.primary,
     },
 

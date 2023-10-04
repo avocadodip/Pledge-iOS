@@ -20,7 +20,6 @@ const WeekBundle = ({ isFirstSection, transactionsData }) => {
   };
 
   console.log(finedTasks);
-
 // Group tasks by date
 const tasksByDate = finedTasks.reduce((acc, task) => {
   if (!acc[task.dateName]) {
@@ -30,11 +29,14 @@ const tasksByDate = finedTasks.reduce((acc, task) => {
   return acc;
 }, {});
 
-const tasksArray = Object.entries(tasksByDate).map(([date, tasks]) => ({
-  date,
-  dateName: tasks[0].dateName,  // Assuming dateName is consistent across tasks for the same date
-  tasks,
-}));
+const tasksArray = Object.entries(tasksByDate)
+  .map(([date, tasks]) => ({
+    date,
+    dateName: tasks[0].dateName,  // Assuming dateName is consistent across tasks for the same date
+    tasks,
+  }))
+  .sort((a, b) => b.dateName.localeCompare(a.dateName));  // Sort in descending order
+
 
 
 

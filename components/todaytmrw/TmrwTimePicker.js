@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../database/firebase"; 
+import { db } from "../../database/firebase";
 import ContentLoader, { Rect } from "react-content-loader/native";
 import { useDayStatus } from "../../hooks/DayStatusContext";
 import { useSettings } from "../../hooks/SettingsContext";
@@ -14,15 +14,15 @@ const HOURS = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 const MINUTES = ["00", "15", "30", "45"];
 const CONTENT_LOADER_HEIGHT = 25;
 const CONTENT_LOADER_WIDTH = 60;
- 
+
 const TmrwTimePicker = ({ altMessage }) => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { currentUserID } = useSettings();
-  const { tmrwDOW } = useDayChange();
+  const { tmrwDate } = useDayChange();
   const {
     settings: { dayStart, dayEnd },
-  } = useSettings();  
+  } = useSettings();
   const [isModalVisible, setModalVisible] = useState({
     start: false,
     end: false,
@@ -61,9 +61,37 @@ const TmrwTimePicker = ({ altMessage }) => {
     }`;
     setSelectedTime((prev) => ({ ...prev, [`${period}`]: formattedTime }));
     let fieldToUpdate = period === "start" ? "dayStart" : "dayEnd";
-    await updateDoc(doc(db, "users", currentUserID), {
-      [fieldToUpdate]: formattedTime,
-    });
+    // Get the tmrwDoc reference
+    const tmrwDocRef = doc(db, "users", currentUserID, "todos", tmrwDate);
+
+    // Update the field in tmrwDoc
+    if (period === "start") {
+      try {
+        await updateDoc(tmrwDocRef, {
+          opensAt: formattedTime,
+        });
+      } catch (error) {
+        console.error("Error updating document: ", error.message);
+      }
+    } else if (period === "end") {
+      try {
+        await updateDoc(tmrwDocRef, {
+          closesAt: formattedTime,
+        });
+      } catch (error) {
+        console.error("Error updating document: ", error.message);
+      }
+    }
+
+    // Update the user settings
+    try {
+      await updateDoc(doc(db, "users", currentUserID), {
+        [fieldToUpdate]: formattedTime,
+      });
+    } catch (error) {
+      console.error("Error updating document: ", error.message);
+    }
+
     toggleModal(period);
   };
 
@@ -256,7 +284,7 @@ const getStyles = (theme) =>
     timePickerContainer: {
       flexDirection: "row",
       alignItems: "center",
-      paddingVertical: 15
+      paddingVertical: 15,
     },
     timePicker: {
       // borderColor: "black",

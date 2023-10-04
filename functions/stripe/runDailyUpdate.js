@@ -1,10 +1,12 @@
 /* eslint-disable max-len */
 // firebase deploy --only functions
-// cd functions/stripe npx eslint --fix runDailyUpdate.js
+// cd functions/stripe
+// npx eslint --fix runDailyUpdate.js
 
 // fix duplicating todos when being charged
 
 const {onRequest, stripe, moment, admin, schedulerKey} = require("../common");
+// const { checkAndSendNotifications } = require('../stripe/notifications');
 
 /**
  * Calculates total fines for a user based on their tasks.
@@ -90,11 +92,12 @@ function formatDateRange(start, end) {
 
 /**
  * Scheduled function that runs every 15 minutes to handle daily updates
- * 1. It finds the timezones where the current time is between 23:45 and 24:00.
- * 2. For each onboarded user in those timezones, create a todo document for next next day, set 'opensAt', 'closesAt', 'isActive', and 'isVacation' based on the user settings.
- * 3. It tallies up and updates the current day's todo's fine count
- * 4. Also increments the fines document for that week.
- * 5. If the current day is Sunday and the user has opted in to be charged (shouldCharge == true), it charges the user for the past week's todoFines amount.
+ * 1. Sends push notifs for users if current time matches their notif time
+ * 2. It finds the timezones where the current time is between 23:45 and 24:00.
+ * 3. For each onboarded user in those timezones, create a todo document for next next day, set 'opensAt', 'closesAt', 'isActive', and 'isVacation' based on the user settings.
+ * 4. It tallies up and updates the current day's todo's fine count
+ * 5. Also increments the fines document for that week.
+ * 6. If the current day is Sunday and the user has opted in to be charged (shouldCharge == true), it charges the user for the past week's todoFines amount.
  *
  * @param {Request} req - Express.js request object. Not used in this function, but included for compatibility with Express.js
  * @param {Response} res - Express.js response object. Used to send a response back to the caller
@@ -107,7 +110,10 @@ const runDailyUpdate = onRequest(async (req, res) => {
     return;
   }
 
-  // 1. Calculate which timezone has a current time between 11:45pm & 12:00am
+  // 1. Check if it's time to schedule push notif
+  // checkAndSendNotifications();
+
+  // 2. Calculate which timezone has a current time between 11:45pm & 12:00am
   const timeZones = moment.tz.names(); // Get all the time zones
   // Get time zones where current time is between 11:45pm and 12:00am
   const desiredTimeZones = timeZones.filter((tz) => {
@@ -138,6 +144,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
             isPaymentSetup,
             stripeCustomerId,
             paymentMethodId,
+            notificationTimes,
           } = userDoc;
           const userid = doc.id;
           const userRef = db.collection("users").doc(userid);
@@ -169,7 +176,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
               .doc(nextNextDayFormatted);
           const weekRef = userRef.collection("fines").doc(pastWeek);
 
-          // 2. Set user's nextnextdayDoc w/ settings data
+          // 3. Set user's nextnextdayDoc w/ settings data
           await nextNextDayRef.set(
               {
                 date: nextNextDayFormatted,
@@ -179,11 +186,12 @@ const runDailyUpdate = onRequest(async (req, res) => {
                 isActive: daysActive[nextNextDOW],
                 isVacation: vacationModeOn,
                 todos: [null, null, null],
+                notificationTimes: notificationTimes,
               },
               {merge: true},
           ); // merge true to avoid overwriting existing data
 
-          // 3. Tally & update today fine count
+          // 4. Tally & update today fine count
           const todayDoc = await todayRef.get();
           if (!todayDoc.exists) {
             return console.log(`No ${todayFormatted} doc for ${userid}`);
@@ -198,7 +206,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
           } = calculateFines(todos, dateName, missedTaskFine);
           await todayRef.update({totalFine: todayTotalFine}); // Update todayDoc totalFine
 
-          // 4. Update week fine count
+          // 5. Update week fine count
           const weekDoc = await weekRef.get();
 
           // Get existing week data (default values if doesn't exist)
@@ -234,7 +242,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
 
           console.log(`Updated fines for user ${userid} on ${todayFormatted}`);
 
-          // 5. Charge user with weekly fine if it's Saturday
+          // 6. Charge user with weekly fine if it's Saturday
           if (
             todayDOW === "Saturday" && // TEMP
             stripeCustomerId &&

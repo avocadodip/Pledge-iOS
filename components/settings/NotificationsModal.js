@@ -1,26 +1,46 @@
+// https://github.com/samad324/react-native-animated-multistep
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Linking } from "react-native";
+import { View, Text, StyleSheet, Linking, Image } from "react-native";
 import { Color } from "../../GlobalStyles";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
-import Modal from "react-native-modal";
 import TouchableRipple from "../TouchableRipple";
 import * as Notifications from "expo-notifications";
 import { EXPO_PROJECT_ID } from "@env";
-import SelectDropdown from "react-native-select-dropdown";
-// https://github.com/samad324/react-native-animated-multistep
 import BottomModal from "../BottomModal";
+import Checkbox from "expo-checkbox";
+import { useDayChange } from "../../hooks/useDayChange";
 
-const TIME_CHOICES = ["15 min", "30 min", "1 hour", "2 hours", "3 hours"];
+const TIME_CHOICES = {
+  "6 hours": 360,
+  "3 hours": 180,
+  "1 hour": 60,
+  "30 min": 30,
+  "15 min": 15,
+};
+
+// Convert the time choices to minutes
+// Convert the time choices to minutes
+const convertToMinutes = (timeChoices) => {
+  let converted = {};
+  for (let key in TIME_CHOICES) {
+    converted[TIME_CHOICES[key]] = timeChoices[key] || false;
+  }
+  return converted;
+};
 
 const NotificationsModal = ({
   currentUserID,
   isVisible,
   handleToggleModal,
   notifsEnabled,
+  notificationTimes,
 }) => {
+  console.log(notificationTimes);
   const [notificationsEnabled, setNotificationsEnabled] =
     useState(notifsEnabled);
+  const [timeChoiceStates, setTimeChoiceStates] = useState(notificationTimes);
+  const { tmrwDate } = useDayChange();
 
   const enableNotifications = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
@@ -37,7 +57,7 @@ const NotificationsModal = ({
     const userRef = doc(db, "users", currentUserID);
     try {
       await updateDoc(userRef, {
-        expoPushToken: token, // store the token
+        notifExpoPushToken: token, // store the token
         notificationsEnabled: true,
       });
     } catch (error) {
@@ -64,67 +84,92 @@ const NotificationsModal = ({
     }, 300);
   };
 
-  // Handle confirm button click
-  const handleConfirm = async () => {
-    // setModalDaysActive(tempDaysActive);
-    // const userRef = doc(db, "users", currentUserID);
-    // try {
-    //   await updateDoc(userRef, {
-    //     daysActive: tempDaysActive,
-    //   });
-    // } catch (error) {
-    //   console.error("Error updating document: ", error.message);
-    // }
-
-    handleToggleModal(false);
+  // Use the function when updating the document
+  const updateTimeChoices = async (newState) => {
+    const userRef = doc(db, "users", currentUserID);
+    const tmrwDocRef = doc(db, "users", currentUserID, "todos", tmrwDate);
+    try {
+      await updateDoc(userRef, {
+        notificationTimes: convertToMinutes(newState),
+      });
+      await updateDoc(tmrwDocRef, {
+        notificationTimes: convertToMinutes(newState),
+      });
+    } catch (error) {
+      console.error("Error updating document: ", error.message);
+    }
   };
 
   return (
     <BottomModal
       isVisible={isVisible}
-      onBackdropPress={handleConfirm}
-      modalTitle={"Daily Reminder"}
+      onBackdropPress={() => {
+        handleToggleModal(false);
+      }}
+      modalTitle={"Notifications"}
     >
       {notificationsEnabled ? (
-        <>
-          <View style={styles.remindMeContainer}>
-            <Text style={styles.remindMeText}>Remind me</Text>
-            <SelectDropdown
-              data={TIME_CHOICES}
-              defaultButtonText={"30 min"}
-              onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index);
-              }}
-              buttonStyle={styles.timeSelectButton}
-              buttonTextStyle={styles.timeSelectButtonText}
-              dropdownStyle={styles.dropdownStyle}
-              rowStyle={styles.rowStyle}
-              rowTextStyle={styles.rowTextStyle}
-            />
+        <View style={styles.modalContent}>
+          <Text style={styles.remindMeText}>I want to be notified</Text>
+          <View style={styles.daysActiveContainer}>
+            {Object.keys(TIME_CHOICES).map((text, index) => (
+              <View style={styles.dayContainer} key={index}>
+                <Text
+                  style={[
+                    styles.dayText,
+                    !timeChoiceStates[text]
+                      ? styles.uncheckedText
+                      : styles.checkedText,
+                  ]}
+                >
+                  {text}
+                </Text>
+                <Checkbox
+                  style={styles.checkbox}
+                  color={
+                    timeChoiceStates[text]
+                      ? "rgba(255,255,255, 0.4)"
+                      : "rgba(255,255,255, 0.4)"
+                  }
+                  value={timeChoiceStates[text]}
+                  onValueChange={() => {
+                    setTimeChoiceStates((prevState) => {
+                      // Check if the current checkbox is checked and if it's the only one checked
+                      if (
+                        prevState[text] &&
+                        Object.values(prevState).filter((v) => v).length === 1
+                      ) {
+                        // If it's the only one checked, don't allow it to be unchecked
+                        return prevState;
+                      }
 
-            <Text style={styles.remindMeText}>before my day ends</Text>
+                      const newState = {
+                        ...prevState,
+                        [text]: !prevState[text],
+                      };
+                      updateTimeChoices(newState);
+                      return newState;
+                    });
+                  }}
+                />
+              </View>
+            ))}
           </View>
-          <View style={styles.enableButtonContainer}>
-            <TouchableRipple
-              style={styles.disableButton}
-              onPress={disableNotifications}
-            >
-              <Text style={styles.disableButtonText}>
-                Turn off notifications
-              </Text>
-            </TouchableRipple>
-          </View>
-        </>
+          <Text style={styles.remindMeText}>before my deadline.</Text>
+        </View>
       ) : (
-        <>
-          <Text style={styles.modalSubheader}>
+        <View style={styles.modalContent}>
+          <Text style={styles.enableSubheader}>
             Get reminded when your day is about to end.
           </Text>
           <View style={styles.sampleNotif}>
-            <View style={styles.sampleNotifAppIcon}></View>
+            <Image
+              source={require("../../assets/icons/pledgetransparent.png")}
+              style={{ width: 50, height: 50 }}
+            />
             <View style={styles.sampleNotifContent}>
               <View style={styles.sampleNotifTopContent}>
-                <Text style={styles.appName}>Fervo</Text>
+                <Text style={styles.appName}>Pledge</Text>
                 <Text style={styles.timestamp}>now</Text>
               </View>
               <Text style={styles.sampleNotifMessage}>
@@ -132,45 +177,62 @@ const NotificationsModal = ({
               </Text>
             </View>
           </View>
-          <View style={styles.enableButtonContainer}>
-            <TouchableRipple
-              style={styles.enableButton}
-              onPress={enableNotifications}
-            >
-              <Text style={styles.enableButtonText}>Turn on notifications</Text>
-            </TouchableRipple>
-          </View>
-        </>
+        </View>
       )}
+
+      <View style={styles.enableButtonContainer}>
+        <TouchableRipple
+          style={styles.mainButton}
+          onPress={
+            notificationsEnabled ? disableNotifications : enableNotifications
+          }
+        >
+          <Text style={styles.mainButtonText}>
+            {notificationsEnabled
+              ? "Turn off notifications"
+              : "Turn on notifications"}
+          </Text>
+        </TouchableRipple>
+      </View>
     </BottomModal>
   );
 };
 
 const styles = StyleSheet.create({
+  // MODAL CONTENT STYLES
   modalContent: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 28,
-    paddingVertical: 30,
-  },
-  confirmButton: {
-    backgroundColor: Color.fervo_red,
+    height: 300,
     width: "100%",
-    paddingVertical: 20,
-    justifyContent: "center",
+    flexDirection: "col",
     alignItems: "center",
-    borderTopWidth: 1.5,
-    borderColor: "rgba(255, 255, 255, 0.1)",
   },
-
-  // Modal content styles
   modalHeader: {
     fontSize: 18,
     fontWeight: 500,
     marginBottom: 10,
     color: Color.white,
   },
-  modalSubheader: {
+  mainButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 15,
+    width: "100%",
+  },
+  mainButtonText: {
+    fontSize: 18,
+    color: Color.white,
+    fontWeight: 500,
+  },
+
+  // DISABLED CONTAINER
+  enableButtonContainer: {
+    width: "100%",
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+  },
+  enableSubheader: {
     fontSize: 15,
     color: Color.white,
     fontWeight: 400,
@@ -179,35 +241,28 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 
-  // Sample notif styles
+  // ENABLED CONTAINER
+  remindMeText: {
+    fontSize: 17,
+    color: Color.white,
+    fontWeight: 400,
+  },
+
+  // SAMPLE NOTIF STYLES
   sampleNotif: {
-    backgroundColor: "rgba(226, 207, 207, 1)",
-    borderRadius: 16,
+    backgroundColor: "rgba(211, 211, 211, 1)",
+    borderRadius: 17,
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 3,
     paddingVertical: 12,
-    paddingHorizontal: 15,
-    width: "88%",
-    marginBottom: 50,
-    // shadow
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  sampleNotifAppIcon: {
-    height: 35,
-    width: 35,
-    backgroundColor: "white",
-    borderRadius: 6,
+    paddingHorizontal: 5,
+    width: "100%",
   },
   sampleNotifContent: {
     flexDirection: "column",
     gap: 3,
+    width: "80%",
   },
   sampleNotifTopContent: {
     flexDirection: "row",
@@ -230,71 +285,33 @@ const styles = StyleSheet.create({
     fontWeight: 400,
   },
 
-  // Remind me when styles
-  remindMeContainer: {
-    flexDirection: "column",
-    gap: 15,
-    alignItems: "center",
-    marginBottom: 50,
-    marginTop: 30,
-  },
-  remindMeText: {
-    fontSize: 17,
-    color: Color.white,
-    fontWeight: 400,
-  },
-  timeSelectButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
-    width: 100,
-    borderRadius: 16,
-  },
-  timeSelectButtonText: {
-    fontSize: 17,
-    color: Color.white,
-    fontWeight: 500,
-  },
-
-  // Enable/disable notifs button styles
-  enableButtonContainer: {
-    borderRadius: 16,
-    overflow: "hidden",
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
-  },
-  enableButton: {
-    flexDirection: "row",
+  // checkbox styles
+  daysActiveContainer: {
+    flexDirection: "col",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 15,
-    paddingHorizontal: 60,
+    paddingVertical: 25,
+    gap: 18,
   },
-  enableButtonText: {
-    fontSize: 18,
-    color: Color.white,
-    fontWeight: 500,
-  },
-  disableButton: {
+  dayContainer: {
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 15,
-    paddingHorizontal: 60,
+    gap: 30,
   },
-  disableButtonText: {
-    fontSize: 18,
+  dayText: {
+    width: 80,
+    fontSize: 17,
     color: Color.white,
-    fontWeight: 500,
   },
-
-  // Dropdown styles
-  dropdownStyle: {
-    backgroundColor: Color.fervo_red,
-    borderRadius: 10,
+  checkbox: {
+    transform: [{ scale: 1.2 }], // checkbox size
+    borderRadius: 3,
   },
-  rowStyle: {
-    borderBottomWidth: 0,
+  uncheckedText: {
+    opacity: 0.5, // adjust this value as needed
   },
-  rowTextStyle: {
-    color: Color.white,
+  checkedText: {
+    fontWeight: "bold",
   },
 });
 
