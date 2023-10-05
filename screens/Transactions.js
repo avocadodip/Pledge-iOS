@@ -24,9 +24,14 @@ const Transactions = ({ navigation }) => {
   } = useSettings();
   const styles = getStyles(theme);
 
+   
+
   useEffect(() => {
     fetchTransactions();
   }, []);
+
+  console.log("ta");
+  console.log(transactionsArray);
 
   let message = "Today: Jun 30\nNext payment: Jul 1, 11:45 pm";
   return (

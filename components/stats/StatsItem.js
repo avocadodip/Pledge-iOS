@@ -11,7 +11,7 @@ import { useDayChange } from "../../hooks/useDayChange";
 const StatsItem = ({ dayData, index }) => {
   const { theme } = useThemes();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { todayDate, tmrwDate } = useDayChange();
+  const { todayDate } = useDayChange();
   const { dateName, todos, isActive, isVacation, date } = dayData;
 
   // Upcoming day
@@ -19,13 +19,14 @@ const StatsItem = ({ dayData, index }) => {
   if (index == 0) {
     upcomingDay = true;
   }
-
+ 
   // toggle collapse
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
-  const isPastBet = date !== todayDate && date !== tmrwDate;
+  // Only show past bets
+  const isPastBet = date < todayDate;
 
   if (!isPastBet) {
     return null;

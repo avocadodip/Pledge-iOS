@@ -18,7 +18,7 @@ const WeekBundle = ({ isFirstSection, transactionsData }) => {
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
-
+ 
   console.log(finedTasks);
 // Group tasks by date
 const tasksByDate = finedTasks.reduce((acc, task) => {
@@ -36,8 +36,6 @@ const tasksArray = Object.entries(tasksByDate)
     tasks,
   }))
   .sort((a, b) => b.dateName.localeCompare(a.dateName));  // Sort in descending order
-
-
 
 
   return (

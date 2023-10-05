@@ -120,8 +120,30 @@ const EmailVerification = ({ route, navigation }) => {
         notificationsEnabled: false,
         todayIsActive: false,
         todayDayEnd: "",
-        notifsAllSent: false,
-
+        todayNotifsAllSent: false,
+        todayANotifHasBeenSent: false,
+        notificationTimes: {
+          "15": {
+            "shouldSend": false,
+            "isSent": false
+          },
+          "30": {
+            "shouldSend": false,
+            "isSent": false
+          },
+          "60": {
+            "shouldSend": false,
+            "isSent": false
+          },
+          "180": {
+            "shouldSend": false,
+            "isSent": false
+          },
+          "360": {
+            "shouldSend": false,
+            "isSent": false
+          }
+        }
       });
     } catch (error) {
       console.error(error);

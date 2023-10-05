@@ -1,11 +1,12 @@
 /* eslint-disable max-len */
-// firebase deploy --only functions
 // cd functions/stripe
 // npx eslint --fix runDailyUpdate.js
+// firebase deploy --only functions
 
 // fix duplicating todos when being charged
 
 const {onRequest, stripe, moment, admin, schedulerKey} = require("../common");
+const {checkAndSendNotifications} = require("./notifications");
 // const { checkAndSendNotifications } = require('../stripe/notifications');
 
 /**
@@ -111,6 +112,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
 
   // 1. Check if it's time to schedule push notif
   // checkAndSendNotifications();
+  checkAndSendNotifications();
 
   // 2. Calculate which timezone has a current time between 11:45pm & 12:00am
   const timeZones = moment.tz.names(); // Get all the time zones
@@ -178,19 +180,44 @@ const runDailyUpdate = onRequest(async (req, res) => {
               .doc(nextNextDayFormatted);
           const weekRef = userRef.collection("fines").doc(pastWeek);
 
-          // For notifications: set next day's isActive and opensAt fields to user's doc
-          if (nextDayRef.exists) {
+          // ----- NOTIFICATION STUFF ------
+
+          // For user's that had a notif sent to them today: Change all notification times isSent field to false
+          const usersRef = db.collection("users");
+
+          const snapshot = await usersRef
+              .where("todayANotifHasBeenSent", "==", true)
+              .get();
+          const updates = snapshot.docs.map((doc) => {
+            const notificationTimes = doc.data().notificationTimes;
+            for (const key in notificationTimes) {
+              if (Object.prototype.hasOwnProperty.call(notificationTimes, key)) {
+                notificationTimes[key].isSent = false;
+              }
+            }
+            return usersRef.doc(doc.id).update({notificationTimes});
+          });
+          await Promise.all(updates);
+
+          // For all users: (1) Set next day's isActive and opensAt fields to user's doc (2) reset notifSent fields
+          const nextDaySnapshot = await nextDayRef.get();
+
+          if (nextDaySnapshot.exists) {
           // Extract the isActive and dayEnd fields
-            const {isActive, closesAt} = nextDayRef.data();
+            const {isActive, closesAt} = nextDaySnapshot.data();
 
             // Update the user document
             await userRef.update({
-              "isTodayActive": isActive,
-              "todayDayEnd": closesAt,
+              todayIsActive: isActive,
+              todayDayEnd: closesAt,
+              todayANotifHasBeenSent: false,
             });
           } else {
-            console.log(`No document for next day ${nextDayFormatted} for user ${userid}`);
+            console.log(
+                `No document for next day ${nextDayFormatted} for user ${userid}`,
+            );
           }
+          // ----- END NOTIFICATION STUFF ------
 
           // 3. Set user's nextnextdayDoc w/ settings data
           await nextNextDayRef.set(

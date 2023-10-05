@@ -12,7 +12,7 @@ import Intro from "./screens/Intro";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 import { ThemesProvider, useThemes } from "./hooks/ThemesContext";
-import useUpdateTimezoneOnAppActive from "./hooks/useUpdateTimezoneOnAppActive";
+import useUpdateTimezoneOnAppActive from "./hooks/useAppStateChange";
 import { STRIPE_PUBLISHABLE_KEY } from "@env";
 import EmailVerification from "./screens/EmailVerification";
 import ForgotPassword from "./screens/ForgotPassword";

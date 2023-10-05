@@ -11,22 +11,13 @@ import BottomModal from "../BottomModal";
 import Checkbox from "expo-checkbox";
 import { useDayChange } from "../../hooks/useDayChange";
 
-const TIME_CHOICES = {
-  "6 hours": 360,
-  "3 hours": 180,
-  "1 hour": 60,
-  "30 min": 30,
-  "15 min": 15,
-};
-
-// Convert the time choices to minutes
-// Convert the time choices to minutes
-const convertToMinutes = (timeChoices) => {
-  let converted = {};
-  for (let key in TIME_CHOICES) {
-    converted[TIME_CHOICES[key]] = timeChoices[key] || false;
-  }
-  return converted;
+const TIME_CHOICES = ["360", "180", "60", "30", "15"];
+const TIME_LABELS = {
+  360: "6 hours",
+  180: "3 hours",
+  60: "1 hour",
+  30: "30 min",
+  15: "15 min",
 };
 
 const NotificationsModal = ({
@@ -35,11 +26,18 @@ const NotificationsModal = ({
   handleToggleModal,
   notifsEnabled,
   notificationTimes,
+  notificationPerms
 }) => {
   const [notificationsEnabled, setNotificationsEnabled] =
     useState(notifsEnabled);
-  const [timeChoiceStates, setTimeChoiceStates] = useState(notificationTimes);
-
+  const [timeChoiceStates, setTimeChoiceStates] = useState(
+    Object.fromEntries(
+      Object.entries(notificationTimes).map(([key, value]) => [
+        key,
+        value.shouldSend,
+      ])
+    )
+  );
   const enableNotifications = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
     if (status !== "granted") {
@@ -86,8 +84,12 @@ const NotificationsModal = ({
   const updateTimeChoices = async (newState) => {
     const userRef = doc(db, "users", currentUserID);
     try {
+      let updatedNotificationTimes = { ...notificationTimes };
+      for (let key in newState) {
+        updatedNotificationTimes[key].shouldSend = newState[key];
+      }
       await updateDoc(userRef, {
-        notificationTimes: convertToMinutes(newState),
+        notificationTimes: updatedNotificationTimes,
       });
     } catch (error) {
       console.error("Error updating document: ", error.message);
@@ -102,11 +104,11 @@ const NotificationsModal = ({
       }}
       modalTitle={"Notifications"}
     >
-      {notificationsEnabled ? (
+      {notificationsEnabled && notificationPerms === 'granted' ? (
         <View style={styles.modalContent}>
           <Text style={styles.remindMeText}>I want to be notified</Text>
           <View style={styles.daysActiveContainer}>
-            {Object.keys(TIME_CHOICES).map((text, index) => (
+            {TIME_CHOICES.map((text, index) => (
               <View style={styles.dayContainer} key={index}>
                 <Text
                   style={[
@@ -116,7 +118,7 @@ const NotificationsModal = ({
                       : styles.checkedText,
                   ]}
                 >
-                  {text}
+                  {TIME_LABELS[text]}
                 </Text>
                 <Checkbox
                   style={styles.checkbox}
@@ -128,19 +130,19 @@ const NotificationsModal = ({
                   value={timeChoiceStates[text]}
                   onValueChange={() => {
                     setTimeChoiceStates((prevState) => {
-                      // Check if the current checkbox is checked and if it's the only one checked
-                      if (
-                        prevState[text] &&
-                        Object.values(prevState).filter((v) => v).length === 1
-                      ) {
-                        // If it's the only one checked, don't allow it to be unchecked
-                        return prevState;
-                      }
-
                       const newState = {
                         ...prevState,
                         [text]: !prevState[text],
                       };
+                  
+                      // Count the number of true values in newState
+                      const checkedCount = Object.values(newState).filter(Boolean).length;
+                  
+                      // If there are no true values, don't update the state
+                      if (checkedCount === 0) {
+                        return prevState;
+                      }
+                  
                       updateTimeChoices(newState);
                       return newState;
                     });
@@ -178,11 +180,11 @@ const NotificationsModal = ({
         <TouchableRipple
           style={styles.mainButton}
           onPress={
-            notificationsEnabled ? disableNotifications : enableNotifications
+            (notificationsEnabled && notificationPerms === 'granted') ? disableNotifications : enableNotifications
           }
         >
           <Text style={styles.mainButtonText}>
-            {notificationsEnabled
+            {(notificationsEnabled && notificationPerms === 'granted')
               ? "Turn off notifications"
               : "Turn on notifications"}
           </Text>

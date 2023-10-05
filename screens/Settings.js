@@ -47,6 +47,7 @@ import DeleteAccountButton from "../components/settings/DeleteAccountButton";
 import TaskFineIcon from "../assets/icons/missed-task-fine-icon.svg";
 import { useDayStatus } from "../hooks/DayStatusContext";
 import { getClassicColor } from "../themes";
+import { useCheckNotificationPerms } from "../hooks/useAppStateChange";
 
 const BUTTON_HEIGHT = 51;
 const BUTTON_TEXTS = ["S", "M", "T", "W", "T", "F", "S"];
@@ -69,6 +70,10 @@ const Settings = ({ navigation }) => {
     },
     currentUserID,
   } = useSettings();
+  const notificationPerms =
+    useCheckNotificationPerms(currentUserID);
+  console.log("notif status:");
+  console.log(notificationPerms);
   const [loading, setLoading] = useState(false);
   const [isPaymentInitialized, setIsPaymentInitialized] = useState(false);
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
@@ -259,7 +264,7 @@ const Settings = ({ navigation }) => {
               </View>
               <View style={styles.chevronContainer}>
                 <View style={styles.daysOfWeekTextContainer}>
-                  {notificationsEnabled ? (
+                  {(notificationsEnabled && notificationPerms === 'granted') ? (
                     <Text style={styles.rightSideText}>On</Text>
                   ) : (
                     <Text style={styles.rightSideText}>Off</Text>
@@ -274,6 +279,7 @@ const Settings = ({ navigation }) => {
               handleToggleModal={handleOpenNotifsModal}
               notifsEnabled={notificationsEnabled}
               notificationTimes={notificationTimes}
+              notificationPerms={notificationPerms}
             />
             {/* DAYS ACTIVE */}
             <TouchableRipple
@@ -458,7 +464,6 @@ const getStyles = (theme) =>
       borderRadius: 16,
       width: "100%",
       overflow: "hidden",
-
     },
     sectionHeader: {
       width: "100%",
