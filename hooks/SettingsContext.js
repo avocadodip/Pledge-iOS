@@ -36,6 +36,10 @@ export const SettingsProvider = ({ children }) => {
   const [fetchingTransactions, setFetchingTransactions] = useState(false);
   const [allTransactionsDataFetched, setAllTransactionsDataFetched] =
     useState(false);
+  const [
+    hasFetchedMostRecentTransactionsDoc,
+    setHasFetchedMostRecentTransactionsDoc,
+  ] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -56,7 +60,7 @@ export const SettingsProvider = ({ children }) => {
         setLastTransactionsDay([]);
       }
     });
- 
+
     // Clean up subscription on unmount
     return () => unsubscribe();
   }, []);
@@ -138,9 +142,10 @@ export const SettingsProvider = ({ children }) => {
   };
 
   const fetchTransactions = async () => {
-    if (allTransactionsDataFetched) {
+    if (allTransactionsDataFetched || fetchingTransactions) {
       return;
     }
+
     setFetchingTransactions(true);
 
     try {
@@ -149,35 +154,49 @@ export const SettingsProvider = ({ children }) => {
         where("isCharged", "==", true),
         orderBy("id", "desc"),
         limit(10),
-        lastTransactionsDay ? startAfter(lastTransactionsDay) : undefined // startAfter if lastDay exists
+        lastTransactionsDay ? startAfter(lastTransactionsDay) : undefined
       );
-  
-      // also get most recent doc (isCharged may == false)
-      const q2 = query(
-        collection(doc(db, "users", currentUserID), "fines"),
-        orderBy("id", "desc"),
-        limit(1)
-      );
-  
+
       const querySnapshot1 = await getDocs(q1);
-      const querySnapshot2 = await getDocs(q2);
-  
-      // Merge the results
-      const finesArray = [...querySnapshot1.docs.map(doc => doc.data())];
-  
-      // Add the most recent doc if isCharged == false
-      const mostRecentDoc = querySnapshot2.docs[0].data();
-      if (mostRecentDoc.isCharged === false) {
-        finesArray.push(mostRecentDoc);
+
+      // No more fines left
+      if (querySnapshot1.empty) {
+        console.log("No more data to fetch.");
+        setAllTransactionsDataFetched(true);
+        return;
+      }
+
+      let finesArray = [...querySnapshot1.docs.map((doc) => doc.data())];
+
+      // also get most recent doc (isCharged may == false) only if it hasn't been fetched before
+      if (!hasFetchedMostRecentTransactionsDoc) {
+        const q2 = query(
+          collection(doc(db, "users", currentUserID), "fines"),
+          orderBy("id", "desc"),
+          limit(1)
+        );
+
+        const querySnapshot2 = await getDocs(q2);
+
+        // Add the most recent doc if isCharged == false and fined tasks exist
+        const mostRecentDoc = querySnapshot2.docs[0].data();
+        if (
+          mostRecentDoc.isCharged === false &&
+          mostRecentDoc.finedTasks &&
+          mostRecentDoc.finedTasks.length > 0
+        ) {
+          finesArray.push(mostRecentDoc);
+        }
+
+        setHasFetchedMostRecentTransactionsDoc(true);
       }
 
       // Set last day
       if (querySnapshot1.docs.length > 0) {
-        setLastTransactionsDay(querySnapshot1.docs[querySnapshot1.docs.length - 1].data().id);
+        setLastTransactionsDay(
+          querySnapshot1.docs[querySnapshot1.docs.length - 1].data().id
+        );
       }
-
-      console.log("fines array settingscontext.js");
-      console.log(finesArray);
 
       // Append to existing data state
       setTransactionsArray((prevData) => {
@@ -199,12 +218,12 @@ export const SettingsProvider = ({ children }) => {
     const upcoming = weeksList.filter((week) => {
       return week.id === getBeginningOfWeekDate();
     });
-  
+
     // Else it's prior
     const pastCharges = weeksList.filter((week) => {
       return week.id !== getBeginningOfWeekDate();
     });
-  
+
     return [
       {
         title: "Upcoming",
