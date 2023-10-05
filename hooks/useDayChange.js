@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTmrwDate, getTodayDate } from "../utils/currentDate";
+import { getBeginningOfWeek, getTmrwDate, getTodayDate } from "../utils/currentDate";
 
 export const useDayChange = () => {
   const daysOfWeek = [

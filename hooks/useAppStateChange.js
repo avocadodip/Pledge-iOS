@@ -34,45 +34,56 @@ export function useUpdateUserTimezone(currentUserID) {
 }
 
 export function useCheckNotificationPerms(currentUserID) {
-  const [notificationPerms, setNotificationPerms] = useState(null);
+  const [notificationPerms, setNotificationPerms] = useState(false);
 
   const updateUserDoc = async (isEnabled) => {
-    if (currentUserID) {
-      const userRef = doc(db, "users", currentUserID);
-      await updateDoc(userRef, {
-        notificationsEnabled: isEnabled,
-      });
+    try {
+      if (currentUserID) {
+        const userRef = doc(db, "users", currentUserID);
+        await updateDoc(userRef, {
+          notificationsEnabled: isEnabled,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to update user document:", error);
     }
   };
 
   const fetchInitialNotificationPerms = async () => {
-    const { status } = await Notifications.getPermissionsAsync();
-    setNotificationPerms(status);
-    if (status !== "granted") {
-      updateUserDoc(false);
-    }
-  };
-
-  const handleAppStateChange = async (nextAppState) => {
-    if (nextAppState === "active") {
+    try {
       const { status } = await Notifications.getPermissionsAsync();
       setNotificationPerms(status);
       if (status !== "granted") {
         updateUserDoc(false);
       }
+    } catch (error) {
+      console.error("Failed to fetch initial notification permissions:", error);
+    }
+  };
+
+  const handleAppStateChange = async (nextAppState) => {
+    try {
+      if (nextAppState === "active") {
+        const { status } = await Notifications.getPermissionsAsync();
+        setNotificationPerms(status);
+        if (status !== "granted") {
+          updateUserDoc(false);
+        }
+      } 
+    } catch (error) {
+      console.error("Failed to handle app state change:", error);
     }
   };
 
   useEffect(() => {
-    // Fetch the initial notification status when the component mounts
-    fetchInitialNotificationPerms();
-
-    AppState.addEventListener("change", handleAppStateChange);
-
+    const handle = (state) => handleAppStateChange(state);
+    
+    const subscription = AppState.addEventListener("change", handle);
+    
     return () => {
-      AppState.removeEventListener("change", handleAppStateChange);
+      subscription.remove();
     };
   }, []);
-
+ 
   return notificationPerms;
 }

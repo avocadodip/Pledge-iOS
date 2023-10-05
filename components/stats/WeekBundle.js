@@ -19,7 +19,7 @@ const WeekBundle = ({ isFirstSection, transactionsData }) => {
     setIsCollapsed(!isCollapsed);
   };
  
-  console.log(finedTasks);
+  console.log(`weekbundle.js transactions data: ${transactionsData}`);
 // Group tasks by date
 const tasksByDate = finedTasks.reduce((acc, task) => {
   if (!acc[task.dateName]) {

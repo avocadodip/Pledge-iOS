@@ -13,6 +13,18 @@ export const getTimezoneAbbrev = (timezone) => {
   return moment.tz(timezone).format('z');
 }
 
+// Returns 20231001 if it's 20231005
+export const getBeginningOfWeekDate = () => {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const diff = now.getDate() - dayOfWeek;
+  const beginningOfWeek = new Date(now.setDate(diff));
+  const year = beginningOfWeek.getFullYear();
+  const month = beginningOfWeek.getMonth() + 1; // JavaScript months are 0-based
+  const day = beginningOfWeek.getDate();
+  return `${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`;
+};
+
 // Array of week days
 export const daysOfWeek = [
   "Sunday",

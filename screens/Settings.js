@@ -70,10 +70,7 @@ const Settings = ({ navigation }) => {
     },
     currentUserID,
   } = useSettings();
-  const notificationPerms =
-    useCheckNotificationPerms(currentUserID);
-  console.log("notif status:");
-  console.log(notificationPerms);
+  const notificationPerms = useCheckNotificationPerms(currentUserID);
   const [loading, setLoading] = useState(false);
   const [isPaymentInitialized, setIsPaymentInitialized] = useState(false);
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);

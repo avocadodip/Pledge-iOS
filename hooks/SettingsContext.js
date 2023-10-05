@@ -12,6 +12,7 @@ import {
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
+import { getBeginningOfWeekDate } from "../utils/currentDate";
 
 export const SettingsContext = createContext();
 
@@ -136,23 +137,6 @@ export const SettingsProvider = ({ children }) => {
     }
   };
 
-  const formatWeeksList = (weeksList) => {
-    // Format the data as needed for your SectionList
-    const upcoming = weeksList.filter((week) => week.isCharged === false);
-    const pastCharges = weeksList.filter((week) => week.isCharged === true);
-
-    return [
-      {
-        title: "Upcoming",
-        data: upcoming,
-      },
-      {
-        title: "Past Charges",
-        data: pastCharges,
-      },
-    ];
-  };
-
   const fetchTransactions = async () => {
     if (allTransactionsDataFetched) {
       return;
@@ -160,35 +144,41 @@ export const SettingsProvider = ({ children }) => {
     setFetchingTransactions(true);
 
     try {
-      const q = query(
+      const q1 = query(
         collection(doc(db, "users", currentUserID), "fines"),
         where("isCharged", "==", true),
         orderBy("id", "desc"),
         limit(10),
         lastTransactionsDay ? startAfter(lastTransactionsDay) : undefined // startAfter if lastDay exists
       );
-
-      const querySnapshot = await getDocs(q);
-
-      // No more todos left
-      if (querySnapshot.empty) {
-        console.log("No more data to fetch.");
-        setAllTransactionsDataFetched(true);
-        return;
+  
+      // also get most recent doc (isCharged may == false)
+      const q2 = query(
+        collection(doc(db, "users", currentUserID), "fines"),
+        orderBy("id", "desc"),
+        limit(1)
+      );
+  
+      const querySnapshot1 = await getDocs(q1);
+      const querySnapshot2 = await getDocs(q2);
+  
+      // Merge the results
+      const finesArray = [...querySnapshot1.docs.map(doc => doc.data())];
+  
+      // Add the most recent doc if isCharged == false
+      const mostRecentDoc = querySnapshot2.docs[0].data();
+      if (mostRecentDoc.isCharged === false) {
+        finesArray.push(mostRecentDoc);
       }
-
-      // Push days into array
-      const finesArray = [];
-      querySnapshot.forEach((weekDoc) => {
-        finesArray.push(weekDoc.data());
-      });
 
       // Set last day
-      if (querySnapshot.docs.length > 0) {
-        setLastTransactionsDay(querySnapshot.docs[querySnapshot.docs.length - 1].data().id);
+      if (querySnapshot1.docs.length > 0) {
+        setLastTransactionsDay(querySnapshot1.docs[querySnapshot1.docs.length - 1].data().id);
       }
 
-      console.log("Raw Weeks Data:", finesArray); // Log the raw data here
+      console.log("fines array settingscontext.js");
+      console.log(finesArray);
+
       // Append to existing data state
       setTransactionsArray((prevData) => {
         // Concatenate old and new data
@@ -202,6 +192,29 @@ export const SettingsProvider = ({ children }) => {
     } finally {
       setFetchingTransactions(false);
     }
+  };
+
+  const formatWeeksList = (weeksList) => {
+    // Upcoming if it's this week's doc
+    const upcoming = weeksList.filter((week) => {
+      return week.id === getBeginningOfWeekDate();
+    });
+  
+    // Else it's prior
+    const pastCharges = weeksList.filter((week) => {
+      return week.id !== getBeginningOfWeekDate();
+    });
+  
+    return [
+      {
+        title: "Upcoming",
+        data: upcoming,
+      },
+      {
+        title: "Past Charges",
+        data: pastCharges,
+      },
+    ];
   };
 
   return (
