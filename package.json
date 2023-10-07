@@ -45,7 +45,7 @@
     "react": "18.2.0",
     "react-content-loader": "^6.2.1",
     "react-dom": "18.2.0",
-    "react-native": "0.71.8",
+    "react-native": "0.71.13",
     "react-native-advanced-ripple": "^1.0.0",
     "react-native-collapsible": "^1.6.1",
     "react-native-config": "^1.5.1",
