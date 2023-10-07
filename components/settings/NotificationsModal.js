@@ -24,12 +24,10 @@ const NotificationsModal = ({
   currentUserID,
   isVisible,
   handleToggleModal,
-  notifsEnabled,
+  notificationsEnabled,
   notificationTimes,
   notificationPerms
-}) => {
-  const [notificationsEnabled, setNotificationsEnabled] =
-    useState(notifsEnabled);
+}) => { 
   const [timeChoiceStates, setTimeChoiceStates] = useState(
     Object.fromEntries(
       Object.entries(notificationTimes).map(([key, value]) => [
@@ -59,8 +57,6 @@ const NotificationsModal = ({
     } catch (error) {
       console.error("Error updating document: ", error.message);
     }
-
-    setNotificationsEnabled(true);
   };
 
   const disableNotifications = async () => {
@@ -73,11 +69,6 @@ const NotificationsModal = ({
       console.error("Error updating document: ", error.message);
     }
     handleToggleModal(false);
-
-    // Timer to avoid seeing change flash
-    setTimeout(() => {
-      setNotificationsEnabled(false);
-    }, 300);
   };
 
   // Use the function when updating the document
@@ -95,7 +86,7 @@ const NotificationsModal = ({
       console.error("Error updating document: ", error.message);
     }
   };
-
+  
   return (
     <BottomModal
       isVisible={isVisible}
@@ -104,7 +95,7 @@ const NotificationsModal = ({
       }}
       modalTitle={"Notifications"}
     >
-      {notificationsEnabled && notificationPerms === 'granted' ? (
+      {notificationsEnabled && notificationPerms ? (
         <View style={styles.modalContent}>
           <Text style={styles.remindMeText}>I want to be notified</Text>
           <View style={styles.daysActiveContainer}>
@@ -180,11 +171,11 @@ const NotificationsModal = ({
         <TouchableRipple
           style={styles.mainButton}
           onPress={
-            (notificationsEnabled && notificationPerms === 'granted') ? disableNotifications : enableNotifications
+            (notificationsEnabled && notificationPerms) ? disableNotifications : enableNotifications
           }
         >
           <Text style={styles.mainButtonText}>
-            {(notificationsEnabled && notificationPerms === 'granted')
+            {(notificationsEnabled && notificationPerms)
               ? "Turn off notifications"
               : "Turn on notifications"}
           </Text>

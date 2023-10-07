@@ -76,7 +76,7 @@ const Settings = ({ navigation }) => {
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
   const [notifsModalVisible, setNotifsModalVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-
+ 
   useEffect(() => {
     if (scrollY > 0) {
       setStatusBarHidden(true);
@@ -261,7 +261,7 @@ const Settings = ({ navigation }) => {
               </View>
               <View style={styles.chevronContainer}>
                 <View style={styles.daysOfWeekTextContainer}>
-                  {(notificationsEnabled && notificationPerms === 'granted') ? (
+                  {(notificationsEnabled && notificationPerms) ? (
                     <Text style={styles.rightSideText}>On</Text>
                   ) : (
                     <Text style={styles.rightSideText}>Off</Text>
@@ -274,7 +274,7 @@ const Settings = ({ navigation }) => {
               daysActive={daysActive}
               isVisible={notifsModalVisible}
               handleToggleModal={handleOpenNotifsModal}
-              notifsEnabled={notificationsEnabled}
+              notificationsEnabled={notificationsEnabled}
               notificationTimes={notificationTimes}
               notificationPerms={notificationPerms}
             />

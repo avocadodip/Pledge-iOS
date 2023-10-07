@@ -120,7 +120,7 @@ const EmailVerification = ({ route, navigation }) => {
         notificationsEnabled: false,
         todayIsActive: false,
         todayDayEnd: "",
-        todayNotifsAllSent: false,
+        todayAllNotifsSent: false,
         todayANotifHasBeenSent: false,
         notificationTimes: {
           "15": {

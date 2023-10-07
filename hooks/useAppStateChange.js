@@ -44,6 +44,7 @@ export function useCheckNotificationPerms(currentUserID) {
           notificationsEnabled: isEnabled,
         });
       }
+      setNotificationPerms(isEnabled);
     } catch (error) {
       console.error("Failed to update user document:", error);
     }
@@ -52,7 +53,7 @@ export function useCheckNotificationPerms(currentUserID) {
   const fetchInitialNotificationPerms = async () => {
     try {
       const { status } = await Notifications.getPermissionsAsync();
-      setNotificationPerms(status);
+      setNotificationPerms(status === "granted");
       if (status !== "granted") {
         updateUserDoc(false);
       }
@@ -60,12 +61,12 @@ export function useCheckNotificationPerms(currentUserID) {
       console.error("Failed to fetch initial notification permissions:", error);
     }
   };
-
+  
   const handleAppStateChange = async (nextAppState) => {
     try {
       if (nextAppState === "active") {
         const { status } = await Notifications.getPermissionsAsync();
-        setNotificationPerms(status);
+        setNotificationPerms(status === "granted");
         if (status !== "granted") {
           updateUserDoc(false);
         }
@@ -76,6 +77,8 @@ export function useCheckNotificationPerms(currentUserID) {
   };
 
   useEffect(() => {
+    fetchInitialNotificationPerms();
+
     const handle = (state) => handleAppStateChange(state);
     
     const subscription = AppState.addEventListener("change", handle);

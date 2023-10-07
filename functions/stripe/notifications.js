@@ -43,6 +43,7 @@ const checkAndSendNotifications = async () => {
   usersSnapshot.forEach(async (userDoc) => {
     console.log("Processing user...");
     const userData = userDoc.data();
+    const uid = userDoc.id;
     const notifExpoPushToken = userData.notifExpoPushToken;
 
     const notificationTimes = userData.notificationTimes;
@@ -52,17 +53,16 @@ const checkAndSendNotifications = async () => {
     const deadline = convertToTimestamp(todayDayEnd, userTimeZone);
     const deadlineMillis = deadline.toMillis();
 
-    for (const [time, notificationInfo] of Object.entries(notificationTimes)) {
+    const sortedNotificationTimes = Object.entries(notificationTimes).sort((a, b) => a[0] - b[0]);
+
+
+    for (const [time, notificationInfo] of sortedNotificationTimes) {
       console.log(`Processing notification time: ${time}`);
       const {shouldSend, isSent} = notificationInfo;
 
       if (shouldSend && !isSent) {
         const notifyTime = deadlineMillis - parseInt(time) * 60 * 1000;
 
-        console.log(`deadlineMillis: ${deadlineMillis}`);
-        console.log(`ms to subtract from deadline: ${parseInt(time) * 60 * 1000}`);
-        console.log(`currentTime: ${currentTime}`);
-        console.log(`notifyTime ${notifyTime}`);
         if (currentTime >= notifyTime) {
           // Prepare the message
           const message = {
@@ -71,14 +71,18 @@ const checkAndSendNotifications = async () => {
             body: `You have ${convertMinutesToReadableTime(
                 time,
             )} left to complete your day!`,
+            data: {
+              uid: uid,
+            },
           };
           console.log(`Sent message: You have ${convertMinutesToReadableTime(time)} left to complete your day!`);
 
           messages.push(message);
 
-          // Update the notificationTimes map to indicate that this notification has been sent
-          console.log("Updating notificationTimes map...");
+          // Update notificationTimes map to indicate that this notification has been sent
           userDoc.ref.update({[`notificationTimes.${time}.isSent`]: true});
+
+          break;
         }
       }
     }

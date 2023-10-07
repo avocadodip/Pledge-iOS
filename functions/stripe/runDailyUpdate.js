@@ -119,7 +119,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
   // Get time zones where current time is between 11:45pm and 12:00am
   const desiredTimeZones = timeZones.filter((tz) => {
     const currentTime = moment().tz(tz).format("HH:mm");
-    return currentTime >= "00:45" && currentTime <= "24:00"; // 23:45 TEMP CHANGE
+    return currentTime >= "23:45" && currentTime <= "24:00"; // 23:45 TEMP CHANGE
   });
 
   const db = admin.firestore();
@@ -286,7 +286,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
 
           // 6. Charge user with weekly fine if it's Saturday
           if (
-            todayDOW === "Wednesday" && // TEMP
+            todayDOW === "Saturday" && // TEMP
           stripeCustomerId &&
           paymentMethodId &&
           isPaymentSetup &&
