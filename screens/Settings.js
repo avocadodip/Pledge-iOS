@@ -426,7 +426,7 @@ const Settings = ({ navigation }) => {
             </View>
           </TouchableRipple>
         </View>
-        <DeleteAccountButton currentUserID={currentUserID}/>
+        <DeleteAccountButton currentUserID={currentUserID} navigation={navigation}/>
         <View style={{ height: 60 }}></View>
       </ScrollView>
     </View>

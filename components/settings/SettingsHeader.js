@@ -14,7 +14,7 @@ const SettingsHeader = ({ navigation, header, altScreen }) => {
     navigation.navigate(screenName);
   };
   return (
-    <View style={header !== "Change Email" ? styles.outerContainer : {}}>
+    <View style={(header !== "Change Email" && header !== "Delete Account") ? styles.outerContainer : {}}>
       <View style={styles.headerContainer}>
         <View style={styles.buttonWrapper}>
           <TouchableHighlight

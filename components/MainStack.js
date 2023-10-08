@@ -19,6 +19,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Settings from "../screens/Settings";
 import { LinearGradient } from "expo-linear-gradient";
 import { useThemes } from "../hooks/ThemesContext";
+import DeleteAccount from "../screens/DeleteAccount";
  
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -58,6 +59,11 @@ const SettingsStack = () => (
     <Stack.Screen
       name="ChangeEmail"
       component={ChangeEmail}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="DeleteAccount"
+      component={DeleteAccount}
       options={{ headerShown: false }}
     />
     <Stack.Screen
