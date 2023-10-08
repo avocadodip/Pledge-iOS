@@ -44,9 +44,9 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const { currentUserID } = useSettings();
   const [startDay, setStartDay] = useState("");
   const [todos, setTodos] = useState([
-    { todoNumber: 1, title: "", amount: "", isComplete: false, isLocked: true, description: "" },
-    { todoNumber: 2, title: "", amount: "", isComplete: false, isLocked: true, description: "" },
-    { todoNumber: 3, title: "", amount: "", isComplete: false, isLocked: true, description: "" },
+    { todoNumber: 1, title: "", amount: "", isComplete: false, isLocked: true, description: "", amount: 0 },
+    { todoNumber: 2, title: "", amount: "", isComplete: false, isLocked: true, description: "", amount: 0 },
+    { todoNumber: 3, title: "", amount: "", isComplete: false, isLocked: true, description: "", amount: 0 },
   ]);
   const { getAndSetTodayTodos } = useTodayTodos();
   const { getAndSetTmrwTodos } = useTmrwTodos();
@@ -165,6 +165,11 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       let tmrwDate = getTmrwDate();
       const todayRef = doc(db, "users", currentUserID, "todos", todayDate);
       const tmrwRef = doc(db, "users", currentUserID, "todos", tmrwDate);
+
+      if (startDay === "Today") {
+        const userRef = doc(db, "users", currentUserID);
+        await setDoc(userRef, { todayDayEnd: dayEnd }, { merge: true });
+      }
 
       const createTodoObject = (date, todos, isActive, onboardStartTmrw) => {
         return {

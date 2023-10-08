@@ -10,6 +10,7 @@ const DeleteAccountButton = ({ currentUserID }) => {
   const auth = getAuth();
   const { theme } = useThemes();
   const styles = getStyles(theme);
+  console.log(currentUserID);
 
   const handleDelete = async () => {
     Alert.alert(
@@ -24,13 +25,15 @@ const DeleteAccountButton = ({ currentUserID }) => {
           text: "OK",
           onPress: async () => {
             try {
-              const userRef = doc(db, "users", currentUserID);
-              await deleteDoc(userRef);
-
               const user = auth.currentUser;
               if (user) {
-                await deleteUser(user);
+                // Must delete doc before delete user due to firebase rules (only delete when auth is not null)
+                const userRef = doc(db, "users", currentUserID);
+                await deleteDoc(userRef);
 
+                await deleteUser(user);
+      
+            
                 // Show success prompt
                 Alert.alert(
                   "Account Successfully Deleted",
@@ -51,9 +54,6 @@ const DeleteAccountButton = ({ currentUserID }) => {
                   [
                     {
                       text: "OK",
-                      onPress: async () => {
-                        await signOut(auth);
-                      },
                     },
                   ],
                   { cancelable: false }

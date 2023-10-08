@@ -6,7 +6,10 @@ import { useThemes } from "../../hooks/ThemesContext";
 import theme from "../../themes";
  
 // possible types: first, last, email, password
-const AuthFormInput = ({ action, value, type }) => {
+const AuthFormInput = ({ action, value, type, autoCapitalize }) => {
+
+  const autoCapitalizeValue = autoCapitalize ? "words" : "none";
+
   return (
     <TextInput
       mainColor="#ffffffb0"
@@ -27,7 +30,7 @@ const AuthFormInput = ({ action, value, type }) => {
       secureTextEntry={type === "password"}
       keyboardType={type === "email" ? "email-address" : "default"}
       autoCorrect={false}
-      autoCapitalize="none"
+      autoCapitalize={autoCapitalizeValue}
     />
   );
 };

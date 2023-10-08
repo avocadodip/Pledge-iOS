@@ -80,6 +80,7 @@ export const SettingsProvider = ({ children }) => {
             setCurrentUserEmail(userSettings.email);
             setUserDataFetched(true);
           } else {
+            setIsAuthenticated(false);
             // Handle the case where the user does not exist or has no settings
           }
           // setLoading(false); // turn off loading

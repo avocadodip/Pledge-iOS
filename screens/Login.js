@@ -73,8 +73,8 @@ const Login = () => {
           {loading ? (
             <ActivityIndicator size="small" color={theme["Classic"].primary} />
           ) : null}
-          <FormInput action={setEmail} value={email} type="email" />
-          <FormInput action={setPassword} value={password} type="password" />
+          <FormInput action={setEmail} value={email} type="email" autoCapitalize={false}/>
+          <FormInput action={setPassword} value={password} type="password" autoCapitalize={false}/>
 
           <TouchableOpacity
             style={styles.forgotPasswordButton}

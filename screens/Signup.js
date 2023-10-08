@@ -108,14 +108,14 @@ const Signup = () => {
         <View style={styles.formContainer}>
           <View style={styles.firstLastContainer}>
             <View style={styles.textInputContainer}>
-              <FormInput action={setFirstName} value={firstName} type="first" />
+              <FormInput action={setFirstName} value={firstName} type="first" autoCapitalize={true}/>
             </View>
             <View style={styles.textInputContainer}>
-              <FormInput action={setLastName} value={lastName} type="last" />
+              <FormInput action={setLastName} value={lastName} type="last" autoCapitalize={true}/>
             </View>
           </View>
-          <FormInput action={setEmail} value={email} type="email" />
-          <FormInput action={setPassword} value={password} type="password" />
+          <FormInput action={setEmail} value={email} type="email" autoCapitalize={false}/>
+          <FormInput action={setPassword} value={password} type="password" autoCapitalize={false}/>
 
           <SignUpButton action={handleSignup} text={"Sign up"} />
 
