@@ -148,6 +148,7 @@ const checkAndSendNotifications = async () => {
   }
 };
 
+
 /**
  * Converts a time string to a Firestore timestamp.
  * @param {string} timeString - The time string to convert, in the format "HH:mm".
