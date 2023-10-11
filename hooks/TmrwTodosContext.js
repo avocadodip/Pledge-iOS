@@ -26,6 +26,7 @@ export const TmrwTodosProvider = ({ children }) => {
   const [noTmrwTodoLocked, setNoTmrwTodoLocked] = useState(false);
   const { setTmrwPageCompletedForTheDay } =
   useDayStatus();
+  const [loading, setLoading] = useState(true);
 
   const [nextActiveDay, setNextActiveDay] = useState(
     getNextActiveDay(getTmrwDOW(), daysActive)
@@ -72,6 +73,7 @@ export const TmrwTodosProvider = ({ children }) => {
 
   // 1. Get tmrw day data
   const getAndSetTmrwTodos = async () => {
+    setLoading(true);
     let fetchedTodos = [null, null, null];
     const todoRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
 
@@ -91,6 +93,7 @@ export const TmrwTodosProvider = ({ children }) => {
     }
  
     setTmrwTodos(fetchedTodos);
+    setLoading(false);
   };
 
   // looks through the array of todos, and when it finds a todo with the same todoNumber as the updated todo, it replaces that old todo with the updated one. (used in bottom sheet)
@@ -115,7 +118,8 @@ export const TmrwTodosProvider = ({ children }) => {
         updateTodo,
         noTmrwTodoLocked,
         getAndSetTmrwTodos,
-        setIsTmrwActiveDay
+        setIsTmrwActiveDay,
+        loading
       }}
     >
       {children}

@@ -133,7 +133,7 @@ const Signup = () => {
             <Text
               style={styles.linkText}
               onPress={() =>
-                Linking.openURL("https://joshuawolk.com/pledgepolicy.html")
+                Linking.openURL("https://joshuawolk.com/pledgeterms.html")
               }
             >
               Terms of Service

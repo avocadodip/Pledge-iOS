@@ -1,7 +1,6 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useState } from "react";
-import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayStatus } from "../hooks/DayStatusContext";
 import { useTmrwTodos } from "../hooks/TmrwTodosContext";
@@ -10,7 +9,6 @@ import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
 import TodayTmrwMessage from "../components/todaytmrw/TodayTmrwMessage";
-import { getTimezoneAbbrev } from "../utils/currentDate";
 import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
 import TmrwTodo from "../components/todo/TmrwTodo";
 import FinedTodo from "../components/todo/FinedTodo";
@@ -22,12 +20,12 @@ const Tomorrow = () => {
   const styles = getStyles(theme);
   const { tmrwTodos } = useTmrwTodos();
   const {
-    settings: { timezone, vacationModeOn, isOnboarded },
+    settings: { vacationModeOn, isOnboarded },
   } = useSettings();
   const { dayChanged } = useDayChange();
   const { timeStatus } = useDayStatus();
 
-  const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty } =
+  const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty, loading } =
     useTmrwTodos();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -46,6 +44,10 @@ const Tomorrow = () => {
       }
     });
   }, [tmrwTodos, dayChanged]);
+
+  // if (loading) {
+  //   return <Text>Hi</Text>; 
+  // }
 
   return (
     <SafeAreaView style={styles.pageContainer}>

@@ -263,9 +263,16 @@ const runDailyUpdate = onRequest(async (req, res) => {
             chargeErrorType = null,
           } = weekDoc.exists ? weekDoc.data() : {};
 
+          // Safeguard: Before merging the arrays, filter out todos that already exist (avoid adding todo if it already exists in array)
+          const newFinedTasks = todayFinedTasks.filter(
+              (todayTodo) => !finedTasks.some(
+                  (finedTodo) => finedTodo.createdAt === todayTodo.createdAt,
+              ),
+          );
+
           // Make updates
+          const updatedFinedTasks = [...finedTasks, ...newFinedTasks];
           const updatedTotalWeeklyFine = totalWeeklyFine + todayTotalFine;
-          const updatedFinedTasks = [...finedTasks, ...todayFinedTasks]; // Merge arrays
 
           // Set updates
           await weekRef.set(
