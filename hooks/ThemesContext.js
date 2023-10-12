@@ -14,7 +14,10 @@ export const ThemeContext = createContext();
 
 export const ThemesProvider = ({ children }) => {
   const { timeStatus, dayCompleted } = useDayStatus();
-  const { settings, currentUserID, setAppReadyToRender } = useSettings();
+  const {
+    settings: { isOnboarded },
+    currentUserID, setAppReadyToRender
+  } = useSettings();
   const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme
   const [backgroundGradient, setBackgroundGradient] = useState([]);
@@ -43,7 +46,7 @@ export const ThemesProvider = ({ children }) => {
         if (
           (timeStatus === 1 &&
             (!dayCompleted)) ||
-          currentUserID === null
+          currentUserID === null || !isOnboarded
         ) {
           setBackgroundGradient(redGradientValues);
           setCurrentClassicColor("red");
