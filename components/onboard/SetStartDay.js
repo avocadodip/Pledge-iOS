@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useThemes } from "../../hooks/ThemesContext";
+import { useDayChange } from "../../hooks/useDayChange";
 
 const SetStartDay = ({
   isTodayOption,
@@ -9,8 +10,10 @@ const SetStartDay = ({
   setStartDay,
 }) => {
   const { theme } = useThemes();
+  const { tmrwDateName } = useDayChange();
   const styles = getStyles(theme);
   const [hoursLeft, setHoursLeft] = useState(0);
+
 
   // Calculate time left
   useEffect(() => {
@@ -115,8 +118,8 @@ const SetStartDay = ({
               startDay === "Tmrw" && styles.buttonDescTextSelected,
             ]}
           >
-            {timePickerText.end}, July 24
-          </Text>
+            {timePickerText.end}, {tmrwDateName}
+          </Text> 
         </View>
       </TouchableOpacity>
     </View>
