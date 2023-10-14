@@ -35,7 +35,7 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
       [{ text: "OK", onPress: () => setIsBottomSheetOpen(true) }],
       { cancelable: true }
     );
-  };
+  }; 
 
   // When right side lock pressed
   const handleLockTodo = async (todoNumber) => {

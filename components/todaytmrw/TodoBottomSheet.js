@@ -70,12 +70,12 @@ const renderBackdrop = useCallback(
       appearsOnIndex={0}
       onPress={() => {
         if (isBottomSheetEditable) {
-          console.log(todo);
           if (todo.amount === "") {
             setTodo((prevTodo) => ({
               ...prevTodo,
               amount: "0",
             }));
+            todoRef.current = { ...todoRef.current, amount: "0" };  
           }
           updateTodo(todoRef.current);
         }
