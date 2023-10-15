@@ -43,7 +43,7 @@ const getStyles = () =>
     fontSize: 24,
     fontWeight: "700",
     textAlign: "left",
-    marginTop: 30,
+    marginTop: 10,
     color: "white",
   },
 });
