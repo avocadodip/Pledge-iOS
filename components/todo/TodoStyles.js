@@ -28,6 +28,7 @@ export const getTodoStyles = (theme) =>
       backgroundColor: theme.faintishPrimary,
       height: "100%",
     },
+    // Today
     rightButtonContainer: {
       backgroundColor: theme.faintishPrimary,
       height: "100%",
@@ -79,13 +80,10 @@ export const getTodoStyles = (theme) =>
       height: TODO_HEIGHT,
       borderRadius: BORDER_RADIUS,
       overflow: "hidden",
-      // borderWidth: 1,
-      // borderColor: "black",
     },
  
     // Left styles (scroll down more for right styles)
     leftContainer: {
-      backgroundColor: theme.faintPrimary,
       height: "100%",
       flex: 8,
       // Chris 9/13/23 - very strange behavior; adding these 2 lines hides the tiny notch between left/right container, but changes left container color
@@ -96,6 +94,8 @@ export const getTodoStyles = (theme) =>
       display: "flex",
       justifyContent: "center",
       height: "100%",
+      backgroundColor: theme.faintPrimary,
+
     },
     rightContainer: {
       backgroundColor: theme.faintishPrimary,

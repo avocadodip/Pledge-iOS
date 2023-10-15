@@ -61,7 +61,7 @@ const Tomorrow = () => {
           <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
         </View>
 
-        {isOnboarded && !vacationModeOn && isTmrwActiveDay && (
+        {/* {isOnboarded && !vacationModeOn && isTmrwActiveDay && (
           <View>
             {(timeStatus === 1 || timeStatus === 2) &&
               (timeStatus === 2 && isTodoArrayEmpty ? (
@@ -70,7 +70,7 @@ const Tomorrow = () => {
                 <TmrwTimePicker altMessage={false} />
               ))}
           </View>
-        )}
+        )} */}
       </View>
 
       <View style={styles.pageContent}>
@@ -105,12 +105,13 @@ const getStyles = (theme) =>
       flex: 1,
       alignItems: "center",
       marginHorizontal: APP_HORIZONTAL_PADDING,
+      paddingTop: 10,
     },
     headerContainer: {
       marginTop: 5,
       width: "100%",
       flexDirection: "col",
-      height: 75,
+      height: 60,
     },
     headerTitleContainer: {
       width: "100%",

@@ -27,7 +27,7 @@ const TodayTmrwMessage = ({ type, setModalVisible, nextActiveDay }) => {
             style={styles.startButton}
             onPress={() => {
               setModalVisible(true);
-            }}
+            }} 
           >
             <Text style={styles.startButtonText}>
               Set up your first day of tasks

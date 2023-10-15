@@ -166,7 +166,7 @@ const TodayTodo = ({ todoData }) => {
   // During day, show the following:
   if (timeStatus === 1) {
     return (
-      <View style={[styles.infoContainer]}>
+      <View style={styles.infoContainer}>
         {/* Left side */}
         <Animated.View style={leftStyle}>
           <TouchableRipple

@@ -22,7 +22,7 @@ const Today = () => {
   const styles = getStyles(theme);
   const { todayTodos } = useTodayTodos();
   const {
-    settings: { isOnboarded, timezone, daysActive },
+    settings: { isOnboarded },
   } = useSettings();
   const {
     todayDOWAbbrev,
@@ -32,7 +32,7 @@ const Today = () => {
     onboardStartTmrw,
   } = useTodayTodos();
   const { timeStatus } = useDayStatus();
- 
+
   const [modalVisible, setModalVisible] = useState(false);
 
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
@@ -55,10 +55,7 @@ const Today = () => {
       {isOnboarded &&
         !isTodayVacation &&
         isTodayActiveDay &&
-        !isTodoArrayEmpty && (
-          <DayStatusIndicator />
-
-        )}
+        !isTodoArrayEmpty && <DayStatusIndicator />}
 
       <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>
@@ -98,13 +95,13 @@ const getStyles = (theme) =>
       flex: 1,
       alignItems: "center",
       marginHorizontal: APP_HORIZONTAL_PADDING,
+      paddingTop: 10,
     },
     headerContainer: {
       marginTop: 5,
       width: "100%",
       flexDirection: "col",
-      height: 75,
-
+      height: 60,
     },
     headerTitleContainer: {
       width: "100%",

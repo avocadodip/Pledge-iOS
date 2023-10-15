@@ -76,12 +76,6 @@ function AppContent() {
 
 
   useEffect(() => {
-    console.log("1");
-    console.log(appReadyToRender);
-    console.log("2");
-    console.log(isAuthenticated);
-    console.log("3");
-    console.log(userDataFetched);
     const timerId = setTimeout(() => {
       if (!isAuthenticated || (isAuthenticated && userDataFetched)) {
         setIsSplashScreen(false);

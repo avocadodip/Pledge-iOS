@@ -75,8 +75,12 @@ export default {
     paymentSheetPrimary: "#fcfdff",
 
     // Day Status indicator
+    dayStatusIndicatorBg: Color.white18,
+    dayStatusIndicatorBorder: Color.white18,
     dayStatusIndicatorBgIncomplete: Color.white18,
+    dayStatusIndicatorBorderIncomplete: Color.white18,
     dayStatusIndicatorBgComplete: Color.white18,
+    dayStatusIndicatorBorderComplete: Color.white18,
 
     // Start first day button border
     buttonBorder: "#feb3b33d",
@@ -127,8 +131,12 @@ export default {
     paymentSheetPrimary: "#fcfdff",
 
     // Day Status indicator
+    dayStatusIndicatorBg: Color.white12,
+    dayStatusIndicatorBorder: "#4a4a4a",
     dayStatusIndicatorBgIncomplete: "#df3a3a",
-    dayStatusIndicatorBgComplete: "#29a12f",
+    dayStatusIndicatorBorderIncomplete: "#d01f1f",
+    dayStatusIndicatorBgComplete: "#3eb344",
+    dayStatusIndicatorBorderComplete: "#1f8b25",
     
     // Start first day button border
     buttonBorder: "#4a4a4a",

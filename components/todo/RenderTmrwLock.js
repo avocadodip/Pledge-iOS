@@ -35,7 +35,7 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
       [{ text: "OK", onPress: () => setIsBottomSheetOpen(true) }],
       { cancelable: true }
     );
-  }; 
+  };
 
   // When right side lock pressed
   const handleLockTodo = async (todoNumber) => {
@@ -126,10 +126,11 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
   if (isLocked === true) {
     return (
       <View
-        style={{
-          ...styles.rightContainer,
-          backgroundColor: theme.faintPrimary,
-        }}
+        style={[
+          styles.rightContainer,
+          { backgroundColor: theme.faintPrimary },
+          timeStatus === 2 && styles.disabledOpacity,
+        ]}
       >
         <View style={timeStatus === 2 ? styles.disabledOpacity : null}>
           <LockIcon color={theme.primary} />
