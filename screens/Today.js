@@ -98,10 +98,10 @@ const getStyles = (theme) =>
       paddingTop: 10,
     },
     headerContainer: {
-      marginTop: 5,
+      marginTop: 7,
       width: "100%",
       flexDirection: "col",
-      height: 60,
+      height: 55,
     },
     headerTitleContainer: {
       width: "100%",
@@ -119,13 +119,6 @@ const getStyles = (theme) =>
       fontSize: 23,
       fontWeight: "bold",
     },
-    headerSubtitle: {
-      color: theme.textHigh,
-      fontSize: 15,
-      paddingBottom: 4, //temp
-      fontWeight: "bold",
-      marginTop: 5,
-    },
     pageContent: {
       height: "75%",
       width: "100%",
@@ -133,13 +126,8 @@ const getStyles = (theme) =>
       alignItems: "center",
     },
     todosContainer: {
-      gap: 14,
+      gap: 15,
       width: "100%",
-    },
-    headerSubtitleContainer: {
-      display: "flex",
-      flexDirection: "row",
-      gap: 4,
     },
     timeZone: {
       color: theme.textHigh,

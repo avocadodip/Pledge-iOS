@@ -46,22 +46,27 @@ const checkAndSendNotifications = async () => {
     const uid = userDoc.id;
     const notifExpoPushToken = userData.notifExpoPushToken;
 
+    // user data
     const notificationTimes = userData.notificationTimes;
     const todayDayEnd = userData.todayDayEnd;
     const userTimeZone = userData.timezone;
 
-    const deadline = convertToTimestamp(todayDayEnd, userTimeZone);
-    const deadlineMillis = deadline.toMillis();
+    // get user's deadline in UTC ms
+    const deadlineMillis = convertToTimestamp(todayDayEnd, userTimeZone);
 
     const sortedNotificationTimes = Object.entries(notificationTimes).sort((a, b) => a[0] - b[0]);
-
 
     for (const [time, notificationInfo] of sortedNotificationTimes) {
       console.log(`Processing notification time: ${time}`);
       const {shouldSend, isSent} = notificationInfo;
-
       if (shouldSend && !isSent) {
         const notifyTime = deadlineMillis - parseInt(time) * 60 * 1000;
+
+        console.log("current time:");
+        console.log(currentTime);
+        console.log("notify time:");
+        console.log(notifyTime);
+
 
         if (currentTime >= notifyTime) {
           // Prepare the message
@@ -75,12 +80,12 @@ const checkAndSendNotifications = async () => {
               uid: uid,
             },
           };
-          console.log(`Sent message: You have ${convertMinutesToReadableTime(time)} left to complete your day!`);
+          console.log(`Sending message: You have ${convertMinutesToReadableTime(time)} left to complete your day!`);
 
           messages.push(message);
 
           // Update notificationTimes map to indicate that this notification has been sent
-          userDoc.ref.update({[`notificationTimes.${time}.isSent`]: true});
+          await userDoc.ref.update({[`notificationTimes.${time}.isSent`]: true});
 
           break;
         }
@@ -103,7 +108,8 @@ const checkAndSendNotifications = async () => {
   for (const chunk of chunks) {
     try {
       const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-      // console.log(ticketChunk);
+      console.log("ticketChunk");
+      console.log(ticketChunk);
       tickets.push(...ticketChunk);
       // NOTE: If a ticket contains an error code in ticket.details.error, you
       // must handle it appropriately. The error codes are listed in the Expo
@@ -127,6 +133,7 @@ const checkAndSendNotifications = async () => {
   for (const chunk of receiptIdChunks) {
     try {
       const receipts = await expo.getPushNotificationReceiptsAsync(chunk);
+      console.log("receipts:");
       console.log(receipts);
 
       for (const receiptId in receipts) {
@@ -158,9 +165,8 @@ const checkAndSendNotifications = async () => {
 function convertToTimestamp(timeString, timeZone) {
   const [hour, minute] = timeString.split(":");
   const hour24 = parseInt(hour) + 12;
-
   const timeMoment = moment.tz(`${hour24}:${minute}`, "HH:mm", timeZone);
-  return admin.firestore.Timestamp.fromDate(timeMoment.toDate());
+  return admin.firestore.Timestamp.fromDate(timeMoment.toDate()).toMillis();
 }
 
 /**

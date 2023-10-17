@@ -46,6 +46,40 @@ export const abbreviatedDaysOfWeek = [
   "Sat.",
 ];
 
+export const abbreviateDOW = (dayOfWeek) => {
+  const abbreviations = {
+    "Sunday": "Sun.",
+    "Monday": "Mon.",
+    "Tuesday": "Tues.",
+    "Wednesday": "Wed.",
+    "Thursday": "Thurs.",
+    "Friday": "Fri.",
+    "Saturday": "Sat.",
+  };
+  return abbreviations[dayOfWeek];
+};
+
+// "October 16" to "Oct. 16"
+export const abbreviateMonth = (dateString) => {
+  const monthAbbreviations = {
+    "January": "Jan.",
+    "February": "Feb.",
+    "March": "Mar.",
+    "April": "Apr.",
+    "May": "May",
+    "June": "Jun.",
+    "July": "Jul.",
+    "August": "Aug.",
+    "September": "Sep.",
+    "October": "Oct.",
+    "November": "Nov.",
+    "December": "Dec.",
+  };
+  const [month, day] = dateString.split(" ");
+  return `${monthAbbreviations[month]} ${day}`;
+};
+
+
 export function getTodayDOW() {
   const currentDate = new Date();
   return daysOfWeek[currentDate.getDay()];

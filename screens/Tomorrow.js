@@ -108,10 +108,10 @@ const getStyles = (theme) =>
       paddingTop: 10,
     },
     headerContainer: {
-      marginTop: 5,
+      marginTop: 7,
       width: "100%",
       flexDirection: "col",
-      height: 60,
+      height: 55,
     },
     headerTitleContainer: {
       width: "100%",
@@ -137,7 +137,7 @@ const getStyles = (theme) =>
       alignItems: "center",
     },
     todosContainer: {
-      gap: 14,
+      gap: 15,
       width: "100%",
     },
 
@@ -146,11 +146,6 @@ const getStyles = (theme) =>
       color: theme.primary,
       fontWeight: 500,
       fontSize: 20,
-    },
-    headerSubtitleContainer: {
-      display: "flex",
-      flexDirection: "row",
-      gap: 4,
     },
     timeZone: {
       color: theme.textHigh,

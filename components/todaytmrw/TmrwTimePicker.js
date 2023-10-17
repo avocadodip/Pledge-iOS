@@ -155,7 +155,7 @@ const TmrwTimePicker = ({ altMessage }) => {
         )}
       </View>
 
-      {/* AM MODAL */}
+      {/* AM MODAL */} 
       <BottomModal
         // style={styles.bottomModal}
         isVisible={isModalVisible.start}

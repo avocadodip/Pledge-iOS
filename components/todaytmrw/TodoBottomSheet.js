@@ -62,31 +62,37 @@ export default function TodoBottomSheet() {
   };
 
   // Backdrop - when pressed, updates global todo array and closes sheet
-const renderBackdrop = useCallback(
-  (props) => (
-    <BottomSheetBackdrop
-      {...props}
-      disappearsOnIndex={-1}
-      appearsOnIndex={0}
-      onPress={() => {
-        if (isBottomSheetEditable) {
-          if (todo.amount === "") {
-            setTodo((prevTodo) => ({
-              ...prevTodo,
-              amount: "0",
-            }));
-            todoRef.current = { ...todoRef.current, amount: "0" };  
+  const renderBackdrop = useCallback(
+    (props) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        onPress={() => {
+          if (isBottomSheetEditable) {
+            if (todo.amount === "") {
+              setTodo((prevTodo) => ({
+                ...prevTodo,
+                amount: "0",
+              }));
+              todoRef.current = { ...todoRef.current, amount: "0" };
+            }
+            updateTodo(todoRef.current);
           }
-          updateTodo(todoRef.current);
-        }
-        setTimeout(() => {
-          setIsBottomSheetOpen(false);
-        }, 100); // Need to wait for animation to finish
-      }}
-    />
-  ),
-  [isBottomSheetEditable, todo]
-);
+          setTimeout(() => {
+            setIsBottomSheetOpen(false);
+          }, 100); // Need to wait for animation to finish
+        }}
+      />
+    ),
+    [isBottomSheetEditable, todo]
+  );
+
+  const handleSheetChange = (index) => {
+    if (index === -1) {
+      setIsBottomSheetOpen(false);
+    }
+  };
 
   const handleNavigateToAddPayment = () => {
     updateTodo(todoRef.current);
@@ -107,7 +113,8 @@ const renderBackdrop = useCallback(
       enablePanDownToClose={true}
       backdropComponent={renderBackdrop}
       backgroundComponent={null} // gets rid of white flash
-      handleStyle={{ display: "none" }} // hide default handle
+      handleStyle={{ display: "none" }} // hides default handle
+      onChange={handleSheetChange} // handle drag close
       style={{
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
