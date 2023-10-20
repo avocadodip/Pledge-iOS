@@ -18,9 +18,10 @@ import { db } from "../../database/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { abbreviateDOW } from "../../utils/currentDate";
 import InfoIcon from "../../assets/icons/info-icon-alt.svg";
+import { LinearGradient } from "expo-linear-gradient";
 
 const DayStatusIndicator = ({ message }) => {
-  const { theme } = useThemes();
+  const { theme, backgroundGradient } = useThemes();
   const { dayCompleted, todayHeaderSubtitleMessage, timeStatus } =
     useDayStatus();
   const { tmrwDate, tmrwDOW, tmrwDateName } = useDayChange();
@@ -104,20 +105,25 @@ const DayStatusIndicator = ({ message }) => {
             }
           }}
         >
-          <View style={styles.pageContainer} onLayout={onLayout}>
-            <View>
-              <Text style={styles.titleText}>Set Deadline</Text>
+          <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+            <View style={styles.pageContainer} onLayout={onLayout}>
+              <View>
+                <Text style={styles.titleText}>Set Deadline</Text>
+              </View>
+              <View style={styles.explainerContainer}>
+                <InfoIcon color={theme.textMedium} width={21} height={21} />
+                <Text style={styles.explainerText}>
+                  The below times go into effect tomorrow (on{" "}
+                  {abbreviateDOW(tmrwDOW)})
+                </Text>
+              </View>
+              <SetDeadline
+                timePickerText={timePickerText}
+                setTimePickerText={setTimePickerText}
+                isOnboardingModal={false}
+              />
             </View>
-            <View style={styles.explainerContainer}>
-              <InfoIcon color={theme.textMedium} width={21} height={21}/>
-              <Text style={styles.explainerText}>The below times go into effect tomorrow (on {abbreviateDOW(tmrwDOW)})</Text>
-            </View>
-            <SetDeadline
-              timePickerText={timePickerText}
-              setTimePickerText={setTimePickerText}
-              isOnboardingModal={false}
-            />
-          </View>
+          </LinearGradient>
         </TouchableWithoutFeedback>
       </Modal>
     </>
@@ -179,7 +185,6 @@ const getStyles = (theme, dayCompleted, timeStatus, modalHeight) =>
       alignItems: "center",
       paddingHorizontal: 20,
       flex: 1,
-      backgroundColor: theme.accent,
     },
     titleText: {
       color: theme.textHigh,

@@ -114,7 +114,7 @@ const ChangeEmail = () => {
         {changeEmailStep === "password" && (
           <View style={styles.container}>
             <Text style={styles.promptText}>
-              Re-enter your password in order to change your email.
+              Re-enter your password to change your email.
             </Text>
             <View style={styles.formContainer}>
               <AuthFormInput

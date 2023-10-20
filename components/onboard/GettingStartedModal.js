@@ -24,12 +24,13 @@ import { doc, runTransaction, setDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
 import { useTodayTodos } from "../../hooks/TodayTodosContext";
 import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 const steps = ["Set daily deadline", "Set start day", "Lock in 3 tasks"];
 const FADE_OUT_OPACITY = -7;
 
 const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
-  const { theme } = useThemes();
+  const { theme, backgroundGradient } = useThemes();
   const [modalHeight, setModalHeight] = useState(0);
   const styles = getStyles(theme, modalHeight);
   const [currentPage, setCurrentPage] = useState(0);
@@ -44,9 +45,33 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const { currentUserID } = useSettings();
   const [startDay, setStartDay] = useState("");
   const [todos, setTodos] = useState([
-    { todoNumber: 1, title: "", amount: "", isComplete: false, isLocked: true, description: "", amount: 0 },
-    { todoNumber: 2, title: "", amount: "", isComplete: false, isLocked: true, description: "", amount: 0 },
-    { todoNumber: 3, title: "", amount: "", isComplete: false, isLocked: true, description: "", amount: 0 },
+    {
+      todoNumber: 1,
+      title: "",
+      amount: "",
+      isComplete: false,
+      isLocked: true,
+      description: "",
+      amount: 0,
+    },
+    {
+      todoNumber: 2,
+      title: "",
+      amount: "",
+      isComplete: false,
+      isLocked: true,
+      description: "",
+      amount: 0,
+    },
+    {
+      todoNumber: 3,
+      title: "",
+      amount: "",
+      isComplete: false,
+      isLocked: true,
+      description: "",
+      amount: 0,
+    },
   ]);
   const { getAndSetTodayTodos } = useTodayTodos();
   const { getAndSetTmrwTodos } = useTmrwTodos();
@@ -214,12 +239,11 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
 
       await setDoc(todayRef, todayTodo);
       await setDoc(tmrwRef, tmrwTodo);
-      
+
       updateUserIsOnboarded(currentUserID); // Update firebase isOnboarded field to true
       getAndSetTodayTodos(); // re-fetch today todos to update Today
       getAndSetTmrwTodos(); // re-fetch tmrw todos to update Tmrw
       setModalVisible(false); // Close modal
-
     }
 
     if (currentPage < steps.length - 1) {
@@ -325,37 +349,39 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
           }
         }}
       >
-        <View style={styles.container} onLayout={onLayout}>
-          <Text style={styles.gettingStartedText}>Set Up Your First Day</Text>
-          <View style={styles.stepIndicator}>
-            <StepIndicator
-              stepCount={3}
-              customStyles={stepIndicatorStyles}
-              currentPosition={currentPage}
-              onPress={onStepPress}
-              renderLabel={renderLabel}
-              labelAlign="left"
-              labels={steps}
-              direction="vertical"
+        <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+          <View style={styles.container} onLayout={onLayout}>
+            <Text style={styles.gettingStartedText}>Set Up Your First Day</Text>
+            <View style={styles.stepIndicator}>
+              <StepIndicator
+                stepCount={3}
+                customStyles={stepIndicatorStyles}
+                currentPosition={currentPage}
+                onPress={onStepPress}
+                renderLabel={renderLabel}
+                labelAlign="left"
+                labels={steps}
+                direction="vertical"
+              />
+            </View>
+            <FlatList
+              ref={flatListRef}
+              data={steps}
+              renderItem={renderViewPagerPage}
+              keyExtractor={(item, index) => "page_" + index}
+              pagingEnabled
+              vertical
+              showsVerticalScrollIndicator={false}
+              scrollEventThrottle={16}
+              onScroll={onPageChange}
+              getItemLayout={(data, index) => ({
+                length: modalHeight,
+                offset: modalHeight * index,
+                index,
+              })}
             />
           </View>
-          <FlatList
-            ref={flatListRef}
-            data={steps}
-            renderItem={renderViewPagerPage}
-            keyExtractor={(item, index) => "page_" + index}
-            pagingEnabled
-            vertical
-            showsVerticalScrollIndicator={false}
-            scrollEventThrottle={16}
-            onScroll={onPageChange}
-            getItemLayout={(data, index) => ({
-              length: modalHeight,
-              offset: modalHeight * index,
-              index,
-            })}
-          />
-        </View>
+        </LinearGradient>
       </TouchableWithoutFeedback>
     </Modal>
   );

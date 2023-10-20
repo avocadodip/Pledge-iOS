@@ -44,7 +44,7 @@ const NotificationsModal = ({
     }
     const token = (
       await Notifications.getExpoPushTokenAsync({
-        projectId: EXPO_PROJECT_ID,
+        experienceId: EXPO_PROJECT_ID,
       })
     ).data;
 

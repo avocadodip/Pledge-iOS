@@ -28,8 +28,8 @@ function calculateFines(todos, dateName) {
     if (todo === null) {
       // todayNoInputCount += 1;
       // todayNoInputFine += missedTaskFine; // Commented out: Assign a fine for no input
-    } else if (!todo.isComplete) {
-      todayTotalFine += parseInt(todo.amount); // Convert amount to integer before addition
+    } else if (!todo.isComplete && todo.amount !== 0) {
+      todayTotalFine += parseInt(todo.amount); // Just in case: convert amount to integer before addition
       todo.dateName = dateName;
       todayFinedTasks.push(todo);
     }

@@ -40,7 +40,7 @@ const checkAndSendNotifications = async () => {
       .get();
   console.log(`Found ${usersSnapshot.size} users`);
 
-  usersSnapshot.forEach(async (userDoc) => {
+  for (const userDoc of usersSnapshot.docs) {
     console.log("Processing user...");
     const userData = userDoc.data();
     const uid = userDoc.id;
@@ -52,23 +52,20 @@ const checkAndSendNotifications = async () => {
     const userTimeZone = userData.timezone;
 
     // get user's deadline in UTC ms
-    const deadlineMillis = convertToTimestamp(todayDayEnd, userTimeZone);
+    const deadlineMillis = timeStringToUtcMillis(todayDayEnd, userTimeZone);
 
-    const sortedNotificationTimes = Object.entries(notificationTimes).sort((a, b) => a[0] - b[0]);
+    const sortedNotificationTimes = Object.entries(notificationTimes).sort((a, b) => Number(a[0]) - Number(b[0]));
 
     for (const [time, notificationInfo] of sortedNotificationTimes) {
       console.log(`Processing notification time: ${time}`);
       const {shouldSend, isSent} = notificationInfo;
-      if (shouldSend && !isSent) {
+      if (isSent == true) {
+        break;
+      } else if (!isSent && shouldSend) {
         const notifyTime = deadlineMillis - parseInt(time) * 60 * 1000;
+        const notifyTimePlus10Min = notifyTime + 10 * 60 * 1000;
 
-        console.log("current time:");
-        console.log(currentTime);
-        console.log("notify time:");
-        console.log(notifyTime);
-
-
-        if (currentTime >= notifyTime) {
+        if (currentTime >= notifyTime && currentTime <= notifyTimePlus10Min) {
           // Prepare the message
           const message = {
             to: notifExpoPushToken,
@@ -78,20 +75,23 @@ const checkAndSendNotifications = async () => {
             )} left to complete your day!`,
             data: {
               uid: uid,
+              time: time,
             },
           };
           console.log(`Sending message: You have ${convertMinutesToReadableTime(time)} left to complete your day!`);
 
-          messages.push(message);
+          userDoc.ref.update({
+            [`notificationTimes.${time}.isSent`]: true,
+            todayANotifHasBeenSent: true,
+          });
 
-          // Update notificationTimes map to indicate that this notification has been sent
-          await userDoc.ref.update({[`notificationTimes.${time}.isSent`]: true});
+          messages.push(message);
 
           break;
         }
       }
     }
-  });
+  }
   console.log("checkAndSendNotifications finished");
   // Send all notifications in a batch
   const expo = new Expo();
@@ -108,9 +108,17 @@ const checkAndSendNotifications = async () => {
   for (const chunk of chunks) {
     try {
       const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-      console.log("ticketChunk");
-      console.log(ticketChunk);
-      tickets.push(...ticketChunk);
+      console.log("ticketChunk:", ticketChunk);
+      // Pass through uid and time to the ticket
+      tickets.push(
+          ...ticketChunk.map((ticket, index) => {
+            return {
+              ...ticket,
+              uid: chunk[index].data.uid,
+              time: chunk[index].data.time,
+            };
+          }),
+      );
       // NOTE: If a ticket contains an error code in ticket.details.error, you
       // must handle it appropriately. The error codes are listed in the Expo
       // documentation:
@@ -127,20 +135,30 @@ const checkAndSendNotifications = async () => {
       receiptIds.push(ticket.id);
     }
   }
-
+  console.log("receiptIds:", receiptIds);
   const receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
+  console.log("receiptIdChunks:", receiptIdChunks);
 
   for (const chunk of receiptIdChunks) {
     try {
       const receipts = await expo.getPushNotificationReceiptsAsync(chunk);
-      console.log("receipts:");
-      console.log(receipts);
+      console.log("receipts:", receipts);
 
       for (const receiptId in receipts) {
         if (Object.prototype.hasOwnProperty.call(receipts, receiptId)) {
           const {status, message, details} = receipts[receiptId];
           if (status === "ok") {
-            continue;
+            // Use the extended properties here
+            const correspondingTicket = tickets.find((t) => t.id === receiptId);
+            const {uid, time} = correspondingTicket;
+            console.log("uid:", uid);
+            console.log("time:", time);
+            // if (time && uid) {
+            //   await admin.firestore().collection("users").doc(uid).update({
+            //     [`notificationTimes.${time}.isSent`]: true,
+            //     todayANotifHasBeenSent: true,
+            //   });
+            // }
           } else if (status === "error") {
             console.error(`There was an error sending a notification: ${message}`);
             if (details && details.error) {
@@ -150,7 +168,7 @@ const checkAndSendNotifications = async () => {
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching receipts:", error);
     }
   }
 };
@@ -162,11 +180,20 @@ const checkAndSendNotifications = async () => {
  * @param {string} timeZone - The time zone to use for the conversion.
  * @return {admin.firestore.Timestamp} The resulting Firestore timestamp.
  */
-function convertToTimestamp(timeString, timeZone) {
-  const [hour, minute] = timeString.split(":");
-  const hour24 = parseInt(hour) + 12;
-  const timeMoment = moment.tz(`${hour24}:${minute}`, "HH:mm", timeZone);
-  return admin.firestore.Timestamp.fromDate(timeMoment.toDate()).toMillis();
+function timeStringToUtcMillis(timeString, timeZone) {
+  // Create a moment object for the current date in the given time zone
+  const now = moment.tz(timeZone);
+  // Extract the current date components
+  const year = now.year();
+  const month = now.month();
+  const date = now.date();
+  // Construct a full date-time string
+  const dateTimeString = `${year}-${month + 1}-${date} ${timeString} PM`;
+  // Parse the date-time string into a moment object in the given time zone
+  const localMoment = moment.tz(dateTimeString, "YYYY-MM-DD h:mm A", timeZone);
+  // Convert the local moment to UTC milliseconds
+  const utcMillis = localMoment.valueOf();
+  return utcMillis;
 }
 
 /**
