@@ -1,16 +1,14 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import CircleRightArrow from "../../assets/icons/circle-right-arrow.svg";
 import { useNavigation } from "@react-navigation/native";
 import { useThemes } from "../../hooks/ThemesContext";
 import { daysOfWeek } from "../../utils/currentDate";
-import { useSettings } from "../../hooks/SettingsContext";
 import GlowButton from "../GlowButton";
 import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
 
 const TodayTmrwMessage = ({ type, setModalVisible }) => {
   const { theme } = useThemes();
-  const { currentUserFirstName } = useSettings();
   const navigation = useNavigation();
   const styles = getStyles(theme);
   const { isTmrwActiveDay, nextActiveDay } = useTmrwTodos();
@@ -131,7 +129,6 @@ const getStyles = (theme) =>
       alignItems: "center",
       gap: 28,
       borderRadius: 16,
-      // backgroundColor: theme.faintPrimary,
       padding: 15,
     },
     infoText: {
