@@ -25,7 +25,7 @@ const Tomorrow = () => {
   const { dayChanged } = useDayChange();
   const { timeStatus } = useDayStatus();
 
-  const { tmrwDOWAbbrev, isTmrwActiveDay, nextActiveDay, isTodoArrayEmpty, loading } =
+  const { tmrwDOWAbbrev, isTmrwActiveDay, isTodoArrayEmpty, loading } =
     useTmrwTodos();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -84,7 +84,6 @@ const Tomorrow = () => {
         ) : !isTmrwActiveDay ? (
           <TodayTmrwMessage
             type={"rest day (tmrw screen)"}
-            nextActiveDay={nextActiveDay}
           />
         ) : (
           <View style={styles.todosContainer}>{renderTodos()}</View>

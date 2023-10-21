@@ -52,10 +52,7 @@ const Today = () => {
         texts={['This is the Today page.', 'Your three tasks planned the night before will show up here.','Your only mission is to check them off before the day ends!']}
         buttonTitle="Cool, what's next?"
       /> */}
-      {isOnboarded &&
-        !isTodayVacation &&
-        isTodayActiveDay &&
-        !isTodoArrayEmpty && <DayStatusIndicator />}
+      {isOnboarded && <DayStatusIndicator />}
 
       <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>
@@ -87,7 +84,7 @@ const Today = () => {
       />
     </SafeAreaView>
   );
-};
+}; 
 
 const getStyles = (theme) =>
   StyleSheet.create({

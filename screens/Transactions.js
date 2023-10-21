@@ -37,7 +37,7 @@ const Transactions = ({ navigation }) => {
   return (
     <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
       <SafeAreaView style={styles.pageContainer}>
-        <SettingsHeader navigation={navigation} header={"Transactions"} />
+        <SettingsHeader navigation={navigation} header={"Charges"} />
         {hasBeenChargedBefore || true ? (
           fetchingTransactions ? (
             <View style={{ marginTop: 30 }}>

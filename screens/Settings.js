@@ -38,13 +38,15 @@ import {
 import { presentPaymentSheet } from "@stripe/stripe-react-native";
 import ContentLoader, { Rect, Circle, Path } from "react-content-loader/native";
 import PlusIcon from "../assets/icons/plus-icon.svg";
-import MailIcon from "../assets/icons/mail-icon.svg";
+import MailIcon from "../assets/icons/mail-alt.svg";
 import MoneyIcon from "../assets/icons/money-icon.svg";
 import LogoutIcon from "../assets/icons/logout.svg";
 import NotificationBellIcon from "../assets/icons/notification-bell-icon.svg";
 import { daysOfWeek } from "../utils/currentDate";
 import DeleteAccountButton from "../components/settings/DeleteAccountButton";
 import TaskFineIcon from "../assets/icons/missed-task-fine-icon.svg";
+import PigIcon from "../assets/icons/pig-icon.svg";
+import LockDollarIcon from "../assets/icons/lock-dollar.svg";
 import { useDayStatus } from "../hooks/DayStatusContext";
 import { getClassicColor } from "../themes";
 import { useCheckNotificationPerms } from "../hooks/useAppStateChange";
@@ -359,17 +361,17 @@ const Settings = ({ navigation }) => {
               <Text style={styles.rightSideText}>{timezone}</Text>
             </View>
             {/* MISSED FINE */}
-            {/* <View style={styles.button}>
+            <View style={styles.button}>
               <View style={styles.leftSettingsButton}>
-                <TaskFineIcon width={23} height={23} color={theme.textHigh} />
+                <LockDollarIcon width={26} height={26} color={theme.textHigh} />
 
                 <Text style={styles.buttonTitle}>Baller Mode</Text>
                 <Text style={{ ...styles.buttonTitle, opacity: 0.5 }}>
-                  (Coming soon)
+                  (Coming soon!)
                 </Text>
               </View>
-              <Text style={styles.rightSideText}>$1</Text>
-            </View> */}
+              {/* <Text style={styles.rightSideText}>$1</Text> */}
+            </View>
           </View>
         </View>
         <View style={styles.sectionHeader}>
@@ -393,8 +395,8 @@ const Settings = ({ navigation }) => {
             onPress={() => navigation.navigate("Transactions")}
           >
             <View style={styles.leftSettingsButton}>
-              <MoneyIcon width={24} height={24} color={theme.textHigh} />
-              <Text style={styles.buttonTitle}>Transactions</Text>
+              <PigIcon width={26} height={26} color={theme.textHigh} />
+              <Text style={styles.buttonTitle}>Charges</Text>
             </View>
             <View style={styles.chevronContainer}>
               <RightChevronIcon width={24} height={24} color={theme.textHigh} />
@@ -443,7 +445,7 @@ const getStyles = (theme) =>
       paddingBottom: 200,
     },
     headerContainer: {
-      paddingTop: 30,
+      paddingTop: 23,
       width: "100%",
       flexDirection: "col",
       marginBottom: 13,

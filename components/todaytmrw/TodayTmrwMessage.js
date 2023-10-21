@@ -5,71 +5,95 @@ import { useNavigation } from "@react-navigation/native";
 import { useThemes } from "../../hooks/ThemesContext";
 import { daysOfWeek } from "../../utils/currentDate";
 import { useSettings } from "../../hooks/SettingsContext";
+import GlowButton from "../GlowButton";
+import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
 
-const TodayTmrwMessage = ({ type, setModalVisible, nextActiveDay }) => {
+const TodayTmrwMessage = ({ type, setModalVisible }) => {
   const { theme } = useThemes();
   const { currentUserFirstName } = useSettings();
   const navigation = useNavigation();
   const styles = getStyles(theme);
+  const { isTmrwActiveDay, nextActiveDay } = useTmrwTodos();
 
   const nextActiveDayIndex = daysOfWeek.indexOf(nextActiveDay);
   const dayBeforeNextActiveDay = daysOfWeek[(nextActiveDayIndex - 1 + 7) % 7];
 
-  const handleButtonPress = () => {
-    // Navigate to the tomorrow page
-    navigation.navigate("Tomorrow");
-  };
   const renderMessage = () => {
     switch (type) {
       case "new user":
         return (
-          <TouchableOpacity
-            style={styles.startButton}
-            onPress={() => {
-              setModalVisible(true);
-            }} 
+          <GlowButton
+            height={50}
+            width={300}
+            color={theme.faintPrimary}
+            borderColor={theme.buttonBorder}
+            borderRadius={10}
+            onPress={() => setModalVisible(true)}
+            shadowColor={"white"}
           >
-            <Text style={styles.startButtonText}>
+            <Text style={styles.glowButtonText}>
               Set up your first day of tasks
             </Text>
-          </TouchableOpacity>
+          </GlowButton>
         );
       case "vacation":
         return (
           <View style={styles.container}>
-            <Text style={styles.infoText}>Welcome, Josh.</Text>
             <Text style={styles.infoText}>You're on vacation.</Text>
-            <TouchableOpacity
-              style={styles.todoButton}
+            <GlowButton
+              height={50}
+              width={300}
+              color={theme.faintPrimary}
+              borderColor={theme.buttonBorder}
+              borderRadius={10}
               onPress={() => {
                 navigation.navigate("Settings");
               }}
+              shadowColor={"white"}
             >
-              <Text style={styles.startButtonText}>Turn off vacation mode</Text>
-              <CircleRightArrow color={theme.textHigh} />
-            </TouchableOpacity>
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <Text style={styles.glowButtonText}>
+                  Turn off vacation mode
+                </Text>
+                <CircleRightArrow color={theme.textHigh} />
+              </View>
+            </GlowButton>
           </View>
         );
       case "rest day (today screen)":
         return (
           <View style={styles.container}>
-            <Text style={styles.infoText}>Welcome, Josh.</Text>
             <Text style={styles.infoText}>It's your rest day.</Text>
-            <TouchableOpacity
-              style={styles.todoButton}
-              onPress={handleButtonPress}
-            >
-              <Text style={styles.todoButtonText}> Add steps for </Text>
-              <CircleRightArrow color={theme.textHigh} />
-            </TouchableOpacity>
+            {isTmrwActiveDay ? (
+              <GlowButton
+                height={50}
+                width={300}
+                color={theme.faintPrimary}
+                borderColor={theme.buttonBorder}
+                borderRadius={10}
+                onPress={() => {
+                  navigation.navigate("Tomorrow");
+                }}
+                shadowColor={"white"}
+              >
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  <Text style={styles.glowButtonText}>
+                    Make pledges for tomorrow
+                  </Text>
+                  <CircleRightArrow color={theme.textHigh} />
+                </View>
+              </GlowButton>
+            ) : (
+              <Text style={styles.subText}>
+                Come back on {dayBeforeNextActiveDay} to lock in tasks for{" "}
+                {nextActiveDay}.
+              </Text>
+            )}
           </View>
         );
       case "rest day (tmrw screen)":
         return (
           <View style={styles.container}>
-            <Text style={styles.infoText}>
-              Welcome, {currentUserFirstName}.
-            </Text>
             <Text style={styles.infoText}>You have a rest day tomorrow.</Text>
             <Text style={styles.subText}>
               Come back on {dayBeforeNextActiveDay} to lock in tasks for{" "}
@@ -107,57 +131,24 @@ const getStyles = (theme) =>
       alignItems: "center",
       gap: 28,
       borderRadius: 16,
-      backgroundColor: theme.faintPrimary,
+      // backgroundColor: theme.faintPrimary,
       padding: 15,
     },
     infoText: {
       color: theme.primary,
-      fontSize: 18,
+      fontSize: 19,
       fontWeight: "600",
     },
     subText: {
       color: theme.primary,
-      fontSize: 18,
+      fontSize: 19,
       fontWeight: "400",
-      lineHeight: 25,
+      lineHeight: 28,
       textAlign: "center",
     },
-
-    startButton: {
-      color: theme.primary,
-      fontSize: 20,
-      fontWeight: "600",
-      backgroundColor: theme.faintPrimary,
-      paddingVertical: 12,
-      paddingHorizontal: 15,
-      borderRadius: 10,
-      borderWidth: 2,
-      borderColor: theme.buttonBorder,
-
-      // Adding glow effect
-      shadowColor: "#ffffff", // You can also use a different color for the glow
-      shadowOffset: {
-        width: 0,
-        height: 0,
-      },
-      shadowOpacity: 0.5, 
-      shadowRadius: 10, 
-    },
-    startButtonText: {
+    glowButtonText: {
       color: theme.primary,
       fontWeight: 500,
-      fontSize: 20,
-    },
-
-    todoButton: {
-      flexDirection: "row",
-      gap: 10,
-      backgroundColor: theme.faintPrimary,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      alignItems: "center",
-      borderRadius: 10,
-      // borderWidth: 1,
-      // borderColor: "black",
+      fontSize: 19,
     },
   });
