@@ -14,22 +14,32 @@ const MINUTES = ["00", "15", "30", "45"];
 const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
   const { theme, currentThemeName } = useThemes();
   const styles = getStyles(theme);
-  let dayStart = "7:30";
-  let dayEnd = "7:30";
+
+  const isValidTime = (time) => {
+    return time && time.includes(':');
+  };
+
+  const getHourMinute = (time) => {
+    if (isValidTime(time)) {
+      let [hour, minute] = time.slice(0, -3).split(':');
+      return { hour, minute };
+    }
+    return { hour: '7', minute: '30' };  // default values
+  };
+
+  let { hour: startHour, minute: startMinute } = getHourMinute(timePickerText.start);
+  let { hour: endHour, minute: endMinute } = getHourMinute(timePickerText.end);
+
   const [isModalVisible, setModalVisible] = useState({
     start: false,
     end: false,
   });
-  const [selectedTime, setSelectedTime] = useState({
-    start: dayStart,
-    end: dayEnd,
-  });
 
   const [tempTime, setTempTime] = useState({
-    startHour: dayStart.split(":")[0],
-    startMinute: dayStart.split(":")[1],
-    endHour: dayEnd.split(":")[0],
-    endMinute: dayEnd.split(":")[1],
+    startHour,
+    startMinute,
+    endHour,
+    endMinute,
   });
 
   const toggleModal = (period) => {
@@ -38,7 +48,6 @@ const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
       const formattedTime = `${tempTime[`${period}Hour`]}:${
         tempTime[`${period}Minute`]
       }`;
-      setSelectedTime((prev) => ({ ...prev, [`${period}`]: formattedTime }));
       setTimePickerText((prev) => ({
         ...prev,
         [period]: `${formattedTime} ${period === "start" ? "AM" : "PM"}`,
@@ -53,7 +62,6 @@ const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
     let formattedTime = `${tempTime[`${period}Hour`]}:${
       tempTime[`${period}Minute`]
     }`;
-    setSelectedTime((prev) => ({ ...prev, [`${period}`]: formattedTime }));
     // When modal is closed, set the display text to the selected time
     setTimePickerText((prev) => ({
       ...prev,

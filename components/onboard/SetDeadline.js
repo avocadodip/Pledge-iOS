@@ -1,34 +1,21 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import NextButton from "./NextButton";
-// import TmrwTimePicker from "../TmrwTimePicker";
 import OnboardTimePicker from "./OnboardTimePicker";
-import SunIcon from "../../assets/icons/sun-theme-icon.svg";
 import SunFilledIcon from "../../assets/icons/sun-filled.svg";
 import MoonIcon from "../../assets/icons/moon-icon.svg";
 import { useThemes } from "../../hooks/ThemesContext";
-import GlowButton from "../GlowButton";
 
 const SetDeadline = ({ timePickerText, setTimePickerText }) => {
-  const { theme, currentThemeName } = useThemes();
+  const { theme } = useThemes();
   const styles = getStyles(theme);
   return (
     <>
       <View style={styles.promptContainer}>
         <Text style={styles.promptText}>My day will start at</Text>
         <View style={styles.container}>
-          {/* {currentThemeName === "Dark" ? (
-            <GlowButton height={42} width={42} color={"#e5a23f"}>
-              <SunFilledIcon color={"white"} height={30} width={30} />
-            </GlowButton>
-            <View style={styles.iconContainer}>
-              <SunFilledIcon color={"#e5a23f"} height={30} width={30} />
-            </View>
-          ) : ( */}
-            <View style={styles.iconContainer}>
-              <SunFilledIcon color={"white"} height={33} width={33} />
-            </View>
-          {/* )} */}
+          <View style={styles.iconContainer}>
+            <SunFilledIcon color={"white"} height={33} width={33} />
+          </View>
           <OnboardTimePicker
             type={"AM"}
             timePickerText={timePickerText}
@@ -47,19 +34,9 @@ const SetDeadline = ({ timePickerText, setTimePickerText }) => {
       <View style={styles.promptContainer}>
         <Text style={styles.promptText}>My day will end at</Text>
         <View style={styles.container}>
-          {/* {currentThemeName === "Dark" ? (
-            <GlowButton height={42} width={42} color={"#8755f3"}>
-              <MoonIcon color={"white"} height={30} width={30} />
-            </GlowButton>
-            <View style={styles.iconContainer}>
-              <MoonIcon color={"#8755f3"} height={30} width={30} />
-            </View>
-          ) : ( */}
-            <View style={styles.iconContainer}>
-              <MoonIcon color={"white"} height={29} width={29} />
-            </View>
-          {/* )} */}
-
+          <View style={styles.iconContainer}>
+            <MoonIcon color={"white"} height={29} width={29} />
+          </View>
           <OnboardTimePicker
             type={"PM"}
             timePickerText={timePickerText}
@@ -73,7 +50,8 @@ const SetDeadline = ({ timePickerText, setTimePickerText }) => {
             day's tasks.
           </Text>
           <Text style={[styles.explainerText, { marginTop: 15 }]}>
-            After this time, incomplete pledges are added to the weekly total fine. (Charges occur on Saturdays at 11:45 PM).
+            After this time, incomplete pledges are added to the weekly total
+            fine. (Charges occur on Saturdays at 11:45 PM).
           </Text>
         </View>
       </View>
@@ -90,9 +68,6 @@ const getStyles = (theme) =>
       gap: 15,
       width: "100%",
       paddingVertical: 20,
-
-      // borderColor: "black",
-      // borderWidth: 1,
     },
     container: {
       flexDirection: "row",

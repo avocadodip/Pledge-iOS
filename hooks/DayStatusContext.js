@@ -1,5 +1,8 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { dayChanged } from "./useDayChange";
+import { useSettings } from "./SettingsContext";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../database/firebase";
 
 const getTimeStatus = (dayStart, dayEnd) => {
   const now = new Date();
@@ -44,14 +47,38 @@ export const DayStatusProvider = ({ children }) => {
   const [tmrwPageCompletedForTheDay, setTmrwPageCompletedForTheDay] = useState(false);
   const [dayCompleted, setDayCompleted] = useState(false);
 
+  const { currentUserID } = useSettings();
+
+
+  const updateDayAllActionItemsCompleted = async (completed) => {
+    const userRef = doc(db, "users", currentUserID);
+  
+    try {
+      await updateDoc(userRef, {
+        todayAllSet: completed
+      });
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
+  };
+
   useEffect(() => {
-    setDayCompleted(todayPageCompletedForTheDay && tmrwPageCompletedForTheDay);
+    const bool = todayPageCompletedForTheDay && tmrwPageCompletedForTheDay;
+    setDayCompleted(bool);
+    updateDayAllActionItemsCompleted(bool);
+
   }, [todayPageCompletedForTheDay, tmrwPageCompletedForTheDay]);
 
 
-  useEffect(() => { 
-    setTimeStatus(getTimeStatus(dayStart, dayEnd));
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeStatus(getTimeStatus(dayStart, dayEnd));
+    }, 1000);  // runs every second
+  
+    // Clear the interval when the component is unmounted
+    return () => clearInterval(timer);
   }, [dayStart, dayEnd]);
+  
 
   useEffect(() => {
     // Change message when timeStatus or dayChanged changes

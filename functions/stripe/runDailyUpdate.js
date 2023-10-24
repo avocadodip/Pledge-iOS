@@ -211,6 +211,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
               todayIsActive: isActive,
               todayDayEnd: closesAt,
               todayANotifHasBeenSent: false,
+              todayAllSet: !isActive,
             });
           } else {
             console.log(

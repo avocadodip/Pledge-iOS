@@ -211,7 +211,7 @@ export default function TodoBottomSheet() {
               </View>
               <TextInput
                 style={styles.textInput}
-                placeholder="Add description"
+                placeholder="Add note"
                 value={todo.description}
                 onChangeText={(text) =>
                   handleInputChange(

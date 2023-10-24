@@ -37,6 +37,7 @@ const checkAndSendNotifications = async () => {
       .where("notificationsEnabled", "==", true)
       .where("todayIsActive", "==", true)
       .where("todayAllNotifsSent", "==", false)
+      .where("todayAllSet", "==", false)
       .get();
   console.log(`Found ${usersSnapshot.size} users`);
 
