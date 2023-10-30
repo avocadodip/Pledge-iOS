@@ -60,6 +60,7 @@ export const SettingsProvider = ({ children }) => {
         setTransactionsArray([]);
         setLastPastBetsDay([]);
         setLastTransactionsDay([]);
+        setDreamsArray([]);
       }
     });
 

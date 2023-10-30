@@ -54,6 +54,7 @@ const Dreams = ({ navigation }) => {
           {/* Dreams list */}
           {dreamsArray.map((dream, index) => (
             <LinearGradient
+              key={index}
               style={{
                 overflow: "hidden",
                 marginTop: index > 0 ? 19 : 14,
@@ -118,7 +119,7 @@ const Dreams = ({ navigation }) => {
             start={{ x: 1, y: 1 }}
             end={{ x: 1, y: 0 }}
           >
-            <TouchableRipple
+            <TouchableOpacity
               style={styles.addDreamContainer}
               onPress={() => {
                 setModalVisible(true);
@@ -130,7 +131,7 @@ const Dreams = ({ navigation }) => {
                 <PlusIcon height={20} width={20} color={theme.textMedium} />
                 <Text style={styles.addDreamText}>New dream</Text>
               </View>
-            </TouchableRipple>
+            </TouchableOpacity>
           </LinearGradient>
         </ScrollView>
 
