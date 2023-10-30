@@ -84,7 +84,7 @@ const getStyles = (theme) =>
     // Close button styles
     closeButtonContainer: {
       position: "absolute",
-      top: 15,
+      top: 11,
       right: 15,
     },
     closeButton: {
@@ -93,7 +93,7 @@ const getStyles = (theme) =>
       flex: 1,
       width: "100%",
       borderRadius: 20,
-      padding: 4,
+      padding: 6,
     },
   });
 

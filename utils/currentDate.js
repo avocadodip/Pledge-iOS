@@ -8,10 +8,43 @@
 // 8. formatDayEnd()
  
 import moment from 'moment-timezone';
+import {
+  differenceInDays,
+  differenceInMonths,
+  differenceInYears,
+} from "date-fns";
 
 export const getTimezoneAbbrev = (timezone) => {
   return moment.tz(timezone).format('z');
 }
+
+
+// In Dreams.js. 
+export const formatDateDifference = (todayDate, lastCompleted) => {
+  const lastCompletedDate = new Date(
+    lastCompleted.slice(0, 4),
+    lastCompleted.slice(4, 6) - 1,
+    lastCompleted.slice(6, 8)
+  );
+  const today = new Date(
+    todayDate.slice(0, 4),
+    todayDate.slice(4, 6) - 1,
+    todayDate.slice(6, 8)
+  );
+
+  const dayDiff = differenceInDays(today, lastCompletedDate);
+  if (dayDiff <= 28) {
+    return `${dayDiff}d ago`;
+  }
+
+  const monthDiff = differenceInMonths(today, lastCompletedDate);
+  if (monthDiff <= 11) {
+    return `${monthDiff}m ago`;
+  }
+
+  const yearDiff = differenceInYears(today, lastCompletedDate);
+  return `${yearDiff}y ago`;
+};
 
 // Returns 20231001 if it's 20231005
 export const getBeginningOfWeekDate = () => {

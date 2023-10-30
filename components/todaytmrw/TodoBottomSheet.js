@@ -7,6 +7,8 @@ import {
   KeyboardAvoidingView,
   TouchableHighlight,
   TouchableOpacity,
+  ScrollView,
+  Dimensions,
 } from "react-native";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
@@ -25,6 +27,7 @@ export default function TodoBottomSheet() {
   const { theme, backgroundGradient } = useThemes();
   const {
     settings: { isPaymentSetup },
+    dreamsArray,
   } = useSettings();
   const { updateTodo } = useTmrwTodos();
   const {
@@ -40,6 +43,11 @@ export default function TodoBottomSheet() {
   const styles = getStyles(theme);
   const navigation = useNavigation();
 
+  const findDreamTitleById = (id, dreams) => {
+    const dream = dreams.find((d) => d.id === id);
+    return dream ? dream.title : null;
+  };
+
   // Set initial todo object
   useEffect(() => {
     setTodo(selectedTodo || {});
@@ -47,6 +55,7 @@ export default function TodoBottomSheet() {
 
   useEffect(() => {
     todoRef.current = todo; // Update the mutable ref when todo changes because todo value inside renderBackdrop callback is its initial value when the component is rendered.
+    console.log(todo);
   }, [todo]);
 
   // Updates todo object when a field is edited
@@ -60,6 +69,52 @@ export default function TodoBottomSheet() {
       return updatedTodo;
     });
   };
+
+  const renderRow = (dreams, isEvenRow) => (
+    <View style={{ flexDirection: "row", marginTop: isEvenRow ? 0 : 10 }}>
+      {isEvenRow && (
+        <TouchableOpacity
+          key={100}
+          onPress={() => setTodo({ ...todo, tag: "" })}
+          style={[
+            styles.dreamButton,
+            todo.tag === "" ? styles.selectedDreamButton : null,
+          ]}
+        >
+          <Text
+            style={[
+              styles.dreamText,
+              todo.tag === "" ? styles.selectedDreamText : null,
+            ]}
+          >
+            None
+          </Text>
+        </TouchableOpacity>
+      )}
+
+      {dreams
+        .filter((_, index) => index % 2 === (isEvenRow ? 0 : 1))
+        .map((dream, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => setTodo({ ...todo, tag: dream.id })}
+            style={[
+              styles.dreamButton,
+              todo.tag === dream.id ? styles.selectedDreamButton : null,
+            ]}
+          >
+            <Text
+              style={[
+                styles.dreamText,
+                todo.tag === dream.id ? styles.selectedDreamText : null,
+              ]}
+            >
+              {dream.title}
+            </Text>
+          </TouchableOpacity>
+        ))}
+    </View>
+  );
 
   // Backdrop - when pressed, updates global todo array and closes sheet
   const renderBackdrop = useCallback(
@@ -146,6 +201,7 @@ export default function TodoBottomSheet() {
                 autoCorrect={false}
                 autoCapitalize="none"
                 maxLength={46}
+                autoFocus={true}
               />
             </View>
             <View style={styles.horizontalDivider} />
@@ -185,9 +241,9 @@ export default function TodoBottomSheet() {
               )}
             </View>
             <View style={styles.horizontalDivider} />
-            <View style={styles.amountFolderContainer}>
+            <View style={styles.dreamsContainer}>
               <FolderIcon color={theme.textHigh} />
-              <TextInput
+              {/* <TextInput
                 style={styles.textInput}
                 placeholder="Add tag"
                 value={todo.tag}
@@ -202,7 +258,21 @@ export default function TodoBottomSheet() {
                 autoCorrect={false}
                 autoCapitalize="none"
                 maxLength={30}
-              />
+              /> */}
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={true}
+                style={styles.dreamScrollview}
+                indicatorStyle="white"
+                contentContainerStyle={{ alignItems: "center" }}
+              >
+                <View style={{ flexDirection: "column" }}>
+                  {[true, false].map((isEvenRow, index) =>
+                    renderRow(dreamsArray, isEvenRow)
+                  )}
+                </View>
+              </ScrollView>
+              <View style={{ height: 3, backgroundColor: "white" }} />
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.descriptionContainer}>
@@ -245,7 +315,9 @@ export default function TodoBottomSheet() {
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
               <FolderIcon color={theme.textHigh} />
-              <Text style={styles.text}>{selectedTodo.tag}</Text>
+              <Text style={styles.text}>
+                {findDreamTitleById(selectedTodo.tag, dreamsArray)}
+              </Text>
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.descriptionContainer}>
@@ -262,9 +334,9 @@ export default function TodoBottomSheet() {
 const getStyles = (theme) =>
   StyleSheet.create({
     bottomSheetContainer: {
-      flex: 1,
+      // flex: 1,
       flexDirection: "col",
-      paddingHorizontal: 20,
+      paddingLeft: 16,
 
       // borderWidth: 1,
       // borderColor: "black",
@@ -296,23 +368,23 @@ const getStyles = (theme) =>
       alignItems: "center",
       marginTop: 45,
       marginBottom: 20,
-      gap: 23,
+      gap: 16,
     },
     amountFolderContainer: {
       flexDirection: "row",
       alignItems: "center",
-      gap: 23,
+      gap: 16,
       height: 50,
     },
     descriptionContainer: {
       paddingTop: 10,
       flexDirection: "row",
-      gap: 23,
+      gap: 16,
       // alignItems: "center",
     },
     number: {
       color: theme.primary,
-      fontSize: 40,
+      fontSize: 33,
       fontWeight: "bold",
     },
     title: {
@@ -345,5 +417,46 @@ const getStyles = (theme) =>
     addPaymentButtonText: {
       color: theme.accent,
       fontWeight: 500,
+    },
+
+    // DREAMS
+    dreamsContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      height: 100,
+      paddingTop: 8,
+    },
+    dreamScrollview: {
+      paddingBottom: 10,
+      width: "100%",
+      height: "100%",
+      marginLeft: 16,
+    },
+    dreamButton: {
+      marginRight: 5,
+      backgroundColor: theme.faintPrimary, //"#3d3d3d"
+      paddingHorizontal: 6,
+      paddingVertical: 6,
+      borderRadius: 10,
+      // opacity: 0.8
+    },
+    dreamText: {
+      color: theme.textDisabled,
+      fontSize: 14,
+      fontWeight: "500",
+    },
+    selectedDreamButton: {
+      marginRight: 5,
+      backgroundColor: theme.lightPrimary, //"#343434",
+      paddingHorizontal: 4.5,
+      paddingVertical: 4.5,
+      borderRadius: 10,
+      borderWidth: 1.5,
+      borderColor: theme.overlayPrimary,
+    },
+    selectedDreamText: {
+      color: theme.textHigh,
+      fontSize: 14,
+      fontWeight: "500",
     },
   });

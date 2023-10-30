@@ -50,14 +50,24 @@ import LockDollarIcon from "../assets/icons/lock-dollar.svg";
 import { useDayStatus } from "../hooks/DayStatusContext";
 import { getClassicColor } from "../themes";
 import { useCheckNotificationPerms } from "../hooks/useAppStateChange";
+import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import XMarkIcon from "../assets/icons/x-mark.svg";
 
 const BUTTON_HEIGHT = 51;
 const BUTTON_TEXTS = ["S", "M", "T", "W", "T", "F", "S"];
 
-const Settings = ({ navigation }) => {
+const Settings = () => {
+  const navigation = useNavigation();
+
   const { currentUserEmail } = useSettings();
-  const { theme, setStatusBarHidden, currentClassicColor, currentThemeName } =
-    useThemes();
+  const {
+    theme,
+    currentClassicColor,
+    currentThemeName,
+    backgroundGradient,
+    saveTheme,
+  } = useThemes();
   const styles = getStyles(theme);
   const {
     settings: {
@@ -77,15 +87,6 @@ const Settings = ({ navigation }) => {
   const [isPaymentInitialized, setIsPaymentInitialized] = useState(false);
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
   const [notifsModalVisible, setNotifsModalVisible] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
- 
-  useEffect(() => {
-    if (scrollY > 0) {
-      setStatusBarHidden(true);
-    } else {
-      setStatusBarHidden(false);
-    }
-  }, [scrollY]);
 
   useEffect(() => {
     loadPaymentSheet();
@@ -107,6 +108,7 @@ const Settings = ({ navigation }) => {
   };
 
   const handleOpenNotifsModal = (action) => {
+    console.log("absdhfu");
     if (action == true) {
       setNotifsModalVisible(true);
     } else setNotifsModalVisible(false);
@@ -159,17 +161,13 @@ const Settings = ({ navigation }) => {
     }
   }, [isPaymentSetup]);
 
+  const handleCloseModal = () => {
+    navigation.navigate("Dreams");
+  }
+
   return (
-    <View style={settingsPageStyles.pageContainer}>
-      <ScrollView
-        style={styles.scrollView}
-        // indicatorStyle={theme.scrollIndicator}
-        showsVerticalScrollIndicator={false}
-        onScroll={(event) => {
-          setScrollY(event.nativeEvent.contentOffset.y);
-        }}
-        scrollEventThrottle={16}
-      >
+    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+      <View style={styles.pageContainer}>
         {/* <OnboardingPopup
         texts={['Are you sure you want to logout?', 'You will be fined for unentered tasks each day.']}
         buttonTitle="Back to settings."
@@ -178,8 +176,16 @@ const Settings = ({ navigation }) => {
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>Settings</Text>
         </View>
+        <View style={styles.closeButtonContainer}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={handleCloseModal}
+          >
+            <XMarkIcon width={20} height={20} color={theme.primary} />
+          </TouchableOpacity>
+        </View>
 
-        <View style={styles.mainContainer}>
+        <View>
           <View style={styles.sectionContainer}>
             {loading ? (
               <ContentLoader
@@ -263,7 +269,7 @@ const Settings = ({ navigation }) => {
               </View>
               <View style={styles.chevronContainer}>
                 <View style={styles.daysOfWeekTextContainer}>
-                  {(notificationsEnabled && notificationPerms) ? (
+                  {notificationsEnabled && notificationPerms ? (
                     <Text style={styles.rightSideText}>On</Text>
                   ) : (
                     <Text style={styles.rightSideText}>Off</Text>
@@ -343,15 +349,25 @@ const Settings = ({ navigation }) => {
               </View>
             </View>
             {/* THEME */}
-            <View style={styles.button}>
+            <TouchableRipple
+              style={styles.button}
+              onPress={() => {
+                if (currentThemeName === "Dark") {
+                  saveTheme("Classic");
+                } else {
+                  saveTheme("Dark");
+                }
+              }}
+            >
               <View style={styles.leftSettingsButton}>
                 <SunThemeIcon width={25} height={25} color={theme.textHigh} />
                 <Text style={styles.buttonTitle}>Theme</Text>
               </View>
-              <View style={styles.rightSettingsButton}>
+              {/* <View style={styles.rightSettingsButton}>
                 <ThemeToggle />
-              </View>
-            </View>
+              </View> */}
+              <Text style={styles.rightSideText}>{currentThemeName}</Text>
+            </TouchableRipple>
             {/* TIMEZONE */}
             <View style={styles.button}>
               <View style={styles.leftSettingsButton}>
@@ -428,10 +444,13 @@ const Settings = ({ navigation }) => {
             </View>
           </TouchableRipple>
         </View>
-        <DeleteAccountButton currentUserID={currentUserID} navigation={navigation}/>
+        <DeleteAccountButton
+          currentUserID={currentUserID}
+          navigation={navigation}
+        />
         <View style={{ height: 60 }}></View>
-      </ScrollView>
-    </View>
+      </View>
+    </LinearGradient>
   );
 };
 
@@ -439,24 +458,20 @@ export default Settings;
 
 const getStyles = (theme) =>
   StyleSheet.create({
-    scrollView: {
+    pageContainer: {
       paddingHorizontal: APP_HORIZONTAL_PADDING,
-      paddingTop: 40,
-      paddingBottom: 200,
+      paddingTop: 20,
     },
     headerContainer: {
-      paddingTop: 23,
       width: "100%",
       flexDirection: "col",
-      marginBottom: 13,
+      marginBottom: 30,
+      alignItems: "center",
     },
     headerTitle: {
       color: theme.textHigh,
-      fontSize: 27,
-      fontWeight: "bold",
-    },
-    mainContainer: {
-      width: "100%",
+      fontSize: 20,
+      fontWeight: "600",
     },
     sectionContainer: {
       backgroundColor: theme.faintPrimary,
@@ -506,5 +521,20 @@ const getStyles = (theme) =>
     rightSideText: {
       fontSize: 15,
       color: theme.textMedium,
+    },
+
+    // Close button styles
+    closeButtonContainer: {
+      position: "absolute",
+      top: 17,
+      right: 20,
+    },
+    closeButton: {
+      borderRadius: 20,
+      backgroundColor: "#ffffff2a",
+      flex: 1,
+      width: "100%",
+      borderRadius: 20,
+      padding: 6,
     },
   });

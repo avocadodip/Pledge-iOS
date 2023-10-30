@@ -1,15 +1,15 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabIcon from "./TabIcon";
-import TodayActiveIcon from "../assets/icons/fire-active-icon.svg";
-import TodayInactiveIcon from "../assets/icons/fire-inactive-icon.svg";
-import TomorrowActiveIcon from "../assets/icons/add-active-icon.svg";
-import TomorrowInactiveIcon from "../assets/icons/add-inactive-icon.svg";
-import SettingsActiveIcon from "../assets/icons/settings-active-icon.svg";
-import SettingsInactiveIcon from "../assets/icons/settings-inactive-icon.svg";
+import TodayIcon from "../assets/icons/tab-today.svg";
+// import TodayInactiveIcon from "../assets/icons/fire-inactive-icon.svg";
+import TmrwIcon from "../assets/icons/tab-tmrw.svg";
+// import TomorrowInactiveIcon from "../assets/icons/add-inactive-icon.svg";
+import DreamsIcon from "../assets/icons/tab-dreams.svg";
+// import RocketInactiveIcon from "../assets/icons/rocket-launch-inactive.svg";
 import { BOTTOM_TAB_HEIGHT } from "../GlobalStyles";
 import { StyleSheet } from "react-native";
-import Today from "../screens/Today"; 
+import Today from "../screens/Today";
 import Tomorrow from "../screens/Tomorrow";
 import Account from "../screens/Account";
 import ChangeEmail from "../screens/ChangeEmail";
@@ -20,8 +20,10 @@ import Settings from "../screens/Settings";
 import { LinearGradient } from "expo-linear-gradient";
 import { useThemes } from "../hooks/ThemesContext";
 import DeleteAccount from "../screens/DeleteAccount";
- 
+import Dreams from "../screens/Dreams";
+
 const Stack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const TodayStack = () => (
@@ -45,39 +47,54 @@ const TomorrowStack = () => (
 );
 
 const SettingsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen
-      name="SettingsScreen"
-      component={Settings}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="Account"
-      component={Account}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="ChangeEmail"
-      component={ChangeEmail}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="DeleteAccount"
-      component={DeleteAccount}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="PastBets"
-      component={PastBets}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="Transactions"
-      component={Transactions}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
+  <RootStack.Navigator screenOptions={{ headerShown: false }}>
+    <RootStack.Group>
+      <RootStack.Screen
+        name="SettingsScreen"
+        component={Settings}
+        options={{ headerShown: false }}
+      />
+      <RootStack.Screen
+        name="Account"
+        component={Account}
+        options={{ headerShown: false }}
+      />
+      <RootStack.Screen
+        name="ChangeEmail"
+        component={ChangeEmail}
+        options={{ headerShown: false }}
+      />
+      <RootStack.Screen
+        name="DeleteAccount"
+        component={DeleteAccount}
+        options={{ headerShown: false }}
+      />
+      <RootStack.Screen
+        name="PastBets"
+        component={PastBets}
+        options={{ headerShown: false }}
+      />
+      <RootStack.Screen
+        name="Transactions"
+        component={Transactions}
+        options={{ headerShown: false }}
+      />
+    </RootStack.Group>
+  </RootStack.Navigator>
 );
+
+const DreamsStack = () => {
+  return (
+    <RootStack.Navigator screenOptions={{ headerShown: false }}>
+      <RootStack.Group>
+        <RootStack.Screen name="Dreams" component={Dreams} />
+      </RootStack.Group>
+      <RootStack.Group screenOptions={{ presentation: "modal" }}>
+        <RootStack.Screen name="SettingsStack" component={SettingsStack} />
+      </RootStack.Group>
+    </RootStack.Navigator>
+  );
+};
 
 const getTabStyles = () =>
   StyleSheet.create({
@@ -110,9 +127,9 @@ export default function MainStack() {
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon
+              type={"today"}
               focused={focused}
-              activeIcon={TodayActiveIcon}
-              inactiveIcon={TodayInactiveIcon}
+              activeIcon={TodayIcon}
               theme={theme}
             />
           ),
@@ -124,23 +141,23 @@ export default function MainStack() {
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon
+              type={"tmrw"}
               focused={focused}
-              activeIcon={TomorrowActiveIcon}
-              inactiveIcon={TomorrowInactiveIcon}
+              activeIcon={TmrwIcon}
               theme={theme}
             />
           ),
         }}
       />
       <Tab.Screen
-        name="Settings"
-        component={SettingsStack}
+        name="DreamsStack"
+        component={DreamsStack}
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon
+              type={"dreams"}
               focused={focused}
-              activeIcon={SettingsActiveIcon}
-              inactiveIcon={SettingsInactiveIcon}
+              activeIcon={DreamsIcon}
               theme={theme}
             />
           ),

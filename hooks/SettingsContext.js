@@ -26,6 +26,8 @@ export const SettingsProvider = ({ children }) => {
   const [appReadyToRender, setAppReadyToRender] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   // Past bets data fetching:
+  const [dreamsArray, setDreamsArray] = useState([]);
+  // Past bets data fetching:
   const [pastBetsArray, setPastBetsArray] = useState([]);
   const [fetchingPastBets, setFetchingPastBets] = useState(false);
   const [lastPastBetsDay, setLastPastBetsDay] = useState([]);
@@ -79,6 +81,7 @@ export const SettingsProvider = ({ children }) => {
             setCurrentUserFirstName(userSettings.fullName.split(" ")[0]);
             setCurrentUserEmail(userSettings.email);
             setUserDataFetched(true);
+            fetchDreams();
           } else {
             setIsAuthenticated(false);
             // Handle the case where the user does not exist or has no settings
@@ -94,6 +97,41 @@ export const SettingsProvider = ({ children }) => {
       return () => unsubscribe();
     }
   }, [isAuthenticated]);
+
+  // Fetch Dreams
+  const fetchDreams = async () => {
+    try {
+      const q = query(
+        collection(doc(db, "users", currentUserID), "dreams"),
+        orderBy("lastCompleted", "desc"),
+        limit(10)
+      );
+
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        // No more todos left
+        if (querySnapshot.empty) {
+          console.log("No more data to fetch.");
+          return;
+        }
+
+        // Push days into array
+        const array = [];
+        querySnapshot.forEach((dreamDoc) => {
+          const data = dreamDoc.data();
+          data.id = dreamDoc.id; 
+          array.push(data);
+        });
+
+        // Append to data state
+        setDreamsArray(array);
+      });
+
+      // Clean up listener when component is unmounted or userID changes
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("An error occurred while fetching todos:", error);
+    } 
+  };
 
   // Past Bets data fetching (to prevent fetching data every time)
   const fetchPastBets = async () => {
@@ -259,6 +297,7 @@ export const SettingsProvider = ({ children }) => {
         transactionsArray,
         fetchingTransactions,
         fetchTransactions,
+        dreamsArray,
       }}
     >
       {children}

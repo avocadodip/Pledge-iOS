@@ -47,6 +47,42 @@ function calculateFines(todos, dateName) {
 }
 
 /**
+ * Update dreams lastCompleted, # tasks done, and $ pledged
+ *
+ * @param {Array} todos - todos array with dream ids
+ * @param {String} todayDate - Today's date (for last completed)
+ * @return {Promise<void>} Resolves to undefined when all updates are complete
+ */
+const updateDreams = async (todos, todayDate) => {
+  const db = admin.firestore();
+  const FieldValue = admin.firestore.FieldValue;
+
+  // Loop through each todo
+  for (const todo of todos) {
+    const dreamId = todo.tag;
+    const updateFields = {
+      lastCompleted: todayDate,
+    };
+
+    // If todo is completed, increment doneCount by 1
+    if (todo.isComplete) {
+      updateFields.doneCount = FieldValue.increment(1);
+    }
+
+    // Add todo.amount to amountPledged
+    updateFields.amountPledged = FieldValue.increment(todo.amount);
+
+    // Update the corresponding dream document
+    try {
+      await db.collection("dreams").doc(dreamId).update(updateFields);
+      console.log(`Successfully updated dream: ${dreamId}`);
+    } catch (error) {
+      console.error(`Failed to update dream: ${dreamId}`, error);
+    }
+  }
+};
+
+/**
  * Formats a date range in the format "Aug 20 - Aug 26, 2023".
  *
  * @param {string} start - The start date in "YYYYMMDD" format.
@@ -248,6 +284,8 @@ const runDailyUpdate = onRequest(async (req, res) => {
             todayFinedTasks,
           } = calculateFines(todos, dateName, missedTaskFine);
           await todayRef.update({totalFine: todayTotalFine}); // Update todayDoc totalFine
+
+          updateDreams(todos, todayFormatted);
 
           // 5. Update week fine count
           const weekDoc = await weekRef.get();

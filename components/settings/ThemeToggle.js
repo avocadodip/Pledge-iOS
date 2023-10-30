@@ -87,6 +87,7 @@ const menuOptionsStyles = {
     backgroundColor: "white",
     paddingVertical: 7,
     width: 120,
+    zIndex: 1000,
   },
   // optionsWrapper: {
   //   backgroundColor: "purple",

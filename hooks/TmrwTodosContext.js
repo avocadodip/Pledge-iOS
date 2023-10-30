@@ -12,7 +12,7 @@ import { useDayChange } from "./useDayChange";
 import { useDayStatus } from "./DayStatusContext";
 
 export const TmrwTodosContext = createContext();
- 
+  
 // Sets tmrwTodos, tmrwDOWAbbrev, nextActiveDay
 export const TmrwTodosProvider = ({ children }) => { 
   const {

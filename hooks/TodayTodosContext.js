@@ -8,7 +8,7 @@ import { DayStatusContext, useDayStatus } from "./DayStatusContext";
 import { useDayChange } from "./useDayChange";
 
 export const TodayTodosContext = createContext();
- 
+  
 export const TodayTodosProvider = ({ children }) => {
   const [todayTodos, setTodayTodos] = useState([]);
   const { settings, currentUserID } = useSettings(); 

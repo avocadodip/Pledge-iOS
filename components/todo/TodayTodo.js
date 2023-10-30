@@ -30,9 +30,18 @@ const TodayTodo = ({ todoData }) => {
   const { setTodayTodos } = useTodayTodos();
   const { timeStatus } = useDayStatus();
   const { openBottomSheet } = useBottomSheet();
-  const { currentUserID } = useSettings();
+  const { currentUserID, dreamsArray } = useSettings();
+
+  console.log(dreamsArray);
+  console.log(tag);
 
   const stringAmount = (amount !== null && amount !== undefined) ? amount.toString() : '';
+  const findDreamTitleById = (id, dreams) => {
+    const dream = dreams.find((d) => d.id === id);
+    return dream ? dream.title : null;
+  };
+
+  const dreamTitle = findDreamTitleById(tag, dreamsArray);
 
   const { theme } = useThemes();
   const styles = getTodoStyles(theme);
@@ -117,9 +126,9 @@ const TodayTodo = ({ todoData }) => {
                 { width: "100%", padding: 16 },
               ]}
             >
-              {tag && (
+              {dreamTitle && (
                 <View style={styles.tagContainer}>
-                  <Text style={styles.tagText}>{tag}</Text>
+                  <Text style={styles.tagText}>{dreamTitle}</Text>
                 </View>
               )}
               <View style={styles.titleContainer}>
@@ -184,7 +193,7 @@ const TodayTodo = ({ todoData }) => {
               >
                 {tag && (
                   <View style={styles.tagContainer}>
-                    <Text style={styles.tagText}>{tag}</Text>
+                    <Text style={styles.tagText}>{dreamTitle}</Text>
                   </View>
                 )}
                 <View style={styles.titleContainer}>
@@ -260,9 +269,9 @@ const TodayTodo = ({ todoData }) => {
                     { width: "100%", padding: 16 },
                   ]}
                 >
-                  {tag && (
+                  {dreamTitle && (
                     <View style={styles.tagContainer}>
-                      <Text style={styles.tagText}>{tag}</Text>
+                      <Text style={styles.tagText}>{dreamTitle}</Text>
                     </View>
                   )}
                   <View style={styles.titleContainer}>
