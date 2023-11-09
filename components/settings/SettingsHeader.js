@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   headerContainer: {
-    marginTop: 20,
+    marginTop: 30,
     marginBottom: 25,
     paddingHorizontal: 50,
     width: "100%",

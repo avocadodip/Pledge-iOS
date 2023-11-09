@@ -20,7 +20,7 @@ import { formatDateDifference } from "../utils/currentDate";
 import AddDreamModal from "../components/dreams/AddDreamModal";
 import EditDeleteDreamModal from "../components/dreams/EditDeleteDreamModal";
 
-const Dreams = ({ navigation }) => {
+const Dreams = ({ navigation, route }) => {
   const { theme } = useThemes();
   const { todayDate } = useDayChange();
   const { dreamsArray } = useSettings();

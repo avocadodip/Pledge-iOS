@@ -7,19 +7,26 @@ import Collapsible from "react-native-collapsible";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
 import { useDayChange } from "../../hooks/useDayChange";
+import { useSettings } from "../../hooks/SettingsContext";
 
 const StatsItem = ({ dayData, index }) => {
   const { theme } = useThemes();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { todayDate } = useDayChange();
   const { dateName, todos, isActive, isVacation, date } = dayData;
+  const { dreamsArray } = useSettings();
+
+  const findDreamTitleById = (id, dreams) => {
+    const dream = dreams.find((d) => d.id === id);
+    return dream ? dream.title : null;
+  };
 
   // Upcoming day
   let upcomingDay = false;
   if (index == 0) {
     upcomingDay = true;
   }
- 
+
   // toggle collapse
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -31,7 +38,6 @@ const StatsItem = ({ dayData, index }) => {
   if (!isPastBet) {
     return null;
   }
-
 
   // Filter out null values and count the number of completed tasks
   const completedTasks = todos.filter((todo) => todo && todo.isComplete).length;
@@ -52,7 +58,7 @@ const StatsItem = ({ dayData, index }) => {
               <ClockIcon height={24} width={24} color={"white"} />
             ) : (
               <Text style={styles.fractionText}>
-               {completedTasks}/{totalTasks}
+                {completedTasks}/{totalTasks}
               </Text>
             )}
           </View>
@@ -80,9 +86,14 @@ const StatsItem = ({ dayData, index }) => {
                       )}
                     </View>
                     <View style={styles.row}>
-                      <Text style={styles.tagText}>{tag}</Text>
+                      <Text style={styles.tagText}>
+                        {" "}
+                        {findDreamTitleById(tag, dreamsArray)}
+                      </Text>
                       {amount.toString() && (
-                        <Text style={styles.titleText}>${amount.toString()}</Text>
+                        <Text style={styles.titleText}>
+                          ${amount.toString()}
+                        </Text>
                       )}
                     </View>
                   </View>

@@ -88,6 +88,5 @@ export default PastBets;
 const style = StyleSheet.create({
   pageContainer: {
     display: "flex",
-    marginBottom: BOTTOM_TAB_HEIGHT + 90,  
   },
 });

@@ -8,7 +8,7 @@ import TmrwIcon from "../assets/icons/tab-tmrw.svg";
 import DreamsIcon from "../assets/icons/tab-dreams.svg";
 // import RocketInactiveIcon from "../assets/icons/rocket-launch-inactive.svg";
 import { BOTTOM_TAB_HEIGHT } from "../GlobalStyles";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Today from "../screens/Today";
 import Tomorrow from "../screens/Tomorrow";
 import Account from "../screens/Account";
@@ -36,7 +36,7 @@ const TodayStack = () => (
   </Stack.Navigator>
 );
 
-const TomorrowStack = () => (
+const TomorrowScreen = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen
       name="TomorrowScreen"
@@ -137,7 +137,7 @@ export default function MainStack() {
       />
       <Tab.Screen
         name="Tomorrow"
-        component={TomorrowStack}
+        component={TomorrowScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon
@@ -166,3 +166,4 @@ export default function MainStack() {
     </Tab.Navigator>
   );
 }
+

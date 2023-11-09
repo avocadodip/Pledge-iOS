@@ -45,7 +45,7 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
               borderColor={theme.buttonBorder}
               borderRadius={10}
               onPress={() => {
-                navigation.navigate("Settings");
+                navigation.navigate("SettingsStack");
               }}
               shadowColor={"white"}
             >

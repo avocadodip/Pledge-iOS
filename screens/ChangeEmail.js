@@ -57,7 +57,7 @@ const ChangeEmail = () => {
           [
             {
               text: "OK",
-              onPress: () => navigation.navigate("Settings"),
+              onPress: () => navigation.navigate("SettingsStack"),
             },
           ],
           { cancelable: false }

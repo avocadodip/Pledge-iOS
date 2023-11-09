@@ -1,4 +1,10 @@
-import { StyleSheet, View, Text, Animated } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Animated,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSettings } from "../hooks/SettingsContext";
@@ -15,7 +21,9 @@ import FinedTodo from "../components/todo/FinedTodo";
 import NumberTodo from "../components/todo/NumberTodo";
 import DayStatusIndicator from "../components/todaytmrw/DayStatusIndicator";
 
+
 const Tomorrow = () => {
+
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { tmrwTodos } = useTmrwTodos();
@@ -46,14 +54,12 @@ const Tomorrow = () => {
   }, [tmrwTodos, dayChanged]);
 
   // if (loading) {
-  //   return <Text>Hi</Text>; 
+  //   return <Text>Hi</Text>;
   // }
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      {isOnboarded && (
-        <DayStatusIndicator />
-      )}
+      {isOnboarded && <DayStatusIndicator />}
 
       <View style={[styles.headerContainer]}>
         <View style={styles.headerTitleContainer}>
@@ -82,9 +88,7 @@ const Tomorrow = () => {
         ) : vacationModeOn ? (
           <TodayTmrwMessage type={"vacation"} />
         ) : !isTmrwActiveDay ? (
-          <TodayTmrwMessage
-            type={"rest day (tmrw screen)"}
-          />
+          <TodayTmrwMessage type={"rest day (tmrw screen)"} />
         ) : (
           <View style={styles.todosContainer}>{renderTodos()}</View>
         )}

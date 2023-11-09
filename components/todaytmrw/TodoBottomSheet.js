@@ -50,12 +50,14 @@ export default function TodoBottomSheet() {
 
   // Set initial todo object
   useEffect(() => {
-    setTodo(selectedTodo || {});
+    if (selectedTodo) {
+      setTodo(selectedTodo);
+      todoRef.current = selectedTodo;
+    }
   }, [selectedTodo]);
 
   useEffect(() => {
     todoRef.current = todo; // Update the mutable ref when todo changes because todo value inside renderBackdrop callback is its initial value when the component is rendered.
-    console.log(todo);
   }, [todo]);
 
   // Updates todo object when a field is edited
@@ -156,7 +158,7 @@ export default function TodoBottomSheet() {
     setIsBottomSheetOpen(false);
 
     setTimeout(() => {
-      navigation.navigate("Settings");
+      navigation.navigate("DreamsStack");
     }, 500);
   };
 
@@ -184,8 +186,25 @@ export default function TodoBottomSheet() {
             <View style={styles.dragHandleContainer}>
               <View style={styles.dragHandle}></View>
             </View>
+            <View style={styles.dreamsContainer}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={true}
+                style={styles.dreamScrollview}
+                indicatorStyle="white"
+                contentContainerStyle={{ alignItems: "center" }}
+                keyboardShouldPersistTaps="handled"
+              >
+                <View style={{ flexDirection: "column" }}>
+                  {[true, false].map((isEvenRow, index) =>
+                    renderRow(dreamsArray, isEvenRow)
+                  )}
+                </View>
+              </ScrollView>
+              <View style={{ height: 3, backgroundColor: "white" }} />
+            </View>
+            {/* <View style={styles.horizontalDivider} /> */}
             <View style={styles.numberTitleContainer}>
-              <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
               <TextInput
                 style={styles.title}
                 placeholder="New task"
@@ -197,7 +216,7 @@ export default function TodoBottomSheet() {
                   )
                 }
                 placeholderTextColor={theme.textDisabled}
-                textStyle={styles.text}
+                textStyle={[styles.text, { }]}
                 autoCorrect={false}
                 autoCapitalize="none"
                 maxLength={46}
@@ -241,40 +260,6 @@ export default function TodoBottomSheet() {
               )}
             </View>
             <View style={styles.horizontalDivider} />
-            <View style={styles.dreamsContainer}>
-              <FolderIcon color={theme.textHigh} />
-              {/* <TextInput
-                style={styles.textInput}
-                placeholder="Add tag"
-                value={todo.tag}
-                onChangeText={(text) =>
-                  handleInputChange(
-                    "tag",
-                    text.charAt(0).toUpperCase() + text.slice(1)
-                  )
-                }
-                placeholderTextColor={theme.textDisabled}
-                textStyle={styles.text}
-                autoCorrect={false}
-                autoCapitalize="none"
-                maxLength={30}
-              /> */}
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={true}
-                style={styles.dreamScrollview}
-                indicatorStyle="white"
-                contentContainerStyle={{ alignItems: "center" }}
-              >
-                <View style={{ flexDirection: "column" }}>
-                  {[true, false].map((isEvenRow, index) =>
-                    renderRow(dreamsArray, isEvenRow)
-                  )}
-                </View>
-              </ScrollView>
-              <View style={{ height: 3, backgroundColor: "white" }} />
-            </View>
-            <View style={styles.horizontalDivider} />
             <View style={styles.descriptionContainer}>
               <View style={{ marginTop: 2 }}>
                 <DescriptLinesIcon color={theme.textHigh} />
@@ -303,22 +288,27 @@ export default function TodoBottomSheet() {
             <View style={styles.dragHandleContainer}>
               <View style={styles.dragHandle}></View>
             </View>
+            <View
+              style={[styles.dreamsContainer, { height: 65, marginTop: 25 }]}
+            >
+              {selectedTodo.tag && (
+                <View style={styles.dreamButton}>
+                  <Text style={styles.selectedDreamText}>
+                    {findDreamTitleById(selectedTodo.tag, dreamsArray)}
+                  </Text>
+                </View>
+              )}
+            </View>
             <View style={styles.numberTitleContainer}>
-              <Text style={styles.number}>{selectedTodo.todoNumber}</Text>
               <Text style={styles.title}>{selectedTodo.title}</Text>
             </View>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
               <PledgeDollarIcon color={theme.textHigh} />
-              <Text style={styles.text}>{selectedTodo.amount}</Text>
+              <Text style={styles.text}>${selectedTodo.amount}</Text>
             </View>
             <View style={styles.horizontalDivider} />
-            <View style={styles.amountFolderContainer}>
-              <FolderIcon color={theme.textHigh} />
-              <Text style={styles.text}>
-                {findDreamTitleById(selectedTodo.tag, dreamsArray)}
-              </Text>
-            </View>
+
             <View style={styles.horizontalDivider} />
             <View style={styles.descriptionContainer}>
               <DescriptLinesIcon color={theme.textHigh} />
@@ -366,9 +356,8 @@ const getStyles = (theme) =>
     numberTitleContainer: {
       flexDirection: "row",
       alignItems: "center",
-      marginTop: 45,
+      marginTop: 5,
       marginBottom: 20,
-      gap: 16,
     },
     amountFolderContainer: {
       flexDirection: "row",
@@ -391,7 +380,6 @@ const getStyles = (theme) =>
       color: theme.primary,
       fontSize: 30,
       fontWeight: "bold",
-      width: "80%",
     },
     text: {
       color: theme.primary,
@@ -423,14 +411,13 @@ const getStyles = (theme) =>
     dreamsContainer: {
       flexDirection: "row",
       alignItems: "center",
-      height: 100,
-      paddingTop: 8,
+      marginTop: 35,
+      marginBottom: 5,
     },
     dreamScrollview: {
-      paddingBottom: 10,
       width: "100%",
       height: "100%",
-      marginLeft: 16,
+      paddingBottom: 10,
     },
     dreamButton: {
       marginRight: 5,

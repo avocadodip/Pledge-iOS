@@ -97,7 +97,6 @@ const getStyles = (theme) =>
   StyleSheet.create({
     pageContainer: {
       display: "flex",
-      marginBottom: BOTTOM_TAB_HEIGHT + 90,
     },
     sectionList: {
       width: "100%",

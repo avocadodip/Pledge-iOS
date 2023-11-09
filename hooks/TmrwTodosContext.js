@@ -12,11 +12,12 @@ import { useDayChange } from "./useDayChange";
 import { useDayStatus } from "./DayStatusContext";
 
 export const TmrwTodosContext = createContext();
-  
+
 // Sets tmrwTodos, tmrwDOWAbbrev, nextActiveDay
-export const TmrwTodosProvider = ({ children }) => { 
+export const TmrwTodosProvider = ({ children }) => {
   const {
-    settings, settings: { daysActive, vacationModeOn },
+    settings,
+    settings: { daysActive, vacationModeOn, isOnboarded },
     currentUserID,
   } = useSettings();
   const { dayChanged } = useDayChange();
@@ -24,8 +25,7 @@ export const TmrwTodosProvider = ({ children }) => {
   const [tmrwDOWAbbrev, setTmrwDOWAbbrev] = useState(getTmrwAbbrevDOW());
   const [isTmrwActiveDay, setIsTmrwActiveDay] = useState(false);
   const [noTmrwTodoLocked, setNoTmrwTodoLocked] = useState(false);
-  const { setTmrwPageCompletedForTheDay } =
-  useDayStatus();
+  const { setTmrwPageCompletedForTheDay } = useDayStatus();
   const [loading, setLoading] = useState(true);
 
   const [nextActiveDay, setNextActiveDay] = useState(
@@ -33,6 +33,24 @@ export const TmrwTodosProvider = ({ children }) => {
   );
 
   const [isTodoArrayEmpty, setIsTodoArrayEmpty] = useState(true);
+
+  // Add a new state variable for the count of action items left
+  const [actionItemsLeft, setActionItemsLeft] = useState(0);
+
+  useEffect(() => {
+    // Compute the number of action items left based on the conditions
+    const computeActionItemsLeft = () => {
+      if (!isTmrwActiveDay || vacationModeOn || !isOnboarded) {
+        return 0;
+      }
+      
+      // Count the number of todos that are not locked in yet
+      return tmrwTodos.filter((todo) => todo === null || todo.isLocked === false).length;
+    };
+
+    // Set the state for actionItemsLeft
+    setActionItemsLeft(computeActionItemsLeft());
+  }, [tmrwTodos, isTmrwActiveDay, vacationModeOn]);
 
   // Re-run when it hits 12am or daysActive changes
   useEffect(() => {
@@ -91,7 +109,7 @@ export const TmrwTodosProvider = ({ children }) => {
     } else {
       setIsTodoArrayEmpty(true);
     }
- 
+
     setTmrwTodos(fetchedTodos);
     setLoading(false);
   };
@@ -119,7 +137,8 @@ export const TmrwTodosProvider = ({ children }) => {
         noTmrwTodoLocked,
         getAndSetTmrwTodos,
         setIsTmrwActiveDay,
-        loading
+        loading,
+        actionItemsLeft,
       }}
     >
       {children}

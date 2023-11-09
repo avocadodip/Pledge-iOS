@@ -31,10 +31,7 @@ const TodayTodo = ({ todoData }) => {
   const { timeStatus } = useDayStatus();
   const { openBottomSheet } = useBottomSheet();
   const { currentUserID, dreamsArray } = useSettings();
-
-  console.log(dreamsArray);
-  console.log(tag);
-
+  
   const stringAmount = (amount !== null && amount !== undefined) ? amount.toString() : '';
   const findDreamTitleById = (id, dreams) => {
     const dream = dreams.find((d) => d.id === id);
