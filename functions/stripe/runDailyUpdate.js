@@ -17,37 +17,37 @@ const {checkAndSendNotifications} = require("./notifications");
  * @param {Number} missedTaskFine - Fine for each missed task.
  * @return {Object} contains several variables
  */
-function calculateFines(todos, dateName) {
+function calculateFines(todos, dateName, missedTaskFine) {
   let todayTotalFine = 0;
-  // let todayNoInputCount = 0;
-  // let todayNoInputFine = 0;
+  let todayNoInputCount = 0;
+  let todayNoInputFine = 0;
   const todayFinedTasks = [];
 
   // Count the number of todos that are not complete and those with no input
   todos.forEach((todo) => {
-    if (todo === null) {
-      // todayNoInputCount += 1;
-      // todayNoInputFine += missedTaskFine; // Commented out: Assign a fine for no input
+    // If todo is null and missedTaskFine is on, add a fine
+    if (todo === null && missedTaskFine !== 0) {
+      todayNoInputCount += 1;
+      todayNoInputFine += missedTaskFine; // +1
     } else if (!todo.isComplete && todo.amount !== 0) {
-      todayTotalFine += parseInt(todo.amount); // Just in case: convert amount to integer before addition
+      todayTotalFine += parseInt(todo.amount);
       todo.dateName = dateName;
       todayFinedTasks.push(todo);
     }
   });
 
-  // Commented out: Add fine for missing todos
-  // todayTotalFine += (3 - todos.length) * missedTaskFine;
+  todayTotalFine += todayNoInputFine;
 
   return {
     todayTotalFine,
-    // todayNoInputCount,
-    // todayNoInputFine,
+    todayNoInputCount,
+    todayNoInputFine,
     todayFinedTasks,
   };
 }
 
 /**
- * Update dreams lastCompleted, # tasks done, and $ pledged
+ * Update dreams lastCompleted, # tasks done
  *
  * @param {Array} todos - todos array with dream ids
  * @param {String} todayDate - Today's date (for last completed)
@@ -60,24 +60,18 @@ const updateDreams = async (todos, todayDate) => {
   // Loop through each todo
   for (const todo of todos) {
     const dreamId = todo.tag;
-    const updateFields = {
-      lastCompleted: todayDate,
-    };
 
-    // If todo is completed, increment doneCount by 1
+    // If todo is completed, increment doneCount and lastCompleted of the associated dream doc
     if (todo.isComplete) {
-      updateFields.doneCount = FieldValue.increment(1);
-    }
-
-    // Add todo.amount to amountPledged
-    updateFields.amountPledged = FieldValue.increment(todo.amount);
-
-    // Update the corresponding dream document
-    try {
-      await db.collection("dreams").doc(dreamId).update(updateFields);
-      console.log(`Successfully updated dream: ${dreamId}`);
-    } catch (error) {
-      console.error(`Failed to update dream: ${dreamId}`, error);
+      try {
+        await db.collection("dreams").doc(dreamId).update({
+          doneCount: FieldValue.increment(1),
+          lastCompleted: todayDate,
+        });
+        console.log(`Successfully updated dream: ${dreamId}`);
+      } catch (error) {
+        console.error(`Failed to update dream: ${dreamId}`, error);
+      }
     }
   }
 };
@@ -283,14 +277,14 @@ const runDailyUpdate = onRequest(async (req, res) => {
             todayNoInputFine,
             todayFinedTasks,
           } = calculateFines(todos, dateName, missedTaskFine);
-          await todayRef.update({totalFine: todayTotalFine}); // Update todayDoc totalFine
+          await todayRef.update({totalFine: todayTotalFine, totalNoInputCount: todayNoInputCount, totalNoInputFine: todayNoInputFine}); // Update todayDoc totalFine
 
+          // Update dreams lastCompleted, # tasks done, and $ pledged
           updateDreams(todos, todayFormatted);
 
           // 5. Update week fine count
-          const weekDoc = await weekRef.get();
-
           // Get existing week data (default values if doesn't exist)
+          const weekDoc = await weekRef.get();
           const {
             totalWeeklyFine = 0,
             isCharged = false,
@@ -313,7 +307,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
           const updatedFinedTasks = [...finedTasks, ...newFinedTasks];
           const updatedTotalWeeklyFine = totalWeeklyFine + todayTotalFine;
 
-          // Set updates
+          // Set week fines updates
           await weekRef.set(
               {
                 totalWeeklyFine: updatedTotalWeeklyFine,

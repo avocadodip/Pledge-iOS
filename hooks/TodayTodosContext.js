@@ -44,7 +44,7 @@ export const TodayTodosProvider = ({ children }) => {
       }
 
       // Count the number of todos that are not locked in yet
-      return todayTodos.filter((todo) => !todo.isComplete).length;
+      return todayTodos.filter((todo) => todo !== null && !todo.isComplete).length;
     };
 
     // Set the state for actionItemsLeft

@@ -36,7 +36,7 @@ const Transactions = ({ navigation }) => {
   let message = "Today: Jun 30\nNext payment: Jul 1, 11:45 pm";
   return (
     <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-      <SafeAreaView style={styles.pageContainer}>
+      <View style={styles.pageContainer}>
         <SettingsHeader navigation={navigation} header={"Charges"} />
         {hasBeenChargedBefore || true ? (
           fetchingTransactions ? (
@@ -62,6 +62,8 @@ const Transactions = ({ navigation }) => {
                 contentContainerStyle={{
                   paddingHorizontal: APP_HORIZONTAL_PADDING,
                   paddingTop: 7,
+                  paddingBottom: 150,
+
                 }}
                 style={styles.sectionList}
                 renderSectionFooter={() => <View style={{ height: 10 }} />}
@@ -86,7 +88,7 @@ const Transactions = ({ navigation }) => {
             <Text>Attach credit card</Text>
           </View>
         )}
-      </SafeAreaView>
+      </View>
     </LinearGradient>
   );
 };
@@ -101,6 +103,7 @@ const getStyles = (theme) =>
     sectionList: {
       width: "100%",
       height: "100%",
+
     },
     bundleContainer: {
       marginBottom: 10,

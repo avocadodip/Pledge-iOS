@@ -54,8 +54,13 @@ const DaysActiveModal = ({
 
   // Handle confirm button click
   const handleConfirm = async () => {
-    setModalDaysActive(tempDaysActive);
 
+    // Add a delay of 500 milliseconds before closing the modal
+    setTimeout(() => {
+      handleToggleModal(false);
+    }, 300);
+    
+    setModalDaysActive(tempDaysActive);
     const userRef = doc(db, "users", currentUserID);
     const tmrwChangedFromFalseToTrue =
       !daysActive[tmrwDOW] && tempDaysActive[tmrwDOW];
@@ -91,7 +96,6 @@ const DaysActiveModal = ({
       console.error("Error updating document: ", error.message);
     }
 
-    handleToggleModal(false);
   };
 
   return (

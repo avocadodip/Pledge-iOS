@@ -26,8 +26,8 @@ const NotificationsModal = ({
   handleToggleModal,
   notificationsEnabled,
   notificationTimes,
-  notificationPerms
-}) => { 
+  notificationPerms,
+}) => {
   const [timeChoiceStates, setTimeChoiceStates] = useState(
     Object.fromEntries(
       Object.entries(notificationTimes).map(([key, value]) => [
@@ -60,15 +60,17 @@ const NotificationsModal = ({
   };
 
   const disableNotifications = async () => {
-    const userRef = doc(db, "users", currentUserID);
-    try {
-      await updateDoc(userRef, {
-        notificationsEnabled: false,
-      });
-    } catch (error) {
-      console.error("Error updating document: ", error.message);
-    }
     handleToggleModal(false);
+    setTimeout(async () => {
+      const userRef = doc(db, "users", currentUserID);
+      try {
+        await updateDoc(userRef, {
+          notificationsEnabled: false,
+        });
+      } catch (error) {
+        console.error("Error updating document: ", error.message);
+      }
+    }, 300);
   };
 
   // Use the function when updating the document
@@ -86,7 +88,7 @@ const NotificationsModal = ({
       console.error("Error updating document: ", error.message);
     }
   };
-  
+
   return (
     <BottomModal
       isVisible={isVisible}
@@ -94,6 +96,7 @@ const NotificationsModal = ({
         handleToggleModal(false);
       }}
       modalTitle={"Notifications"}
+      modalDescription={"Get notified when your day is about to end."}
     >
       {notificationsEnabled && notificationPerms ? (
         <View style={styles.modalContent}>
@@ -125,15 +128,16 @@ const NotificationsModal = ({
                         ...prevState,
                         [text]: !prevState[text],
                       };
-                  
+
                       // Count the number of true values in newState
-                      const checkedCount = Object.values(newState).filter(Boolean).length;
-                  
+                      const checkedCount =
+                        Object.values(newState).filter(Boolean).length;
+
                       // If there are no true values, don't update the state
                       if (checkedCount === 0) {
                         return prevState;
                       }
-                  
+
                       updateTimeChoices(newState);
                       return newState;
                     });
@@ -171,11 +175,13 @@ const NotificationsModal = ({
         <TouchableRipple
           style={styles.mainButton}
           onPress={
-            (notificationsEnabled && notificationPerms) ? disableNotifications : enableNotifications
+            notificationsEnabled && notificationPerms
+              ? disableNotifications
+              : enableNotifications
           }
         >
           <Text style={styles.mainButtonText}>
-            {(notificationsEnabled && notificationPerms)
+            {notificationsEnabled && notificationPerms
               ? "Turn off notifications"
               : "Turn on notifications"}
           </Text>
@@ -192,12 +198,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "col",
     alignItems: "center",
-  },
-  modalHeader: {
-    fontSize: 18,
-    fontWeight: 500,
-    marginBottom: 10,
-    color: Color.white,
+    paddingTop: 20
   },
   mainButton: {
     flexDirection: "row",

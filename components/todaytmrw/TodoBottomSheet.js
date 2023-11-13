@@ -29,7 +29,7 @@ export default function TodoBottomSheet() {
     settings: { isPaymentSetup },
     dreamsArray,
   } = useSettings();
-  const { updateTodo } = useTmrwTodos();
+  const { updateTodo, tmrwTodos } = useTmrwTodos();
   const {
     isBottomSheetOpen,
     setIsBottomSheetOpen,
@@ -145,9 +145,12 @@ export default function TodoBottomSheet() {
     [isBottomSheetEditable, todo]
   );
 
+  // For sliding close
   const handleSheetChange = (index) => {
     if (index === -1) {
+      console.log("hi");
       setIsBottomSheetOpen(false);
+      console.log(tmrwTodos);
     }
   };
 
@@ -203,26 +206,23 @@ export default function TodoBottomSheet() {
               </ScrollView>
               <View style={{ height: 3, backgroundColor: "white" }} />
             </View>
-            {/* <View style={styles.horizontalDivider} /> */}
-            <View style={styles.numberTitleContainer}>
-              <TextInput
-                style={styles.title}
-                placeholder="New task"
-                value={todo.title}
-                onChangeText={(text) =>
-                  handleInputChange(
-                    "title",
-                    text.charAt(0).toUpperCase() + text.slice(1)
-                  )
-                }
-                placeholderTextColor={theme.textDisabled}
-                textStyle={[styles.text, { }]}
-                autoCorrect={false}
-                autoCapitalize="none"
-                maxLength={46}
-                autoFocus={true}
-              />
-            </View>
+            <TextInput
+              style={styles.title}
+              placeholder="New task"
+              value={todo.title}
+              onChangeText={(text) =>
+                handleInputChange(
+                  "title",
+                  text.charAt(0).toUpperCase() + text.slice(1)
+                )
+              }
+              placeholderTextColor={theme.textDisabled}
+              textStyle={styles.text}
+              autoCorrect={false}
+              autoCapitalize="none"
+              maxLength={46}
+              autoFocus={true}
+            />
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
               <PledgeDollarIcon color={theme.textHigh} />
@@ -289,7 +289,10 @@ export default function TodoBottomSheet() {
               <View style={styles.dragHandle}></View>
             </View>
             <View
-              style={[styles.dreamsContainer, { height: 65, marginTop: 25 }]}
+              style={[
+                styles.dreamsContainer,
+                { marginTop: 35, marginBottom: 15 },
+              ]}
             >
               {selectedTodo.tag && (
                 <View style={styles.dreamButton}>
@@ -299,9 +302,7 @@ export default function TodoBottomSheet() {
                 </View>
               )}
             </View>
-            <View style={styles.numberTitleContainer}>
-              <Text style={styles.title}>{selectedTodo.title}</Text>
-            </View>
+            <Text style={styles.title}>{selectedTodo.title}</Text>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
               <PledgeDollarIcon color={theme.textHigh} />
@@ -352,13 +353,6 @@ const getStyles = (theme) =>
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
 
-    // CONTAINERS
-    numberTitleContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginTop: 5,
-      marginBottom: 20,
-    },
     amountFolderContainer: {
       flexDirection: "row",
       alignItems: "center",
@@ -380,6 +374,8 @@ const getStyles = (theme) =>
       color: theme.primary,
       fontSize: 30,
       fontWeight: "bold",
+      marginTop: 5,
+      marginBottom: 10,
     },
     text: {
       color: theme.primary,

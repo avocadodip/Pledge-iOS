@@ -9,7 +9,7 @@ import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
 import { useDayStatus } from "../../hooks/DayStatusContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
 import { getTmrwDate, getTodayDateTime } from "../../utils/currentDate";
-import { doc, increment, runTransaction } from "firebase/firestore";
+import { doc, increment, runTransaction, updateDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
 import { useSettings } from "../../hooks/SettingsContext";
 
@@ -42,15 +42,26 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
     const todoToLock = tmrwTodos[todoNumber - 1];
     const { title, description, tag, amount } = todoToLock;
 
-    let formattedAmount;
-
     // Validate title & amount fields
     if (title == "") {
       showMissingFieldAlert("title");
       return;
     }
+    let formattedAmount = parseFloat(amount);
 
-    formattedAmount = parseFloat(amount);
+    // If (amount > 0 && todo has tag), add amount to dream
+    if (formattedAmount > 0 && tag !== "") {
+      try {
+        const dreamRef = doc(db, "users", currentUserID, "dreams", tag);
+
+        const payload = {
+          amountPledged: increment(formattedAmount),
+        };
+        await updateDoc(dreamRef, payload);
+      } catch (error) {
+        console.error("Update failed:", error);
+      }
+    }
 
     // Format new todo
     const newTodo = {
@@ -69,7 +80,7 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
     updatedTodos[todoNumber - 1] = newTodo;
     setTmrwTodos(updatedTodos);
 
-    // Save local array database
+    // Save local array to database
     try {
       await runTransaction(db, async (transaction) => {
         const todosRef = doc(

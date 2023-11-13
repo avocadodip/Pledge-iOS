@@ -66,10 +66,9 @@ const getStyles = (theme) =>
     },
     modalContent: {
       width: "100%",
-      paddingHorizontal: 17,
+      paddingHorizontal: 13,
       paddingVertical: 17,
       flexDirection: "col",
-      justifyContent: "center",
       alignItems: "center",
       borderRadius: 20,
       overflow: "hidden",
@@ -77,7 +76,6 @@ const getStyles = (theme) =>
     modalTitle: {
       fontSize: 18,
       fontWeight: 500,
-      marginBottom: 20,
       color: theme.primary,
     },
 
@@ -85,7 +83,7 @@ const getStyles = (theme) =>
     closeButtonContainer: {
       position: "absolute",
       top: 11,
-      right: 15,
+      right: 13,
     },
     closeButton: {
       borderRadius: 20,

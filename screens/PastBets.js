@@ -49,6 +49,7 @@ const PastBets = ({ navigation }) => {
               justifyContent: "center",
               alignItems: "center",
               paddingHorizontal: 20,
+
             }}
           >
             <Text
@@ -74,6 +75,7 @@ const PastBets = ({ navigation }) => {
             ListFooterComponent={renderFooter}
             contentContainerStyle={{
               paddingHorizontal: APP_HORIZONTAL_PADDING,
+              paddingBottom: 150,
             }} // Horizontal padding of 16
             showsVerticalScrollIndicator={false}
           />

@@ -28,6 +28,7 @@ import { auth, db } from "../database/firebase";
 import ThemeToggle from "../components/settings/ThemeToggle";
 import DaysActiveModal from "../components/settings/DaysActiveModal";
 import NotificationsModal from "../components/settings/NotificationsModal";
+import MissedTaskFineModal from "../components/settings/MissedTaskFineModal";
 import { useSettings } from "../hooks/SettingsContext";
 import { useThemes } from "../hooks/ThemesContext";
 import VacationToggle from "../components/settings/VacationToggle";
@@ -53,6 +54,7 @@ import { useCheckNotificationPerms } from "../hooks/useAppStateChange";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import XMarkIcon from "../assets/icons/x-mark.svg";
+import { doc, updateDoc } from "firebase/firestore";
 
 const BUTTON_HEIGHT = 51;
 const BUTTON_TEXTS = ["S", "M", "T", "W", "T", "F", "S"];
@@ -79,6 +81,7 @@ const Settings = () => {
       last4Digits,
       notificationsEnabled,
       notificationTimes,
+      missedTaskFine,
     },
     currentUserID,
   } = useSettings();
@@ -87,6 +90,8 @@ const Settings = () => {
   const [isPaymentInitialized, setIsPaymentInitialized] = useState(false);
   const [daysActiveModalVisible, setDaysActiveModalVisible] = useState(false);
   const [notifsModalVisible, setNotifsModalVisible] = useState(false);
+  const [missedTaskFineModalVisible, setMissedTaskFineModalVisible] =
+    useState(false);
 
   useEffect(() => {
     loadPaymentSheet();
@@ -108,10 +113,14 @@ const Settings = () => {
   };
 
   const handleOpenNotifsModal = (action) => {
-    console.log("absdhfu");
     if (action == true) {
       setNotifsModalVisible(true);
     } else setNotifsModalVisible(false);
+  };
+  const handleOpenMissedTaskFineModal = (action) => {
+    if (action == true) {
+      setMissedTaskFineModalVisible(true);
+    } else setMissedTaskFineModalVisible(false);
   };
 
   const loadPaymentSheet = async () => {
@@ -132,7 +141,10 @@ const Settings = () => {
     }
 
     setTimeout(() => {}, 300);
+
     const { error } = await presentPaymentSheet();
+
+    console.log(error);
 
     if (!error) {
       setLoading(true);
@@ -163,7 +175,7 @@ const Settings = () => {
 
   const handleCloseModal = () => {
     navigation.navigate("Dreams");
-  }
+  };
 
   return (
     <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
@@ -254,6 +266,29 @@ const Settings = () => {
           <View style={styles.sectionContainer}></View>
 
           <View style={styles.sectionContainer}>
+            {/* MISSED FINE */}
+            <TouchableRipple
+              style={styles.button}
+              onPress={() => handleOpenMissedTaskFineModal(true)}
+            >
+              <View style={styles.leftSettingsButton}>
+                <LockDollarIcon width={26} height={26} color={theme.textHigh} />
+
+                <Text style={styles.buttonTitle}>No Input Fine</Text>
+              </View>
+              {missedTaskFine === 0 ? (
+                <Text style={[styles.rightSideText, {color: theme.textDisabled}]}>Off</Text>
+              ) : (
+                <Text style={styles.rightSideText}>${missedTaskFine}</Text>
+              )}
+              </TouchableRipple>
+            <MissedTaskFineModal
+              currentUserID={currentUserID}
+              isVisible={missedTaskFineModalVisible}
+              handleToggleModal={handleOpenMissedTaskFineModal}
+              missedTaskFine={missedTaskFine}
+              isPaymentSetup={isPaymentSetup}
+            />
             {/* NOTIFICATIONS */}
             <TouchableRipple
               style={styles.button}
@@ -272,7 +307,9 @@ const Settings = () => {
                   {notificationsEnabled && notificationPerms ? (
                     <Text style={styles.rightSideText}>On</Text>
                   ) : (
-                    <Text style={styles.rightSideText}>Off</Text>
+                    <Text style={[styles.rightSideText, { color: theme.textDisabled }]}>
+                      Off
+                    </Text>
                   )}
                 </View>
               </View>
@@ -304,7 +341,6 @@ const Settings = () => {
                         fontSize: 15,
                         color: theme.textHigh,
                         fontWeight: 500,
-                        opacity: 0.8,
                       }}
                     >
                       All
@@ -369,25 +405,13 @@ const Settings = () => {
               <Text style={styles.rightSideText}>{currentThemeName}</Text>
             </TouchableRipple>
             {/* TIMEZONE */}
-            <View style={styles.button}>
+            {/* <View style={styles.button}>
               <View style={styles.leftSettingsButton}>
                 <GlobeIcon width={25} height={25} color={theme.textHigh} />
                 <Text style={styles.buttonTitle}>Time Zone</Text>
               </View>
               <Text style={styles.rightSideText}>{timezone}</Text>
-            </View>
-            {/* MISSED FINE */}
-            <View style={styles.button}>
-              <View style={styles.leftSettingsButton}>
-                <LockDollarIcon width={26} height={26} color={theme.textHigh} />
-
-                <Text style={styles.buttonTitle}>Baller Mode</Text>
-                <Text style={{ ...styles.buttonTitle, opacity: 0.5 }}>
-                  (Coming soon!)
-                </Text>
-              </View>
-              {/* <Text style={styles.rightSideText}>$1</Text> */}
-            </View>
+            </View> */}
           </View>
         </View>
         <View style={styles.sectionHeader}>
@@ -520,7 +544,7 @@ const getStyles = (theme) =>
     },
     rightSideText: {
       fontSize: 15,
-      color: theme.textMedium,
+      color: theme.textHigh,
     },
 
     // Close button styles

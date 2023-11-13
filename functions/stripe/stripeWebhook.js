@@ -85,6 +85,7 @@ const stripeWebhook = onRequest(async (req, res) => {
               paymentMethodId: null,
               isPaymentSetup: false,
               last4Digits: null,
+              missedTaskFine: 0,
 
             });
             console.log("Successfully removed paymentMethodId and set isPaymentSetup to false");

@@ -6,7 +6,7 @@ import { Color } from "../../GlobalStyles";
 
 const WeekBundle = ({ isFirstSection, transactionsData }) => {
   const [isCollapsed, setIsCollapsed] = useState(isFirstSection ? false : true);
-  const {
+  let {
     weekDateRange,
     totalWeeklyFine,
     isCharged,
@@ -18,25 +18,23 @@ const WeekBundle = ({ isFirstSection, transactionsData }) => {
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
- 
-  console.log(`weekbundle.js transactions data: ${transactionsData}`);
-// Group tasks by date
-const tasksByDate = finedTasks.reduce((acc, task) => {
-  if (!acc[task.dateName]) {
-    acc[task.dateName] = [];
-  }
-  acc[task.dateName].push(task);
-  return acc;
-}, {});
 
-const tasksArray = Object.entries(tasksByDate)
-  .map(([date, tasks]) => ({
-    date,
-    dateName: tasks[0].dateName,  // Assuming dateName is consistent across tasks for the same date
-    tasks,
-  }))
-  .sort((a, b) => b.dateName.localeCompare(a.dateName));  // Sort in descending order
+  // Group tasks by date
+  const tasksByDate = finedTasks.reduce((acc, task) => {
+    if (!acc[task.dateName]) {
+      acc[task.dateName] = [];
+    }
+    acc[task.dateName].push(task);
+    return acc;
+  }, {});
 
+  const tasksArray = Object.entries(tasksByDate)
+    .map(([date, tasks]) => ({
+      date,
+      dateName: tasks[0].dateName, // Assuming dateName is consistent across tasks for the same date
+      tasks,
+    }))
+    .sort((a, b) => b.dateName.localeCompare(a.dateName)); // Sort in descending order
 
   return (
     <View style={styles.bundle}>
@@ -46,12 +44,14 @@ const tasksArray = Object.entries(tasksByDate)
           <Text style={styles.totalWeeklyFineText}>-${totalWeeklyFine}.00</Text>
         </View>
         <Collapsible collapsed={isCollapsed} style={styles.collapsibleContent}>
-          {/* <View style={styles.unenteredTasksItem}>
-            <Text style={styles.collapsibleText}>
-              {noInputCount} unentered tasks
-            </Text>
-            <Text style={styles.collapsibleText}>{noInputFine}</Text>
-          </View> */}
+          {(noInputCount === 0 || !noInputCount || !noInputFine) ? null : (
+            <View style={styles.unenteredTasksItem}>
+              <Text style={styles.collapsibleText}>
+                {noInputCount} unentered tasks
+              </Text>
+              <Text style={styles.collapsibleText}>${noInputFine}.00</Text>
+            </View>
+          )}
 
           <View style={styles.dayContainer}>
             {tasksArray.map((item, index) => (
@@ -63,7 +63,9 @@ const tasksArray = Object.entries(tasksByDate)
                   <View key={taskIndex}>
                     <View style={styles.spaceBetween}>
                       <Text style={styles.collapsibleText}>{task.title}</Text>
-                      <Text style={styles.collapsibleText}>${task.amount}.00</Text>
+                      <Text style={styles.collapsibleText}>
+                        ${task.amount}.00
+                      </Text>
                     </View>
                   </View>
                 ))}
