@@ -97,11 +97,11 @@ const getStyles = (theme) =>
     headerContainer: {
       marginTop: 7,
       width: "100%",
-      flexDirection: "col",
+      flexDirection: "row",
+      alignItems: "center",
       height: 55,
     },
     headerTitleContainer: {
-      width: "100%",
       flexDirection: "row",
       alignItems: "baseline",
       gap: 10,
@@ -116,6 +116,7 @@ const getStyles = (theme) =>
       fontSize: 23,
       fontWeight: "bold",
     },
+
     pageContent: {
       height: "75%",
       width: "100%",

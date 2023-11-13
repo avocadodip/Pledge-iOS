@@ -88,7 +88,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
         .where("isOnboarded", "==", true)
         .get();
 
-    // For each user in a desired timezone
+    // For each user who is currently in timezones where it's end of day
     await Promise.all(
         querySnapshot.docs.map(async (doc) => {
           const userDoc = doc.data();
@@ -128,7 +128,8 @@ const runDailyUpdate = onRequest(async (req, res) => {
               endOfWeekFormatted,
           ); // "Aug 20 - Aug 26, 2023"
 
-          // Defining doc references
+          // ----- DEFINING REFS ------
+
           const todayRef = userRef.collection("todos").doc(todayFormatted);
           const nextDayRef = userRef.collection("todos").doc(nextDayFormatted);
           const nextNextDayRef = userRef
@@ -136,12 +137,9 @@ const runDailyUpdate = onRequest(async (req, res) => {
               .doc(nextNextDayFormatted);
           const weekRef = userRef.collection("fines").doc(pastWeek);
 
-          // ----- NOTIFICATION STUFF ------
+          // ----- END OF DAY: RESET NOTIFICATION IS_SENT FIELDS ------
 
-          // For user's that had a notif sent to them today: Change all notification times isSent field to false
-          const usersRef = db.collection("users");
-
-          const snapshot = await usersRef
+          const snapshot = await userRef
               .where("todayANotifHasBeenSent", "==", true)
               .get();
           const updates = snapshot.docs.map((doc) => {
@@ -151,18 +149,16 @@ const runDailyUpdate = onRequest(async (req, res) => {
                 notificationTimes[key].isSent = false;
               }
             }
-            return usersRef.doc(doc.id).update({notificationTimes});
+            return userRef.doc(doc.id).update({notificationTimes});
           });
           await Promise.all(updates);
 
-          // For all users: (1) Set next day's isActive and opensAt fields to user's doc (2) reset notifSent fields
+          // ----- END OF DAY: SET TMRW DOC ------
+
           const nextDaySnapshot = await nextDayRef.get();
 
           if (nextDaySnapshot.exists) {
-          // Extract the isActive and dayEnd fields
             const {isActive, closesAt} = nextDaySnapshot.data();
-
-            // Update the user document
             await userRef.update({
               todayIsActive: isActive,
               todayDayEnd: closesAt,
@@ -174,13 +170,13 @@ const runDailyUpdate = onRequest(async (req, res) => {
                 `No document for next day ${nextDayFormatted} for user ${userid}`,
             );
           }
-          // ----- END NOTIFICATION STUFF ------
 
-          // 3. Set user's nextnextdayDoc w/ settings data
+          // ----- END OF DAY: SET NEXT NEXT DAY DOC ------
+
           await nextNextDayRef.set(
               {
                 date: nextNextDayFormatted,
-                dateName: nextNextDayDateName, // added dateName
+                dateName: nextNextDayDateName,
                 opensAt: dayStart,
                 closesAt: dayEnd,
                 isActive: daysActive[nextNextDOW],
@@ -188,14 +184,15 @@ const runDailyUpdate = onRequest(async (req, res) => {
                 todos: [null, null, null],
               },
               {merge: true},
-          ); // merge true to avoid overwriting existing data
+          );
 
-          // 4. Tally & update today fine count
+          // ----- END OF DAY: TALLY TODAY FINES AND UPDATE TODAY DOC ------
+
           const todayDoc = await todayRef.get();
           if (!todayDoc.exists) {
             return console.log(`No ${todayFormatted} doc for ${userid}`);
           }
-          const {todos = [], dateName} = todayDoc.data(); // Get todos array
+          const {todos = [], dateName} = todayDoc.data();
 
           const {
             todayTotalFine,
@@ -203,9 +200,10 @@ const runDailyUpdate = onRequest(async (req, res) => {
             todayNoInputFine,
             todayFinedTasks,
           } = calculateFines(todos, dateName, missedTaskFine);
-          await todayRef.update({totalFine: todayTotalFine, totalNoInputCount: todayNoInputCount, totalNoInputFine: todayNoInputFine}); // Update todayDoc totalFine
+          await todayRef.update({totalFine: todayTotalFine, totalNoInputCount: todayNoInputCount, totalNoInputFine: todayNoInputFine});
 
-          // 5. Update week fine count
+          // ----- END OF DAY: ADD TODAY FINES TO WEEKLY FINES ------
+
           // Get existing week data (default values if doesn't exist)
           const weekDoc = await weekRef.get();
           const {
@@ -247,7 +245,8 @@ const runDailyUpdate = onRequest(async (req, res) => {
 
           console.log(`Updated fines for user ${userid} on ${todayFormatted}`);
 
-          // 6. Charge user with weekly fine if it's Saturday
+          // ----- END OF SATURDAY: CHARGE USERS WHO HAVE A WEEKLY FINE ------
+
           if (
             todayDOW === "Saturday" && // TEMP
           stripeCustomerId &&

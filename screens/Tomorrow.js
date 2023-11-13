@@ -1,16 +1,9 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  Animated,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayStatus } from "../hooks/DayStatusContext";
 import { useTmrwTodos } from "../hooks/TmrwTodosContext";
-import TmrwTimePicker from "../components/todaytmrw/TmrwTimePicker";
 import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
@@ -21,9 +14,7 @@ import FinedTodo from "../components/todo/FinedTodo";
 import NumberTodo from "../components/todo/NumberTodo";
 import DayStatusIndicator from "../components/todaytmrw/DayStatusIndicator";
 
-
 const Tomorrow = () => {
-
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const { tmrwTodos } = useTmrwTodos();
@@ -41,10 +32,8 @@ const Tomorrow = () => {
     return tmrwTodos.map((todoData, index) => {
       if (todoData == null) {
         if (timeStatus == 0 || timeStatus == 1) {
-          // before or during day
           return <NumberTodo key={index} todoNumber={index + 1} />;
         } else if (timeStatus == 2) {
-          // after day
           return <FinedTodo key={index} />;
         }
       } else {
@@ -53,30 +42,15 @@ const Tomorrow = () => {
     });
   }, [tmrwTodos, dayChanged]);
 
-  // if (loading) {
-  //   return <Text>Hi</Text>;
-  // }
-
   return (
     <SafeAreaView style={styles.pageContainer}>
       {isOnboarded && <DayStatusIndicator />}
 
-      <View style={[styles.headerContainer]}>
+      <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Tmrw</Text>
           <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
         </View>
-
-        {/* {isOnboarded && !vacationModeOn && isTmrwActiveDay && (
-          <View>
-            {(timeStatus === 1 || timeStatus === 2) &&
-              (timeStatus === 2 && isTodoArrayEmpty ? (
-                <TmrwTimePicker altMessage={true} />
-              ) : (
-                <TmrwTimePicker altMessage={false} />
-              ))}
-          </View>
-        )} */}
       </View>
 
       <View style={styles.pageContent}>
@@ -113,11 +87,11 @@ const getStyles = (theme) =>
     headerContainer: {
       marginTop: 7,
       width: "100%",
-      flexDirection: "col",
+      flexDirection: "row",
+      alignItems: "center",
       height: 55,
     },
     headerTitleContainer: {
-      width: "100%",
       flexDirection: "row",
       alignItems: "baseline",
       gap: 10,

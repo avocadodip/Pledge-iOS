@@ -307,12 +307,12 @@ export default function TodoBottomSheet() {
               <Text style={styles.text}>${selectedTodo.amount}</Text>
             </View>
             <View style={styles.horizontalDivider} />
-
-            <View style={styles.horizontalDivider} />
-            <View style={styles.descriptionContainer}>
-              <DescriptLinesIcon color={theme.textHigh} />
-              <Text style={styles.text}>{selectedTodo.description}</Text>
-            </View>
+            {selectedTodo.description !== "" && (
+              <View style={styles.descriptionContainer}>
+                <DescriptLinesIcon color={theme.textHigh} />
+                <Text style={[styles.text, {marginTop: 2}]}>{selectedTodo.description}</Text>
+              </View>
+            )}
           </View>
         )}
       </LinearGradient>
@@ -361,7 +361,6 @@ const getStyles = (theme) =>
       paddingTop: 10,
       flexDirection: "row",
       gap: 16,
-      // alignItems: "center",
     },
     number: {
       color: theme.primary,
@@ -379,8 +378,7 @@ const getStyles = (theme) =>
       color: theme.primary,
       fontSize: 16,
       fontWeight: 500,
-      width: "80%",
-      paddingVertical: 15,
+      width: "100%",
     },
     textInput: {
       color: theme.primary,
