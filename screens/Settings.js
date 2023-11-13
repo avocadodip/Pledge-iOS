@@ -104,7 +104,6 @@ const Settings = () => {
   };
 
   const handleLogout = async () => {
-    console.log(auth);
     try {
       await auth.signOut();
     } catch (error) {

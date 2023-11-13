@@ -35,6 +35,7 @@ const AddDreamModal = ({ modalVisible, setModalVisible }) => {
         title: dreamTitle,
         amountPledged: 0,
         doneCount: 0,
+        completionHistory: [],
         lastCompleted: null,
         streak: 0,
         createdAt: todayDate,

@@ -29,9 +29,6 @@ const Transactions = ({ navigation }) => {
     fetchTransactions();
   }, []);
 
-  console.log(`transactions.js transactions data:`);
-  console.log(transactionsArray);
-
 
   let message = "Today: Jun 30\nNext payment: Jul 1, 11:45 pm";
   return (

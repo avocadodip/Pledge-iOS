@@ -148,9 +148,7 @@ export default function TodoBottomSheet() {
   // For sliding close
   const handleSheetChange = (index) => {
     if (index === -1) {
-      console.log("hi");
       setIsBottomSheetOpen(false);
-      console.log(tmrwTodos);
     }
   };
 

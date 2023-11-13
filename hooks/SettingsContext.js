@@ -119,7 +119,7 @@ export const SettingsProvider = ({ children }) => {
         const array = [];
         querySnapshot.forEach((dreamDoc) => {
           const data = dreamDoc.data();
-          data.id = dreamDoc.id; 
+          data.id = dreamDoc.id;
           array.push(data);
         });
 
@@ -131,7 +131,7 @@ export const SettingsProvider = ({ children }) => {
       return () => unsubscribe();
     } catch (error) {
       console.error("An error occurred while fetching todos:", error);
-    } 
+    }
   };
 
   // Past Bets data fetching (to prevent fetching data every time)
@@ -181,6 +181,7 @@ export const SettingsProvider = ({ children }) => {
     }
   };
 
+  // 2. PAST CHARGES
   const fetchTransactions = async () => {
     if (allTransactionsDataFetched || fetchingTransactions) {
       return;
@@ -188,6 +189,7 @@ export const SettingsProvider = ({ children }) => {
 
     setFetchingTransactions(true);
 
+    // Get all isCharged == true docs
     try {
       const q1 = query(
         collection(doc(db, "users", currentUserID), "fines"),
@@ -199,7 +201,6 @@ export const SettingsProvider = ({ children }) => {
 
       const querySnapshot1 = await getDocs(q1);
 
-      // No more fines left
       if (querySnapshot1.empty) {
         console.log("No more data to fetch.");
         setAllTransactionsDataFetched(true);
@@ -220,10 +221,11 @@ export const SettingsProvider = ({ children }) => {
 
         // Add the most recent doc if isCharged == false and fined tasks exist
         const mostRecentDoc = querySnapshot2.docs[0].data();
+
         if (
           mostRecentDoc.isCharged === false &&
-          mostRecentDoc.finedTasks &&
-          mostRecentDoc.finedTasks.length > 0
+          ((mostRecentDoc.finedTasks && mostRecentDoc.finedTasks.length > 0) ||
+            mostRecentDoc.totalWeeklyFine > 0)
         ) {
           finesArray.push(mostRecentDoc);
         }
@@ -254,6 +256,7 @@ export const SettingsProvider = ({ children }) => {
   };
 
   const formatWeeksList = (weeksList) => {
+
     // Upcoming if it's this week's doc
     const upcoming = weeksList.filter((week) => {
       return week.id === getBeginningOfWeekDate();

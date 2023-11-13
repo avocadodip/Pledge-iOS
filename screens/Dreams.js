@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useThemes } from "../hooks/ThemesContext";
 import { APP_HORIZONTAL_PADDING, settingsPageStyles } from "../GlobalStyles";
 import GearIcon from "../assets/icons/settings-active-icon.svg";
@@ -78,15 +78,15 @@ const Dreams = ({ navigation, route }) => {
                 }}
               >
                 <View style={styles.leftContainer}>
-                  {dream.doneCount !== 0 && (
-                    <>
-                      {formatDateDifference(todayDate, dream.lastCompleted) !==
-                        "0d ago" && (
-                        <Text style={styles.lastCompletedText}>
-                          {formatDateDifference(todayDate, dream.lastCompleted)}
-                        </Text>
+                  {dream.doneCount > 0 && (
+                    <Text style={styles.lastCompletedText}>
+                      {formatDateDifference(
+                        todayDate,
+                        dream.completionHistory[
+                          dream.completionHistory.length - 1
+                        ]
                       )}
-                    </>
+                    </Text>
                   )}
                   <Text style={styles.dreamTitle}>{dream.title}</Text>
                   <View style={styles.statsContainer}>

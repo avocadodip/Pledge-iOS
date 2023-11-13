@@ -77,7 +77,7 @@ export default {
     // Day Status indicator
     dayStatusIndicatorBg: Color.white18,
     dayStatusIndicatorBorder: Color.white18,
-    dayStatusIndicatorBgIncomplete: Color.white18,
+    dayStatusIndicatorBgIncomplete: "#e17473",
     dayStatusIndicatorBorderIncomplete: Color.white18,
     dayStatusIndicatorBgComplete: Color.white18,
     dayStatusIndicatorBorderComplete: Color.white18,

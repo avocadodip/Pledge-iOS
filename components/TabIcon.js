@@ -63,7 +63,11 @@ const getStyles = (theme) =>
       width: 25, // Small dot size
       height: 25,
       borderRadius: 50, // Circular dot
+
       backgroundColor: theme.dayStatusIndicatorBgIncomplete,
+      borderColor: theme.dayStatusIndicatorBorderIncomplete,
+      borderWidth: 2,
+
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
@@ -82,8 +86,8 @@ const getStyles = (theme) =>
       right: -10,
     },
     unfocusedDot: {
-      top: -11,
-      right: -11,
+      top: -12.7,
+      right: -12.7,
     },
     notificationText: {
       color: "white",

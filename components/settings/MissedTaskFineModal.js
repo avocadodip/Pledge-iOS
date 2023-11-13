@@ -55,12 +55,15 @@ const MissedTaskFineModal = ({
         {missedTaskFine === 0 ? (
           <View style={{ gap: 20 }}>
             <Text style={styles.descriptionText}>
-              By enabling this feature, you'll be fined $1 for each task not
+              By enabling this feature, you will be fined $1 for each task not
               locked in by the deadline ($3 for not locking in all 3 tasks for
               the next day).
             </Text>
             <Text style={styles.descriptionText}>
-              We strongly recommend enabling fines, as this is core to
+              Fines will simply be added to the end of week charge.
+            </Text>
+            <Text style={styles.descriptionText}>
+              We strongly recommend enabling fines, as this is a cort part of
               Pledge's intended usage.
             </Text>
           </View>
@@ -90,7 +93,7 @@ const MissedTaskFineModal = ({
 const styles = StyleSheet.create({
   // MODAL CONTENT STYLES
   modalContent: {
-    height: 200,
+    height: 225,
     width: "100%",
     flexDirection: "col",
     alignItems: "center",

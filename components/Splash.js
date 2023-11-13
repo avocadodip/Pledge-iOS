@@ -15,7 +15,6 @@ const Splash = () => {
             resizeMode="cover"
             source={require("../assets/icons/pledgetransparent.png")}
           />
-          <Text style={styles.appName}>Pledge</Text>
         </View>
       </View>
     </LinearGradient>

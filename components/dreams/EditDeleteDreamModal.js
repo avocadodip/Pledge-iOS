@@ -32,12 +32,6 @@ const EditDeleteDreamModal = ({ modalVisible, setModalVisible, title, id }) => {
     setOriginalTitle(title);
     setDreamTitle(title);
   }, [title]);
-  useEffect(() => {
-    console.log("Dream Title: ");
-    console.log(dreamTitle);
-    console.log("Original Title: ");
-    console.log(originalTitle);
-  }, [dreamTitle, originalTitle]);
 
   const updateDream = async () => {
     try {

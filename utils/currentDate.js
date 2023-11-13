@@ -33,6 +33,9 @@ export const formatDateDifference = (todayDate, lastCompleted) => {
   );
 
   const dayDiff = differenceInDays(today, lastCompletedDate);
+  if (dayDiff === 0) {
+    return "Today"
+  }
   if (dayDiff <= 28) {
     return `${dayDiff}d ago`;
   }

@@ -14,25 +14,34 @@ import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 import { useDayStatus } from "../../hooks/DayStatusContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  increment,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../database/firebase";
 import { useSettings } from "../../hooks/SettingsContext";
 import { getTodayDate } from "../../utils/currentDate";
 import { useTodayTodos } from "../../hooks/TodayTodosContext";
+import { useDayChange } from "../../hooks/useDayChange";
 
 // Animation constants
 const OPEN_DURATION = 100;
 const CLOSE_DURATION = 150;
 
 const TodayTodo = ({ todoData }) => {
-  const { todoNumber, title, description, amount, tag, isComplete } =
-    todoData;
+  const { todoNumber, title, description, amount, tag, isComplete } = todoData;
   const { setTodayTodos } = useTodayTodos();
   const { timeStatus } = useDayStatus();
+  const { todayDate } = useDayChange();
   const { openBottomSheet } = useBottomSheet();
   const { currentUserID, dreamsArray } = useSettings();
-  
-  const stringAmount = (amount !== null && amount !== undefined) ? amount.toString() : '';
+
+  const stringAmount =
+    amount !== null && amount !== undefined ? amount.toString() : "";
   const findDreamTitleById = (id, dreams) => {
     const dream = dreams.find((d) => d.id === id);
     return dream ? dream.title : null;
@@ -65,9 +74,45 @@ const TodayTodo = ({ todoData }) => {
       let data = docSnap.data();
       let todos = data.todos;
       todos[todoNumber - 1].isComplete = !currentBoolean;
-      await updateDoc(todoRef, {
-        todos: todos,
-      });
+      await updateDoc(todoRef, { todos: todos });
+
+      // Update dream
+      if (todos[todoNumber - 1].tag !== "") {
+        const dreamRef = doc(
+          db,
+          "users",
+          currentUserID,
+          "dreams",
+          todos[todoNumber - 1].tag
+        );
+
+        if (!currentBoolean) {
+          // If the todo is being checked, add today's date to the front of the completionHistory array
+          await updateDoc(dreamRef, {
+            completionHistory: arrayUnion(todayDate),
+            doneCount: increment(1),
+            lastCompleted: todayDate,
+          });
+        } else {
+          let newLastCompleted = null;
+          // Check if there are at least two dates in the completionHistory array
+          if (dreamsArray[0].completionHistory.length > 1) {
+            // If there are at least two dates, set newLastCompleted to the second-to-last date
+            // This is done by accessing the element at the index length - 2
+            newLastCompleted =
+              dreamsArray[0].completionHistory[
+                dreamsArray[0].completionHistory.length - 2
+              ];
+          }
+          // If there are not at least two dates, newLastCompleted remains null
+          
+          await updateDoc(dreamRef, {
+            completionHistory: arrayRemove(todayDate),
+            doneCount: increment(-1),
+            lastCompleted: newLastCompleted,
+          });
+        }
+      }
     } else {
       console.log("No such document!");
     }
