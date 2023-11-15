@@ -232,7 +232,7 @@ export default function TodoBottomSheet() {
                   onChangeText={(text) => handleInputChange("amount", text)}
                   keyboardType="numeric"
                   placeholderTextColor={theme.textDisabled}
-                  textStyle={styles.text}
+                  textStyle={styles.descText}
                   autoCorrect={false}
                   autoCapitalize="none"
                   maxLength={2}
@@ -273,7 +273,7 @@ export default function TodoBottomSheet() {
                   )
                 }
                 placeholderTextColor={theme.textDisabled}
-                textStyle={styles.text}
+                textStyle={styles.descText}
                 autoCorrect={false}
                 autoCapitalize="none"
                 multiline={true}
@@ -304,13 +304,15 @@ export default function TodoBottomSheet() {
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
               <PledgeDollarIcon color={theme.textHigh} />
-              <Text style={styles.text}>${selectedTodo.amount}</Text>
+              <Text style={styles.descText}>${selectedTodo.amount}</Text>
             </View>
             <View style={styles.horizontalDivider} />
             {selectedTodo.description !== "" && (
               <View style={styles.descriptionContainer}>
                 <DescriptLinesIcon color={theme.textHigh} />
-                <Text style={[styles.text, {marginTop: 2}]}>{selectedTodo.description}</Text>
+                <View style={{width: "87%"}}>
+                  <Text style={styles.descText}>{selectedTodo.description}</Text>
+                </View>
               </View>
             )}
           </View>
@@ -374,15 +376,15 @@ const getStyles = (theme) =>
       marginTop: 5,
       marginBottom: 10,
     },
-    text: {
+    descText: {
       color: theme.primary,
-      fontSize: 16,
+      fontSize: 15,
       fontWeight: 500,
       width: "100%",
     },
     textInput: {
       color: theme.primary,
-      fontSize: 16,
+      fontSize: 15,
       width: "80%",
       paddingVertical: 15,
       // paddingHorizontal: 10,
