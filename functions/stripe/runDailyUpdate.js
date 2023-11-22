@@ -5,7 +5,8 @@
 
 // fix duplicating todos when being charged
 
-const {onRequest, stripe, moment, admin, schedulerKey} = require("../common");
+// const {onRequest, stripe, moment, admin, schedulerKey} = require("../common");
+const {onRequest, moment, admin, schedulerKey} = require("../common");
 const {checkAndSendNotifications} = require("./notifications");
 const {formatDateRange} = require("../util/formatDateRange");
 
@@ -98,9 +99,9 @@ const runDailyUpdate = onRequest(async (req, res) => {
             daysActive,
             vacationModeOn,
             missedTaskFine,
-            isPaymentSetup,
-            stripeCustomerId,
-            paymentMethodId,
+            // isPaymentSetup,
+            // stripeCustomerId,
+            // paymentMethodId,
           } = userDoc;
           const userid = doc.id;
           const userRef = db.collection("users").doc(userid);
@@ -108,7 +109,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
           // Defining times
           const now = moment().tz(tz);
           const todayFormatted = now.format("YYYYMMDD");
-          const todayDOW = now.format("dddd");
+          // const todayDOW = now.format("dddd");
           // Next day (for notifications - we pull isActive & closesAt and set to user settings doc)
           const nextDay = now.clone().add(1, "days");
           const nextDayFormatted = nextDay.format("YYYYMMDD");
@@ -247,52 +248,52 @@ const runDailyUpdate = onRequest(async (req, res) => {
 
           // ----- END OF SATURDAY: CHARGE USERS WHO HAVE A WEEKLY FINE ------
 
-          if (
-            todayDOW === "Saturday" && // TEMP
-          stripeCustomerId &&
-          paymentMethodId &&
-          isPaymentSetup &&
-          updatedTotalWeeklyFine > 0 &&
-          !isCharged
-          ) {
-            const formattedAmount = Math.round(updatedTotalWeeklyFine * 100); // Ensure it's an integer
-            if (formattedAmount <= 0) {
-              throw new Error(`Invalid amount for user ${userid}`);
-            }
-            // Create a Stripe charge
-            try {
-            // const paymentIntent =
-              await stripe.paymentIntents.create({
-                amount: formattedAmount,
-                currency: userDoc.currency,
-                // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-                automatic_payment_methods: {enabled: true},
-                customer: userDoc.stripeCustomerId,
-                payment_method: paymentMethodId,
-                return_url: "https://example.com/order/123/complete",
-                off_session: true,
-                confirm: true,
-              });
+          // if (
+          //   todayDOW === "Saturday" && // TEMP
+          //   stripeCustomerId &&
+          //   paymentMethodId &&
+          //   isPaymentSetup &&
+          //   updatedTotalWeeklyFine > 0 &&
+          //   !isCharged
+          // ) {
+          //   const formattedAmount = Math.round(updatedTotalWeeklyFine * 100); // Ensure it's an integer
+          //   if (formattedAmount <= 0) {
+          //     throw new Error(`Invalid amount for user ${userid}`);
+          //   }
+          //   // Create a Stripe charge
+          //   try {
+          //   // const paymentIntent =
+          //     await stripe.paymentIntents.create({
+          //       amount: formattedAmount,
+          //       currency: userDoc.currency,
+          //       // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+          //       automatic_payment_methods: {enabled: true},
+          //       customer: userDoc.stripeCustomerId,
+          //       payment_method: paymentMethodId,
+          //       return_url: "https://example.com/order/123/complete",
+          //       off_session: true,
+          //       confirm: true,
+          //     });
 
-              await weekRef.update({isCharged: true});
-            } catch (err) {
-            // Error code will be authentication_required if authentication is needed
-              console.log("Error code is: ", err.code);
-              if (err.code == "incorrect_zip") {
-                console.log("incorrect zip");
-              }
-              await weekRef.update({chargeErrorType: err.code});
+          //     await weekRef.update({isCharged: true});
+          //   } catch (err) {
+          //   // Error code will be authentication_required if authentication is needed
+          //     console.log("Error code is: ", err.code);
+          //     if (err.code == "incorrect_zip") {
+          //       console.log("incorrect zip");
+          //     }
+          //     await weekRef.update({chargeErrorType: err.code});
 
-              // Used to retrieve the details of a Stripe PaymentIntent when an error occurs during the creation of a PaymentIntent.
-              if (err.raw && err.raw.payment_intent) {
-                const paymentIntentRetrieved =
-                await stripe.paymentIntents.retrieve(err.raw.payment_intent.id);
-                console.log("PI retrieved: ", paymentIntentRetrieved.id);
-              } else {
-                console.log("Error does not contain a payment intent");
-              }
-            }
-          }
+          //     // Used to retrieve the details of a Stripe PaymentIntent when an error occurs during the creation of a PaymentIntent.
+          //     if (err.raw && err.raw.payment_intent) {
+          //       const paymentIntentRetrieved =
+          //       await stripe.paymentIntents.retrieve(err.raw.payment_intent.id);
+          //       console.log("PI retrieved: ", paymentIntentRetrieved.id);
+          //     } else {
+          //       console.log("Error does not contain a payment intent");
+          //     }
+          //   }
+          // }
         }),
     );
   }
