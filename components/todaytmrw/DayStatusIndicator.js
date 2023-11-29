@@ -22,11 +22,11 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const DayStatusIndicator = ({ message }) => {
   const { theme, backgroundGradient } = useThemes();
-  const { dayCompleted, todayHeaderSubtitleMessage, timeStatus } =
+  const { dayCompleted, timeStatusBadge, timeStatus } =
     useDayStatus();
-  const { tmrwDate, tmrwDOW, tmrwDateName } = useDayChange();
+  const { tmrwDOW } = useDayChange();
   const {
-    settings: { dayStart, dayEnd },
+    settings: { todayDayStart, todayDayEnd },
     currentUserID,
   } = useSettings();
   const styles = getStyles(theme, dayCompleted, timeStatus);
@@ -36,29 +36,24 @@ const DayStatusIndicator = ({ message }) => {
   const [modalHeight, setModalHeight] = useState(0);
 
   const [timePickerText, setTimePickerText] = useState({
-    start: `${dayStart} AM`,
-    end: `${dayEnd} PM`,
+    start: `${todayDayStart} AM`,
+    end: `${todayDayEnd} PM`,
   });
 
+  // If a change is made to dayStart/dayEnd, update firebase
   useEffect(() => {
     if (mountedRef.current) {
       const updateFirebase = async () => {
-        const tmrwDocRef = doc(db, "users", currentUserID, "todos", tmrwDate);
 
         // Extract the hour and minute part from the timePickerText state
         const formattedDayStart = timePickerText.start.split(" ")[0];
         const formattedDayEnd = timePickerText.end.split(" ")[0];
         try {
-          // Update the start and end times in the tmrwDoc
-          await updateDoc(tmrwDocRef, {
-            opensAt: formattedDayStart,
-            closesAt: formattedDayEnd,
-          });
 
-          // Update the user settings with the new start and end times
+          // Update the user settings tmrw fields with the new start and end times
           await updateDoc(doc(db, "users", currentUserID), {
-            dayStart: formattedDayStart,
-            dayEnd: formattedDayEnd,
+            nextDayStart: formattedDayStart,
+            nextDayEnd: formattedDayEnd,
           });
         } catch (error) {
           console.error("Error updating document: ", error.message);
@@ -83,8 +78,8 @@ const DayStatusIndicator = ({ message }) => {
         style={styles.button}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.headerSubtitle}>{todayHeaderSubtitleMessage}</Text>
-        {todayHeaderSubtitleMessage.includes("PM") && timeStatus == 1 && (
+        <Text style={styles.headerSubtitle}>{timeStatusBadge}</Text>
+        {timeStatusBadge.includes("PM") && timeStatus == 1 && (
           <View>
             <ClockIcon color={theme.textHigh} height={19} width={19} />
           </View>

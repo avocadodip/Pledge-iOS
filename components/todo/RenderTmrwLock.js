@@ -5,21 +5,22 @@ import UnlockIcon from "../../assets/icons/unlock-icon.svg";
 import { getTodoStyles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
-import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
 import { useDayStatus } from "../../hooks/DayStatusContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
 import { getTmrwDate, getTodayDateTime } from "../../utils/currentDate";
-import { doc, increment, runTransaction, updateDoc } from "firebase/firestore";
+import { doc, getDoc, increment, runTransaction, updateDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
 import { useSettings } from "../../hooks/SettingsContext";
 
 const RenderTmrwLock = ({ isLocked, todoNumber }) => {
   const { theme } = useThemes();
   const styles = getTodoStyles(theme);
-  const { tmrwTodos, setTmrwTodos } = useTmrwTodos();
   const { timeStatus } = useDayStatus();
   const { setIsBottomSheetOpen } = useBottomSheet();
-  const { currentUserID } = useSettings();
+  const {
+    currentUserID,
+    settings: { tmrwTodos },
+  } = useSettings();
 
   // Show alert and open bottom sheet
   const showMissingFieldAlert = (missingField) => {
@@ -75,60 +76,15 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
       todoNumber: todoNumber,
     };
 
-    // Save to local array
-    const updatedTodos = [...tmrwTodos];
-    updatedTodos[todoNumber - 1] = newTodo;
-    setTmrwTodos(updatedTodos);
+    const todoRef = doc(db, "users", currentUserID);
+    const docSnap = await getDoc(todoRef);
 
-    // Save local array to database
-    try {
-      await runTransaction(db, async (transaction) => {
-        const todosRef = doc(
-          db,
-          "users",
-          currentUserID,
-          "todos",
-          getTmrwDate()
-        );
-        const todoDoc = await transaction.get(todosRef);
-
-        if (!todoDoc.exists()) {
-          // If the document does not exist, create it
-          transaction.set(todosRef, {
-            date: getTmrwDate(),
-            dateName: `${
-              [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec",
-              ][parseInt(getTmrwDate().slice(4, 6), 10) - 1]
-            } ${parseInt(getTmrwDate().slice(6, 8), 10)}`,
-            todos: updatedTodos,
-            totalTodos: 1,
-            totalFine: 0,
-            isActive: true,
-            isVacation: false,
-          });
-        } else {
-          // If the document exists, update it with only the fields you want to change
-          const payload = {
-            todos: updatedTodos,
-            totalTodos: increment(1),
-          };
-          transaction.update(todosRef, payload);
-        }
-      });
-    } catch (error) {
-      console.error("Transaction failed:", error);
+    // Update database
+    if (docSnap.exists()) {
+      let data = docSnap.data();
+      let tmrwTodos = data.tmrwTodos; // Access the 'todayTodos' field
+      tmrwTodos[todoNumber - 1].isLocked = true; // Update the specific todo item
+      await updateDoc(todoRef, { tmrwTodos: tmrwTodos });
     }
   };
 

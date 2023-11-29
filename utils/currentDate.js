@@ -18,6 +18,35 @@ export const getTimezoneAbbrev = (timezone) => {
   return moment.tz(timezone).format('z');
 }
 
+// Returns 0 if the current time is before dayStart; 1 if between dayStart & dayEnd; 2 if after dayEnd
+export const getTimeStatus = (dayStart, dayEnd) => {
+  const now = new Date();
+  const currentHours = now.getHours();
+  const currentMinutes = now.getMinutes();
+  const [startHours, startMinutes] = dayStart.split(":").map(Number);
+
+  // convert endHours to 24-hour format if it's meant to be PM
+  let [endHours, endMinutes] = dayEnd.split(":").map(Number);
+  endHours = endHours < 12 ? endHours + 12 : endHours;
+
+  if (
+    currentHours < startHours ||
+    (currentHours === startHours && currentMinutes < startMinutes)
+  ) {
+    return 0; // before day start
+  } else if (
+    currentHours < endHours ||
+    (currentHours === endHours && currentMinutes < endMinutes)
+  ) {
+    return 1; // between day start and day end
+  } else if (
+    currentHours > endHours ||
+    (currentHours === endHours && currentMinutes >= endMinutes)
+  ) {
+    return 2; // after day end
+  }
+};
+
 
 // In Dreams.js. 
 export const formatDateDifference = (todayDate, lastCompleted) => {

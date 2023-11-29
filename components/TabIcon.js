@@ -1,8 +1,7 @@
 // TabIcon.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useTodayTodos } from "../hooks/TodayTodosContext";
-import { useTmrwTodos } from "../hooks/TmrwTodosContext";
+import { useSettings } from "../hooks/SettingsContext";
 
 export default function TabIcon({
   type,
@@ -12,8 +11,27 @@ export default function TabIcon({
   theme,
 }) {
   const styles = getStyles(theme);
-  const { incompleteCount } = useTodayTodos();
-  const { actionItemsLeft } = useTmrwTodos();
+  const {
+    settings: { todayTodos, tmrwTodos, todayIsActive, todayIsVacation, tmrwIsActive, tmrwIsVacation },
+  } = useSettings();
+  const [actionItemsLeft, setActionItemsLeft] = useState(0);
+  const [incompleteCount, setIncompleteCount] = useState(0);
+
+  useEffect(() => {
+    let incompleteCount = 0;
+    let actionItemsLeft = 0;
+
+    if (todayIsActive && !todayIsVacation) {
+      incompleteCount = todayTodos?.filter(todo => !todo.isComplete && todo.isLocked).length || 0;
+    }
+    if (tmrwIsActive && !tmrwIsVacation) {
+      actionItemsLeft = tmrwTodos?.filter(todo => !todo.isLocked).length || 0;
+    }
+  
+    setIncompleteCount(incompleteCount);
+    setActionItemsLeft(actionItemsLeft);
+  }, [todayTodos, tmrwTodos, todayIsActive, todayIsVacation, tmrwIsActive, tmrwIsVacation]);
+  
   const iconSize = focused ? 40 : 35;
   const iconColor = focused ? theme.textHigh : theme.textDisabled;
 
@@ -29,9 +47,7 @@ export default function TabIcon({
               focused ? styles.focusedDot : styles.unfocusedDot,
             ]}
           >
-            <Text style={styles.notificationText}>
-              {incompleteCount}
-            </Text>
+            <Text style={styles.notificationText}>{incompleteCount}</Text>
           </View>
         )}
         {type === "tmrw" && actionItemsLeft > 0 && (
@@ -41,9 +57,7 @@ export default function TabIcon({
               focused ? styles.focusedDot : styles.unfocusedDot,
             ]}
           >
-            <Text style={styles.notificationText}>
-              {actionItemsLeft}
-            </Text>
+            <Text style={styles.notificationText}>{actionItemsLeft}</Text>
           </View>
         )}
       </View>

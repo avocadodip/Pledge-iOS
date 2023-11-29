@@ -1,37 +1,23 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { useTmrwTodos } from "./TmrwTodosContext";
+import React, { createContext, useContext, useState } from "react";
+import { useSettings } from "./SettingsContext";
 
 export const BottomSheetContext = createContext();
 
 export const BottomSheetProvider = ({ children }) => {
-  const { tmrwTodos } = useTmrwTodos();
+  const { settings: {todayTodos, tmrwTodos} } = useSettings();
   const [selectedTodo, setSelectedTodo] = useState(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [isBottomSheetEditable, setIsBottomSheetEditable] = useState(false);
 
   // When todo pressed (screen = "today" or "tmrw")
-  const openBottomSheet = (todoData, screen, todoNumber) => {
-    // For tmrw screen:
-    if (todoData == null && screen == "tmrw") {
-      setSelectedTodo({
-        todoNumber: todoNumber,
-        title: "",
-        description: "",
-        amount: "",
-        tag: "",
-        isLocked: false,
-      });
-      setIsBottomSheetEditable(true);
-    } else {
-      setSelectedTodo(todoData);
-      // Set sheet editable and open
-      if (todoData.isLocked) {
-        setIsBottomSheetEditable(false);
-      } else {
-        setIsBottomSheetEditable(true);
-      }
+  const openBottomSheet = (screen, todoNumber) => {
+    if (screen === "tmrw") {
+      setSelectedTodo(tmrwTodos[todoNumber - 1]);
+      setIsBottomSheetEditable(!tmrwTodos[todoNumber - 1].isLocked);
+    } else if (screen === "today") {
+      setSelectedTodo(todayTodos[todoNumber - 1]);
+      setIsBottomSheetEditable(false);
     }
-
     setIsBottomSheetOpen(true);
   };
 

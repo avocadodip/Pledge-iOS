@@ -22,8 +22,7 @@ import {
 import { getTmrwDate, getTodayDate } from "../../utils/currentDate";
 import { doc, runTransaction, setDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
-import { useTodayTodos } from "../../hooks/TodayTodosContext";
-import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
+// import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
 import { LinearGradient } from "expo-linear-gradient";
 
 const steps = ["Set daily deadline", "Set start day", "Lock in 3 tasks"];
@@ -73,8 +72,8 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       amount: 0,
     },
   ]);
-  const { getAndSetTodayTodos } = useTodayTodos();
-  const { getAndSetTmrwTodos } = useTmrwTodos();
+  // const { getAndSetTodayTodos } = useTodayTodos();
+  // const { getAndSetTmrwTodos } = useTmrwTodos();
 
   // Allow step indicator press
   useEffect(() => {
@@ -241,8 +240,8 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       await setDoc(tmrwRef, tmrwTodo);
 
       updateUserIsOnboarded(currentUserID); // Update firebase isOnboarded field to true
-      getAndSetTodayTodos(); // re-fetch today todos to update Today
-      getAndSetTmrwTodos(); // re-fetch tmrw todos to update Tmrw
+      // getAndSetTodayTodos(); // re-fetch today todos to update Today
+      // getAndSetTmrwTodos(); // re-fetch tmrw todos to update Tmrw
       setModalVisible(false); // Close modal
     }
 

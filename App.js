@@ -20,9 +20,7 @@ import { DayStatusProvider } from "./hooks/DayStatusContext";
 import MainStack from "./components/MainStack";
 import { LinearGradient } from "expo-linear-gradient";
 import TodoBottomSheet from "./components/todaytmrw/TodoBottomSheet";
-import { TmrwTodosProvider } from "./hooks/TmrwTodosContext";
 import { redGradientValues } from "./themes";
-import { TodayTodosProvider } from "./hooks/TodayTodosContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -105,15 +103,11 @@ function AppContent() {
           <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
             <MenuProvider>
               <DayStatusProvider>
-                <TmrwTodosProvider>
-                  <TodayTodosProvider>
                     <ThemesProvider>
                       <BottomSheetProvider>
                         <AuthenticatedApp />
                       </BottomSheetProvider>
                     </ThemesProvider>
-                  </TodayTodosProvider>
-                </TmrwTodosProvider>
               </DayStatusProvider>
             </MenuProvider>
           </StripeProvider>

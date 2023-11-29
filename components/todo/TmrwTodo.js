@@ -13,8 +13,8 @@ const TmrwTodo = ({ todoData }) => {
   const { theme } = useThemes();
   const { openBottomSheet } = useBottomSheet();
   const styles = getTodoStyles(theme);
-  const { todoNumber, title, description, amount, tag, isLocked } = todoData;
-  const { timeStatus } = useDayStatus();
+  const { todoNumber = '', title = '', description = '', amount = '', tag = '', isLocked = false } = todoData;
+  const { timeStatus = '' } = useDayStatus();
   const { dreamsArray } = useSettings();
 
   const findDreamTitleById = (id, dreams) => {
@@ -30,7 +30,7 @@ const TmrwTodo = ({ todoData }) => {
     <View style={styles.infoContainer}>
       <TouchableNipple
         onPress={() => {
-          openBottomSheet(todoData, "tmrw");
+          openBottomSheet("tmrw", todoNumber);
         }}
         style={[
           styles.leftContainer,

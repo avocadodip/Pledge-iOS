@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+// cd functions/stripe --> npx eslint --fix runDailyUpdate.js
 // const {onRequest, stripe, moment, admin, schedulerKey} = require("../common");
 // firebase deploy --only functions
 // cd functions/stripe

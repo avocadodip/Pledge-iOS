@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import {
   getBeginningOfWeek,
+  getTmrwAbbrevDOW,
   getTmrwDate,
+  getTodayAbbrevDOW,
   getTodayDate,
 } from "../utils/currentDate";
 
@@ -41,6 +43,9 @@ export const useDayChange = () => {
   const todayIndex = new Date().getDay();
   const [todayDOWIndex, setTodayDOWIndex] = useState(todayIndex);
   const [todayDOW, setTodayDOW] = useState(daysOfWeek[todayIndex]);
+  const [todayDOWAbbrev, setTodayDOWAbbrev] = useState(getTodayAbbrevDOW());
+  const [tmrwDOWAbbrev, setTmrwDOWAbbrev] = useState(getTmrwAbbrevDOW());
+
   const [tmrwDOW, setTmrwDOW] = useState(daysOfWeek[(todayIndex + 1) % 7]);
   const [dayChanged, setDayChanged] = useState(false);
 
@@ -58,6 +63,8 @@ export const useDayChange = () => {
       setDayChanged(true);
       setTodayDOWIndex(dayOfWeekI);
       setTodayDOW(daysOfWeek[dayOfWeekI]);
+      setTodayDOWAbbrev(getTodayAbbrevDOW())
+      setTmrwDOWAbbrev(getTmrwAbbrevDOW());
       setTmrwDOW(daysOfWeek[(dayOfWeekI + 1) % 7]);
       setTodayDate(getTodayDate());
       setTmrwDate(getTmrwDate());
@@ -97,6 +104,8 @@ export const useDayChange = () => {
   return {
     todayDOWIndex,
     todayDOW,
+    todayDOWAbbrev,
+    tmrwDOWAbbrev,
     tmrwDOW,
     dayChanged,
     todayDate,

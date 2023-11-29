@@ -1,122 +1,71 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
+import React from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { doc, updateDoc } from "firebase/firestore";
-import Modal from "react-native-modal";
 import Checkbox from "expo-checkbox";
 import { Color } from "../../GlobalStyles";
-import TouchableRipple from "../TouchableRipple";
 import { db } from "../../database/firebase";
 import BottomModal from "../BottomModal";
-import { getTmrwDate } from "../../utils/currentDate";
 import { useDayChange } from "../../hooks/useDayChange";
-import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
- 
+
+const DAY_KEYS = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+const ABBREV_DAY_KEYS = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
+
 const DaysActiveModal = ({
   currentUserID,
   daysActive,
   isVisible,
   handleToggleModal,
 }) => {
-  const dayKeys = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const abbrevDayKeys = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
+  const { tmrwDOW } = useDayChange();
 
-  // Local state for changes made in the modal
-  const [modalDaysActive, setModalDaysActive] = useState({ ...daysActive });
-  const [tempDaysActive, setTempDaysActive] = useState({ ...daysActive });
-  const { todayDOW, tmrwDOW } = useDayChange();
-  const { noTmrwTodoLocked, setIsTmrwActiveDay } = useTmrwTodos();
-
-  // Handle day toggle in modal
-  const handleModalDayToggle = (index) => {
-    const dayKey = dayKeys[index];
-    const newTempDaysActive = {
-      ...tempDaysActive,
-      [dayKey]: !tempDaysActive[dayKey],
-    };
-
-    if (!Object.values(newTempDaysActive).some(Boolean)) {
-      Alert.alert(
-        "At least one day must be active.",
-        "Or turn vacation mode on."
-      );
-    } else {
-      setTempDaysActive(newTempDaysActive);
+  const toggleCheckbox = async (dayKey) => {
+    const newDaysActive = { ...daysActive, [dayKey]: !daysActive[dayKey] };
+    if (!Object.values(newDaysActive).some(Boolean)) {
+      Alert.alert("At least one day must be active.", "Or turn vacation mode on.");
+      return;
     }
-  };
 
-  // Handle confirm button click
-  const handleConfirm = async () => {
-
-    // Add a delay of 500 milliseconds before closing the modal
-    setTimeout(() => {
-      handleToggleModal(false);
-    }, 300);
-    
-    setModalDaysActive(tempDaysActive);
     const userRef = doc(db, "users", currentUserID);
-    const tmrwChangedFromFalseToTrue =
-      !daysActive[tmrwDOW] && tempDaysActive[tmrwDOW];
-    const tmrwChangedFromTrueToFalse =
-      daysActive[tmrwDOW] && !tempDaysActive[tmrwDOW];
-
-    const tmrwDocRef = doc(db, "users", currentUserID, "todos", getTmrwDate());
-
-    // If next day's isActive is changed, need to handle tmrwDoc and local changes
-    const shouldUpdateIsActive =
-      tmrwChangedFromFalseToTrue ||
-      (tmrwChangedFromTrueToFalse && noTmrwTodoLocked);
-
-    if (shouldUpdateIsActive) {
-
-      try {
-        await updateDoc(tmrwDocRef, {
-          isActive: tmrwChangedFromFalseToTrue,
-        });
-
-        setIsTmrwActiveDay(tmrwChangedFromFalseToTrue);
-      } catch (error) {
-        console.error("Error updating document: ", error.message);
-      }
+    const updateData = { daysActive: newDaysActive };
+    if (dayKey === tmrwDOW) {
+      updateData.tmrwIsActive = newDaysActive[tmrwDOW];
     }
 
-    // Handle user settings update
     try {
-      await updateDoc(userRef, {
-        daysActive: tempDaysActive,
-      });
+      await updateDoc(userRef, updateData);
     } catch (error) {
       console.error("Error updating document: ", error.message);
     }
-
   };
-
   return (
     <BottomModal
       isVisible={isVisible}
-      onBackdropPress={handleConfirm}
+      onBackdropPress={() => {
+        handleToggleModal(false);
+      }}
       modalTitle={"Set Days Active"}
     >
       <View style={styles.daysActiveContainer}>
-        {abbrevDayKeys.map((text, index) => (
+        {ABBREV_DAY_KEYS.map((text, index) => (
           <View style={styles.dayContainer} key={index}>
             <Text style={styles.dayText}>{text}</Text>
             <Checkbox
               style={styles.checkbox}
               color={
-                tempDaysActive[dayKeys[index]]
+                daysActive[DAY_KEYS[index]]
                   ? "rgba(255,255,255, 0.4)"
                   : "rgba(255,255,255, 0.4)"
               }
-              value={tempDaysActive[dayKeys[index]]}
-              onValueChange={() => handleModalDayToggle(index)}
+              value={daysActive[DAY_KEYS[index]]}
+              onValueChange={() => toggleCheckbox(DAY_KEYS[index])}
             />
           </View>
         ))}

@@ -16,7 +16,7 @@ const MissedTaskFineModal = ({
   const toggleMissedTaskFine = async () => {
     // Show alert and return if payment method isn't set up
     if (missedTaskFine === 0 && !isPaymentSetup) {
-      Alert.alert("Add a payment method to enable this feature.", "", [
+      Alert.alert("Add a payment method first to enable this feature.", "", [
         {
           text: "OK",
           onPress: () => {

@@ -69,6 +69,7 @@ export const SettingsProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    // If user is authenticated, set settings states
     if (isAuthenticated && currentUserID) {
       const userDoc = doc(db, "users", currentUserID);
 
@@ -291,6 +292,7 @@ export const SettingsProvider = ({ children }) => {
         currentUserEmail,
         setCurrentUserEmail,
         isAuthenticated,
+
         userDataFetched,
         setUserDataFetched,
         appReadyToRender,

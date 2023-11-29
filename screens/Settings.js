@@ -74,7 +74,6 @@ const Settings = () => {
   const {
     settings: {
       daysActive,
-      vacationModeOn,
       timezone,
       stripeCustomerId,
       isPaymentSetup,
@@ -276,11 +275,15 @@ const Settings = () => {
                 <Text style={styles.buttonTitle}>No Input Fine</Text>
               </View>
               {missedTaskFine === 0 ? (
-                <Text style={[styles.rightSideText, {color: theme.textDisabled}]}>Off</Text>
+                <Text
+                  style={[styles.rightSideText, { color: theme.textDisabled }]}
+                >
+                  Off
+                </Text>
               ) : (
                 <Text style={styles.rightSideText}>${missedTaskFine}</Text>
               )}
-              </TouchableRipple>
+            </TouchableRipple>
             <MissedTaskFineModal
               currentUserID={currentUserID}
               isVisible={missedTaskFineModalVisible}
@@ -306,7 +309,12 @@ const Settings = () => {
                   {notificationsEnabled && notificationPerms ? (
                     <Text style={styles.rightSideText}>On</Text>
                   ) : (
-                    <Text style={[styles.rightSideText, { color: theme.textDisabled }]}>
+                    <Text
+                      style={[
+                        styles.rightSideText,
+                        { color: theme.textDisabled },
+                      ]}
+                    >
                       Off
                     </Text>
                   )}
@@ -377,10 +385,7 @@ const Settings = () => {
                 <Text style={styles.buttonTitle}>Vacation Mode</Text>
               </View>
               <View style={styles.chevronContainer}>
-                <VacationToggle
-                  vacationModeOn={vacationModeOn}
-                  currentUserID={currentUserID}
-                />
+                <VacationToggle />
               </View>
             </View>
             {/* THEME */}

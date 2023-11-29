@@ -1,18 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import CircleRightArrow from "../../assets/icons/circle-right-arrow.svg";
 import { useNavigation } from "@react-navigation/native";
 import { useThemes } from "../../hooks/ThemesContext";
-import { daysOfWeek } from "../../utils/currentDate";
+import { daysOfWeek, getNextActiveDay } from "../../utils/currentDate";
 import GlowButton from "../GlowButton";
-import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
+import { useSettings } from "../../hooks/SettingsContext";
+import { useDayChange } from "../../hooks/useDayChange";
 
 const TodayTmrwMessage = ({ type, setModalVisible }) => {
   const { theme } = useThemes();
   const navigation = useNavigation();
   const styles = getStyles(theme);
-  const { isTmrwActiveDay, nextActiveDay } = useTmrwTodos();
-
+  const {
+    settings: { tmrwIsActive, daysActive },
+  } = useSettings();
+  const { tmrwDOW } = useDayChange();
+  const [nextActiveDay, setNextActiveDay] = useState(
+    getNextActiveDay(tmrwDOW, daysActive)
+  );
   const nextActiveDayIndex = daysOfWeek.indexOf(nextActiveDay);
   const dayBeforeNextActiveDay = daysOfWeek[(nextActiveDayIndex - 1 + 7) % 7];
 
@@ -62,7 +68,7 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
         return (
           <View style={styles.container}>
             <Text style={styles.infoText}>It's your rest day.</Text>
-            {isTmrwActiveDay ? (
+            {tmrwIsActive ? (
               <GlowButton
                 height={50}
                 width={300}

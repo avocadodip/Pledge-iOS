@@ -93,8 +93,10 @@ const EmailVerification = ({ route, navigation }) => {
         fullName: fullName,
         email: email,
         profilePhoto: 1,
-        dayStart: "7:30",
-        dayEnd: "9:00",
+        todayDayStart: "7:30",
+        todayDayEnd: "9:00",
+        tmrwDayStart: "7:30",
+        tmrwDayEnd: "9:00",
         daysActive: {
           Sunday: true,
           Monday: true,
@@ -119,6 +121,7 @@ const EmailVerification = ({ route, navigation }) => {
         // for notifs:
         notificationsEnabled: false,
         todayIsActive: false,
+        tmrwIsActive: false,
         todayDayEnd: "",
         todayAllNotifsSent: false,
         todayANotifHasBeenSent: false,

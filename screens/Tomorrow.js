@@ -3,7 +3,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayStatus } from "../hooks/DayStatusContext";
-import { useTmrwTodos } from "../hooks/TmrwTodosContext";
 import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
@@ -17,27 +16,23 @@ import DayStatusIndicator from "../components/todaytmrw/DayStatusIndicator";
 const Tomorrow = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
-  const { tmrwTodos } = useTmrwTodos();
   const {
-    settings: { vacationModeOn, isOnboarded },
+    settings: { tmrwIsVacation, isOnboarded, tmrwTodos, tmrwIsActive },
   } = useSettings();
-  const { dayChanged } = useDayChange();
+  const { dayChanged, tmrwDOWAbbrev } = useDayChange();
   const { timeStatus } = useDayStatus();
-
-  const { tmrwDOWAbbrev, isTmrwActiveDay, isTodoArrayEmpty, loading } =
-    useTmrwTodos();
   const [modalVisible, setModalVisible] = useState(false);
 
   const renderTodos = useCallback(() => {
-    return tmrwTodos.map((todoData, index) => {
-      if (todoData == null) {
+    return tmrwTodos.map((itemData, index) => {
+      if (itemData.title === "" && itemData.amount === "") {
         if (timeStatus == 0 || timeStatus == 1) {
           return <NumberTodo key={index} todoNumber={index + 1} />;
-        } else if (timeStatus == 2) {
+        } else if (timeStatus === 2 && itemData.isLocked === false) {
           return <FinedTodo key={index} />;
         }
       } else {
-        return <TmrwTodo key={index} todoData={todoData} />;
+        return <TmrwTodo key={index} todoData={itemData} />;
       }
     });
   }, [tmrwTodos, dayChanged]);
@@ -59,9 +54,9 @@ const Tomorrow = () => {
             type={"new user"}
             setModalVisible={setModalVisible}
           />
-        ) : vacationModeOn ? (
+        ) : tmrwIsVacation ? (
           <TodayTmrwMessage type={"vacation"} />
-        ) : !isTmrwActiveDay ? (
+        ) : !tmrwIsActive ? (
           <TodayTmrwMessage type={"rest day (tmrw screen)"} />
         ) : (
           <View style={styles.todosContainer}>{renderTodos()}</View>

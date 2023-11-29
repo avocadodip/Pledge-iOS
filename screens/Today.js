@@ -3,7 +3,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useState } from "react";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import { useDayStatus } from "../hooks/DayStatusContext";
-import { useTodayTodos } from "../hooks/TodayTodosContext";
 import Loading from "../components/Loading";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayChange } from "../hooks/useDayChange";
@@ -11,7 +10,6 @@ import { useThemes } from "../hooks/ThemesContext";
 import { Modal } from "react-native";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
 import TodayTmrwMessage from "../components/todaytmrw/TodayTmrwMessage";
-import { getTimezoneAbbrev } from "../utils/currentDate";
 import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
 import TodayTodo from "../components/todo/TodayTodo";
 import FinedTodo from "../components/todo/FinedTodo";
@@ -20,28 +18,22 @@ import DayStatusIndicator from "../components/todaytmrw/DayStatusIndicator";
 const Today = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
-  const { todayTodos } = useTodayTodos();
   const {
-    settings: { isOnboarded },
+    settings: { isOnboarded, todayTodos, todayIsActive, todayIsVacation },
   } = useSettings();
-  const {
-    todayDOWAbbrev,
-    isTodayActiveDay,
-    isTodayVacation,
-    isTodoArrayEmpty,
-    onboardStartTmrw,
-  } = useTodayTodos();
   const { timeStatus } = useDayStatus();
+  const { todayDOWAbbrev } = useDayChange();
+  let onboardStartTmrw = false; //IMPLEMENT
 
   const [modalVisible, setModalVisible] = useState(false);
 
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
   const renderTodos = useCallback(() => {
-    return todayTodos.map((todoData, index) => {
-      if (todoData == null || todoData.title === "") {
+    return todayTodos.map((itemData, index) => {
+      if (itemData.isLocked === false) {
         return <FinedTodo key={index} />;
       } else {
-        return <TodayTodo key={index} todoData={todoData} />;
+        return <TodayTodo key={index} todoData={itemData} />;
       }
     });
   }, [todayTodos, timeStatus]);
@@ -67,11 +59,12 @@ const Today = () => {
             type={"new user"}
             setModalVisible={setModalVisible}
           />
+          // Lets Today page know to show "all set" message if user elects to start Tmrw in onboarding
         ) : onboardStartTmrw ? (
           <TodayTmrwMessage type={"all set"} />
-        ) : isTodayVacation ? (
+        ) : todayIsVacation ? (
           <TodayTmrwMessage type={"vacation"} />
-        ) : !isTodayActiveDay ? (
+        ) : !todayIsActive ? (
           <TodayTmrwMessage type={"rest day (today screen)"} />
         ) : (
           <View style={styles.todosContainer}>{renderTodos()}</View>

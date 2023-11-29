@@ -19,17 +19,18 @@ import RightArrowIcon from "../../assets/icons/arrow-small-right.svg";
 import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
-import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
 import { useSettings } from "../../hooks/SettingsContext";
 import { useNavigation } from "@react-navigation/native";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../database/firebase";
 
 export default function TodoBottomSheet() {
   const { theme, backgroundGradient } = useThemes();
   const {
-    settings: { isPaymentSetup },
+    settings: { isPaymentSetup, todayTodos, tmrwTodos },
     dreamsArray,
+    currentUserID,
   } = useSettings();
-  const { updateTodo, tmrwTodos } = useTmrwTodos();
   const {
     isBottomSheetOpen,
     setIsBottomSheetOpen,
@@ -38,23 +39,23 @@ export default function TodoBottomSheet() {
   } = useBottomSheet();
   const bottomSheetRef = useRef(null);
   const snapPoints = ["75%"];
-  const [todo, setTodo] = useState(selectedTodo || {});
   const todoRef = useRef(todo);
   const styles = getStyles(theme);
   const navigation = useNavigation();
 
-  const findDreamTitleById = (id, dreams) => {
-    const dream = dreams.find((d) => d.id === id);
-    return dream ? dream.title : null;
-  };
-
   // Set initial todo object
+  const [todo, setTodo] = useState(selectedTodo);
   useEffect(() => {
     if (selectedTodo) {
       setTodo(selectedTodo);
       todoRef.current = selectedTodo;
     }
   }, [selectedTodo]);
+
+  const findDreamTitleById = (id, dreams) => {
+    const dream = dreams.find((d) => d.id === id);
+    return dream ? dream.title : null;
+  };
 
   useEffect(() => {
     todoRef.current = todo; // Update the mutable ref when todo changes because todo value inside renderBackdrop callback is its initial value when the component is rendered.
@@ -118,6 +119,17 @@ export default function TodoBottomSheet() {
     </View>
   );
 
+  const updateToFirebase = async () => {
+    const todoRef = doc(db, "users", currentUserID);
+    if (todo.amount === "") {
+      todo.amount = 0;
+    }
+
+    let tmrwTodosCopy = tmrwTodos;
+    tmrwTodosCopy[todo.todoNumber - 1] = todo;
+    await updateDoc(todoRef, { tmrwTodos: tmrwTodosCopy });
+  };
+
   // Backdrop - when pressed, updates global todo array and closes sheet
   const renderBackdrop = useCallback(
     (props) => (
@@ -125,16 +137,9 @@ export default function TodoBottomSheet() {
         {...props}
         disappearsOnIndex={-1}
         appearsOnIndex={0}
-        onPress={() => {
+        onPress={async () => {
           if (isBottomSheetEditable) {
-            if (todo.amount === "") {
-              setTodo((prevTodo) => ({
-                ...prevTodo,
-                amount: "0",
-              }));
-              todoRef.current = { ...todoRef.current, amount: "0" };
-            }
-            updateTodo(todoRef.current);
+            updateToFirebase();
           }
           setTimeout(() => {
             setIsBottomSheetOpen(false);
@@ -148,13 +153,14 @@ export default function TodoBottomSheet() {
   // For sliding close
   const handleSheetChange = (index) => {
     if (index === -1) {
+      if (isBottomSheetEditable) {
+        updateToFirebase();
+      }
       setIsBottomSheetOpen(false);
     }
   };
 
   const handleNavigateToAddPayment = () => {
-    updateTodo(todoRef.current);
-
     bottomSheetRef.current.close();
     setIsBottomSheetOpen(false);
 
@@ -310,8 +316,10 @@ export default function TodoBottomSheet() {
             {selectedTodo.description !== "" && (
               <View style={styles.descriptionContainer}>
                 <DescriptLinesIcon color={theme.textHigh} />
-                <View style={{width: "87%"}}>
-                  <Text style={styles.descText}>{selectedTodo.description}</Text>
+                <View style={{ width: "87%" }}>
+                  <Text style={styles.descText}>
+                    {selectedTodo.description}
+                  </Text>
                 </View>
               </View>
             )}

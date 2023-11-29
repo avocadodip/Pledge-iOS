@@ -25,7 +25,6 @@ import {
 import { db } from "../../database/firebase";
 import { useSettings } from "../../hooks/SettingsContext";
 import { getTodayDate } from "../../utils/currentDate";
-import { useTodayTodos } from "../../hooks/TodayTodosContext";
 import { useDayChange } from "../../hooks/useDayChange";
 
 // Animation constants
@@ -34,7 +33,6 @@ const CLOSE_DURATION = 150;
 
 const TodayTodo = ({ todoData }) => {
   const { todoNumber, title, description, amount, tag, isComplete } = todoData;
-  const { setTodayTodos } = useTodayTodos();
   const { timeStatus } = useDayStatus();
   const { todayDate } = useDayChange();
   const { openBottomSheet } = useBottomSheet();
@@ -55,38 +53,28 @@ const TodayTodo = ({ todoData }) => {
   const rightFlex = useSharedValue(2);
 
   // ------------- HANDLE CHECK -------------
-  const handleCheckTodo = async (todoNumber, currentBoolean) => {
-    const todoRef = doc(db, "users", currentUserID, "todos", getTodayDate());
+  const handleCheckTodo = async () => {
+    const todoRef = doc(db, "users", currentUserID);
     const docSnap = await getDoc(todoRef);
-
-    // Update local array
-    setTodayTodos((prevTodos) => {
-      const updatedTodos = [...prevTodos];
-      const todoToUpdate = updatedTodos[todoNumber - 1];
-      if (todoToUpdate) {
-        todoToUpdate.isComplete = !currentBoolean;
-      }
-      return updatedTodos;
-    });
 
     // Update database
     if (docSnap.exists()) {
       let data = docSnap.data();
-      let todos = data.todos;
-      todos[todoNumber - 1].isComplete = !currentBoolean;
-      await updateDoc(todoRef, { todos: todos });
+      let todayTodos = data.todayTodos; // Access the 'todayTodos' field
+      todayTodos[todoNumber - 1].isComplete = !isComplete; // Update the specific todo item
+      await updateDoc(todoRef, { todayTodos: todayTodos }); 
 
       // Update dream
-      if (todos[todoNumber - 1].tag !== "") {
+      if (todayTodos[todoNumber - 1].tag !== "") {
         const dreamRef = doc(
           db,
           "users",
           currentUserID,
           "dreams",
-          todos[todoNumber - 1].tag
+          todayTodos[todoNumber - 1].tag
         );
 
-        if (!currentBoolean) {
+        if (!isComplete) {
           // If the todo is being checked, add today's date to the front of the completionHistory array
           await updateDoc(dreamRef, {
             completionHistory: arrayUnion(todayDate),
@@ -158,7 +146,7 @@ const TodayTodo = ({ todoData }) => {
         <View style={[{ flex: 8 }]}>
           <TouchableRipple
             onPress={() => {
-              openBottomSheet(todoData, "today");
+              openBottomSheet("today", todoNumber);
             }}
             style={[styles.leftContainer, styles.disabledOpacity]}
           >
@@ -222,7 +210,7 @@ const TodayTodo = ({ todoData }) => {
         <Animated.View style={leftStyle}>
           <TouchableRipple
             onPress={() => {
-              openBottomSheet(todoData, "today");
+              openBottomSheet("today", todoNumber);
             }}
             style={[styles.leftContainer, { padding: 0 }]}
           >
@@ -273,9 +261,7 @@ const TodayTodo = ({ todoData }) => {
         {/* Right side */}
         <Animated.View style={rightStyle}>
           <TouchableRipple
-            onPress={() => {
-              handleCheckTodo(todoNumber, isComplete);
-            }}
+            onPress={handleCheckTodo}
             style={styles.rightButtonContainer}
           >
             <CheckIcon color={theme.primary} />
