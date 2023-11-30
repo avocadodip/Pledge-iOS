@@ -7,16 +7,14 @@ import themeStyles, {
   redGradientValues,
 } from "../themes";
 import { Color } from "../GlobalStyles";
-import { useDayStatus } from "./DayStatusContext";
 import { useSettings } from "./SettingsContext";
 
 export const ThemeContext = createContext();
 
 export const ThemesProvider = ({ children }) => {
-  const { timeStatus, dayCompleted } = useDayStatus();
   const {
     settings: { isOnboarded },
-    currentUserID, setAppReadyToRender
+    currentUserID, setAppReadyToRender, timeStatus, dayCompleted
   } = useSettings();
   const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme

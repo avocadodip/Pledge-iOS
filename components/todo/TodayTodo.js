@@ -12,7 +12,6 @@ import Animated, {
 import TouchableRipple from "../TouchableRipple";
 import { Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
-import { useDayStatus } from "../../hooks/DayStatusContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
 import {
   arrayRemove,
@@ -33,10 +32,9 @@ const CLOSE_DURATION = 150;
 
 const TodayTodo = ({ todoData }) => {
   const { todoNumber, title, description, amount, tag, isComplete } = todoData;
-  const { timeStatus } = useDayStatus();
   const { todayDate } = useDayChange();
   const { openBottomSheet } = useBottomSheet();
-  const { currentUserID, dreamsArray } = useSettings();
+  const { currentUserID, dreamsArray, timeStatus } = useSettings();
 
   const stringAmount =
     amount !== null && amount !== undefined ? amount.toString() : "";

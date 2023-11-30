@@ -3,14 +3,17 @@ import React from "react";
 import { getTodoStyles } from "./TodoStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 
-const FinedTodo = () => {
+const FinedTodo = ({ isFined }) => {
   const { theme } = useThemes();
   const styles = getTodoStyles(theme);
-  
+
   return (
     <View style={styles.finedContainer}>
-      <Text style={styles.finedText}>No task entered.</Text>
-      {/* <Text style={styles.finedText}>-$1</Text> */}
+      {isFined ? (
+        <Text style={styles.finedText}>No task entered. -$1</Text>
+      ) : (
+        <Text style={styles.finedText}>No task entered.</Text>
+      )}
     </View>
   );
 };

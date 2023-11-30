@@ -16,7 +16,6 @@ import useUpdateTimezoneOnAppActive from "./hooks/useAppStateChange";
 import { STRIPE_PUBLISHABLE_KEY } from "@env";
 import EmailVerification from "./screens/EmailVerification";
 import ForgotPassword from "./screens/ForgotPassword";
-import { DayStatusProvider } from "./hooks/DayStatusContext";
 import MainStack from "./components/MainStack";
 import { LinearGradient } from "expo-linear-gradient";
 import TodoBottomSheet from "./components/todaytmrw/TodoBottomSheet";
@@ -65,13 +64,11 @@ export default function App() {
       <AppContent />
     </SettingsProvider>
   );
-} 
+}
 
 function AppContent() {
   const { isAuthenticated, userDataFetched, appReadyToRender } = useSettings();
   const [isSplashScreen, setIsSplashScreen] = useState(true);
-
-
 
   useEffect(() => {
     const timerId = setTimeout(() => {
@@ -102,13 +99,11 @@ function AppContent() {
         {isAuthenticated && userDataFetched && (
           <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
             <MenuProvider>
-              <DayStatusProvider>
-                    <ThemesProvider>
-                      <BottomSheetProvider>
-                        <AuthenticatedApp />
-                      </BottomSheetProvider>
-                    </ThemesProvider>
-              </DayStatusProvider>
+              <ThemesProvider>
+                <BottomSheetProvider>
+                  <AuthenticatedApp />
+                </BottomSheetProvider>
+              </ThemesProvider>
             </MenuProvider>
           </StripeProvider>
         )}

@@ -5,7 +5,6 @@ import RenderTmrwLock from "./RenderTmrwLock.js";
 import { default as TouchableNipple } from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
-import { useDayStatus } from "../../hooks/DayStatusContext";
 import { useSettings } from "../../hooks/SettingsContext";
 
 // (only shows when timeStatus == 1 || 2)
@@ -14,8 +13,7 @@ const TmrwTodo = ({ todoData }) => {
   const { openBottomSheet } = useBottomSheet();
   const styles = getTodoStyles(theme);
   const { todoNumber = '', title = '', description = '', amount = '', tag = '', isLocked = false } = todoData;
-  const { timeStatus = '' } = useDayStatus();
-  const { dreamsArray } = useSettings();
+  const { dreamsArray, timeStatus } = useSettings();
 
   const findDreamTitleById = (id, dreams) => {
     const dream = dreams.find((d) => d.id === id);

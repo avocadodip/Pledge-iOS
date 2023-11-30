@@ -10,23 +10,28 @@ import {
 } from "react-native";
 import { APP_HORIZONTAL_PADDING, BOTTOM_TAB_HEIGHT } from "../GlobalStyles";
 import SettingsHeader from "../components/settings/SettingsHeader";
-import StatsItem from "../components/stats/StatsItem";
+import PastBetsDay from "../components/stats/PastBetsDay";
 import { useThemes } from "../hooks/ThemesContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSettings } from "../hooks/SettingsContext";
+import { useDayChange } from "../hooks/useDayChange";
 
 const PastBets = ({ navigation }) => {
   const { backgroundGradient, theme } = useThemes();
   const { fetchPastBets, pastBetsArray, fetchingPastBets } = useSettings();
+  const { todayDate } = useDayChange();
 
+  // Initial fetch
   useEffect(() => {
     fetchPastBets();
   }, []);
 
+  // Subsequent fetches
   const handleLoadMore = () => {
     fetchPastBets();
   };
 
+  // Loading indicator
   const renderFooter = () => {
     if (fetchingPastBets) {
       return (
@@ -67,7 +72,7 @@ const PastBets = ({ navigation }) => {
           <FlatList
             data={pastBetsArray}
             renderItem={({ item: dayData, index }) => (
-              <StatsItem dayData={dayData} index={index} />
+              <PastBetsDay dayData={dayData} index={index} />
             )}
             keyExtractor={(item, index) => index.toString()}
             onEndReached={handleLoadMore}

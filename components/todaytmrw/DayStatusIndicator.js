@@ -9,8 +9,6 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import ClockIcon from "../../assets/icons/clock.svg";
 import { useThemes } from "../../hooks/ThemesContext";
-import { useDayStatus } from "../../hooks/DayStatusContext";
-import BottomModal from "../BottomModal";
 import SetDeadline from "../onboard/SetDeadline";
 import { useSettings } from "../../hooks/SettingsContext";
 import { useDayChange } from "../../hooks/useDayChange";
@@ -22,34 +20,52 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const DayStatusIndicator = ({ message }) => {
   const { theme, backgroundGradient } = useThemes();
-  const { dayCompleted, timeStatusBadge, timeStatus } =
-    useDayStatus();
   const { tmrwDOW } = useDayChange();
   const {
     settings: { todayDayStart, todayDayEnd },
     currentUserID,
+    dayCompleted,
+    timeStatus
   } = useSettings();
-  const styles = getStyles(theme, dayCompleted, timeStatus);
   const mountedRef = useRef(false); // prevent firebase update on mount
-
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalHeight, setModalHeight] = useState(0);
+  const [timeStatusBadge, setTimeStatusBadge] = useState("");
+  const styles = getStyles(theme, dayCompleted, timeStatus);
 
   const [timePickerText, setTimePickerText] = useState({
     start: `${todayDayStart} AM`,
     end: `${todayDayEnd} PM`,
   });
 
+  // Change day status indicator text
+  useEffect(() => {
+    if (timeStatus === 0) {
+      setTimeStatusBadge(`Opens @ ${todayDayStart} AM`);
+    } else if (timeStatus === 1) {
+      if (dayCompleted) {
+        setTimeStatusBadge("You're done for today!");
+      } else {
+        setTimeStatusBadge(`Due @ ${todayDayEnd} PM`);
+      }
+    } else if (timeStatus === 2) {
+      if (dayCompleted) {
+        setTimeStatusBadge(randomDoneMessage);
+      } else {
+        setTimeStatusBadge(`Ended @ ${todayDayEnd} PM`);
+      }
+    } else {
+      setTimeStatusBadge("");
+    }
+  }, [timeStatus, dayCompleted]);
+
   // If a change is made to dayStart/dayEnd, update firebase
   useEffect(() => {
     if (mountedRef.current) {
       const updateFirebase = async () => {
-
         // Extract the hour and minute part from the timePickerText state
         const formattedDayStart = timePickerText.start.split(" ")[0];
         const formattedDayEnd = timePickerText.end.split(" ")[0];
         try {
-
           // Update the user settings tmrw fields with the new start and end times
           await updateDoc(doc(db, "users", currentUserID), {
             nextDayStart: formattedDayStart,
@@ -65,12 +81,6 @@ const DayStatusIndicator = ({ message }) => {
       mountedRef.current = true;
     }
   }, [timePickerText]);
-
-  // Gets modal height
-  const onLayout = (event) => {
-    const { height } = event.nativeEvent.layout;
-    setModalHeight(height);
-  };
 
   return (
     <>
@@ -101,7 +111,7 @@ const DayStatusIndicator = ({ message }) => {
           }}
         >
           <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-            <View style={styles.pageContainer} onLayout={onLayout}>
+            <View style={styles.pageContainer}>
               <View>
                 <Text style={styles.titleText}>Set Deadline</Text>
               </View>
@@ -127,7 +137,7 @@ const DayStatusIndicator = ({ message }) => {
 
 export default DayStatusIndicator;
 
-const getStyles = (theme, dayCompleted, timeStatus, modalHeight) =>
+const getStyles = (theme, dayCompleted, timeStatus) =>
   StyleSheet.create({
     button: {
       flexDirection: "row",

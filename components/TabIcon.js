@@ -11,27 +11,8 @@ export default function TabIcon({
   theme,
 }) {
   const styles = getStyles(theme);
-  const {
-    settings: { todayTodos, tmrwTodos, todayIsActive, todayIsVacation, tmrwIsActive, tmrwIsVacation },
-  } = useSettings();
-  const [actionItemsLeft, setActionItemsLeft] = useState(0);
-  const [incompleteCount, setIncompleteCount] = useState(0);
+  const { todayItemsLeft, tmrwItemsLeft } = useSettings();
 
-  useEffect(() => {
-    let incompleteCount = 0;
-    let actionItemsLeft = 0;
-
-    if (todayIsActive && !todayIsVacation) {
-      incompleteCount = todayTodos?.filter(todo => !todo.isComplete && todo.isLocked).length || 0;
-    }
-    if (tmrwIsActive && !tmrwIsVacation) {
-      actionItemsLeft = tmrwTodos?.filter(todo => !todo.isLocked).length || 0;
-    }
-  
-    setIncompleteCount(incompleteCount);
-    setActionItemsLeft(actionItemsLeft);
-  }, [todayTodos, tmrwTodos, todayIsActive, todayIsVacation, tmrwIsActive, tmrwIsVacation]);
-  
   const iconSize = focused ? 40 : 35;
   const iconColor = focused ? theme.textHigh : theme.textDisabled;
 
@@ -40,24 +21,24 @@ export default function TabIcon({
       <View style={styles.iconContainer}>
         <ActiveIcon width={iconSize} height={iconSize} color={iconColor} />
         {/* notification dot: */}
-        {type === "today" && incompleteCount > 0 && (
+        {type === "today" && todayItemsLeft > 0 && (
           <View
             style={[
               styles.notificationDot,
               focused ? styles.focusedDot : styles.unfocusedDot,
             ]}
           >
-            <Text style={styles.notificationText}>{incompleteCount}</Text>
+            <Text style={styles.notificationText}>{todayItemsLeft}</Text>
           </View>
         )}
-        {type === "tmrw" && actionItemsLeft > 0 && (
+        {type === "tmrw" && tmrwItemsLeft > 0 && (
           <View
             style={[
               styles.notificationDot,
               focused ? styles.focusedDot : styles.unfocusedDot,
             ]}
           >
-            <Text style={styles.notificationText}>{actionItemsLeft}</Text>
+            <Text style={styles.notificationText}>{tmrwItemsLeft}</Text>
           </View>
         )}
       </View>

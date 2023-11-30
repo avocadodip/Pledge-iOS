@@ -2,7 +2,6 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useState } from "react";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
-import { useDayStatus } from "../hooks/DayStatusContext";
 import Loading from "../components/Loading";
 import { useSettings } from "../hooks/SettingsContext";
 import { useDayChange } from "../hooks/useDayChange";
@@ -19,9 +18,8 @@ const Today = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const {
-    settings: { isOnboarded, todayTodos, todayIsActive, todayIsVacation },
+    timeStatus, settings: { isOnboarded, todayTodos, todayIsActive, todayIsVacation, todayNoInputFine},
   } = useSettings();
-  const { timeStatus } = useDayStatus();
   const { todayDOWAbbrev } = useDayChange();
   let onboardStartTmrw = false; //IMPLEMENT
 
@@ -31,7 +29,7 @@ const Today = () => {
   const renderTodos = useCallback(() => {
     return todayTodos.map((itemData, index) => {
       if (itemData.isLocked === false) {
-        return <FinedTodo key={index} />;
+        return <FinedTodo key={index} isFined={(todayNoInputFine > 0)}/>;
       } else {
         return <TodayTodo key={index} todoData={itemData} />;
       }

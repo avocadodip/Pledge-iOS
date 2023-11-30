@@ -5,7 +5,6 @@ import UnlockIcon from "../../assets/icons/unlock-icon.svg";
 import { getTodoStyles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
-import { useDayStatus } from "../../hooks/DayStatusContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
 import { getTmrwDate, getTodayDateTime } from "../../utils/currentDate";
 import { doc, getDoc, increment, runTransaction, updateDoc } from "firebase/firestore";
@@ -15,11 +14,11 @@ import { useSettings } from "../../hooks/SettingsContext";
 const RenderTmrwLock = ({ isLocked, todoNumber }) => {
   const { theme } = useThemes();
   const styles = getTodoStyles(theme);
-  const { timeStatus } = useDayStatus();
   const { setIsBottomSheetOpen } = useBottomSheet();
   const {
     currentUserID,
     settings: { tmrwTodos },
+    timeStatus
   } = useSettings();
 
   // Show alert and open bottom sheet

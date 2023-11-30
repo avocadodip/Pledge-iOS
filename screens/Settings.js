@@ -48,7 +48,6 @@ import DeleteAccountButton from "../components/settings/DeleteAccountButton";
 import TaskFineIcon from "../assets/icons/missed-task-fine-icon.svg";
 import PigIcon from "../assets/icons/pig-icon.svg";
 import LockDollarIcon from "../assets/icons/lock-dollar.svg";
-import { useDayStatus } from "../hooks/DayStatusContext";
 import { getClassicColor } from "../themes";
 import { useCheckNotificationPerms } from "../hooks/useAppStateChange";
 import { useNavigation } from "@react-navigation/native";
@@ -373,8 +372,6 @@ const Settings = () => {
               </View>
             </TouchableRipple>
             <DaysActiveModal
-              currentUserID={currentUserID}
-              daysActive={daysActive}
               isVisible={daysActiveModalVisible}
               handleToggleModal={handleOpenDaysActiveModal}
             />

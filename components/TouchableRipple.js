@@ -4,7 +4,6 @@ import { View, Animated, Easing, StyleSheet } from "react-native";
 import Ripple from "react-native-material-ripple";
 import { Color } from "../GlobalStyles";
 import { useThemes } from "../hooks/ThemesContext";
-import { useDayStatus } from "../hooks/DayStatusContext";
 import themeStyles, { getClassicColor } from "../themes";
 
 const rippleStyles = StyleSheet.create({

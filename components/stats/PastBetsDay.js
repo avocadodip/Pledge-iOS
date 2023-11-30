@@ -9,13 +9,14 @@ import { useThemes } from "../../hooks/ThemesContext";
 import { useDayChange } from "../../hooks/useDayChange";
 import { useSettings } from "../../hooks/SettingsContext";
 
-const StatsItem = ({ dayData, index }) => {
+const PastBetsDay = ({ dayData, index }) => {
   const { theme } = useThemes();
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const { todayDate } = useDayChange();
   const { dateName, todos, isActive, isVacation, date } = dayData;
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  // Get dream name
   const { dreamsArray } = useSettings();
-
   const findDreamTitleById = (id, dreams) => {
     const dream = dreams.find((d) => d.id === id);
     return dream ? dream.title : null;
@@ -38,22 +39,22 @@ const StatsItem = ({ dayData, index }) => {
   if (!isPastBet) {
     return null;
   }
+  console.log(todos);
 
   // Filter out null values and count the number of completed tasks
   const completedTasks = todos.filter((todo) => todo && todo.isComplete).length;
 
   // Filter out null values and count the total number of tasks
-  const totalTasks = todos.filter((todo) => todo !== null).length;
+  const totalTasks = todos.filter((todo) => todo && todo.isLocked).length;
 
-  if (dayData && todos && todos.some((todo) => todo !== null)) {
+  if (dayData && todos && todos.some((todo) => todo && todo.isLocked)) {
     return (
       <>
         <TouchableRipple onPress={toggleCollapse} style={styles.itemContainer}>
-          {/* BUTTON */}
           <View style={styles.button}>
-            {/* LEFT */}
+            {/* DATE */}
             <Text style={styles.dateText}>{dateName}</Text>
-            {/* RIGHT */}
+            {/* FRACTION */}
             {upcomingDay ? (
               <ClockIcon height={24} width={24} color={"white"} />
             ) : (
@@ -62,7 +63,6 @@ const StatsItem = ({ dayData, index }) => {
               </Text>
             )}
           </View>
-          {/* BUTTON CONTENT */}
           <Collapsible collapsed={isCollapsed} style={styles.revealedContent}>
             {todos.map((item, index) => {
               if (item) {
@@ -181,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StatsItem;
+export default PastBetsDay;

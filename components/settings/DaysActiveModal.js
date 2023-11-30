@@ -6,6 +6,7 @@ import { Color } from "../../GlobalStyles";
 import { db } from "../../database/firebase";
 import BottomModal from "../BottomModal";
 import { useDayChange } from "../../hooks/useDayChange";
+import { useSettings } from "../../hooks/SettingsContext";
 
 const DAY_KEYS = [
   "Sunday",
@@ -18,18 +19,20 @@ const DAY_KEYS = [
 ];
 const ABBREV_DAY_KEYS = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 
-const DaysActiveModal = ({
-  currentUserID,
-  daysActive,
-  isVisible,
-  handleToggleModal,
-}) => {
+const DaysActiveModal = ({ isVisible, handleToggleModal }) => {
   const { tmrwDOW } = useDayChange();
+  const {
+    currentUserID,
+    settings: { daysActive },
+  } = useSettings();
 
   const toggleCheckbox = async (dayKey) => {
     const newDaysActive = { ...daysActive, [dayKey]: !daysActive[dayKey] };
     if (!Object.values(newDaysActive).some(Boolean)) {
-      Alert.alert("At least one day must be active.", "Or turn vacation mode on.");
+      Alert.alert(
+        "At least one day must be active.",
+        "Or turn vacation mode on."
+      );
       return;
     }
 

@@ -12,7 +12,7 @@ import {
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
-import { getBeginningOfWeekDate } from "../utils/currentDate";
+import { getBeginningOfWeekDate, getTimeStatus } from "../utils/currentDate";
 
 export const SettingsContext = createContext();
 
@@ -42,6 +42,10 @@ export const SettingsProvider = ({ children }) => {
     hasFetchedMostRecentTransactionsDoc,
     setHasFetchedMostRecentTransactionsDoc,
   ] = useState(false);
+  const [todayItemsLeft, setTodayItemsLeft] = useState(0);
+  const [tmrwItemsLeft, setTmrwItemsLeft] = useState(0);
+  const [dayCompleted, setDayCompleted] = useState(false);
+  const [timeStatus, setTimeStatus] = useState(0)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -257,7 +261,6 @@ export const SettingsProvider = ({ children }) => {
   };
 
   const formatWeeksList = (weeksList) => {
-
     // Upcoming if it's this week's doc
     const upcoming = weeksList.filter((week) => {
       return week.id === getBeginningOfWeekDate();
@@ -279,6 +282,47 @@ export const SettingsProvider = ({ children }) => {
       },
     ];
   };
+
+  // Checks if today page or tmrw page has been completed for the day
+  useEffect(() => {
+    const {
+      todayTodos,
+      tmrwTodos,
+      todayIsActive,
+      todayIsVacation,
+      tmrwIsActive,
+      tmrwIsVacation,
+    } = settings;
+
+    let todayCount = 0;
+    let tmrwCount = 0;
+
+    if (todayIsActive && !todayIsVacation) {
+      todayCount =
+        todayTodos?.filter((todo) => !todo.isComplete && todo.isLocked)
+          .length || 0;
+    }
+    if (tmrwIsActive && !tmrwIsVacation) {
+      tmrwCount = tmrwTodos?.filter((todo) => !todo.isLocked).length || 0;
+    }
+
+    setTodayItemsLeft(todayCount);
+    setTmrwItemsLeft(tmrwCount);
+    setDayCompleted(todayCount === 0 && tmrwCount === 0);
+  }, [settings]);
+
+  // Update timeStatus every second
+  useEffect(() => {
+    const {
+      todayDayStart,
+      todayDayEnd,
+    } = settings;
+    const timer = setInterval(() => {
+      setTimeStatus(getTimeStatus(todayDayStart, todayDayEnd));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [settings]);
 
   return (
     <SettingsContext.Provider
@@ -304,6 +348,11 @@ export const SettingsProvider = ({ children }) => {
         fetchingTransactions,
         fetchTransactions,
         dreamsArray,
+
+        todayItemsLeft,
+        tmrwItemsLeft,
+        dayCompleted,
+        timeStatus,
       }}
     >
       {children}

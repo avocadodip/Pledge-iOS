@@ -42,13 +42,18 @@ const runDailyUpdate = onRequest(async (req, res) => {
         const userDoc = doc.data();
 
         // prettier-ignore
-        const { nextDayStart, nextDayEnd, daysActive, todayIsActive, todayIsVacation, tmrwIsVacation, missedTaskFine, isPaymentSetup,stripeCustomerId, paymentMethodId, todayANotifHasBeenSent, notificationTimes, todayTodos, tmrwTodos, todayNoInputFine, todayNoInputCount } = userDoc;
+        const { nextDayStart, nextDayEnd, daysActive, todayIsActive, todayIsVacation, tmrwIsVacation, missedTaskFine, isPaymentSetup,stripeCustomerId, paymentMethodId, todayANotifHasBeenSent, notificationTimes, todayTodos, tmrwTodos, todayNoInputFine, todayNoInputCount, dailyUpdateLastRun } = userDoc;
 
         // prettier-ignore
         const { now, todayFormatted, todayDateName, todayDOW, nextDay, nextDOW, nextNextDOW, startOfWeek, endOfWeek, startOfWeekFormatted, endOfWeekFormatted, pastWeek, formattedPastWeek } = getTimeDefinitions(tz);
 
         const todayRef = userRef.collection("todos").doc(todayFormatted);
         const weekRef = userRef.collection("fines").doc(pastWeek);
+        
+        // If daily update already ran, quit function
+        if (dailyUpdateLastRun === todayFormatted) {
+          return;
+        }
 
         // ----- 1. END OF DAY: MOVE TMRW DATA TO TODAY & RESET TMRW DATA------
 
@@ -66,6 +71,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
 
         // Then, move tmrw to today
         await userRef.update({
+          dailyUpdateLastRun: todayFormatted,
           todayTodos: tmrwTodos,
           // prettier-ignore
           tmrwTodos: [

@@ -4,13 +4,13 @@ import { getTodoStyles, styles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
-import { useDayStatus } from "../../hooks/DayStatusContext";
+import { useSettings } from "../../hooks/SettingsContext";
 
 const NumberTodo = ({ todoNumber }) => {
   const { theme } = useThemes();
   const { openBottomSheet } = useBottomSheet();
   const styles = getTodoStyles(theme);
-  const { timeStatus } = useDayStatus();
+  const { timeStatus } = useSettings();
 
 
   // a) Shows disabled button if timeStatus == 0 (day has not started)

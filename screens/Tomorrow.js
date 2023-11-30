@@ -2,7 +2,6 @@ import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSettings } from "../hooks/SettingsContext";
-import { useDayStatus } from "../hooks/DayStatusContext";
 import { useDayChange } from "../hooks/useDayChange";
 import { useThemes } from "../hooks/ThemesContext";
 import GettingStartedModal from "../components/onboard/GettingStartedModal";
@@ -17,19 +16,26 @@ const Tomorrow = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const {
-    settings: { tmrwIsVacation, isOnboarded, tmrwTodos, tmrwIsActive },
+    settings: { tmrwIsVacation, isOnboarded, tmrwTodos, tmrwIsActive, missedTaskFine}, timeStatus
   } = useSettings();
   const { dayChanged, tmrwDOWAbbrev } = useDayChange();
-  const { timeStatus } = useDayStatus();
   const [modalVisible, setModalVisible] = useState(false);
+
+  console.log("timeStatus");
+  console.log(timeStatus);
+
+  console.log("tmrwTodos");
+  console.log(tmrwTodos);
+
+  console.log(timeStatus === 2 && tmrwTodos[2].isLocked === false)
 
   const renderTodos = useCallback(() => {
     return tmrwTodos.map((itemData, index) => {
-      if (itemData.title === "" && itemData.amount === "") {
+      if (itemData.title === "") {
         if (timeStatus == 0 || timeStatus == 1) {
           return <NumberTodo key={index} todoNumber={index + 1} />;
-        } else if (timeStatus === 2 && itemData.isLocked === false) {
-          return <FinedTodo key={index} />;
+        } else if (timeStatus === 2 && !itemData.isLocked) {
+          return <FinedTodo key={index} isFined={missedTaskFine > 0}/>;
         }
       } else {
         return <TmrwTodo key={index} todoData={itemData} />;
