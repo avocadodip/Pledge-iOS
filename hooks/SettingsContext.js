@@ -45,7 +45,7 @@ export const SettingsProvider = ({ children }) => {
   const [todayItemsLeft, setTodayItemsLeft] = useState(0);
   const [tmrwItemsLeft, setTmrwItemsLeft] = useState(0);
   const [dayCompleted, setDayCompleted] = useState(false);
-  const [timeStatus, setTimeStatus] = useState(0)
+  const [timeStatus, setTimeStatus] = useState(0);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -82,6 +82,8 @@ export const SettingsProvider = ({ children }) => {
         (docSnapshot) => {
           if (docSnapshot.exists()) {
             const userSettings = docSnapshot.data();
+            console.log("hi");
+            console.log(userSettings);
             setSettings(userSettings);
             setCurrentUserFullName(userSettings.fullName);
             setCurrentUserFirstName(userSettings.fullName.split(" ")[0]);
@@ -313,16 +315,16 @@ export const SettingsProvider = ({ children }) => {
 
   // Update timeStatus every second
   useEffect(() => {
-    const {
-      todayDayStart,
-      todayDayEnd,
-    } = settings;
-    const timer = setInterval(() => {
-      setTimeStatus(getTimeStatus(todayDayStart, todayDayEnd));
-    }, 1000);
+    let timer;
+    if (isAuthenticated) {
+      const { todayDayStart, todayDayEnd } = settings;
+      timer = setInterval(() => {
+        setTimeStatus(getTimeStatus(todayDayStart, todayDayEnd));
+      }, 1000);
+    }
 
     return () => clearInterval(timer);
-  }, [settings]);
+  }, [settings, isAuthenticated]);
 
   return (
     <SettingsContext.Provider

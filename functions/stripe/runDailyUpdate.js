@@ -1,5 +1,10 @@
 /* eslint-disable */
-// firebase deploy --only functions
+// `firebase deploy --only functions`
+
+// firebase init emulators
+// firebase emulators:start
+// KILL LOCAL PORT: lsof -i :5001    kill -9 <PID>
+// LOCAL LINK: http://localhost:5001/fervo-1/us-central1/runDailyUpdate
 
 const { onRequest, stripe, moment, admin, schedulerKey } = require("../common");
 const { checkAndSendNotifications } = require("./notifications");

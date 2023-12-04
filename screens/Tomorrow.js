@@ -21,14 +21,6 @@ const Tomorrow = () => {
   const { dayChanged, tmrwDOWAbbrev } = useDayChange();
   const [modalVisible, setModalVisible] = useState(false);
 
-  console.log("timeStatus");
-  console.log(timeStatus);
-
-  console.log("tmrwTodos");
-  console.log(tmrwTodos);
-
-  console.log(timeStatus === 2 && tmrwTodos[2].isLocked === false)
-
   const renderTodos = useCallback(() => {
     return tmrwTodos.map((itemData, index) => {
       if (itemData.title === "") {
@@ -42,6 +34,9 @@ const Tomorrow = () => {
       }
     });
   }, [tmrwTodos, dayChanged]);
+
+  console.log("okbr");
+  console.log(tmrwIsActive);
 
   return (
     <SafeAreaView style={styles.pageContainer}>

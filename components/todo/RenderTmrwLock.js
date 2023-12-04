@@ -6,7 +6,6 @@ import { getTodoStyles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
-import { getTmrwDate, getTodayDateTime } from "../../utils/currentDate";
 import { doc, getDoc, increment, runTransaction, updateDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
 import { useSettings } from "../../hooks/SettingsContext";
@@ -69,7 +68,6 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
       description: description,
       tag: tag,
       amount: formattedAmount,
-      createdAt: getTodayDateTime(),
       isComplete: false,
       isLocked: true,
       todoNumber: todoNumber,
