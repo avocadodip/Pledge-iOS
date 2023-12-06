@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "277C5SCRGX.com.cewidiupleek.pledge",
+        "paths": [ "/finish-signup/*"]
+      }
+    ]
+  },
+  "activitycontinuation": {
+    "apps": ["277C5SCRGX.com.cewidiupleek.pledge"]
+  },
+  "webcredentials": {
+    "apps": ["277C5SCRGX.com.cewidiupleek.pledge"]
+  }
+}

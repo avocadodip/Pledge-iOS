@@ -28,7 +28,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { redGradientValues } from "../themes";
 import theme from "../themes";
 import Animated, { FadeIn, FadeOutUp } from "react-native-reanimated";
-import * as Linking from "expo-linking";
+import * as Linking from 'expo-linking';
 
 const PLACEHOLDER_TEXT_COLOR = "rgba(255, 255, 255, 0.6)";
 
@@ -89,7 +89,7 @@ const Signup = () => {
   useEffect(() => {
     if (incomingUrl) {
       const { path } = Linking.parse(incomingUrl);
-      if (path === "finishSignUp") {
+      if (path === "finish-signup") {
         setStep(4);
       }
     }
@@ -135,18 +135,18 @@ const Signup = () => {
     // Configure the action code settings for the email link
     const actionCodeSettings = {
       // URL you want to redirect back to. The domain must be whitelisted in Firebase Console.
-      url: "https://fervo-1.web.app/",
+      url: "https://fervo-1.web.app/finish-signup",
       handleCodeInApp: true,
       // This must be true for email link sign-in.
       iOS: {
-        bundleId: "com.example.ios",
+        bundleId: "com.cewidiupleek.pledge",
       },
       android: {
         packageName: "com.example.android",
         installApp: true,
         minimumVersion: "12",
       },
-      dynamicLinkDomain: "example.page.link",
+      dynamicLinkDomain: "cewidiupleek.page.link",
     };
 
     try {
@@ -155,14 +155,8 @@ const Signup = () => {
       // Save the email locally to complete the sign in process later
       await SecureStore.setItemAsync("emailForSignIn", email);
 
-      // Inform the user to check their email
-      Alert.alert(
-        "Check Your Email",
-        "A sign-in link has been sent to your email. Please check your email to complete the registration process."
-      );
-
-      // Navigate to a page informing the user to check their email
-      setStep(4);
+      // // Navigate to a page informing the user to check their email
+      // setStep(4);
     } catch (error) {
       console.error("Error sending sign-in link:", error);
       Alert.alert(
@@ -203,7 +197,7 @@ const Signup = () => {
             {step === 2 && (
               <>
                 <AnimatedComponent>
-                  <PromptText text={"Check your email"} />
+                  <PromptText text={`Click the link sent to ${email}`} />
                 </AnimatedComponent>
               </>
             )}
@@ -268,12 +262,13 @@ const Signup = () => {
               )}
             </TouchableOpacity>
 
-            {/* Next button */}
-            <ConfirmButton
-              text={buttonText}
-              onPress={handleNextPress}
-              disabled={buttonDisabled}
-            />
+            {step !== 2 && (
+              <ConfirmButton
+                text={buttonText}
+                onPress={handleNextPress}
+                disabled={buttonDisabled}
+              />
+            )}
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>

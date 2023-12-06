@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Pledge - Bet On Yourself",
+    "scheme": "pledge",
     "slug": "pledge",
     "plugins": [
       "@react-native-google-signin/google-signin"
@@ -23,7 +24,8 @@
       "infoPlist": {
         "NSCameraUsageDescription": "We need access to your camera so Stripe can scan your card information."
       },
-      "buildNumber": "17"
+      "buildNumber": "17",
+      "associatedDomains": ["applinks:fervo-1.vercel.app"]
     },
     "android": {
       "package": "com.cewidiupleek.pledge"
