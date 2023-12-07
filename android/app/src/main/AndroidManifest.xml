@@ -27,6 +27,8 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.cewidiupleek.pledge"/>
+        <data android:scheme="pledge"/>
+        <data android:scheme="exp+pledge"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

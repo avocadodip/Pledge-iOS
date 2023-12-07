@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 
   // Header style
   header: {
-    flexDirection: "col",
+    flexDirection: "column",
     alignItems: "center",
     gap: 10,
     marginTop: 60,

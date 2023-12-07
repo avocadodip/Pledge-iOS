@@ -16,7 +16,8 @@ const Today = () => {
     },
     {
       id: 3,
-      title: "Build a blanket fort Build a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fort",
+      title:
+        "Build a blanket fort Build a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fortBuild a blanket fort",
     },
   ];
 
@@ -66,8 +67,13 @@ const Today = () => {
     <SafeAreaView style={styles.pageContainer}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Welcome to Fervo!</Text>
-        <Text style={styles.descTitle}>We'll take you on a quick walkthrough of the platform.</Text>
-        <Text style={styles.descTitle}>But first, what are some huge, spectacular dreams you want to achieve? Think big, anything is possible!</Text>
+        <Text style={styles.descTitle}>
+          We'll take you on a quick walkthrough of the platform.
+        </Text>
+        <Text style={styles.descTitle}>
+          But first, what are some huge, spectacular dreams you want to achieve?
+          Think big, anything is possible!
+        </Text>
       </View>
       <View style={styles.todoContainer}>{renderTodos()}</View>
     </SafeAreaView>
@@ -84,7 +90,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingLeft: 20,
     width: "100%",
-    flexDirection: "col",
+    flexDirection: "column",
     marginBottom: 20,
     gap: 20,
     // borderWidth: 1,

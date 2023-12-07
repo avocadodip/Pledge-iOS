@@ -18,11 +18,11 @@ export default LogoAppName;
 
 const styles = StyleSheet.create({
   logoContainer: {
-    flexDirection: "col",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 35,
-    gap: 5
+    gap: 5,
   },
   appNameText: {
     fontSize: 50,

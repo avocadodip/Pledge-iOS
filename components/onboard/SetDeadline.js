@@ -64,7 +64,7 @@ export default SetDeadline;
 const getStyles = (theme) =>
   StyleSheet.create({
     promptContainer: {
-      flexDirection: "col",
+      flexDirection: "column",
       gap: 15,
       width: "100%",
       paddingVertical: 20,

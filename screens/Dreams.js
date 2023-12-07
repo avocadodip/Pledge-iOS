@@ -220,7 +220,7 @@ const getStyles = (theme) =>
 
     streakContainer: {
       flex: 4,
-      flexDirection: "col",
+      flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
     },

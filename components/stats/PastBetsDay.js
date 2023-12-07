@@ -14,7 +14,7 @@ const PastBetsDay = ({ dayData, index }) => {
   const { todayDate } = useDayChange();
   const { dateName, todos, isActive, isVacation, date } = dayData;
   const [isCollapsed, setIsCollapsed] = useState(false);
-  
+
   // Get dream name
   const { dreamsArray } = useSettings();
   const findDreamTitleById = (id, dreams) => {
@@ -126,7 +126,7 @@ const PastBetsDay = ({ dayData, index }) => {
 const styles = StyleSheet.create({
   // Main components
   itemContainer: {
-    flexDirection: "col",
+    flexDirection: "column",
     paddingHorizontal: 10,
   },
   button: {
@@ -157,12 +157,12 @@ const styles = StyleSheet.create({
 
   // Revealed content
   revealedContent: {
-    flexDirection: "col",
+    flexDirection: "column",
     gap: 6,
     paddingBottom: 15,
   },
   todoItem: {
-    flexDirection: "col",
+    flexDirection: "column",
     gap: 1,
   },
   row: {

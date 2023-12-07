@@ -19,8 +19,8 @@ import SignInSignUpSwitch from "../components/auth/SignInSignUpSwitch";
 import { Color } from "../GlobalStyles";
 import { LinearGradient } from "expo-linear-gradient";
 import theme, { redGradientValues } from "../themes";
- 
-const Login = () => { 
+
+const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState(); // New state for email input
   const [password, setPassword] = useState();
@@ -61,7 +61,7 @@ const Login = () => {
       }
     }
   };
- 
+
   return (
     <LinearGradient colors={redGradientValues} style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -73,8 +73,18 @@ const Login = () => {
           {loading ? (
             <ActivityIndicator size="small" color={theme["Classic"].primary} />
           ) : null}
-          <FormInput action={setEmail} value={email} type="email" autoCapitalize={false}/>
-          <FormInput action={setPassword} value={password} type="password" autoCapitalize={false}/>
+          <FormInput
+            action={setEmail}
+            value={email}
+            type="email"
+            autoCapitalize={false}
+          />
+          <FormInput
+            action={setPassword}
+            value={password}
+            type="password"
+            autoCapitalize={false}
+          />
 
           <TouchableOpacity
             style={styles.forgotPasswordButton}
@@ -101,7 +111,7 @@ const Login = () => {
 const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
-    flexDirection: "col",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,

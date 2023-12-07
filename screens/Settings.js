@@ -443,7 +443,7 @@ const Settings = () => {
               <RightChevronIcon width={24} height={24} color={theme.textHigh} />
             </View>
           </TouchableRipple>
-          <TouchableRipple
+          {/* <TouchableRipple
             style={styles.button}
             onPress={() => navigation.navigate("ChangeEmail")}
           >
@@ -460,7 +460,7 @@ const Settings = () => {
                 {currentUserEmail}
               </Text>
             </View>
-          </TouchableRipple>
+          </TouchableRipple> */}
 
           <TouchableRipple style={styles.button} onPress={handleLogout}>
             <View style={styles.leftSettingsButton}>
@@ -489,7 +489,7 @@ const getStyles = (theme) =>
     },
     headerContainer: {
       width: "100%",
-      flexDirection: "col",
+      flexDirection: "column",
       marginBottom: 30,
       alignItems: "center",
     },

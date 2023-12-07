@@ -21,12 +21,39 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useThemes } from "../hooks/ThemesContext";
 import DeleteAccount from "../screens/DeleteAccount";
 import Dreams from "../screens/Dreams";
+import Auth from "../screens/Auth";
+import Login from "../screens/Login";
+import EmailVerification from "../screens/EmailVerification";
+import ForgotPassword from "../screens/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
+export const AuthStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen
+      name="Auth"
+      component={Auth}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Login"
+      component={Login}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="EmailVerification"
+      component={EmailVerification}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="ForgotPassword"
+      component={ForgotPassword}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
 
 const TodayStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>

@@ -59,7 +59,7 @@ const EmailVerification = ({ route, navigation }) => {
   };
 
   const createFirebaseUserDoc = async () => {
-    try { 
+    try {
       // Get user's local timezone
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -126,27 +126,27 @@ const EmailVerification = ({ route, navigation }) => {
         todayAllNotifsSent: false,
         todayANotifHasBeenSent: false,
         notificationTimes: {
-          "15": {
-            "shouldSend": false,
-            "isSent": false
+          15: {
+            shouldSend: false,
+            isSent: false,
           },
-          "30": {
-            "shouldSend": false,
-            "isSent": false
+          30: {
+            shouldSend: false,
+            isSent: false,
           },
-          "60": {
-            "shouldSend": false,
-            "isSent": false
+          60: {
+            shouldSend: false,
+            isSent: false,
           },
-          "180": {
-            "shouldSend": false,
-            "isSent": false
+          180: {
+            shouldSend: false,
+            isSent: false,
           },
-          "360": {
-            "shouldSend": false,
-            "isSent": false
-          }
-        }
+          360: {
+            shouldSend: false,
+            isSent: false,
+          },
+        },
       });
     } catch (error) {
       console.error(error);
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
 
   // Header style
   header: {
-    flexDirection: "col",
+    flexDirection: "column",
     alignItems: "center",
     gap: 10,
     marginTop: 60,

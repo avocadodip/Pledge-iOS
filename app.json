@@ -3,29 +3,27 @@
     "name": "Pledge - Bet On Yourself",
     "scheme": "pledge",
     "slug": "pledge",
-    "plugins": [
-      "@react-native-google-signin/google-signin"
-    ],
     "version": "1.1.6",
+    "plugins": ["expo-apple-authentication"],
     "orientation": "portrait",
     "icon": "./assets/logos/1024ios.png",
     "splash": {
-      "image": "",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/splash.png",
+      "backgroundColor": "#000000"
     },
     "userInterfaceStyle": "light",
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "bundleIdentifier": "com.cewidiupleek.pledge",
       "infoPlist": {
         "NSCameraUsageDescription": "We need access to your camera so Stripe can scan your card information."
       },
       "buildNumber": "17",
-      "associatedDomains": ["applinks:fervo-1.vercel.app"]
+      "usesAppleSignIn": true
     },
     "android": {
       "package": "com.cewidiupleek.pledge"

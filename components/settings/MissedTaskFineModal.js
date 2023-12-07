@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   modalContent: {
     height: 225,
     width: "100%",
-    flexDirection: "col",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
   },

@@ -44,7 +44,7 @@ const WeekBundle = ({ isFirstSection, transactionsData }) => {
           <Text style={styles.totalWeeklyFineText}>-${totalWeeklyFine}.00</Text>
         </View>
         <Collapsible collapsed={isCollapsed} style={styles.collapsibleContent}>
-          {(noInputCount === 0 || !noInputCount || !noInputFine) ? null : (
+          {noInputCount === 0 || !noInputCount || !noInputFine ? null : (
             <View style={styles.unenteredTasksItem}>
               <Text style={styles.collapsibleText}>
                 {noInputCount} unentered tasks
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   dayItem: {
-    flexDirection: "col",
+    flexDirection: "column",
     gap: 6,
     marginTop: 18,
   },

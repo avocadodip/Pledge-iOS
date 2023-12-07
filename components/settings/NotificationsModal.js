@@ -196,9 +196,9 @@ const styles = StyleSheet.create({
   modalContent: {
     height: 300,
     width: "100%",
-    flexDirection: "col",
+    flexDirection: "column",
     alignItems: "center",
-    paddingTop: 20
+    paddingTop: 20,
   },
   mainButton: {
     flexDirection: "row",
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
 
   // checkbox styles
   daysActiveContainer: {
-    flexDirection: "col",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 25,

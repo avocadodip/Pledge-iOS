@@ -334,7 +334,7 @@ const getStyles = (theme) =>
   StyleSheet.create({
     bottomSheetContainer: {
       // flex: 1,
-      flexDirection: "col",
+      flexDirection: "column",
       paddingLeft: 16,
 
       // borderWidth: 1,

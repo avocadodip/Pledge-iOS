@@ -14,12 +14,11 @@ export const ThemeContext = createContext();
 export const ThemesProvider = ({ children }) => {
   const {
     settings: { isOnboarded },
-    currentUserID, setAppReadyToRender, timeStatus, dayCompleted
+    currentUserID, timeStatus, dayCompleted
   } = useSettings();
   const [currentThemeName, setCurrentThemeName] = useState("");
   const systemTheme = useColorScheme(); // Gets the current system theme
   const [backgroundGradient, setBackgroundGradient] = useState([]);
-  const [statusBarHidden, setStatusBarHidden] = useState(false); // For settings page scrollview
   const [currentClassicColor, setCurrentClassicColor] = useState(""); // purple, red, green
 
   // Call fetchTheme on initialization
@@ -30,7 +29,6 @@ export const ThemesProvider = ({ children }) => {
   // Update appearance when theme is changed or user auth changes
   useEffect(() => {
     updateBackgroundGradient();
-    setAppReadyToRender(true);
   }, [
     currentThemeName,
     currentUserID,
@@ -98,8 +96,6 @@ export const ThemesProvider = ({ children }) => {
     theme: currentTheme,
     updateBackgroundGradient,
     backgroundGradient,
-    statusBarHidden,
-    setStatusBarHidden,
     currentClassicColor,
   };
 

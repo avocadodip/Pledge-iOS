@@ -22,8 +22,6 @@ export const SettingsProvider = ({ children }) => {
   const [currentUserFullName, setCurrentUserFullName] = useState(null);
   const [currentUserFirstName, setCurrentUserFirstName] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
-  const [userDataFetched, setUserDataFetched] = useState(false);
-  const [appReadyToRender, setAppReadyToRender] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   // Past bets data fetching:
   const [dreamsArray, setDreamsArray] = useState([]);
@@ -50,13 +48,14 @@ export const SettingsProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.emailVerified) {
+        console.log("signed in! :D");
         setCurrentUserID(user.uid);
         setIsAuthenticated(true); // user is authenticated
       } else {
+        console.log("signed out :'(");
         setCurrentUserID(null);
         setIsAuthenticated(false); // user is not authenticated
-        setUserDataFetched(false);
-        setAppReadyToRender(false);
+
 
         setAllPastBetsDataFetched(false);
         setAllTransactionsDataFetched(false);
@@ -88,7 +87,6 @@ export const SettingsProvider = ({ children }) => {
             setCurrentUserFullName(userSettings.fullName);
             setCurrentUserFirstName(userSettings.fullName.split(" ")[0]);
             setCurrentUserEmail(userSettings.email);
-            setUserDataFetched(true);
             fetchDreams();
           } else {
             setIsAuthenticated(false);
@@ -339,10 +337,6 @@ export const SettingsProvider = ({ children }) => {
         setCurrentUserEmail,
         isAuthenticated,
 
-        userDataFetched,
-        setUserDataFetched,
-        appReadyToRender,
-        setAppReadyToRender,
         fetchPastBets,
         pastBetsArray,
         fetchingPastBets,
@@ -355,6 +349,7 @@ export const SettingsProvider = ({ children }) => {
         tmrwItemsLeft,
         dayCompleted,
         timeStatus,
+
       }}
     >
       {children}

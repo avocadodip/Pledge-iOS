@@ -54,7 +54,7 @@ const getStyles = (theme) =>
       marginBottom: 30,
     },
     modalContainer: {
-      flexDirection: "col",
+      flexDirection: "column",
       backgroundColor: theme.accent,
       alignItems: "center",
       borderRadius: 20,
@@ -68,7 +68,7 @@ const getStyles = (theme) =>
       width: "100%",
       paddingHorizontal: 13,
       paddingVertical: 17,
-      flexDirection: "col",
+      flexDirection: "column",
       alignItems: "center",
       borderRadius: 20,
       overflow: "hidden",

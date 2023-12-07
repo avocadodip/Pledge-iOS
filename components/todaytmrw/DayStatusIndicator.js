@@ -49,7 +49,7 @@ const DayStatusIndicator = ({ message }) => {
       }
     } else if (timeStatus === 2) {
       if (dayCompleted) {
-        setTimeStatusBadge(randomDoneMessage);
+        // setTimeStatusBadge(randomDoneMessage);
       } else {
         setTimeStatusBadge(`Ended @ ${todayDayEnd} PM`);
       }

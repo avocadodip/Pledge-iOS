@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
 
   // Modal content styles
   daysActiveContainer: {
-    flexDirection: "col",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 40,

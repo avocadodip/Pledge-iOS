@@ -1,62 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MenuProvider } from "react-native-popup-menu";
 import { StripeProvider } from "@stripe/stripe-react-native";
-import Signup from "./screens/Signup";
-import Login from "./screens/Login";
-import Splash from "./components/Splash";
-import Intro from "./screens/Intro";
 import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 import { ThemesProvider, useThemes } from "./hooks/ThemesContext";
-import useUpdateTimezoneOnAppActive from "./hooks/useAppStateChange";
 import { STRIPE_PUBLISHABLE_KEY } from "@env";
-import EmailVerification from "./screens/EmailVerification";
-import ForgotPassword from "./screens/ForgotPassword";
-import MainStack from "./components/MainStack";
+import MainStack, { AuthStack } from "./components/MainStack";
 import { LinearGradient } from "expo-linear-gradient";
 import TodoBottomSheet from "./components/todaytmrw/TodoBottomSheet";
 import { redGradientValues } from "./themes";
+import * as SplashScreen from "expo-splash-screen";
 
-const Stack = createNativeStackNavigator();
-
-const AuthStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen
-      name="Signup"
-      component={Signup}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="Login"
-      component={Login}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="EmailVerification"
-      component={EmailVerification}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="ForgotPassword"
-      component={ForgotPassword}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
-);
-
-const IntroStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen
-      name="IntroScreen"
-      component={Intro}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
-);
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   return (
@@ -67,36 +27,58 @@ export default function App() {
 }
 
 function AppContent() {
-  const { isAuthenticated, userDataFetched, appReadyToRender } = useSettings();
-  const [isSplashScreen, setIsSplashScreen] = useState(true);
+  const { isAuthenticated } = useSettings();
+  const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
-    const timerId = setTimeout(() => {
-      if (!isAuthenticated || (isAuthenticated && userDataFetched)) {
-        setIsSplashScreen(false);
-      }
-    }, 2000);
-    return () => clearTimeout(timerId);
-  }, [isAuthenticated, appReadyToRender]);
+    let unsubscribe;
 
-  // useEffect(() => {
-  //   console.log("userDataFetched: " + userDataFetched);
-  //   console.log("appReadyToRender: " + appReadyToRender);
-  //   console.log("auth: " + isAuthenticated);
-  //   console.log("isSplash: " + isSplashScreen);
-  // }, [userDataFetched, appReadyToRender, isAuthenticated, isSplashScreen]);
+    async function prepare() {
+      try {
+        // Pre-load fonts, make any API calls you need to do here
+        // await Font.loadAsync({
+        //   CourierPrime: require("./assets/fonts/CourierPrime-Regular.ttf"),
+        // });
+
+        // Wait for authentication to choose true or false to avoid flash from auth to app
+        await new Promise((resolve) => setTimeout(resolve, 400));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell the application to render
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+
+    // Define the cleanup function directly inside useEffect
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <NavigationContainer theme={{ colors: {} }}>
-        {isSplashScreen && (
-          <>
-            <StatusBar style={"light"} animated={true} />
-            <Splash />
-          </>
-        )}
-
-        {isAuthenticated && userDataFetched && (
+        {isAuthenticated ? (
           <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
             <MenuProvider>
               <ThemesProvider>
@@ -106,9 +88,7 @@ function AppContent() {
               </ThemesProvider>
             </MenuProvider>
           </StripeProvider>
-        )}
-
-        {!isAuthenticated && (
+        ) : (
           <LinearGradient colors={redGradientValues} style={{ flex: 1 }}>
             <StatusBar style={"light"} animated={true} />
             <AuthStack />
@@ -120,7 +100,7 @@ function AppContent() {
 }
 
 function AuthenticatedApp() {
-  const { theme, backgroundGradient, statusBarHidden } = useThemes();
+  const { theme, backgroundGradient } = useThemes();
 
   return (
     <>
@@ -128,7 +108,6 @@ function AuthenticatedApp() {
         <StatusBar
           style={theme.statusBar}
           animated={true}
-          hidden={statusBarHidden}
         />
         <MainStack />
       </LinearGradient>
