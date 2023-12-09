@@ -4,8 +4,8 @@ import { auth } from "../../database/firebase";
 import TouchableRipple from "../TouchableRipple";
 import LogoutIcon from "../../assets/icons/logout.svg";
 import { Color } from "../../GlobalStyles";
-
 const LogoutButton = () => {
+
   const handleLogout = async () => {
     try {
       await auth.signOut();

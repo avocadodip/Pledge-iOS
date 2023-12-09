@@ -31,8 +31,8 @@ const GlowButton = ({
     );
   }
   // Set the default borderColor if it's not provided
-  const finalBorderColor = borderColor || darkenHexColor(color, -15);
-  const finalShadowColor = shadowColor || color;
+  const finalBorderColor = borderColor || "none";
+  const finalShadowColor = shadowColor || "none";
 
   return (
     <TouchableOpacity
@@ -43,7 +43,7 @@ const GlowButton = ({
           backgroundColor: color,
 
           // borderborder
-          borderColor: finalBorderColor,
+          // borderColor: finalBorderColor,
           borderWidth: 1.5,
           borderRadius: borderRadius,
 

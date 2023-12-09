@@ -76,7 +76,7 @@ const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
           <GlowButton
             height={42}
             width={125}
-            color={"#e58d21"}
+            color={theme.lightPrimary}
             onPress={() => toggleModal("start")}
           >
             <Text
@@ -111,7 +111,7 @@ const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
         <GlowButton
           height={42}
           width={125}
-          color={"#8755f3"}
+          color={theme.lightPrimary}
           onPress={() => toggleModal("end")}
         >
           <Text

@@ -1,8 +1,16 @@
 // eas build --profile preview --platform ios --local
-// eas build --profile development --platform ios
+
+// eas build --profile development --platform ios --local
 // npx expo start --dev-client
 // Video used to set up Google Auth (using expo-auth-session, which may be removed in the future) https://www.youtube.com/watch?v=XB_gNDoOhjY&ab_channel=CodewithBeto
 // TO-DO: When pushing to testflight, we must change "host.exp.Exponent" to "com.cewidiupleek.pledge" in Firebase console: Authentication --> Sign-in method --> Apple --> Services ID
+
+
+// https://blog.devgenius.io/how-to-build-an-ios-expo-app-without-using-eas-build-78bfc4002a0f
+// npx expo prebuild
+// npx pod install
+// open ios/PledgeBetOnYourself.xcworkspace
+// Product --> Archive
 import {
   Image,
   Pressable,
@@ -25,6 +33,16 @@ import { auth } from "../database/firebase";
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as Crypto from "expo-crypto";
 import AnimatedButton from "../components/AnimatedButton";
+import { redGradientValues } from "../themes";
+import { LinearGradient } from "expo-linear-gradient";
+import Animated, {
+  FadeInDown,
+  FadeInUp,
+  SlideInDown,
+  SlideInUp,
+  SlideOutDown,
+  SlideOutUp,
+} from "react-native-reanimated";
 
 const BUTTON_BORDER_RADIUS = 15;
 const BUTTON_HEIGHT = 50;
@@ -42,8 +60,14 @@ const Auth = () => {
   useEffect(() => {
     if (response?.type == "success") {
       const { id_token } = response.params;
+      console.log(id_token);
+      try {
       const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential);
+        signInWithCredential(auth, credential);
+      } catch (error) {
+        console.log("Signin error");
+        console.log(error);
+      }
     }
   }, [response]);
 
@@ -91,8 +115,19 @@ const Auth = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.bottomContainer}>
+    <LinearGradient style={styles.container} colors={redGradientValues}>
+      <Animated.View entering={FadeInDown.duration(1000).delay(200)}>
+        <Image
+          source={require("../assets/icons/pledgetransparent.png")}
+          style={{ width: 150, height: 150 }}
+        />
+      </Animated.View>
+      
+      <Animated.View
+        style={styles.bottomContainer}
+        entering={SlideInDown.duration(1500)}
+        exiting={SlideOutDown.duration(1000)}
+      >
         <View style={styles.buttonContainer}>
           <AnimatedButton
             style={[styles.authButton, styles.googleButton]}
@@ -113,9 +148,8 @@ const Auth = () => {
             />
           </AnimatedButton>
         </View>
-        <Text style={styles.promptText}>Choose a sign-in method</Text>
-      </View>
-    </View>
+      </Animated.View>
+    </LinearGradient>
   );
 };
 
@@ -127,24 +161,28 @@ const styles = StyleSheet.create({
     // borderColor: "white",
     flex: 1,
     justifyContent: "flex-end",
+    justifyContent: "center",
+    alignItems: "center",
   },
   bottomContainer: {
     // borderWidth: 1,
     // borderColor: "white",
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: 60,
-    paddingBottom: 80,
+    paddingBottom: 60,
     paddingHorizontal: 30,
-    paddingTop: 70,
+    paddingTop: 40,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    backgroundColor: "#f3f3f3"
+    backgroundColor: "#ffffff58",
   },
   buttonContainer: {
     flexDirection: "row",
-    gap: 20,
+    gap: 25,
   },
   authButton: {
     height: 60,
@@ -171,6 +209,6 @@ const styles = StyleSheet.create({
   },
   promptText: {
     fontSize: 17,
-    color: "#6c6c6c"
+    color: "#6c6c6c",
   },
 });

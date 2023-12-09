@@ -21,6 +21,7 @@ export const ThemesProvider = ({ children }) => {
   const [backgroundGradient, setBackgroundGradient] = useState([]);
   const [currentClassicColor, setCurrentClassicColor] = useState(""); // purple, red, green
 
+
   // Call fetchTheme on initialization
   useEffect(() => {
     fetchTheme();
@@ -37,32 +38,29 @@ export const ThemesProvider = ({ children }) => {
   ]);
 
   const updateBackgroundGradient = () => {
-    switch (currentThemeName) {
-      case "Classic":
-        if (
-          (timeStatus === 1 &&
-            (!dayCompleted)) ||
-          currentUserID === null || !isOnboarded
-        ) {
-          setBackgroundGradient(redGradientValues);
-          setCurrentClassicColor("red");
-        } else if (timeStatus === 0 || timeStatus === 2) {
-          setBackgroundGradient(purpleGradientValues);
-          setCurrentClassicColor("purple");
-        } else if (
-          timeStatus === 1 &&
-          dayCompleted
-        ) {
-          setBackgroundGradient(greenGradientValues);
-          setCurrentClassicColor("green");
-        }
-        break;
-      case "Dark":
-        setBackgroundGradient([Color.black, Color.black]);
-        break;
-      case "Light":
-        setBackgroundGradient([Color.white, Color.white]);
-        break;
+    if (currentThemeName === "Classic") {
+      if (
+        (timeStatus === 1 && !dayCompleted) ||
+        currentUserID === null || !isOnboarded
+      ) {
+        setBackgroundGradient(redGradientValues);
+        setCurrentClassicColor("red");
+      } else if (timeStatus === 0 || timeStatus === 2) {
+        setBackgroundGradient(purpleGradientValues);
+        setCurrentClassicColor("purple");
+      } else if (
+        timeStatus === 1 &&
+        dayCompleted
+      ) {
+        setBackgroundGradient(greenGradientValues);
+        setCurrentClassicColor("green");
+      }
+    }
+    if (currentThemeName === "Dark") {
+      setBackgroundGradient([Color.black, Color.black]);
+    }
+    if (currentThemeName === "Light") {
+      setBackgroundGradient([Color.white, Color.white]);
     }
   };
 

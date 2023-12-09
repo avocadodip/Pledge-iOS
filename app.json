@@ -7,10 +7,6 @@
     "plugins": ["expo-apple-authentication"],
     "orientation": "portrait",
     "icon": "./assets/logos/1024ios.png",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "backgroundColor": "#000000"
-    },
     "userInterfaceStyle": "light",
     "assetBundlePatterns": [
       "**/*"

@@ -17,6 +17,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { abbreviateDOW } from "../../utils/currentDate";
 import InfoIcon from "../../assets/icons/info-icon-alt.svg";
 import { LinearGradient } from "expo-linear-gradient";
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 
 const DayStatusIndicator = ({ message }) => {
   const { theme, backgroundGradient } = useThemes();

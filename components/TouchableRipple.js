@@ -79,11 +79,6 @@ const useConditionalThemes = () => {
 };
 
 export default function TouchableRipple({
-  // default props
-  // color = "transparent",
-  // disabledColor = "rgb(240, 240, 240)",
-  // shadeColor = "#8A1919", // focus color
-  // shadeOpacity = 0.15, // focus opacity
   shadeOpacity = 0.15, // focus opacity
 
   shadeBorderRadius = 2,
@@ -96,17 +91,6 @@ export default function TouchableRipple({
     useConditionalThemes();
   const styles = getStyles(theme, currentThemeName, currentClassicColor);
   const [focusAnimation, setFocusAnimation] = useState(new Animated.Value(0));
-  // const [disableAnimation, setDisableAnimation] = useState(
-  //   new Animated.Value(disabled ? 1 : 0)
-  // );
-
-  // useEffect(() => {
-  //   Animated.timing(disableAnimation, {
-  //     toValue: disabled ? 1 : 0,
-  //     duration: disableAnimationDuration,
-  //     useNativeDriver: false,
-  //   }).start();
-  // }, [disabled, disableAnimationDuration, disableAnimation]);
 
   function onPress() {
     if (typeof props.onPress === "function") {
@@ -156,14 +140,5 @@ export default function TouchableRipple({
 }
 
 TouchableRipple.propTypes = {
-  // ...Ripple.propTypes,
-  // color: PropTypes.string,
-  // disabledColor: PropTypes.string,
-  // shadeColor: PropTypes.string,
-  // shadeOpacity: PropTypes.number,
-  // shadeBorderRadius: PropTypes.number,
-  // focusAnimationDuration: PropTypes.number,
-  // disableAnimationDuration: PropTypes.number,
-  // payload: PropTypes.any,
   disabled: PropTypes.bool,
 };

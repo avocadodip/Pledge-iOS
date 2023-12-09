@@ -23,6 +23,8 @@ export const SettingsProvider = ({ children }) => {
   const [currentUserFirstName, setCurrentUserFirstName] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [userDataFetched, setUserDataFetched] = useState(false);
+  const [todayPageLoaded, setTodayPageLoaded] = useState(false);
   // Past bets data fetching:
   const [dreamsArray, setDreamsArray] = useState([]);
   // Past bets data fetching:
@@ -43,31 +45,32 @@ export const SettingsProvider = ({ children }) => {
   const [todayItemsLeft, setTodayItemsLeft] = useState(0);
   const [tmrwItemsLeft, setTmrwItemsLeft] = useState(0);
   const [dayCompleted, setDayCompleted] = useState(false);
-  const [timeStatus, setTimeStatus] = useState(0);
+  const [timeStatus, setTimeStatus] = useState(null);
+
+  const resetStates = () => {
+    setCurrentUserID(null);
+    setIsAuthenticated(false);
+    setUserDataFetched(false);
+    setTodayPageLoaded(false);
+    setAllPastBetsDataFetched(false);
+    setAllTransactionsDataFetched(false);
+    setPastBetsArray([]);
+    setTransactionsArray([]);
+    setLastPastBetsDay([]);
+    setLastTransactionsDay([]);
+    setDreamsArray([]);
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.emailVerified) {
-        console.log("signed in! :D");
         setCurrentUserID(user.uid);
-        setIsAuthenticated(true); // user is authenticated
+        setIsAuthenticated(true);
       } else {
-        console.log("signed out :'(");
-        setCurrentUserID(null);
-        setIsAuthenticated(false); // user is not authenticated
-
-
-        setAllPastBetsDataFetched(false);
-        setAllTransactionsDataFetched(false);
-        setPastBetsArray([]);
-        setTransactionsArray([]);
-        setLastPastBetsDay([]);
-        setLastTransactionsDay([]);
-        setDreamsArray([]);
+        resetStates();
       }
     });
 
-    // Clean up subscription on unmount
     return () => unsubscribe();
   }, []);
 
@@ -81,12 +84,11 @@ export const SettingsProvider = ({ children }) => {
         (docSnapshot) => {
           if (docSnapshot.exists()) {
             const userSettings = docSnapshot.data();
-            console.log("hi");
-            console.log(userSettings);
             setSettings(userSettings);
             setCurrentUserFullName(userSettings.fullName);
             setCurrentUserFirstName(userSettings.fullName.split(" ")[0]);
             setCurrentUserEmail(userSettings.email);
+            setUserDataFetched(true);
             fetchDreams();
           } else {
             setIsAuthenticated(false);
@@ -103,6 +105,23 @@ export const SettingsProvider = ({ children }) => {
       return () => unsubscribe();
     }
   }, [isAuthenticated]);
+
+  // Define startTimeStatusChecker function
+  useEffect(() => {
+    let timer;
+    if (isAuthenticated && userDataFetched) {
+      const { todayDayStart, todayDayEnd } = settings;
+
+      timer = setInterval(() => {
+        setTimeStatus(getTimeStatus(todayDayStart, todayDayEnd));
+        setTodayPageLoaded(true); // Shows App if timestatus and therefore user settings have been loaded in
+      }, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [isAuthenticated, userDataFetched]);
+
+  // ----------------------- NON AUTH-RELATED: -----------------------
 
   // Fetch Dreams
   const fetchDreams = async () => {
@@ -311,19 +330,6 @@ export const SettingsProvider = ({ children }) => {
     setDayCompleted(todayCount === 0 && tmrwCount === 0);
   }, [settings]);
 
-  // Update timeStatus every second
-  useEffect(() => {
-    let timer;
-    if (isAuthenticated) {
-      const { todayDayStart, todayDayEnd } = settings;
-      timer = setInterval(() => {
-        setTimeStatus(getTimeStatus(todayDayStart, todayDayEnd));
-      }, 1000);
-    }
-
-    return () => clearInterval(timer);
-  }, [settings, isAuthenticated]);
-
   return (
     <SettingsContext.Provider
       value={{
@@ -336,6 +342,8 @@ export const SettingsProvider = ({ children }) => {
         currentUserEmail,
         setCurrentUserEmail,
         isAuthenticated,
+        userDataFetched,
+        todayPageLoaded,
 
         fetchPastBets,
         pastBetsArray,
@@ -349,7 +357,6 @@ export const SettingsProvider = ({ children }) => {
         tmrwItemsLeft,
         dayCompleted,
         timeStatus,
-
       }}
     >
       {children}

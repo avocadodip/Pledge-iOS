@@ -59,8 +59,8 @@ const getStyles = (theme) =>
       height: 25,
       borderRadius: 50, // Circular dot
 
-      backgroundColor: theme.dayStatusIndicatorBgIncomplete,
-      borderColor: theme.dayStatusIndicatorBorderIncomplete,
+      backgroundColor: theme.notificationDotBg,
+      borderColor: theme.notificationDotBorder,
       borderWidth: 2,
 
       flex: 1,

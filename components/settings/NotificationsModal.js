@@ -10,6 +10,7 @@ import { EXPO_PROJECT_ID } from "@env";
 import BottomModal from "../BottomModal";
 import Checkbox from "expo-checkbox";
 import { useDayChange } from "../../hooks/useDayChange";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 const TIME_CHOICES = ["360", "180", "60", "30", "15"];
 const TIME_LABELS = {
@@ -153,7 +154,10 @@ const NotificationsModal = ({
           <Text style={styles.enableSubheader}>
             Get reminded when your day is about to end.
           </Text>
-          <View style={styles.sampleNotif}>
+          <Animated.View
+            entering={FadeInDown.duration(1000)}
+            style={styles.sampleNotif}
+          >
             <Image
               source={require("../../assets/icons/pledgetransparent.png")}
               style={{ width: 50, height: 50 }}
@@ -167,7 +171,7 @@ const NotificationsModal = ({
                 You have 30 minutes remaining to complete your tasks!
               </Text>
             </View>
-          </View>
+          </Animated.View>
         </View>
       )}
 

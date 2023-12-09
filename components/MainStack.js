@@ -11,8 +11,6 @@ import { BOTTOM_TAB_HEIGHT } from "../GlobalStyles";
 import { StyleSheet, Text, View } from "react-native";
 import Today from "../screens/Today";
 import Tomorrow from "../screens/Tomorrow";
-import Account from "../screens/Account";
-import ChangeEmail from "../screens/ChangeEmail";
 import PastBets from "../screens/PastBets";
 import Transactions from "../screens/Transactions";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -22,9 +20,11 @@ import { useThemes } from "../hooks/ThemesContext";
 import DeleteAccount from "../screens/DeleteAccount";
 import Dreams from "../screens/Dreams";
 import Auth from "../screens/Auth";
-import Login from "../screens/Login";
-import EmailVerification from "../screens/EmailVerification";
-import ForgotPassword from "../screens/ForgotPassword";
+import { StatusBar } from "expo-status-bar";
+import TodoBottomSheet from "./todaytmrw/TodoBottomSheet";
+import { useSettings } from "../hooks/SettingsContext";
+import FinishSignup from "../screens/FinishSignup";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 
 const Stack = createNativeStackNavigator();
 const RootStack = createNativeStackNavigator();
@@ -35,21 +35,6 @@ export const AuthStack = () => (
     <Stack.Screen
       name="Auth"
       component={Auth}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="Login"
-      component={Login}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="EmailVerification"
-      component={EmailVerification}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="ForgotPassword"
-      component={ForgotPassword}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
@@ -81,16 +66,6 @@ const SettingsStack = () => (
       <RootStack.Screen
         name="SettingsScreen"
         component={Settings}
-        options={{ headerShown: false }}
-      />
-      <RootStack.Screen
-        name="Account"
-        component={Account}
-        options={{ headerShown: false }}
-      />
-      <RootStack.Screen
-        name="ChangeEmail"
-        component={ChangeEmail}
         options={{ headerShown: false }}
       />
       <RootStack.Screen
@@ -140,59 +115,70 @@ const getTabStyles = () =>
 
 export default function MainStack() {
   const tabStyles = getTabStyles();
-  const { theme } = useThemes();
+  const { theme, backgroundGradient } = useThemes();
+  const navigation = useNavigation();
 
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: tabStyles.tabBar,
-        tabBarShowLabel: false,
-      }}
-    >
-      <Tab.Screen
-        name="Today"
-        component={TodayStack}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              type={"today"}
-              focused={focused}
-              activeIcon={TodayIcon}
-              theme={theme}
-            />
-          ),
+  const {
+    settings: { finishSignUp },
+  } = useSettings();
+
+  return false ? (
+    <FinishSignup />
+  ) : (
+    <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+      <StatusBar style={theme.statusBar} animated={true} />
+
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: tabStyles.tabBar,
+          tabBarShowLabel: false,
+          unmountOnBlur: false,
         }}
-      />
-      <Tab.Screen
-        name="Tomorrow"
-        component={TomorrowScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              type={"tmrw"}
-              focused={focused}
-              activeIcon={TmrwIcon}
-              theme={theme}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="DreamsStack"
-        component={DreamsStack}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              type={"dreams"}
-              focused={focused}
-              activeIcon={DreamsIcon}
-              theme={theme}
-            />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+      >
+        <Tab.Screen
+          name="Today"
+          component={TodayStack}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon
+                type={"today"}
+                focused={focused}
+                activeIcon={TodayIcon}
+                theme={theme}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Tomorrow"
+          component={TomorrowScreen}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon
+                type={"tmrw"}
+                focused={focused}
+                activeIcon={TmrwIcon}
+                theme={theme}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="DreamsStack"
+          component={DreamsStack}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon
+                type={"dreams"}
+                focused={focused}
+                activeIcon={DreamsIcon}
+                theme={theme}
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </LinearGradient>
   );
 }
-

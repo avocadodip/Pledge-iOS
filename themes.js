@@ -1,7 +1,7 @@
 import { Color } from "./GlobalStyles";
 
 // Backgrounds
-export const redGradientValues = ["#DB5353", "#E46959"];
+export const redGradientValues = ["#F13434", "#e88844"];
 export const purpleGradientValues = ["#5653DB", "#7653DB"];
 export const greenGradientValues = ["#30AD4C", "#2AA746"];
 
@@ -77,10 +77,15 @@ export default {
     // Day Status indicator
     dayStatusIndicatorBg: Color.white18,
     dayStatusIndicatorBorder: Color.white18,
-    dayStatusIndicatorBgIncomplete: "#e17473",
-    dayStatusIndicatorBorderIncomplete: Color.white18,
+
+    dayStatusIndicatorBgIncomplete: Color.white18,
+    dayStatusIndicatorBorderIncomplete: "transparent",
+
     dayStatusIndicatorBgComplete: Color.white18,
     dayStatusIndicatorBorderComplete: Color.white18,
+
+    notificationDotBg: "#ff4e33",
+    notificationDotBorder: "#ff4e33",
 
     // Start first day button border
     buttonBorder: "#feb3b33d",
@@ -131,13 +136,16 @@ export default {
     paymentSheetPrimary: "#fcfdff",
 
     // Day Status indicator
-    dayStatusIndicatorBg: Color.white12, 
+    dayStatusIndicatorBg: Color.white12,
     dayStatusIndicatorBorder: "#4a4a4a",
     dayStatusIndicatorBgIncomplete: "#df3a3a",
     dayStatusIndicatorBorderIncomplete: "#d01f1f",
     dayStatusIndicatorBgComplete: "#3eb344",
     dayStatusIndicatorBorderComplete: "#1f8b25",
-    
+
+    notificationDotBg: "#df3a3a",
+    notificationDotBorder: "#d01f1f",
+
     // Start first day button border
     buttonBorder: "#4a4a4a",
   },

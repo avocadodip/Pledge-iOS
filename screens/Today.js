@@ -18,7 +18,14 @@ const Today = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const {
-    timeStatus, settings: { isOnboarded, todayTodos, todayIsActive, todayIsVacation, todayNoInputFine},
+    timeStatus,
+    settings: {
+      isOnboarded,
+      todayTodos,
+      todayIsActive,
+      todayIsVacation,
+      todayNoInputFine,
+    },
   } = useSettings();
   const { todayDOWAbbrev } = useDayChange();
   let onboardStartTmrw = false; //IMPLEMENT
@@ -29,7 +36,7 @@ const Today = () => {
   const renderTodos = useCallback(() => {
     return todayTodos.map((itemData, index) => {
       if (itemData.isLocked === false) {
-        return <FinedTodo key={index} isFined={(todayNoInputFine > 0)}/>;
+        return <FinedTodo key={index} isFined={todayNoInputFine > 0} />;
       } else {
         return <TodayTodo key={index} todoData={itemData} />;
       }
@@ -57,8 +64,8 @@ const Today = () => {
             type={"new user"}
             setModalVisible={setModalVisible}
           />
-          // Lets Today page know to show "all set" message if user elects to start Tmrw in onboarding
-        ) : onboardStartTmrw ? (
+        ) : // Lets Today page know to show "all set" message if user elects to start Tmrw in onboarding
+        onboardStartTmrw ? (
           <TodayTmrwMessage type={"all set"} />
         ) : todayIsVacation ? (
           <TodayTmrwMessage type={"vacation"} />
@@ -75,7 +82,7 @@ const Today = () => {
       />
     </SafeAreaView>
   );
-}; 
+};
 
 const getStyles = (theme) =>
   StyleSheet.create({
