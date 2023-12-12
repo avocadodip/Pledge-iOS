@@ -5,7 +5,6 @@
 // Video used to set up Google Auth (using expo-auth-session, which may be removed in the future) https://www.youtube.com/watch?v=XB_gNDoOhjY&ab_channel=CodewithBeto
 // TO-DO: When pushing to testflight, we must change "host.exp.Exponent" to "com.cewidiupleek.pledge" in Firebase console: Authentication --> Sign-in method --> Apple --> Services ID
 
-
 // https://blog.devgenius.io/how-to-build-an-ios-expo-app-without-using-eas-build-78bfc4002a0f
 // npx expo prebuild
 // npx pod install
@@ -26,6 +25,7 @@ import * as Google from "expo-auth-session/providers/google";
 import {
   GoogleAuthProvider,
   OAuthProvider,
+  reload,
   signInWithCredential,
   signInWithPopup,
 } from "@firebase/auth";
@@ -60,13 +60,11 @@ const Auth = () => {
   useEffect(() => {
     if (response?.type == "success") {
       const { id_token } = response.params;
-      console.log(id_token);
       try {
-      const credential = GoogleAuthProvider.credential(id_token);
+        const credential = GoogleAuthProvider.credential(id_token);
         signInWithCredential(auth, credential);
       } catch (error) {
-        console.log("Signin error");
-        console.log(error);
+        console.log("sign in error", error);
       }
     }
   }, [response]);
@@ -122,7 +120,7 @@ const Auth = () => {
           style={{ width: 150, height: 150 }}
         />
       </Animated.View>
-      
+
       <Animated.View
         style={styles.bottomContainer}
         entering={SlideInDown.duration(1500)}

@@ -65,7 +65,6 @@ export const initializePaymentSheet = async (
     throw new Error("Failed to setup intent.");
   }
 
-
   const { setupIntent, ephemeralKey } = await response.json();
 
   // Initialize payment sheet
@@ -81,7 +80,6 @@ export const initializePaymentSheet = async (
     throw error; // Throw the error if initialization fails
   }
   // Promise resolves successfully if no error
-
   return setupIntent;
 };
 

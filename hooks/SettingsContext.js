@@ -19,12 +19,12 @@ export const SettingsContext = createContext();
 export const SettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState({ isOnboarded: false });
   const [currentUserID, setCurrentUserID] = useState(null);
-  const [currentUserFullName, setCurrentUserFullName] = useState(null);
   const [currentUserFirstName, setCurrentUserFirstName] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [userDataFetched, setUserDataFetched] = useState(false);
   const [todayPageLoaded, setTodayPageLoaded] = useState(false);
+  const [finishSignup, setFinishSignup] = useState(false);
   // Past bets data fetching:
   const [dreamsArray, setDreamsArray] = useState([]);
   // Past bets data fetching:
@@ -63,14 +63,13 @@ export const SettingsProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user && user.emailVerified) {
+      if (user) {
         setCurrentUserID(user.uid);
         setIsAuthenticated(true);
       } else {
         resetStates();
       }
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -85,14 +84,14 @@ export const SettingsProvider = ({ children }) => {
           if (docSnapshot.exists()) {
             const userSettings = docSnapshot.data();
             setSettings(userSettings);
-            setCurrentUserFullName(userSettings.fullName);
-            setCurrentUserFirstName(userSettings.fullName.split(" ")[0]);
+            setCurrentUserFirstName(userSettings.firstName);
             setCurrentUserEmail(userSettings.email);
             setUserDataFetched(true);
             fetchDreams();
           } else {
-            setIsAuthenticated(false);
-            // Handle the case where the user does not exist or has no settings
+            // Handle the case where the user has not finished sign up
+            setFinishSignup(true);
+            // navigation.navigate("FinishSignup");
           }
           // setLoading(false); // turn off loading
         },
@@ -114,7 +113,9 @@ export const SettingsProvider = ({ children }) => {
 
       timer = setInterval(() => {
         setTimeStatus(getTimeStatus(todayDayStart, todayDayEnd));
-        setTodayPageLoaded(true); // Shows App if timestatus and therefore user settings have been loaded in
+        setFinishSignup(false);
+
+        setTodayPageLoaded(true);
       }, 1000);
     }
 
@@ -336,14 +337,14 @@ export const SettingsProvider = ({ children }) => {
         settings,
         currentUserID,
         setCurrentUserID,
-        currentUserFullName,
-        setCurrentUserFullName,
         currentUserFirstName,
         currentUserEmail,
         setCurrentUserEmail,
         isAuthenticated,
         userDataFetched,
         todayPageLoaded,
+        finishSignup,
+        setFinishSignup,
 
         fetchPastBets,
         pastBetsArray,

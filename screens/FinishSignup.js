@@ -8,12 +8,19 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { redGradientValues } from "../themes";
 import theme from "../themes";
 import Animated, { FadeIn, FadeOutUp } from "react-native-reanimated";
+import { getIdToken } from "@firebase/auth";
+import { auth, db } from "../database/firebase";
+import { API_URL } from "@env";
+import { doc, setDoc } from "firebase/firestore";
+import { getTodayDate } from "../utils/currentDate";
+import { useSettings } from "../hooks/SettingsContext";
 
 const PLACEHOLDER_TEXT_COLOR = "rgba(255, 255, 255, 0.6)";
 
@@ -58,122 +65,6 @@ export const ConfirmButton = ({ text, onPress, disabled, loading }) => {
   );
 };
 
-
-const createFirebaseUserDoc = async () => {
-  try {
-    // Get user's local timezone
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    // Call the Firebase Cloud Function to create a new Stripe customer
-    const idToken = await getIdToken(currentUser, true);
-
-    // Send paymentMethod.id to Cloud Function
-    const response = await fetch(`${API_URL}/createStripeCustomer`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + idToken,
-      },
-      body: JSON.stringify({
-        email: email,
-        uid: currentUser.uid,
-        name: fullName,
-      }),
-    });
-
-    // Handle response from your server.
-    if (!response.ok) {
-      throw new Error("Failed to create Stripe customer.");
-    }
-
-    const result = await response.json();
-    const stripeCustomerId = result.customerId;
-
-    // Save full name, email and stripeCustomerId to Firestore
-    await setDoc(doc(db, "users", currentUser.uid), {
-      fullName: fullName,
-      email: email,
-      profilePhoto: 1,
-      todayDayStart: "7:30",
-      todayDayEnd: "9:00",
-      tmrwDayStart: "7:30",
-      tmrwDayEnd: "9:00",
-      daysActive: {
-        Sunday: true,
-        Monday: true,
-        Tuesday: true,
-        Wednesday: true,
-        Thursday: true,
-        Friday: true,
-        Saturday: true,
-      },
-      vacationModeOn: false,
-      theme: "Classic",
-      missedTaskFine: 0,
-      timezone: timeZone,
-      isActiveUser: true,
-      currency: "usd",
-      stripeCustomerId: stripeCustomerId,
-      isPaymentSetup: false,
-      hasBeenChargedBefore: false,
-      isOnboarded: false,
-      paymentMethodId: null,
-      last4Digits: null,
-      // for notifs:
-      notificationsEnabled: false,
-      todayIsActive: false,
-      tmrwIsActive: false,
-      todayDayEnd: "",
-      todayAllNotifsSent: false,
-      todayANotifHasBeenSent: false,
-      notificationTimes: {
-        15: {
-          shouldSend: false,
-          isSent: false,
-        },
-        30: {
-          shouldSend: false,
-          isSent: false,
-        },
-        60: {
-          shouldSend: false,
-          isSent: false,
-        },
-        180: {
-          shouldSend: false,
-          isSent: false,
-        },
-        360: {
-          shouldSend: false,
-          isSent: false,
-        },
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    Alert.alert("Error", "Failed to create user.");
-  } finally {
-    // Sign user out and sign user back in to trigger onAuthStateChanged listener in App.js to navigate to Today
-    try {
-      await signOut(auth);
-      try {
-        const password = await SecureStore.getItemAsync("password");
-        if (email && password) {
-          await signInWithEmailAndPassword(auth, email, password);
-          await SecureStore.deleteItemAsync("password");
-        } else {
-          throw new Error("Missing email or password in SecureStore");
-        }
-      } catch (signInError) {
-        console.error("Error during sign in:", signInError);
-      }
-    } catch (signOutError) {
-      console.error("Error during sign out:", signOutError);
-    }
-  }
-};
-
-
 const FinishSignup = () => {
   // const { theme, backgroundGradient } = useThemes();
   const [step, setStep] = useState(1); // TEMP
@@ -181,15 +72,121 @@ const FinishSignup = () => {
   const [buttonText, setButtonText] = useState("Next");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const navigation = useNavigation();
+  const { setFinishSignup, setTodayPageLoaded } = useSettings();
+
+  const createFirebaseUserDoc = async () => {
+    try {
+
+      // Call the Firebase Cloud Function to create a new Stripe customer
+      const idToken = await getIdToken(auth.currentUser, true);
+console.log(API_URL);
+      // Send paymentMethod.id to Cloud Function
+      const response = await fetch(`${API_URL}/createStripeCustomer`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + idToken,
+        },
+        body: JSON.stringify({
+          email: auth.currentUser.email,
+          uid: auth.currentUser.uid,
+          name: firstName + " " + lastName,
+        }),
+      });
+
+      // Handle response from your server.
+      if (!response.ok) {
+        throw new Error("Failed to create Stripe customer.");
+      }
+
+      const result = await response.json();
+      const stripeCustomerId = result.customerId;
+
+      // Save user data to Firestore
+      await setDoc(doc(db, "users", auth.currentUser.uid), {
+        firstName: firstName,
+        lastName: lastName,
+        email: auth.currentUser.email,
+        profilePhoto: 1, 
+        todayDayStart: "7:30",
+        todayDayEnd: "9:00",
+        nextDayStart: "7:30",
+        nextDayEnd: "9:00",
+        daysActive: {
+          Sunday: true,
+          Monday: true,
+          Tuesday: true,
+          Wednesday: true,
+          Thursday: true,
+          Friday: true,
+          Saturday: true,
+        },
+        theme: "Classic",
+        missedTaskFine: 0,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        lastSignIn: getTodayDate(),
+        currency: "usd",
+        stripeCustomerId: stripeCustomerId,
+        isPaymentSetup: false,
+        hasBeenChargedBefore: false,
+        isOnboarded: false,
+        paymentMethodId: null,
+        last4Digits: null,
+        notificationsEnabled: false,
+        todayIsActive: false,
+        tmrwIsActive: false,
+        todayAllNotifsSent: false,
+        todayANotifHasBeenSent: false,
+        notificationTimes: {
+          15: {
+            shouldSend: false,
+            isSent: false,
+          },
+          30: {
+            shouldSend: false,
+            isSent: false,
+          },
+          60: {
+            shouldSend: false,
+            isSent: false,
+          },
+          180: {
+            shouldSend: false,
+            isSent: false,
+          },
+          360: {
+            shouldSend: false,
+            isSent: false,
+          },
+        },
+        dailyUpdateLastRun: null,
+        isActive: false,
+        last4Digits: null,
+        notifExpoPushToken: null,
+        todayDayEnd: "11:00",
+        todayDayStart: "8:30",
+        tmrwIsActive: true,
+        tmrwIsVacation: false,
+        tmrwNoInputFine: 0,
+        tmrwTodos: [], 
+        todayIsVacation: false,
+        todayNoInputCount: 0,
+        todayNoInputFine: 0,
+        todayTodos: [], 
+      });
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Failed to make an account. Please try again later.");
+    } 
+  };
 
   // Handle next button click
-  const handleNextPress = () => {
+  const handleNextPress = async () => {
     if (step === 1) {
       setStep(2);
     }
     if (step == 2) {
-      // save to database and they're in!
+      await createFirebaseUserDoc();
     }
   };
 
@@ -327,14 +324,14 @@ const styles = StyleSheet.create({
   button: {
     width: "80%",
     height: 55,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffffc9",
     borderRadius: 50,
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
   },
   buttonText: {
-    color: "#1A2020",
+    color: "#f75f2cc4",
     fontWeight: 700,
     fontSize: 20,
     textAlign: "center",

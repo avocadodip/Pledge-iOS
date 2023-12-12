@@ -103,6 +103,7 @@ const Settings = () => {
 
   const handleLogout = async () => {
     try {
+      navigation.navigate("Dreams");
       await auth.signOut();
     } catch (error) {
       console.error("Sign out error", error);
@@ -124,6 +125,7 @@ const Settings = () => {
     try {
       await initializePaymentSheet(stripeCustomerId, currentUserID, theme);
     } catch (error) {
+      console.log("boo!");
       console.error(error);
     }
     setLoading(false);

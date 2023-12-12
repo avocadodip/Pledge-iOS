@@ -7,7 +7,6 @@ export default function TabIcon({
   type,
   focused,
   activeIcon: ActiveIcon,
-  inactiveIcon: InactiveIcon,
   theme,
 }) {
   const styles = getStyles(theme);
