@@ -104,8 +104,7 @@ console.log(API_URL);
 
       // Save user data to Firestore
       await setDoc(doc(db, "users", auth.currentUser.uid), {
-        firstName: firstName,
-        lastName: lastName,
+        fullName: firstName + " " + lastName,
         email: auth.currentUser.email,
         profilePhoto: 1, 
         todayDayStart: "7:30",
@@ -124,7 +123,7 @@ console.log(API_URL);
         theme: "Classic",
         missedTaskFine: 0,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        lastSignIn: getTodayDate(),
+        lastSeen: getTodayDate(),
         currency: "usd",
         stripeCustomerId: stripeCustomerId,
         isPaymentSetup: false,

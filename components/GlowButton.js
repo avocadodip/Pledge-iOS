@@ -43,7 +43,7 @@ const GlowButton = ({
           backgroundColor: color,
 
           // borderborder
-          // borderColor: finalBorderColor,
+          borderColor: finalBorderColor,
           borderWidth: 1.5,
           borderRadius: borderRadius,
 

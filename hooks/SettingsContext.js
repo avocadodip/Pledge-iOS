@@ -7,12 +7,13 @@ import {
   orderBy,
   query,
   startAfter,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
-import { getBeginningOfWeekDate, getTimeStatus } from "../utils/currentDate";
+import { getBeginningOfWeekDate, getTimeStatus, getTodayDate } from "../utils/currentDate";
 
 export const SettingsContext = createContext();
 
@@ -99,6 +100,15 @@ export const SettingsProvider = ({ children }) => {
           console.error("Error fetching user settings: ", error);
         }
       );
+
+      // set lastSeen to todayDate
+      try {
+        updateDoc(userDoc, {
+          lastSeen: getTodayDate(),
+        });
+      } catch (error) {
+        console.error("Error updating document: ", error.message);
+      }
 
       // Clean up listener when component is unmounted or userID changes
       return () => unsubscribe();

@@ -128,7 +128,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
     stepIndicatorLabelFinishedColor: "transparent",
     stepIndicatorLabelUnFinishedColor: "transparent",
 
-    labelAlign: "left",
+    labelAlign: "flex-start",
   };
 
   // Render conditionally styled labels
@@ -390,7 +390,6 @@ const getStyles = (theme, modalHeight) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.accent,
     },
     pageContainer: {
       height: modalHeight,

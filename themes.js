@@ -9,8 +9,8 @@ export const greenGradientValues = ["#30AD4C", "#2AA746"];
 export const getClassicColor = (color, styleName) => {
   const colorMap = {
     red: {
-      ContentLoaderBackgroundColor: "#e16564",
-      ContentLoaderForegroundColor: "#f27b7b",
+      ContentLoaderBackgroundColor: "#e64e3d",
+      ContentLoaderForegroundColor: "#f37463",
     },
     purple: {
       ContentLoaderBackgroundColor: "#6967e4",

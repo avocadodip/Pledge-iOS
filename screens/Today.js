@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useBottomSheet } from "../hooks/BottomSheetContext";
 import Loading from "../components/Loading";
 import { useSettings } from "../hooks/SettingsContext";

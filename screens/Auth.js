@@ -84,6 +84,7 @@ const Auth = () => {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
+      console.log("what i want?");
       console.log(appleCredential);
       const { identityToken } = appleCredential;
 
@@ -94,8 +95,6 @@ const Auth = () => {
             idToken: identityToken,
             rawNonce: nonce,
           });
-          console.log("firebase credential fetched");
-
           const { user } = await signInWithCredential(auth, credential);
           console.log("user signed in");
           console.log(user);

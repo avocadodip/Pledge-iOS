@@ -16,18 +16,20 @@ const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
   const styles = getStyles(theme);
 
   const isValidTime = (time) => {
-    return time && time.includes(':');
+    return time && time.includes(":");
   };
 
   const getHourMinute = (time) => {
     if (isValidTime(time)) {
-      let [hour, minute] = time.slice(0, -3).split(':');
+      let [hour, minute] = time.slice(0, -3).split(":");
       return { hour, minute };
     }
-    return { hour: '7', minute: '30' };  // default values
+    return { hour: "7", minute: "30" }; // default values
   };
 
-  let { hour: startHour, minute: startMinute } = getHourMinute(timePickerText.start);
+  let { hour: startHour, minute: startMinute } = getHourMinute(
+    timePickerText.start
+  );
   let { hour: endHour, minute: endMinute } = getHourMinute(timePickerText.end);
 
   const [isModalVisible, setModalVisible] = useState({
@@ -77,7 +79,9 @@ const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
             height={42}
             width={125}
             color={theme.lightPrimary}
+            borderColor={theme.buttonBorder}
             onPress={() => toggleModal("start")}
+            shadowColor={"white"}
           >
             <Text
               style={[
@@ -113,6 +117,8 @@ const OnboardTimePicker = ({ type, timePickerText, setTimePickerText }) => {
           width={125}
           color={theme.lightPrimary}
           onPress={() => toggleModal("end")}
+          borderColor={theme.buttonBorder}
+          shadowColor={"white"}
         >
           <Text
             style={[
