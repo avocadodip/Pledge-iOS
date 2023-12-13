@@ -5,10 +5,9 @@ import { BottomSheetProvider } from "./hooks/BottomSheetContext";
 import { SettingsProvider, useSettings } from "./hooks/SettingsContext";
 import { ThemesProvider } from "./hooks/ThemesContext";
 import { STRIPE_PUBLISHABLE_KEY } from "@env";
-import MainStack, { AuthStack } from "./components/MainStack";
+import MainStack from "./components/MainStack";
 import Splash from "./components/Splash";
 import TodoBottomSheet from "./components/todaytmrw/TodoBottomSheet";
-import FinishSignup from "./screens/FinishSignup";
 import { MenuProvider } from "react-native-popup-menu";
 import Auth from "./screens/Auth";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -41,12 +40,6 @@ function AppContent() {
     ) {
       setShowSplash(false);
     }
-  }, [isAuthenticated, todayPageLoaded, finishSignup]);
-
-  useEffect(() => {
-    console.log("1. isAuthenticated:", isAuthenticated);
-    console.log("2. todayPageLoaded:", todayPageLoaded);
-    console.log("3. finishSignup:", finishSignup);
   }, [isAuthenticated, todayPageLoaded, finishSignup]);
 
   if (showSplash) {
