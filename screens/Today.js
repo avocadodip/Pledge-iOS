@@ -25,10 +25,10 @@ const Today = () => {
       todayIsActive,
       todayIsVacation,
       todayNoInputFine,
+      onboardStartTmrw,
     },
   } = useSettings();
   const { todayDOWAbbrev } = useDayChange();
-  let onboardStartTmrw = false; //IMPLEMENT
 
   const [modalVisible, setModalVisible] = useState(false);
 

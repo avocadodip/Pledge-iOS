@@ -2,335 +2,193 @@ import {
   Modal,
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
   View,
-  FlatList,
-  Animated,
+  KeyboardAvoidingView,
+  TextInput,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
-import React, { useState, useRef, useEffect } from "react";
-import StepIndicator from "react-native-step-indicator";
-import SetDeadline from "./SetDeadline";
-import NextButton from "./NextButton";
+import React, { useState, useEffect } from "react";
 import SetStartDay from "./SetStartDay";
 import { useThemes } from "../../hooks/ThemesContext";
-import TaskInput from "./TaskInput";
 import { useSettings } from "../../hooks/SettingsContext";
-import {
-  updateTodoListOnboarding,
-  updateUserIsOnboarded,
-} from "../../utils/firebaseUtils";
-import { getTmrwDate, getTodayDate } from "../../utils/currentDate";
-import { doc, runTransaction, setDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
-// import { useTmrwTodos } from "../../hooks/TmrwTodosContext";
 import { LinearGradient } from "expo-linear-gradient";
-
-const steps = ["Set daily deadline", "Set start day", "Lock in 3 tasks"];
-const FADE_OUT_OPACITY = -7;
+import {
+  AnimatedComponent,
+  ConfirmButton,
+  PLACEHOLDER_TEXT_COLOR,
+  PromptText,
+} from "../../screens/FinishSignup";
+import OnboardTimePicker from "./OnboardTimePicker";
 
 const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
+  const { currentUserID } = useSettings();
   const { theme, backgroundGradient } = useThemes();
-  const [modalHeight, setModalHeight] = useState(0);
-  const styles = getStyles(theme, modalHeight);
-  const [currentPage, setCurrentPage] = useState(0);
-  const scrollAnim = useRef(new Animated.Value(0)).current;
-  const flatListRef = useRef(null);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const [lastCompletedPage, setLastCompletedPage] = useState(0);
+  const styles = getStyles(theme);
+
+  const [step, setStep] = useState(1);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
   const [timePickerText, setTimePickerText] = useState({
     start: "Pick time",
     end: "Pick time",
   });
-  const { currentUserID } = useSettings();
   const [startDay, setStartDay] = useState("");
-  const [todos, setTodos] = useState([
-    {
-      todoNumber: 1,
-      title: "",
-      amount: "",
-      isComplete: false,
-      isLocked: true,
-      description: "",
-      amount: 0,
+  const [showTodayOption, setShowTodayOption] = useState(null);
+  const [firstTodoTitle, setFirstTodoTitle] = useState("");
+  const [secondTodoTitle, setSecondTodoTitle] = useState("");
+  const [thirdTodoTitle, setThirdTodoTitle] = useState("");
+
+  // Handle disabled button logic
+  useEffect(
+    () => {
+      if (step === 1) {
+        setButtonDisabled(timePickerText.start === "Pick time");
+      }
+      if (step === 2) {
+        setButtonDisabled(timePickerText.end === "Pick time");
+      }
+      if (step === 3) {
+        setButtonDisabled(startDay === "");
+      }
+      if (step === 4) {
+        setButtonDisabled(firstTodoTitle.trim().length === 0);
+      }
+      if (step === 5) {
+        setButtonDisabled(secondTodoTitle.trim().length === 0);
+      }
+      if (step === 6) {
+        setButtonDisabled(thirdTodoTitle.trim().length === 0);
+      }
     },
-    {
-      todoNumber: 2,
-      title: "",
-      amount: "",
-      isComplete: false,
-      isLocked: true,
-      description: "",
-      amount: 0,
-    },
-    {
-      todoNumber: 3,
-      title: "",
-      amount: "",
-      isComplete: false,
-      isLocked: true,
-      description: "",
-      amount: 0,
-    },
-  ]);
-  // const { getAndSetTodayTodos } = useTodayTodos();
-  // const { getAndSetTmrwTodos } = useTmrwTodos();
-
-  // Allow step indicator press
-  useEffect(() => {
-    if (
-      timePickerText.start !== "Pick time" &&
-      timePickerText.end !== "Pick time"
-    ) {
-      setLastCompletedPage(1);
-    }
-    if (startDay !== "") {
-      setLastCompletedPage(2);
-    }
-  }, [timePickerText, startDay]);
-
-  // Gets modal height
-  const onLayout = (event) => {
-    const { height } = event.nativeEvent.layout;
-    setModalHeight(height);
-  };
-
-  useEffect(() => {
-    if (!modalVisible) {
-      setCurrentPage(0);
-      setIsScrolling(false);
-    }
-  }, [modalVisible]);
-
-  const stepIndicatorStyles = {
-    stepIndicatorSize: 25,
-    currentStepIndicatorSize: 30,
-
-    // border
-    currentStepStrokeWidth: 3,
-    stepStrokeWidth: 3,
-    stepStrokeCurrentColor: "#e7e7e7",
-    stepStrokeFinishedColor: "#e7e7e7",
-    stepStrokeUnFinishedColor: theme.stepStrokeFinishedColor,
-
-    // line
-    separatorStrokeWidth: 2,
-    separatorFinishedColor: "#e7e7e7",
-    separatorUnFinishedColor: "#ffffff2a",
-
-    // inside circle
-    stepIndicatorFinishedColor: "#e7e7e7",
-    stepIndicatorUnFinishedColor: theme.stepIndicatorUnFinishedColor,
-    stepIndicatorCurrentColor: "#ffffff",
-
-    stepIndicatorLabelFontSize: 0,
-    currentStepIndicatorLabelFontSize: 10,
-    stepIndicatorLabelCurrentColor: "transparent",
-    stepIndicatorLabelFinishedColor: "transparent",
-    stepIndicatorLabelUnFinishedColor: "transparent",
-
-    labelAlign: "flex-start",
-  };
-
-  // Render conditionally styled labels
-  const renderLabel = ({ position, label, currentPosition }) => {
-    return (
-      <Text
-        style={
-          position === currentPosition
-            ? styles.stepLabelSelected
-            : styles.stepLabel
-        }
-      >
-        {label}
-      </Text>
-    );
-  };
-
-  // Scroll from page to page animation
-  const onPageChange = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollAnim } } }],
-    {
-      listener: (event) => {
-        const page = Math.round(
-          event.nativeEvent.contentOffset.y / modalHeight
-        );
-        if (page !== currentPage) {
-          setCurrentPage(page);
-        }
-        setIsScrolling(true); // set isScrolling to true
-      },
-      useNativeDriver: false,
-    }
+    // prettier-ignore
+    [ step, timePickerText, startDay, firstTodoTitle, secondTodoTitle, thirdTodoTitle]
   );
 
-  // Step indicator press
-  const onStepPress = (position) => {
-    // Prevent navigation if the user has not completed the previous page
-    if (position > lastCompletedPage) {
-      return;
-    }
+  // Determine whether to show today option based on user's device time
+  useEffect(() => {
+    const currentTime = new Date();
+    let [endHour, endMinute] = timePickerText.end
+      .split(" ")[0]
+      .split(":")
+      .map(Number);
+    endHour += 12; // Convert to 24 hour format
 
-    if (flatListRef.current) {
-      flatListRef.current.scrollToOffset({
-        offset: position * modalHeight,
-        animated: true,
-      });
-    }
-  };
-
-  // Next button press
-  const onNextPress = async () => {
-    if (currentPage === 2) {
-      // Get rid of AM/PM at end of string
-      let dayStart = timePickerText.start.replace(/(AM|PM)/g, "").trim();
-      let dayEnd = timePickerText.end.replace(/(AM|PM)/g, "").trim();
-
-      let todayDate = getTodayDate();
-      let tmrwDate = getTmrwDate();
-      const todayRef = doc(db, "users", currentUserID, "todos", todayDate);
-      const tmrwRef = doc(db, "users", currentUserID, "todos", tmrwDate);
-
-      if (startDay === "Today") {
-        const userRef = doc(db, "users", currentUserID);
-        await setDoc(userRef, { todayDayEnd: dayEnd }, { merge: true });
-      }
-
-      const createTodoObject = (date, todos, isActive, onboardStartTmrw) => {
-        return {
-          date,
-          dateName: `${
-            [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ][parseInt(date.slice(4, 6), 10) - 1]
-          } ${parseInt(date.slice(6, 8), 10)}`,
-          todos,
-          totalFine: 0,
-          opensAt: dayStart,
-          closesAt: dayEnd,
-          isActive,
-          isVacation: false,
-          onboardStartTmrw: !!onboardStartTmrw,
-        };
-      };
-
-      const createEmptyTodos = () => [null, null, null];
-
-      const todayTodo =
-        startDay === "Today"
-          ? createTodoObject(todayDate, todos, true)
-          : createTodoObject(todayDate, createEmptyTodos(), false, true);
-
-      const tmrwTodo =
-        startDay === "Today"
-          ? createTodoObject(tmrwDate, createEmptyTodos(), true)
-          : createTodoObject(tmrwDate, todos, true);
-
-      await setDoc(todayRef, todayTodo);
-      await setDoc(tmrwRef, tmrwTodo);
-
-      updateUserIsOnboarded(currentUserID); // Update firebase isOnboarded field to true
-      // getAndSetTodayTodos(); // re-fetch today todos to update Today
-      // getAndSetTmrwTodos(); // re-fetch tmrw todos to update Tmrw
-      setModalVisible(false); // Close modal
-    }
-
-    if (currentPage < steps.length - 1) {
-      flatListRef.current.scrollToIndex({
-        animated: true,
-        index: currentPage + 1,
-      });
-    }
-  };
-
-  const renderViewPagerPage = ({ item, index }) => {
-    // Animation - content opacity based on scroll location
-    const opacity = isScrolling
-      ? scrollAnim.interpolate({
-          inputRange: [
-            (index - 1) * modalHeight,
-            index * modalHeight,
-            (index + 1) * modalHeight,
-          ],
-          outputRange: [FADE_OUT_OPACITY, 1, FADE_OUT_OPACITY],
-          extrapolate: "clamp",
-        })
-      : 1;
-
-    // Render each page content
-    let PageContent, nextButtonDisabled;
-    if (index === 0) {
-      PageContent = (
-        <SetDeadline
-          timePickerText={timePickerText}
-          setTimePickerText={setTimePickerText}
-        />
-      );
-      nextButtonDisabled =
-        timePickerText.start === "Pick time" ||
-        timePickerText.end === "Pick time";
-    } else if (index === 1) {
-      // Get user's device time and show today option if their time is before day end
-      const currentTime = new Date();
-      const currentHour = currentTime.getHours();
-      const currentMinutes = currentTime.getMinutes();
-
-      const end = timePickerText.end.split(" ")[0];
-      const endHour = parseInt(end.split(":")[0]) + 12; // adding 12 to convert to 24 hour format
-      const endMinute = parseInt(end.split(":")[1]);
-
-      // Check if current time is before end time
-      const isTodayOption =
-        currentHour < endHour ||
-        (currentHour === endHour && currentMinutes <= endMinute);
-      nextButtonDisabled = startDay === "";
-      PageContent = (
-        <SetStartDay
-          isTodayOption={isTodayOption}
-          timePickerText={timePickerText}
-          startDay={startDay}
-          setStartDay={setStartDay}
-        />
-      );
-    } else {
-      // Disable lock button if any fields unentered
-      nextButtonDisabled = todos.some((todo) => !todo.title);
-      // nextButtonDisabled = todos.some((todo) => !todo.title || !todo.amount);
-      PageContent = (
-        <TaskInput
-          startDay={startDay}
-          endTime={timePickerText.end}
-          todos={todos}
-          setTodos={setTodos}
-        />
-      );
-    }
-
-    return (
-      <Animated.View style={[styles.pageContainer, { opacity }]}>
-        <View style={styles.pageContent}>
-          <View style={styles.contentContainer}>{PageContent}</View>
-          <View style={styles.nextButtonContainer}>
-            <NextButton
-              action={onNextPress}
-              text={"Next"}
-              disabled={nextButtonDisabled}
-              isFinalButton={index === 2}
-            />
-          </View>
-        </View>
-      </Animated.View>
+    // Check if current time is before end time
+    setShowTodayOption(
+      currentTime.getHours() < endHour ||
+        (currentTime.getHours() === endHour &&
+          currentTime.getMinutes() <= endMinute)
     );
+  }, [timePickerText]);
+
+  const handleSubmit = async () => {
+    const waitForAlertResponse = () =>
+      new Promise((resolve, reject) => {
+        Alert.alert(
+          "Confirm",
+          `These tasks will be due at ${timePickerText.end} ${startDay==="Today" ? "today" : "tomorrow"}.`,
+          [
+            {
+              text: "Cancel",
+              onPress: () => resolve("cancel"),
+              style: "default",
+            },
+            {
+              text: "Lock 'em!",
+              onPress: () => resolve("ok"),
+              style: "default",
+            },
+          ],
+          { cancelable: false }
+        );
+      });
+
+    const response = await waitForAlertResponse();
+    if (response === "cancel") {
+      return; // Exit the function if 'Cancel' was pressed
+    }
+
+    // Get rid of AM/PM at end of string
+    let dayStart = timePickerText.start.replace(/(AM|PM)/g, "").trim();
+    let dayEnd = timePickerText.end.replace(/(AM|PM)/g, "").trim();
+    const userRef = doc(db, "users", currentUserID);
+
+    // Update user doc
+    await updateDoc(userRef, {
+      isOnboarded: true,
+      onboardStartTmrw: startDay === "Tmrw",
+      todayDayStart: dayStart,
+      todayDayEnd: dayEnd,
+      tmrwDayStart: dayStart,
+      tmrwDayEnd: dayEnd,
+      todayIsActive: true,
+      tmrwIsActive: true,
+      todayIsVacation: false,
+      tmrwIsVacation: false,
+      onboardStartTmrw: startDay,
+      todayTodos: [
+        {
+          todoNumber: 1,
+          title: startDay === "Today" ? firstTodoTitle : "",
+          description: "",
+          amount: "",
+          tag: "",
+          isLocked: startDay === "Today",
+          isComplete: false,
+        },
+        {
+          todoNumber: 2,
+          title: startDay === "Today" ? secondTodoTitle : "",
+          description: "",
+          amount: "",
+          tag: "",
+          isLocked: startDay === "Today",
+          isComplete: false,
+        },
+        {
+          todoNumber: 3,
+          title: startDay === "Today" ? thirdTodoTitle : "",
+          description: "",
+          amount: "",
+          tag: "",
+          isLocked: startDay === "Today",
+          isComplete: false,
+        },
+      ],
+      tmrwTodos: [
+        {
+          todoNumber: 1,
+          title: startDay === "Tmrw" ? firstTodoTitle : "",
+          description: "",
+          amount: "",
+          tag: "",
+          isLocked: startDay === "Tmrw",
+          isComplete: false,
+        },
+        {
+          todoNumber: 2,
+          title: startDay === "Tmrw" ? secondTodoTitle : "",
+          description: "",
+          amount: "",
+          tag: "",
+          isLocked: startDay === "Tmrw",
+          isComplete: false,
+        },
+        {
+          todoNumber: 3,
+          title: startDay === "Tmrw" ? thirdTodoTitle : "",
+          description: "",
+          amount: "",
+          tag: "",
+          isLocked: startDay === "Tmrw",
+          isComplete: false,
+        },
+      ],
+    });
+
+    setModalVisible(false);
   };
 
   return (
@@ -341,113 +199,199 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       onRequestClose={() => setModalVisible(false)}
       presentationStyle={"pageSheet"}
     >
-      <TouchableWithoutFeedback
-        onPressOut={(e) => {
-          if (e.nativeEvent.locationY > 150) {
-            setModalVisible(false);
-          }
-        }}
-      >
-        <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-          <View style={styles.container} onLayout={onLayout}>
-            <Text style={styles.gettingStartedText}>Set Up Your First Day</Text>
-            <View style={styles.stepIndicator}>
-              <StepIndicator
-                stepCount={3}
-                customStyles={stepIndicatorStyles}
-                currentPosition={currentPage}
-                onPress={onStepPress}
-                renderLabel={renderLabel}
-                labelAlign="left"
-                labels={steps}
-                direction="vertical"
+      <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <View style={styles.container}>
+            <View style={styles.promptContainer}>
+              {step === 1 && (
+                <>
+                  <AnimatedComponent>
+                    <PromptText text="My day will start at" />
+                    <View style={{ alignItems: "center" }}>
+                      <OnboardTimePicker
+                        type={"AM"}
+                        timePickerText={timePickerText}
+                        setTimePickerText={setTimePickerText}
+                        isOnboardingModal={false}
+                      />
+                    </View>
+                    <View style={styles.explainer}>
+                      <Text style={styles.explainerText}>
+                        This is when the app allows you to begin checking off
+                        tasks and entering in next day's tasks.
+                      </Text>
+                    </View>
+                  </AnimatedComponent>
+                </>
+              )}
+              {step === 2 && (
+                <>
+                  <AnimatedComponent>
+                    <PromptText text="My day will end at" />
+                    <View style={{ alignItems: "center" }}>
+                      <OnboardTimePicker
+                        type={"PM"}
+                        timePickerText={timePickerText}
+                        setTimePickerText={setTimePickerText}
+                        isOnboardingModal={false}
+                      />
+                    </View>
+                    <View style={styles.explainer}>
+                      <Text style={styles.explainerText}>
+                        This is your deadline for checking off tasks and locking
+                        in next day's tasks.
+                      </Text>
+                      <Text style={[styles.explainerText, { marginTop: 15 }]}>
+                        After this time, incomplete pledges are added to the
+                        weekly total fine. (Charges occur on Saturdays at 11:45
+                        PM).
+                      </Text>
+                    </View>
+                  </AnimatedComponent>
+                </>
+              )}
+              {step === 3 && (
+                <>
+                  <AnimatedComponent>
+                    <PromptText text="I will complete my first day of tasks" />
+                    <SetStartDay
+                      isTodayOption={showTodayOption}
+                      timePickerText={timePickerText}
+                      startDay={startDay}
+                      setStartDay={setStartDay}
+                    />
+                  </AnimatedComponent>
+                </>
+              )}
+              {step === 4 && (
+                <>
+                  <AnimatedComponent>
+                    <PromptText text="Enter your first task" />
+                    <TextInput
+                      style={styles.inputField}
+                      placeholder="Do yoga for 20 minutes"
+                      value={firstTodoTitle}
+                      onChangeText={(text) => {
+                        setFirstTodoTitle(text);
+                      }}
+                      placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
+                      autoCorrect={false}
+                      keyboardType="default"
+                      textAlign="center"
+                      autoFocus
+                    />
+                  </AnimatedComponent>
+                </>
+              )}
+              {step === 5 && (
+                <>
+                  <AnimatedComponent>
+                    <PromptText text="Enter your second task" />
+                    <TextInput
+                      style={styles.inputField}
+                      placeholder="Apply to 3 internships"
+                      value={secondTodoTitle}
+                      onChangeText={(text) => {
+                        setSecondTodoTitle(text);
+                      }}
+                      placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
+                      autoCorrect={false}
+                      keyboardType="default"
+                      textAlign="center"
+                      autoFocus
+                    />
+                  </AnimatedComponent>
+                </>
+              )}
+              {step === 6 && (
+                <>
+                  <AnimatedComponent>
+                    <PromptText text="Enter your third task" />
+                    <TextInput
+                      style={styles.inputField}
+                      placeholder="Finish English paper"
+                      value={thirdTodoTitle}
+                      onChangeText={(text) => {
+                        setThirdTodoTitle(text);
+                      }}
+                      placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
+                      autoCorrect={false}
+                      keyboardType="default"
+                      textAlign="center"
+                      autoFocus
+                    />
+                  </AnimatedComponent>
+                </>
+              )}
+            </View>
+            <View style={styles.bottomContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  setStep((prevStep) => prevStep - 1);
+                }}
+              >
+                {step > 1 && <Text style={styles.buttonLabelText}>Back</Text>}
+              </TouchableOpacity>
+              <ConfirmButton
+                text={step === 6 ? "Lock it!" : "Next"}
+                onPress={() => {
+                  if (step === 6) {
+                    handleSubmit();
+                  } else {
+                    setStep(step + 1);
+                  }
+                }}
+                disabled={buttonDisabled}
               />
             </View>
-            <FlatList
-              ref={flatListRef}
-              data={steps}
-              renderItem={renderViewPagerPage}
-              keyExtractor={(item, index) => "page_" + index}
-              pagingEnabled
-              vertical
-              showsVerticalScrollIndicator={false}
-              scrollEventThrottle={16}
-              onScroll={onPageChange}
-              getItemLayout={(data, index) => ({
-                length: modalHeight,
-                offset: modalHeight * index,
-                index,
-              })}
-            />
           </View>
-        </LinearGradient>
-      </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </LinearGradient>
     </Modal>
   );
 };
 
-const getStyles = (theme, modalHeight) =>
+const getStyles = (theme) =>
   StyleSheet.create({
     container: {
-      flex: 1,
+      height: "100%",
+      justifyContent: "center",
+      alignItems: "center",
     },
-    pageContainer: {
-      height: modalHeight,
+    promptContainer: {
+      flex: 1,
+      width: "100%",
       justifyContent: "center",
       alignItems: "center",
       paddingHorizontal: 20,
     },
-    pageContent: {
-      position: "absolute",
-      top: 170,
-      flex: 1,
-      height: "75%",
-      width: "100%",
-    },
-    contentContainer: {
-      flex: 8,
-      width: "100%",
-      justifyContent: "center",
-    },
-    nextButtonContainer: {
-      flex: 2,
-      justifyContent: "center",
-      width: "100%",
-      alignItems: "center",
-    },
-    gettingStartedText: {
-      fontSize: 25,
-      fontWeight: 500,
+    inputField: {
       color: "white",
-      width: 120,
-      marginLeft: 20,
-      position: "absolute",
-      top: 30,
-
-      // borderWidth: 1,
-      // borderColor: "black",
+      borderWidth: 0,
+      color: "#FFFFFF",
+      fontSize: 25,
     },
-    stepIndicator: {
-      zIndex: 1,
-      position: "absolute",
-      top: 20,
-      right: 0,
-      height: "18%",
-      width: "60%",
-      flexDirection: "row",
-      gap: 20,
+    bottomContainer: {
+      alignItems: "center",
+      paddingBottom: 40,
+      width: "100%",
     },
-    stepLabel: {
+    explainer: {
+      marginTop: 15,
+    },
+    explainerText: {
+      marginTop: 3,
+      fontSize: 15,
+      color: theme.textMedium,
+      lineHeight: 22,
+    },
+    buttonLabelText: {
+      color: "white",
+      opacity: 0.6,
       fontSize: 17,
-      fontWeight: 500,
-      color: "#ffffffbd",
-      paddingLeft: 10,
-    },
-    stepLabelSelected: {
-      fontSize: 17,
-      fontWeight: 500,
-      color: "#ffffff",
-      paddingLeft: 10,
+      marginBottom: 14,
     },
   });
 

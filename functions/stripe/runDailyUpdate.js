@@ -93,6 +93,8 @@ const runDailyUpdate = onRequest(async (req, res) => {
           notificationTimes,
           todayNoInputFine, tmrwNoInputFine,
           todayNoInputCount: tmrwNoInputCount,
+
+          onboardStartTmrw: false
         });
 
         // ----- 2. END OF DAY: MOVE TODAY DATA TO PAST TODOS + CALCULATE FINES ------

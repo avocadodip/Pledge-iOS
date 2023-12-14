@@ -13,7 +13,11 @@ import {
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../database/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
-import { getBeginningOfWeekDate, getTimeStatus, getTodayDate } from "../utils/currentDate";
+import {
+  getBeginningOfWeekDate,
+  getTimeStatus,
+  getTodayDate,
+} from "../utils/currentDate";
 
 export const SettingsContext = createContext();
 
@@ -92,7 +96,6 @@ export const SettingsProvider = ({ children }) => {
           } else {
             // Handle the case where the user has not finished sign up
             setFinishSignup(true);
-            // navigation.navigate("FinishSignup");
           }
           // setLoading(false); // turn off loading
         },
@@ -322,18 +325,21 @@ export const SettingsProvider = ({ children }) => {
       todayIsVacation,
       tmrwIsActive,
       tmrwIsVacation,
+      isOnboarded,
     } = settings;
 
     let todayCount = 0;
     let tmrwCount = 0;
 
-    if (todayIsActive && !todayIsVacation) {
-      todayCount =
-        todayTodos?.filter((todo) => !todo.isComplete && todo.isLocked)
-          .length || 0;
-    }
-    if (tmrwIsActive && !tmrwIsVacation) {
-      tmrwCount = tmrwTodos?.filter((todo) => !todo.isLocked).length || 0;
+    if (isOnboarded) {
+      if (todayIsActive && !todayIsVacation) {
+        todayCount =
+          todayTodos?.filter((todo) => !todo.isComplete && todo.isLocked)
+            .length || 0;
+      }
+      if (tmrwIsActive && !tmrwIsVacation) {
+        tmrwCount = tmrwTodos?.filter((todo) => !todo.isLocked).length || 0;
+      }
     }
 
     setTodayItemsLeft(todayCount);

@@ -50,10 +50,6 @@ const SetStartDay = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.promptText}>
-        I will complete{"\n"}my first day of tasks
-      </Text>
-
       {/* Today Button */}
       {isTodayOption && hoursLeft !== 0 && (
         <TouchableOpacity

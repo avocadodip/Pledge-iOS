@@ -22,7 +22,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { getTodayDate } from "../utils/currentDate";
 import { useSettings } from "../hooks/SettingsContext";
 
-const PLACEHOLDER_TEXT_COLOR = "rgba(255, 255, 255, 0.6)";
+export const PLACEHOLDER_TEXT_COLOR = "rgba(255, 255, 255, 0.6)";
 
 export const AnimatedComponent = ({ isFirstStep = false, children }) => {
   return (
