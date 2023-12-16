@@ -49,7 +49,7 @@ const MissedTaskFineModal = ({
       onBackdropPress={() => {
         handleToggleModal(false);
       }}
-      modalTitle={"No Input Fine"}
+      modalTitle={"Non-Input Fine"}
     >
       <View style={styles.modalContent}>
         {missedTaskFine === 0 ? (
@@ -63,7 +63,7 @@ const MissedTaskFineModal = ({
               Fines will simply be added to the end of week charge.
             </Text>
             <Text style={styles.descriptionText}>
-              We strongly recommend enabling fines, as this is a cort part of
+              We strongly recommend enabling fines, as this is a core part of
               Pledge's intended usage.
             </Text>
           </View>

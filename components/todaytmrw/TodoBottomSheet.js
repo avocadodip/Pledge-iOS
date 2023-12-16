@@ -310,7 +310,9 @@ export default function TodoBottomSheet() {
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
               <PledgeDollarIcon color={theme.textHigh} />
-              <Text style={styles.descText}>${selectedTodo.amount}</Text>
+              <Text style={styles.descText}>
+                ${selectedTodo.amount === "" ? 0 : selectedTodo.amount}
+              </Text>
             </View>
             <View style={styles.horizontalDivider} />
             {selectedTodo.description !== "" && (

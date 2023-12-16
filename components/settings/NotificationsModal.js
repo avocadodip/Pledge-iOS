@@ -11,6 +11,7 @@ import BottomModal from "../BottomModal";
 import Checkbox from "expo-checkbox";
 import { useDayChange } from "../../hooks/useDayChange";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import SampleNotif from "../SampleNotif";
 
 const TIME_CHOICES = ["360", "180", "60", "30", "15"];
 const TIME_LABELS = {
@@ -154,24 +155,7 @@ const NotificationsModal = ({
           <Text style={styles.enableSubheader}>
             Get reminded when your day is about to end.
           </Text>
-          <Animated.View
-            entering={FadeInDown.duration(1000)}
-            style={styles.sampleNotif}
-          >
-            <Image
-              source={require("../../assets/icons/pledgetransparent.png")}
-              style={{ width: 50, height: 50 }}
-            />
-            <View style={styles.sampleNotifContent}>
-              <View style={styles.sampleNotifTopContent}>
-                <Text style={styles.appName}>Pledge</Text>
-                <Text style={styles.timestamp}>now</Text>
-              </View>
-              <Text style={styles.sampleNotifMessage}>
-                You have 30 minutes remaining to complete your tasks!
-              </Text>
-            </View>
-          </Animated.View>
+          <SampleNotif />
         </View>
       )}
 
@@ -237,43 +221,6 @@ const styles = StyleSheet.create({
   remindMeText: {
     fontSize: 17,
     color: Color.white,
-    fontWeight: 400,
-  },
-
-  // SAMPLE NOTIF STYLES
-  sampleNotif: {
-    backgroundColor: "rgba(211, 211, 211, 1)",
-    borderRadius: 17,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-    paddingVertical: 12,
-    paddingHorizontal: 5,
-    width: "100%",
-  },
-  sampleNotifContent: {
-    flexDirection: "column",
-    gap: 3,
-    width: "80%",
-  },
-  sampleNotifTopContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  appName: {
-    fontSize: 14,
-    color: "black",
-    fontWeight: 500,
-  },
-  timestamp: {
-    fontSize: 14,
-    color: "grey",
-    fontWeight: 400,
-  },
-  sampleNotifMessage: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: "black",
     fontWeight: 400,
   },
 

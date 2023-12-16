@@ -93,6 +93,15 @@ export const SettingsProvider = ({ children }) => {
             setCurrentUserEmail(userSettings.email);
             setUserDataFetched(true);
             fetchDreams();
+
+            // set lastSeen to todayDate
+            try {
+              updateDoc(userDoc, {
+                lastSeen: getTodayDate(),
+              });
+            } catch (error) {
+              console.error("Error updating document: ", error.message);
+            }
           } else {
             // Handle the case where the user has not finished sign up
             setFinishSignup(true);
@@ -103,15 +112,6 @@ export const SettingsProvider = ({ children }) => {
           console.error("Error fetching user settings: ", error);
         }
       );
-
-      // set lastSeen to todayDate
-      try {
-        updateDoc(userDoc, {
-          lastSeen: getTodayDate(),
-        });
-      } catch (error) {
-        console.error("Error updating document: ", error.message);
-      }
 
       // Clean up listener when component is unmounted or userID changes
       return () => unsubscribe();

@@ -40,7 +40,7 @@ const Tomorrow = () => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      {isOnboarded && <DayStatusIndicator />}
+      {isOnboarded && !tmrwIsVacation && <DayStatusIndicator />}
 
       <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>

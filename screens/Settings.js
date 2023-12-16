@@ -273,7 +273,7 @@ const Settings = () => {
               <View style={styles.leftSettingsButton}>
                 <LockDollarIcon width={26} height={26} color={theme.textHigh} />
 
-                <Text style={styles.buttonTitle}>No Input Fine</Text>
+                <Text style={styles.buttonTitle}>Non-Input Fine</Text>
               </View>
               {missedTaskFine === 0 ? (
                 <Text

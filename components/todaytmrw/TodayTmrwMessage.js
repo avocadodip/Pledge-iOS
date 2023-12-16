@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import CircleRightArrow from "../../assets/icons/circle-right-arrow.svg";
 import { useNavigation } from "@react-navigation/native";
 import { useThemes } from "../../hooks/ThemesContext";
@@ -7,6 +7,8 @@ import { daysOfWeek, getNextActiveDay } from "../../utils/currentDate";
 import GlowButton from "../GlowButton";
 import { useSettings } from "../../hooks/SettingsContext";
 import { useDayChange } from "../../hooks/useDayChange";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../database/firebase";
 
 const TodayTmrwMessage = ({ type, setModalVisible }) => {
   const { theme } = useThemes();
@@ -14,6 +16,7 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
   const styles = getStyles(theme);
   const {
     settings: { tmrwIsActive, daysActive },
+    currentUserID,
   } = useSettings();
   const { tmrwDOW } = useDayChange();
   const [nextActiveDay, setNextActiveDay] = useState(
@@ -21,6 +24,18 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
   );
   const nextActiveDayIndex = daysOfWeek.indexOf(nextActiveDay);
   const dayBeforeNextActiveDay = daysOfWeek[(nextActiveDayIndex - 1 + 7) % 7];
+
+  const turnOffVacation = async () => {
+    const userRef = doc(db, "users", currentUserID);
+
+    try {
+      await updateDoc(userRef, {
+        tmrwIsVacation: false,
+      });
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
+  };
 
   const renderMessage = () => {
     switch (type) {
@@ -56,10 +71,11 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
               shadowColor={"white"}
             >
               <View style={{ flexDirection: "row", gap: 10 }}>
-                <Text style={styles.glowButtonText}>
-                  Turn off vacation mode
-                </Text>
-                <CircleRightArrow color={theme.textHigh} />
+                <TouchableOpacity onPress={turnOffVacation}>
+                  <Text style={styles.glowButtonText}>
+                    Turn off vacation mode
+                  </Text>
+                </TouchableOpacity>
               </View>
             </GlowButton>
           </View>

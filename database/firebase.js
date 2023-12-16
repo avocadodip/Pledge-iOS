@@ -23,8 +23,6 @@ const firebaseConfig = {
   appId: APP_ID,
 };
 
-console.log(firebaseConfig);
-
 let app, auth;
 
 if (!getApps().length) {

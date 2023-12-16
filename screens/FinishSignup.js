@@ -9,18 +9,19 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Linking,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { redGradientValues } from "../themes";
-import theme from "../themes";
 import Animated, { FadeIn, FadeOutUp } from "react-native-reanimated";
 import { getIdToken } from "@firebase/auth";
 import { auth, db } from "../database/firebase";
 import { API_URL } from "@env";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { getTodayDate } from "../utils/currentDate";
-import { useSettings } from "../hooks/SettingsContext";
+import SampleNotif from "../components/SampleNotif";
+import { EXPO_PROJECT_ID } from "@env";
+import * as Notifications from "expo-notifications";
 
 export const PLACEHOLDER_TEXT_COLOR = "rgba(255, 255, 255, 0.6)";
 
@@ -66,20 +67,42 @@ export const ConfirmButton = ({ text, onPress, disabled, loading }) => {
 };
 
 const FinishSignup = () => {
-  // const { theme, backgroundGradient } = useThemes();
   const [step, setStep] = useState(1); // TEMP
-  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState("Next");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const { setFinishSignup, setTodayPageLoaded } = useSettings();
+  const [expoPushToken, setExpoPushToken] = useState(null);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
+
+  const getNotifPermissions = async () => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== "granted") {
+      Linking.openURL("app-settings:");
+      return;
+    }
+
+    try {
+      const tokenData = await Notifications.getExpoPushTokenAsync({
+        experienceId: EXPO_PROJECT_ID,
+      });
+      const token = tokenData.data;
+
+      if (token !== null) {
+        setExpoPushToken(token);
+        setNotificationsEnabled(true);
+      }
+    } catch (error) {
+      console.error("Error getting Expo push token: ", error.message);
+    }
+  };
 
   const createFirebaseUserDoc = async () => {
     try {
-
       // Call the Firebase Cloud Function to create a new Stripe customer
       const idToken = await getIdToken(auth.currentUser, true);
-console.log(API_URL);
+      console.log(API_URL);
       // Send paymentMethod.id to Cloud Function
       const response = await fetch(`${API_URL}/createStripeCustomer`, {
         method: "POST",
@@ -106,7 +129,7 @@ console.log(API_URL);
       await setDoc(doc(db, "users", auth.currentUser.uid), {
         fullName: firstName + " " + lastName,
         email: auth.currentUser.email,
-        profilePhoto: 1, 
+        profilePhoto: 1,
         todayDayStart: "7:30",
         todayDayEnd: "9:00",
         nextDayStart: "7:30",
@@ -131,7 +154,7 @@ console.log(API_URL);
         isOnboarded: false,
         paymentMethodId: null,
         last4Digits: null,
-        notificationsEnabled: false,
+        notificationsEnabled: notificationsEnabled,
         todayIsActive: false,
         tmrwIsActive: false,
         todayAllNotifsSent: false,
@@ -161,30 +184,38 @@ console.log(API_URL);
         dailyUpdateLastRun: null,
         isActive: false,
         last4Digits: null,
-        notifExpoPushToken: null,
+        notifExpoPushToken: expoPushToken,
         todayDayEnd: "11:00",
         todayDayStart: "8:30",
         tmrwIsActive: true,
         tmrwIsVacation: false,
         tmrwNoInputFine: 0,
-        tmrwTodos: [], 
+        tmrwTodos: [],
         todayIsVacation: false,
         todayNoInputCount: 0,
         todayNoInputFine: 0,
-        todayTodos: [], 
+        todayTodos: [],
       });
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "Failed to make an account. Please try again later.");
-    } 
+      Alert.alert(
+        "Error",
+        "Failed to make an account. Please try again later."
+      );
+    }
   };
 
   // Handle next button click
   const handleNextPress = async () => {
     if (step === 1) {
+      await getNotifPermissions();
       setStep(2);
     }
     if (step == 2) {
+      setStep(3);
+    }
+    if (step === 3) {
+      setButtonLoading(true);
       await createFirebaseUserDoc();
     }
   };
@@ -193,9 +224,14 @@ console.log(API_URL);
   useEffect(
     () => {
       if (step === 1) {
-        setButtonDisabled(firstName.trim() == "");
+        setButtonText("Turn on");
+        setButtonDisabled(false);
       }
       if (step === 2) {
+        setButtonText("Next");
+        setButtonDisabled(firstName.trim() == "");
+      }
+      if (step === 3) {
         setButtonDisabled(lastName.trim() == "");
       }
     },
@@ -211,6 +247,16 @@ console.log(API_URL);
         <SafeAreaView style={styles.container}>
           <View style={styles.promptContainer}>
             {step === 1 && (
+              <>
+                <AnimatedComponent>
+                  <PromptText text="Pledge works best with notifications on." />
+                  <View style={{ width: "90%", marginTop: 10 }}>
+                    <SampleNotif />
+                  </View>
+                </AnimatedComponent>
+              </>
+            )}
+            {step === 2 && (
               <>
                 <AnimatedComponent>
                   <PromptText text="Enter your first name" />
@@ -230,7 +276,7 @@ console.log(API_URL);
                 </AnimatedComponent>
               </>
             )}
-            {step === 2 && (
+            {step === 3 && (
               <>
                 <AnimatedComponent>
                   <PromptText text="Enter your last name" />
@@ -254,26 +300,26 @@ console.log(API_URL);
 
           <View style={styles.bottomContainer}>
             {/* Conditional text above next button */}
-            {/* <TouchableOpacity
+            <TouchableOpacity
               onPress={() => {
                 if (step === 1) {
-                  // navigation.navigate("AuthScreen");
-                } else {
+                  setStep(2);
+                }
+                if (step > 1) {
                   setStep((prevStep) => prevStep - 1);
                 }
               }}
             >
-              {step > 1 && (
-                <Text style={styles.buttonLabelText}>
-                  {step === 2 ? "Re-enter email" : "Back"}
-                </Text>
-              )}
-            </TouchableOpacity> */}
+              <Text style={styles.buttonLabelText}>
+                {step === 1 ? "Skip" : "Back"}
+              </Text>
+            </TouchableOpacity>
 
             <ConfirmButton
               text={buttonText}
               onPress={handleNextPress}
               disabled={buttonDisabled}
+              loading={buttonLoading}
             />
           </View>
         </SafeAreaView>

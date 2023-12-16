@@ -14,14 +14,10 @@ import { useSettings } from "../../hooks/SettingsContext";
 import { useDayChange } from "../../hooks/useDayChange";
 import { db } from "../../database/firebase";
 import { doc, updateDoc } from "firebase/firestore";
-import { abbreviateDOW } from "../../utils/currentDate";
-import InfoIcon from "../../assets/icons/info-icon-alt.svg";
 import { LinearGradient } from "expo-linear-gradient";
-import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 
 const DayStatusIndicator = ({ message }) => {
   const { theme, backgroundGradient } = useThemes();
-  const { tmrwDOW } = useDayChange();
   const {
     settings: { todayDayStart, todayDayEnd },
     currentUserID,
@@ -63,9 +59,9 @@ const DayStatusIndicator = ({ message }) => {
   useEffect(() => {
     if (mountedRef.current) {
       const updateFirebase = async () => {
-        // Extract the hour and minute part from the timePickerText state
         const formattedDayStart = timePickerText.start.split(" ")[0];
         const formattedDayEnd = timePickerText.end.split(" ")[0];
+        
         try {
           // Update the user settings tmrw fields with the new start and end times
           await updateDoc(doc(db, "users", currentUserID), {
@@ -112,23 +108,12 @@ const DayStatusIndicator = ({ message }) => {
           }}
         >
           <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-            <View style={styles.pageContainer}>
-              <View>
-                <Text style={styles.titleText}>Set Deadline</Text>
-              </View>
-              <View style={styles.explainerContainer}>
-                <InfoIcon color={theme.textMedium} width={21} height={21} />
-                <Text style={styles.explainerText}>
-                  The below times go into effect tomorrow (on{" "}
-                  {abbreviateDOW(tmrwDOW)})
-                </Text>
-              </View>
+
               <SetDeadline
                 timePickerText={timePickerText}
                 setTimePickerText={setTimePickerText}
                 isOnboardingModal={false}
               />
-            </View>
           </LinearGradient>
         </TouchableWithoutFeedback>
       </Modal>
@@ -184,34 +169,5 @@ const getStyles = (theme, dayCompleted, timeStatus) =>
       paddingBottom: 4, //temp
       fontWeight: "bold",
       marginTop: 5,
-    },
-
-    pageContainer: {
-      height: "100%",
-      alignItems: "center",
-      paddingHorizontal: 20,
-      flex: 1,
-    },
-    titleText: {
-      color: theme.textHigh,
-      fontSize: 26,
-      fontWeight: 600,
-      marginTop: 35,
-    },
-    explainerContainer: {
-      backgroundColor: theme.faintishPrimary,
-      flexDirection: "row",
-      alignItems: "center",
-      marginTop: 10,
-      marginBottom: 15,
-      gap: 6,
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 10,
-    },
-    explainerText: {
-      fontSize: 15,
-      color: theme.textMedium,
-      lineHeight: 22,
     },
   });
