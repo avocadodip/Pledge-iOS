@@ -184,7 +184,6 @@ const getStyles = (theme) =>
       width: "100%",
       paddingVertical: 25,
       paddingHorizontal: 35,
-      backgroundColor: theme.accent,
       borderRadius: 20,
       alignItems: "center",
       shadowColor: "#000",

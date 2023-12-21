@@ -19,10 +19,10 @@ import { LinearGradient } from "expo-linear-gradient";
 const DayStatusIndicator = ({ message }) => {
   const { theme, backgroundGradient } = useThemes();
   const {
-    settings: { todayDayStart, todayDayEnd },
+    settings: { todayDayStart, todayDayEnd, todayIsActive, tmrwIsActive },
     currentUserID,
     dayCompleted,
-    timeStatus
+    timeStatus,
   } = useSettings();
   const mountedRef = useRef(false); // prevent firebase update on mount
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,7 +40,11 @@ const DayStatusIndicator = ({ message }) => {
       setTimeStatusBadge(`Opens @ ${todayDayStart} AM`);
     } else if (timeStatus === 1) {
       if (dayCompleted) {
-        setTimeStatusBadge("You're done for today!");
+        if (!todayIsActive && !tmrwIsActive) {
+          setTimeStatusBadge("All set for today");
+        } else {
+          setTimeStatusBadge("You're done for today!");
+        }
       } else {
         setTimeStatusBadge(`Due @ ${todayDayEnd} PM`);
       }
@@ -61,7 +65,7 @@ const DayStatusIndicator = ({ message }) => {
       const updateFirebase = async () => {
         const formattedDayStart = timePickerText.start.split(" ")[0];
         const formattedDayEnd = timePickerText.end.split(" ")[0];
-        
+
         try {
           // Update the user settings tmrw fields with the new start and end times
           await updateDoc(doc(db, "users", currentUserID), {
@@ -108,12 +112,11 @@ const DayStatusIndicator = ({ message }) => {
           }}
         >
           <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-
-              <SetDeadline
-                timePickerText={timePickerText}
-                setTimePickerText={setTimePickerText}
-                isOnboardingModal={false}
-              />
+            <SetDeadline
+              timePickerText={timePickerText}
+              setTimePickerText={setTimePickerText}
+              isOnboardingModal={false}
+            />
           </LinearGradient>
         </TouchableWithoutFeedback>
       </Modal>

@@ -332,20 +332,21 @@ export const SettingsProvider = ({ children }) => {
     let tmrwCount = 0;
 
     if (isOnboarded) {
-      if (todayIsActive && !todayIsVacation) {
+      if (todayIsActive && !todayIsVacation && timeStatus === 1) {
         todayCount =
           todayTodos?.filter((todo) => !todo.isComplete && todo.isLocked)
             .length || 0;
       }
-      if (tmrwIsActive && !tmrwIsVacation) {
+      if (tmrwIsActive && !tmrwIsVacation && timeStatus === 1) {
         tmrwCount = tmrwTodos?.filter((todo) => !todo.isLocked).length || 0;
       }
     }
 
     setTodayItemsLeft(todayCount);
     setTmrwItemsLeft(tmrwCount);
-    setDayCompleted(todayCount === 0 && tmrwCount === 0);
-  }, [settings]);
+
+    setDayCompleted(todayCount === 0 && tmrwCount === 0 && timeStatus > 0);
+  }, [settings, timeStatus]);
 
   return (
     <SettingsContext.Provider

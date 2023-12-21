@@ -1,4 +1,5 @@
 import { Color } from "./GlobalStyles";
+// https://stripe.com/docs/elements/appearance-api?platform=react-native
 
 // Backgrounds
 export const redGradientValues = ["#F13434", "#e88844"];
@@ -9,7 +10,7 @@ export const greenGradientValues = ["#30AD4C", "#2AA746"];
 export const getClassicColor = (color, styleName) => {
   const colorMap = {
     red: {
-      ContentLoaderBackgroundColor: "#e64e3d",
+      ContentLoaderBackgroundColor: "#f0554d",
       ContentLoaderForegroundColor: "#f37463",
     },
     purple: {
@@ -89,6 +90,18 @@ export default {
 
     // Start first day button border
     buttonBorder: "#feb3b33d",
+
+    // stripe
+    stripePrimary: '#000000',
+    stripeBackground: '#ffffff',
+    stripeComponentBackground: '#f3f8fa',
+    stripeComponentBorder: '#f3f8fa',
+    stripeComponentDivider: '#000000',
+    stripePrimaryText: '#000000',
+    stripeSecondaryText: '#000000',
+    stripeComponentText: '#000000',
+    stripePlaceholderText: '#73757b',
+
   },
   Dark: {
     accent: Color.black,
@@ -148,6 +161,17 @@ export default {
 
     // Start first day button border
     buttonBorder: "#4a4a4a",
+
+    // stripe
+    stripePrimary: Color.white,
+    stripeBackground: Color.black,
+    stripeComponentBackground: Color.white,
+    stripeComponentBorder: "#f3f8fa",
+    stripeComponentDivider: Color.black,
+    stripePrimaryText: Color.white,
+    stripeSecondaryText: Color.white,
+    stripeComponentText: Color.black,
+    stripePlaceholderText: "#80121212",
   },
   Light: {
     accent: Color.white,

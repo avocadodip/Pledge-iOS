@@ -27,6 +27,8 @@ const DaysActiveModal = ({ isVisible, handleToggleModal }) => {
   } = useSettings();
 
   const toggleCheckbox = async (dayKey) => {
+    const userRef = doc(db, "users", currentUserID);
+    
     const newDaysActive = { ...daysActive, [dayKey]: !daysActive[dayKey] };
     if (!Object.values(newDaysActive).some(Boolean)) {
       Alert.alert(
@@ -36,7 +38,6 @@ const DaysActiveModal = ({ isVisible, handleToggleModal }) => {
       return;
     }
 
-    const userRef = doc(db, "users", currentUserID);
     const updateData = { daysActive: newDaysActive };
     if (dayKey === tmrwDOW) {
       updateData.tmrwIsActive = newDaysActive[tmrwDOW];

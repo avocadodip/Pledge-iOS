@@ -12,7 +12,7 @@ const { getTimeDefinitions } = require("../util/timeUtils");
 const { calculateIncompleteFines, calculateNoInputFines } = require("../util/calculateFines");
 
 const db = admin.firestore(); // Init database
- 
+
 // Function that runs every 15 min
 const runDailyUpdate = onRequest(async (req, res) => {
   if (req.headers.authorization !== schedulerKey) {
@@ -77,7 +77,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
         // Then, move tmrw to today
         await userRef.update({
           dailyUpdateLastRun: todayFormatted,
-          todayTodos: tmrwTodos,
+          todayTodos: tmrwTodos, // note: also moves non-locked items over
           // prettier-ignore
           tmrwTodos: [
             { todoNumber: 1, title: "", description: "", amount: "", tag: "", isLocked: false, isComplete: false }, 
@@ -91,8 +91,8 @@ const runDailyUpdate = onRequest(async (req, res) => {
           todayDayEnd: nextDayEnd,
           todayANotifHasBeenSent: false,
           notificationTimes,
-          todayNoInputFine, tmrwNoInputFine,
           todayNoInputCount: tmrwNoInputCount,
+          todayNoInputFine, tmrwNoInputFine,
 
           onboardStartTmrw: false
         });

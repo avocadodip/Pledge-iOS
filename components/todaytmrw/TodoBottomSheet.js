@@ -73,51 +73,52 @@ export default function TodoBottomSheet() {
     });
   };
 
-  const renderRow = (dreams, isEvenRow) => (
-    <View style={{ flexDirection: "row", marginTop: isEvenRow ? 0 : 10 }}>
-      {isEvenRow && (
-        <TouchableOpacity
-          key={100}
-          onPress={() => setTodo({ ...todo, tag: "" })}
-          style={[
-            styles.dreamButton,
-            todo.tag === "" ? styles.selectedDreamButton : null,
-          ]}
-        >
-          <Text
-            style={[
-              styles.dreamText,
-              todo.tag === "" ? styles.selectedDreamText : null,
-            ]}
-          >
-            None
-          </Text>
-        </TouchableOpacity>
-      )}
-
-      {dreams
-        .filter((_, index) => index % 2 === (isEvenRow ? 0 : 1))
-        .map((dream, index) => (
+  const renderRow = (dreams, isEvenRow) =>
+    dreams.length > 0 && (
+      <View style={{ flexDirection: "row", marginTop: isEvenRow ? 0 : 10 }}>
+        {isEvenRow && (
           <TouchableOpacity
-            key={index}
-            onPress={() => setTodo({ ...todo, tag: dream.id })}
+            key={100}
+            onPress={() => setTodo({ ...todo, tag: "" })}
             style={[
               styles.dreamButton,
-              todo.tag === dream.id ? styles.selectedDreamButton : null,
+              todo.tag === "" ? styles.selectedDreamButton : null,
             ]}
           >
             <Text
               style={[
                 styles.dreamText,
-                todo.tag === dream.id ? styles.selectedDreamText : null,
+                todo.tag === "" ? styles.selectedDreamText : null,
               ]}
             >
-              {dream.title}
+              None
             </Text>
           </TouchableOpacity>
-        ))}
-    </View>
-  );
+        )}
+
+        {dreams
+          .filter((_, index) => index % 2 === (isEvenRow ? 0 : 1))
+          .map((dream, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => setTodo({ ...todo, tag: dream.id })}
+              style={[
+                styles.dreamButton,
+                todo.tag === dream.id ? styles.selectedDreamButton : null,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.dreamText,
+                  todo.tag === dream.id ? styles.selectedDreamText : null,
+                ]}
+              >
+                {dream.title}
+              </Text>
+            </TouchableOpacity>
+          ))}
+      </View>
+    );
 
   const updateToFirebase = async () => {
     const todoRef = doc(db, "users", currentUserID);

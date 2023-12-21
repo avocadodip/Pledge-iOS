@@ -55,7 +55,6 @@ const getStyles = (theme) =>
     },
     modalContainer: {
       flexDirection: "column",
-      backgroundColor: theme.accent,
       alignItems: "center",
       borderRadius: 20,
       borderColor: "rgba(0, 0, 0, 0.1)",

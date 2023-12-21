@@ -9,7 +9,7 @@ function calculateIncompleteFines(todos) {
       todayIncompleteFine += parseInt(todo.amount);
       todayFinedTasks.push(todo);
     }
-  });
+  }); 
 
   return {
     todayIncompleteFine,

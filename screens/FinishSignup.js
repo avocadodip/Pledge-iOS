@@ -189,7 +189,6 @@ const FinishSignup = () => {
         todayDayStart: "8:30",
         tmrwIsActive: true,
         tmrwIsVacation: false,
-        tmrwNoInputFine: 0,
         tmrwTodos: [],
         todayIsVacation: false,
         todayNoInputCount: 0,

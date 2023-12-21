@@ -34,10 +34,7 @@ const Tomorrow = () => {
       }
     });
   }, [tmrwTodos, dayChanged]);
-
-  console.log("okbr");
-  console.log(tmrwIsActive);
-
+  
   return (
     <SafeAreaView style={styles.pageContainer}>
       {isOnboarded && !tmrwIsVacation && <DayStatusIndicator />}
