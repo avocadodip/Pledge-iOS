@@ -285,7 +285,7 @@ const TodayTodo = ({ todoData }) => {
             <Animated.View style={leftStyle}>
               <TouchableRipple
                 onPress={() => {
-                  openBottomSheet(todoData, "today");
+                  openBottomSheet("today", todoNumber);
                 }}
                 style={[styles.leftContainer, styles.disabledOpacity]}
               >

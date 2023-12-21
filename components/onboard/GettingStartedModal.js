@@ -217,12 +217,11 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
           behavior="padding"
           style={{ flex: 1 }}
           onLayout={(event) => {
-            if (event.nativeEvent && event.nativeEvent.layout) {
-              const { height } = event.nativeEvent.layout;
-              setViewHeight(height);
+            const layout = event.nativeEvent.layout;
+            if (layout) {
+              setViewHeight(layout.height);
             }
           }}
-          
         >
           <SafeAreaView style={styles.container}>
             <View style={styles.promptContainer}>

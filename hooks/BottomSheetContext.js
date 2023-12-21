@@ -11,6 +11,7 @@ export const BottomSheetProvider = ({ children }) => {
 
   // When todo pressed (screen = "today" or "tmrw")
   const openBottomSheet = (screen, todoNumber) => {
+    console.log("brah!");
     if (screen === "tmrw") {
       setSelectedTodo(tmrwTodos[todoNumber - 1]);
       setIsBottomSheetEditable(!tmrwTodos[todoNumber - 1].isLocked && timeStatus === 1);

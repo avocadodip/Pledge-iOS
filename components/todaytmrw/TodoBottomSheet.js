@@ -50,6 +50,7 @@ export default function TodoBottomSheet() {
       setTodo(selectedTodo);
       todoRef.current = selectedTodo;
     }
+    console.log(selectedTodo);
   }, [selectedTodo]);
 
   const findDreamTitleById = (id, dreams) => {
@@ -299,29 +300,29 @@ export default function TodoBottomSheet() {
                 { marginTop: 35, marginBottom: 15 },
               ]}
             >
-              {selectedTodo.tag && (
+              {todo && todo.tag && (
                 <View style={styles.dreamButton}>
                   <Text style={styles.selectedDreamText}>
-                    {findDreamTitleById(selectedTodo.tag, dreamsArray)}
+                    {findDreamTitleById(todo.tag, dreamsArray)}
                   </Text>
                 </View>
               )}
             </View>
-            <Text style={styles.title}>{selectedTodo.title}</Text>
+            <Text style={styles.title}>{todo.title}</Text>
             <View style={styles.horizontalDivider} />
             <View style={styles.amountFolderContainer}>
               <PledgeDollarIcon color={theme.textHigh} />
               <Text style={styles.descText}>
-                ${selectedTodo.amount === "" ? 0 : selectedTodo.amount}
+                ${todo.amount === "" ? 0 : todo.amount}
               </Text>
             </View>
             <View style={styles.horizontalDivider} />
-            {selectedTodo.description !== "" && (
+            {todo.description !== "" && (
               <View style={styles.descriptionContainer}>
                 <DescriptLinesIcon color={theme.textHigh} />
                 <View style={{ width: "87%" }}>
                   <Text style={styles.descText}>
-                    {selectedTodo.description}
+                    {todo.description}
                   </Text>
                 </View>
               </View>
