@@ -27,7 +27,7 @@ const runDailyUpdate = onRequest(async (req, res) => {
   const timeZones = moment.tz.names();
   const desiredTimeZones = timeZones.filter((tz) => {
     const currentTime = moment().tz(tz).format("HH:mm");
-    return currentTime >= "00:00" && currentTime <= "24:00"; // TEMP 23:45
+    return currentTime >= "23:45" && currentTime <= "24:00"; // TEMP 23:45
   });
 
   // Query users by timezone

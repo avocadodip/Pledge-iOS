@@ -6,7 +6,12 @@ import { getTodoStyles } from "./TodoStyles";
 import TouchableRipple from "../TouchableRipple";
 import { useThemes } from "../../hooks/ThemesContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
-import { doc, getDoc, increment, runTransaction, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  increment,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../database/firebase";
 import { useSettings } from "../../hooks/SettingsContext";
 
@@ -17,7 +22,7 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
   const {
     currentUserID,
     settings: { tmrwTodos },
-    timeStatus
+    timeStatus,
   } = useSettings();
 
   // Show alert and open bottom sheet
@@ -62,17 +67,6 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
       }
     }
 
-    // Format new todo
-    const newTodo = {
-      title: title,
-      description: description,
-      tag: tag,
-      amount: formattedAmount,
-      isComplete: false,
-      isLocked: true,
-      todoNumber: todoNumber,
-    };
-
     const todoRef = doc(db, "users", currentUserID);
     const docSnap = await getDoc(todoRef);
 
@@ -105,10 +99,14 @@ const RenderTmrwLock = ({ isLocked, todoNumber }) => {
   } else {
     return (
       <TouchableOpacity
-        style={styles.rightContainer}
+        style={[
+          styles.rightContainer,
+          timeStatus === 2 && styles.disabledOpacity,
+        ]}
         onPress={() => {
           handleLockTodo(todoNumber);
         }}
+        disabled={timeStatus === 2}
       >
         <UnlockIcon color={theme.primary} />
       </TouchableOpacity>

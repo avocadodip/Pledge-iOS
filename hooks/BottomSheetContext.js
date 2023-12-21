@@ -4,7 +4,7 @@ import { useSettings } from "./SettingsContext";
 export const BottomSheetContext = createContext();
 
 export const BottomSheetProvider = ({ children }) => {
-  const { settings: {todayTodos, tmrwTodos} } = useSettings();
+  const { settings: {todayTodos, tmrwTodos}, timeStatus } = useSettings();
   const [selectedTodo, setSelectedTodo] = useState(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [isBottomSheetEditable, setIsBottomSheetEditable] = useState(false);
@@ -13,7 +13,7 @@ export const BottomSheetProvider = ({ children }) => {
   const openBottomSheet = (screen, todoNumber) => {
     if (screen === "tmrw") {
       setSelectedTodo(tmrwTodos[todoNumber - 1]);
-      setIsBottomSheetEditable(!tmrwTodos[todoNumber - 1].isLocked);
+      setIsBottomSheetEditable(!tmrwTodos[todoNumber - 1].isLocked && timeStatus === 1);
     } else if (screen === "today") {
       setSelectedTodo(todayTodos[todoNumber - 1]);
       setIsBottomSheetEditable(false);

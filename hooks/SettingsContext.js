@@ -332,10 +332,11 @@ export const SettingsProvider = ({ children }) => {
     let tmrwCount = 0;
 
     if (isOnboarded) {
-      if (todayIsActive && !todayIsVacation && timeStatus === 1) {
+      if (todayIsActive && !todayIsVacation && timeStatus > 0) {
         todayCount =
-          todayTodos?.filter((todo) => !todo.isComplete && todo.isLocked)
+          todayTodos?.filter((todo) => todo.isLocked && !todo.isComplete)
             .length || 0;
+        console.log(todayCount);
       }
       if (tmrwIsActive && !tmrwIsVacation && timeStatus === 1) {
         tmrwCount = tmrwTodos?.filter((todo) => !todo.isLocked).length || 0;

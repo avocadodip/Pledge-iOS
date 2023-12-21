@@ -72,7 +72,7 @@ export default function TodoBottomSheet() {
       return updatedTodo;
     });
   };
-
+ 
   const renderRow = (dreams, isEvenRow) =>
     dreams.length > 0 && (
       <View style={{ flexDirection: "row", marginTop: isEvenRow ? 0 : 10 }}>

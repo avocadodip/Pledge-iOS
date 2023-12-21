@@ -60,7 +60,7 @@ const TodayTodo = ({ todoData }) => {
       let data = docSnap.data();
       let todayTodos = data.todayTodos; // Access the 'todayTodos' field
       todayTodos[todoNumber - 1].isComplete = !isComplete; // Update the specific todo item
-      await updateDoc(todoRef, { todayTodos: todayTodos }); 
+      await updateDoc(todoRef, { todayTodos: todayTodos });
 
       // Update dream
       if (todayTodos[todoNumber - 1].tag !== "") {
@@ -91,7 +91,7 @@ const TodayTodo = ({ todoData }) => {
               ];
           }
           // If there are not at least two dates, newLastCompleted remains null
-          
+
           await updateDoc(dreamRef, {
             completionHistory: arrayRemove(todayDate),
             doneCount: increment(-1),
@@ -332,8 +332,10 @@ const TodayTodo = ({ todoData }) => {
               </TouchableRipple>
             </Animated.View>
             {/* Right side */}
-            <View style={styles.rightDisabledContainer}>
-              <InfoIcon width={35} height={35} color={Color.white} />
+            <View
+              style={[styles.disabledCompleteContainer, styles.disabledOpacity]}
+            >
+              <CheckIcon width={35} height={35} color={Color.white} />
             </View>
           </>
         )}

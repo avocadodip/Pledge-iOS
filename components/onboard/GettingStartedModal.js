@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Alert,
   SafeAreaView,
+  useWindowDimensions,
+  Keyboard,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import SetStartDay from "./SetStartDay";
@@ -40,6 +42,9 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const [firstTodoTitle, setFirstTodoTitle] = useState("");
   const [secondTodoTitle, setSecondTodoTitle] = useState("");
   const [thirdTodoTitle, setThirdTodoTitle] = useState("");
+
+  const [viewHeight, setViewHeight] = useState(0);
+  const dim = useWindowDimensions();
 
   // Handle disabled button logic
   useEffect(
@@ -89,7 +94,9 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       new Promise((resolve, reject) => {
         Alert.alert(
           "Confirm",
-          `These tasks will be due at ${timePickerText.end} ${startDay==="Today" ? "today" : "tomorrow"}.`,
+          `These tasks will be due at ${timePickerText.end} ${
+            startDay === "Today" ? "today" : "tomorrow"
+          }.`,
           [
             {
               text: "Cancel",
@@ -206,7 +213,16 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
     >
       <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={dim.height - viewHeight}
+          behavior="padding"
+          style={{ flex: 1 }}
+          onLayout={(event) => {
+            if (event.nativeEvent && event.nativeEvent.layout) {
+              const { height } = event.nativeEvent.layout;
+              setViewHeight(height);
+            }
+          }}
+          
         >
           <SafeAreaView style={styles.container}>
             <View style={styles.promptContainer}>
@@ -364,9 +380,6 @@ const getStyles = (theme) =>
       height: "100%",
       justifyContent: "center",
       alignItems: "center",
-
-      borderWidth: 1,
-      borderColor: "white",
     },
     promptContainer: {
       flex: 1,

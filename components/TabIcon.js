@@ -10,7 +10,7 @@ export default function TabIcon({
   theme,
 }) {
   const styles = getStyles(theme);
-  const { todayItemsLeft, tmrwItemsLeft } = useSettings();
+  const { todayItemsLeft, tmrwItemsLeft, timeStatus } = useSettings();
 
   const iconSize = focused ? 40 : 35;
   const iconColor = focused ? theme.textHigh : theme.textDisabled;
@@ -20,7 +20,7 @@ export default function TabIcon({
       <View style={styles.iconContainer}>
         <ActiveIcon width={iconSize} height={iconSize} color={iconColor} />
         {/* notification dot: */}
-        {type === "today" && todayItemsLeft > 0 && (
+        {type === "today" && todayItemsLeft > 0 && timeStatus === 1 && (
           <View
             style={[
               styles.notificationDot,
@@ -30,7 +30,7 @@ export default function TabIcon({
             <Text style={styles.notificationText}>{todayItemsLeft}</Text>
           </View>
         )}
-        {type === "tmrw" && tmrwItemsLeft > 0 && (
+        {type === "tmrw" && tmrwItemsLeft > 0 && timeStatus === 1 && (
           <View
             style={[
               styles.notificationDot,
