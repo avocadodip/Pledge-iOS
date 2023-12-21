@@ -14,7 +14,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Settings from "../screens/Settings";
 import { LinearGradient } from "expo-linear-gradient";
 import { useThemes } from "../hooks/ThemesContext";
-import DeleteAccount from "../screens/DeleteAccount";
 import Dreams from "../screens/Dreams";
 import { StatusBar } from "expo-status-bar";
 import { useSettings } from "../hooks/SettingsContext";
@@ -50,11 +49,6 @@ const SettingsStack = () => (
       <RootStack.Screen
         name="SettingsScreen"
         component={Settings}
-        options={{ headerShown: false }}
-      />
-      <RootStack.Screen
-        name="DeleteAccount"
-        component={DeleteAccount}
         options={{ headerShown: false }}
       />
       <RootStack.Screen

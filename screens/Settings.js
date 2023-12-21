@@ -471,10 +471,7 @@ const Settings = () => {
             </View>
           </TouchableRipple>
         </View>
-        <DeleteAccountButton
-          currentUserID={currentUserID}
-          navigation={navigation}
-        />
+        <DeleteAccountButton />
         <View style={{ height: 60 }}></View>
       </View>
     </LinearGradient>

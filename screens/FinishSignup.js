@@ -161,23 +161,23 @@ const FinishSignup = () => {
         todayANotifHasBeenSent: false,
         notificationTimes: {
           15: {
-            shouldSend: false,
+            shouldSend: true,
             isSent: false,
           },
           30: {
-            shouldSend: false,
+            shouldSend: true,
             isSent: false,
           },
           60: {
-            shouldSend: false,
+            shouldSend: true,
             isSent: false,
           },
           180: {
-            shouldSend: false,
+            shouldSend: true,
             isSent: false,
           },
           360: {
-            shouldSend: false,
+            shouldSend: true,
             isSent: false,
           },
         },
