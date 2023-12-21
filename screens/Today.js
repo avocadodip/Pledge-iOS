@@ -29,18 +29,20 @@ const Today = () => {
     },
   } = useSettings();
   const { todayDOWAbbrev } = useDayChange();
-
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [renderedTodos, setRenderedTodos] = useState([]);
+  
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
-  const renderTodos = useCallback(() => {
-    return todayTodos.map((itemData, index) => {
-      if (itemData.isLocked === false) {
-        return <FinedTodo key={index} isFined={todayNoInputFine > 0} />;
+  useEffect(() => {
+    const updatedTodos = todayTodos.map((todo, i) => {
+      if (todo.isLocked === false) {
+        return <FinedTodo key={i} isFined={todayNoInputFine > 0} />;
       } else {
-        return <TodayTodo key={index} todoData={itemData} />;
+        return <TodayTodo key={i} todoData={todo} />;
       }
     });
+
+    setRenderedTodos(updatedTodos);
   }, [todayTodos, timeStatus]);
 
   return (
@@ -72,7 +74,7 @@ const Today = () => {
         ) : !todayIsActive ? (
           <TodayTmrwMessage type={"rest day (today screen)"} />
         ) : (
-          <View style={styles.todosContainer}>{renderTodos()}</View>
+          <View style={styles.todosContainer}>{renderedTodos}</View>
         )}
       </View>
 

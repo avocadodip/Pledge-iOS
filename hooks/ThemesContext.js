@@ -27,21 +27,28 @@ export const ThemesProvider = ({ children }) => {
     fetchTheme();
   }, []);
 
-  // Update appearance when theme is changed or user auth changes
+  // Update background color wh
   useEffect(() => {
     updateBackgroundGradient();
   }, [
     currentThemeName,
     currentUserID,
     timeStatus,
-    dayCompleted
+    dayCompleted,
+    isOnboarded
   ]);
 
   const updateBackgroundGradient = () => {
+    console.log("currentUserID: ", currentUserID);
+    console.log("timeStatus: ", timeStatus);
+    console.log("dayCompleted: ", dayCompleted);
+    console.log("isOnboarded: ", isOnboarded);
+    console.log("currentThemeName: ", currentThemeName);
     if (currentThemeName === "Classic") {
       if (
-        (timeStatus === 1 && !dayCompleted) ||
-        currentUserID === null || !isOnboarded
+        currentUserID === null ||
+        !isOnboarded ||
+        (timeStatus === 1 && !dayCompleted) 
       ) {
         setBackgroundGradient(redGradientValues);
         setCurrentClassicColor("red");

@@ -93,7 +93,6 @@ const runDailyUpdate = onRequest(async (req, res) => {
           notificationTimes,
           todayNoInputCount: tmrwNoInputCount,
           todayNoInputFine, tmrwNoInputFine,
-
           onboardStartTmrw: false
         });
 

@@ -14,8 +14,8 @@ const DeleteAccountButton = () => {
 
   const confirmDeleteAccount = async () => {
     Alert.alert(
-      "Confirm Account Deletion",
-      "Are you sure you want to delete your account? This action cannot be undone.",
+      "⚠️ Delete Account?",
+      "This action cannot be undone.",
       [
         {
           text: "Cancel",
@@ -24,44 +24,71 @@ const DeleteAccountButton = () => {
         {
           text: "OK",
           onPress: async () => {
-            try {
-              const user = auth.currentUser;
-              if (user) {
-                
-                // Delete Firestore document
-                const userRef = doc(db, "users", currentUserID);
+            const user = auth.currentUser;
+            if (user) {
+              // If the user last logged in more than 5 minutes ago, show an alert
+              const lastLoggedIn = auth.currentUser.metadata.lastSignInTime;
+
+              if (lastLoggedIn) {
+                const lastLoggedInDate = new Date(lastLoggedIn);
+                const currentDate = new Date();
+                const timeDifference = currentDate - lastLoggedInDate;
+                const minutesDifference = timeDifference / 1000 / 60;
+                console.log(minutesDifference);
+                if (minutesDifference > 5) {
+                  Alert.alert(
+                    "Reauthentication required",
+                    "Please sign out and sign in again to delete your account.",
+                    [
+                      {
+                        text: "OK",
+                      },
+                    ],
+                    { cancelable: false }
+                  );
+                  return;
+                }
+              }
+
+              const userRef = doc(db, "users", currentUserID);
+
+              try {
+                // Delete user doc
                 await deleteDoc(userRef);
-                
-                // Delete user
+              } catch (error) {
+                console.log(error);
+                Alert.alert(
+                  "Error",
+                  "There was an error deleting your account. Please try again later.",
+                  [
+                    {
+                      text: "OK",
+                    },
+                  ],
+                  { cancelable: false }
+                );
+                return;
+              }
+              try {
+                // Delete user doc auth
                 await deleteUser(user);
-                
-                // Show success prompt
-                Alert.alert(
-                  "Account Successfully Deleted",
-                  "Your account has been deleted successfully.",
-                  [
-                    {
-                      text: "OK",
-                    },
-                  ],
-                  { cancelable: false }
-                );
+              } catch (error) {
+                if (error.code === "auth/requires-recent-login") {
+                  return;
+                }
               }
-            } catch (error) {
-              if (error.code === "auth/requires-recent-login") {
-                Alert.alert(
-                  "Reauthentication Required",
-                  "Please log out and log back in before deleting your account.",
-                  [
-                    {
-                      text: "OK",
-                    },
-                  ],
-                  { cancelable: false }
-                );
-              } else {
-                console.error("Error deleting user account: ", error);
-              }
+
+              // Show success prompt
+              Alert.alert(
+                "Account deleted",
+                "Your account has been deleted.",
+                [
+                  {
+                    text: "OK",
+                  },
+                ],
+                { cancelable: false }
+              );
             }
           },
         },

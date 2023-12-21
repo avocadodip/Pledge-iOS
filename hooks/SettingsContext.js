@@ -346,6 +346,13 @@ export const SettingsProvider = ({ children }) => {
     setTmrwItemsLeft(tmrwCount);
 
     setDayCompleted(todayCount === 0 && tmrwCount === 0 && timeStatus > 0);
+    console.log("_____");
+    console.log("today count");
+    console.log(todayCount);
+    console.log("tmrw count");
+    console.log(tmrwCount);
+    console.log("time status");
+    console.log(timeStatus);
   }, [settings, timeStatus]);
 
   return (
@@ -374,6 +381,7 @@ export const SettingsProvider = ({ children }) => {
         todayItemsLeft,
         tmrwItemsLeft,
         dayCompleted,
+        setDayCompleted,
         timeStatus,
       }}
     >

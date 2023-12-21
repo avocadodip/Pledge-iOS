@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import SetStartDay from "./SetStartDay";
@@ -24,7 +25,7 @@ import {
 import OnboardTimePicker from "./OnboardTimePicker";
 
 const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
-  const { currentUserID } = useSettings();
+  const { currentUserID, setDayCompleted } = useSettings();
   const { theme, backgroundGradient } = useThemes();
   const styles = getStyles(theme);
 
@@ -75,10 +76,10 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       .map(Number);
     endHour += 12; // Convert to 24 hour format
 
-    // Check if current time is before end time
+    // Check if current time is at least 1 hour before end time
     setShowTodayOption(
-      currentTime.getHours() < endHour ||
-        (currentTime.getHours() === endHour &&
+      currentTime.getHours() < endHour - 1 ||
+        (currentTime.getHours() === endHour - 1 &&
           currentTime.getMinutes() <= endMinute)
     );
   }, [timePickerText]);
@@ -127,7 +128,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       tmrwIsActive: true,
       todayIsVacation: false,
       tmrwIsVacation: false,
-      onboardStartTmrw: startDay,
+      onboardStartTmrw: startDay === "Tmrw",
       todayTodos: [
         {
           todoNumber: 1,
@@ -188,6 +189,10 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
       ],
     });
 
+    if (startDay === "Tmrw") {
+      setDayCompleted(true);
+    }
+
     setModalVisible(false);
   };
 
@@ -203,7 +208,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <View style={styles.container}>
+          <SafeAreaView style={styles.container}>
             <View style={styles.promptContainer}>
               {step === 1 && (
                 <>
@@ -346,7 +351,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
                 disabled={buttonDisabled}
               />
             </View>
-          </View>
+          </SafeAreaView>
         </KeyboardAvoidingView>
       </LinearGradient>
     </Modal>
@@ -359,11 +364,15 @@ const getStyles = (theme) =>
       height: "100%",
       justifyContent: "center",
       alignItems: "center",
+
+      borderWidth: 1,
+      borderColor: "white",
     },
     promptContainer: {
       flex: 1,
       width: "100%",
       justifyContent: "center",
+      height: "100%",
       alignItems: "center",
       paddingHorizontal: 20,
     },
@@ -375,9 +384,10 @@ const getStyles = (theme) =>
     },
     bottomContainer: {
       alignItems: "center",
-      paddingBottom: 40,
+      paddingBottom: 10,
       width: "100%",
     },
+
     explainer: {
       marginTop: 15,
     },

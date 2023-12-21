@@ -1,4 +1,3 @@
-// https://github.com/samad324/react-native-animated-multistep
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Linking, Image } from "react-native";
 import { Color } from "../../GlobalStyles";
@@ -9,8 +8,6 @@ import * as Notifications from "expo-notifications";
 import { EXPO_PROJECT_ID } from "@env";
 import BottomModal from "../BottomModal";
 import Checkbox from "expo-checkbox";
-import { useDayChange } from "../../hooks/useDayChange";
-import Animated, { FadeInDown } from "react-native-reanimated";
 import SampleNotif from "../SampleNotif";
 
 const TIME_CHOICES = ["360", "180", "60", "30", "15"];
@@ -248,9 +245,6 @@ const styles = StyleSheet.create({
   },
   uncheckedText: {
     opacity: 0.5, // adjust this value as needed
-  },
-  checkedText: {
-    fontWeight: "bold",
   },
 });
 
