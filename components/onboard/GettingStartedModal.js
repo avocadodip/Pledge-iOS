@@ -288,10 +288,10 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
               {step === 4 && (
                 <>
                   <AnimatedComponent>
-                    <PromptText text="Enter your first task" />
+                    <PromptText text="Enter your first task. Make sure this one's a step towards your dream!" />
                     <TextInput
                       style={styles.inputField}
-                      placeholder="Do yoga for 20 minutes"
+                      placeholder="Write 2 pages of screenplay"
                       value={firstTodoTitle}
                       onChangeText={(text) => {
                         setFirstTodoTitle(text);
@@ -331,7 +331,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
                     <PromptText text="Enter your third task" />
                     <TextInput
                       style={styles.inputField}
-                      placeholder="Finish English paper"
+                      placeholder="30 minutes in the gym"
                       value={thirdTodoTitle}
                       onChangeText={(text) => {
                         setThirdTodoTitle(text);

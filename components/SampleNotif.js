@@ -30,7 +30,7 @@ export default SampleNotif;
 const styles = StyleSheet.create({
     // SAMPLE NOTIF STYLES
     sampleNotif: {
-      backgroundColor: "rgba(211, 211, 211, 1)",
+      backgroundColor: "rgba(211, 211, 211, 0.8)",
       borderRadius: 17,
       flexDirection: "row",
       alignItems: "center",
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     },
     sampleNotifContent: {
       flexDirection: "column",
-      gap: 3,
+      gap: 0,
       width: "80%",
     },
     sampleNotifTopContent: {
@@ -50,18 +50,18 @@ const styles = StyleSheet.create({
       justifyContent: "space-between",
     },
     appName: {
-      fontSize: 14,
+      fontSize: 15,
       color: "black",
       fontWeight: 500,
     },
     timestamp: {
-      fontSize: 14,
+      fontSize: 15,
       color: "grey",
       fontWeight: 400,
     },
     sampleNotifMessage: {
-      fontSize: 14,
-      lineHeight: 20,
+      fontSize: 15,
+      lineHeight: 17,
       color: "black",
       fontWeight: 400,
     },

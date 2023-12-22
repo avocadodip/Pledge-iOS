@@ -83,13 +83,13 @@ const FinishSignup = () => {
   const { todayDate } = useDayChange();
 
   const placeholders = [
-    "Get fluent in Spanish 🇪🇸",
-    "Land the job 💼",
     "Publish a book ✍️",
+    "Win a Grammy 🏆",
+    "Work at OpenAI 🧑‍💻",
     "Produce a film 🎥",
-    "Bench 2 plates 💪",
+    "Bench two plates 💪",
+    "Speak fluent Spanish 🇪🇸",
     "Move to NYC 🗽",
-    "Win an Emmy 🏆",
     "Run a marathon 🏃",
   ];
 
