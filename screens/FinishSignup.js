@@ -17,11 +17,12 @@ import Animated, { FadeIn, FadeOutUp } from "react-native-reanimated";
 import { getIdToken } from "@firebase/auth";
 import { auth, db } from "../database/firebase";
 import { API_URL } from "@env";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { getTodayDate } from "../utils/currentDate";
 import SampleNotif from "../components/SampleNotif";
 import { EXPO_PROJECT_ID } from "@env";
 import * as Notifications from "expo-notifications";
+import { useDayChange } from "../hooks/useDayChange";
 
 export const PLACEHOLDER_TEXT_COLOR = "rgba(255, 255, 255, 0.6)";
 
@@ -72,9 +73,59 @@ const FinishSignup = () => {
   const [buttonText, setButtonText] = useState("Next");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [dream, setDream] = useState("");
   const [expoPushToken, setExpoPushToken] = useState(null);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [placeholder, setPlaceholder] = useState("");
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const { todayDate } = useDayChange();
+
+  const placeholders = [
+    "Get fluent in Spanish 🇪🇸",
+    "Land the job 💼",
+    "Publish a book ✍️",
+    "Produce a film 🎥",
+    "Bench 2 plates 💪",
+    "Move to NYC 🗽",
+    "Win an Emmy 🏆",
+    "Run a marathon 🏃",
+  ];
+
+  useEffect(() => {
+    const typingTimer = setInterval(() => {
+      setCharIndex((currentCharIndex) => {
+        const currentPlaceholder = placeholders[placeholderIndex];
+        if (currentCharIndex < currentPlaceholder.length) {
+          const nextChar = currentPlaceholder[currentCharIndex];
+          // Check if the next character is the start of an emoji
+          if (nextChar >= '\ud800' && nextChar <= '\udbff') {
+            // Add the whole emoji (which is two characters in JavaScript)
+            setPlaceholder(currentPlaceholder.slice(0, currentCharIndex + 2));
+            return currentCharIndex + 2;
+          } else {
+            // Add the next character
+            setPlaceholder(currentPlaceholder.slice(0, currentCharIndex + 1));
+            return currentCharIndex + 1;
+          }
+        }
+        return currentCharIndex;
+      });
+    }, 50); // Typing speed in milliseconds
+
+    const cyclingTimer = setInterval(() => {
+      setPlaceholderIndex(
+        (currentIndex) => (currentIndex + 1) % placeholders.length
+      );
+      setCharIndex(0);
+    }, 3000); // Time before switching to next placeholder
+
+    return () => {
+      clearInterval(typingTimer);
+      clearInterval(cyclingTimer);
+    };
+  }, [placeholderIndex]);
 
   const getNotifPermissions = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
@@ -100,6 +151,23 @@ const FinishSignup = () => {
 
   const createFirebaseUserDoc = async () => {
     try {
+      // Add dream
+      const dreamsCollection = collection(
+        doc(db, "users", auth.currentUser.uid),
+        "dreams"
+      );
+
+      // Create a new document in the dreams collection with the provided data
+      await addDoc(dreamsCollection, {
+        title: dream,
+        amountPledged: 0,
+        doneCount: 0,
+        completionHistory: [],
+        lastCompleted: null,
+        streak: 0,
+        createdAt: todayDate,
+      });
+
       // Call the Firebase Cloud Function to create a new Stripe customer
       const idToken = await getIdToken(auth.currentUser, true);
       console.log(API_URL);
@@ -213,7 +281,10 @@ const FinishSignup = () => {
     if (step == 2) {
       setStep(3);
     }
-    if (step === 3) {
+    if (step == 3) {
+      setStep(4);
+    }
+    if (step === 4) {
       setButtonLoading(true);
       await createFirebaseUserDoc();
     }
@@ -295,6 +366,26 @@ const FinishSignup = () => {
                 </AnimatedComponent>
               </>
             )}
+            {step === 4 && (
+              <>
+                <AnimatedComponent>
+                  <PromptText text="What's a dream of yours?" />
+                  <TextInput
+                    style={styles.inputField}
+                    placeholder={placeholder}
+                    value={dream}
+                    onChangeText={(text) => {
+                      setDream(text);
+                    }}
+                    placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
+                    autoCorrect={false}
+                    keyboardType="default"
+                    textAlign="center"
+                    autoFocus
+                  />
+                </AnimatedComponent>
+              </>
+            )}
           </View>
 
           <View style={styles.bottomContainer}>
@@ -339,7 +430,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 5,
   },
   inputField: {
     color: "white",
