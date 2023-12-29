@@ -39,11 +39,6 @@ export const ThemesProvider = ({ children }) => {
   ]);
 
   const updateBackgroundGradient = () => {
-    console.log("currentUserID: ", currentUserID);
-    console.log("timeStatus: ", timeStatus);
-    console.log("dayCompleted: ", dayCompleted);
-    console.log("isOnboarded: ", isOnboarded);
-    console.log("currentThemeName: ", currentThemeName);
     if (currentThemeName === "Classic") {
       if (
         currentUserID === null ||

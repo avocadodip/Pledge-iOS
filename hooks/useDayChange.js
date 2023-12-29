@@ -1,3 +1,4 @@
+// This file simply starts a function that runs every second and exports the updated current time in various formats. e.g. "Monday", "Mon.", "112623" (or Nov 26, 2023), etc.
 import { useEffect, useState } from "react";
 import {
   getBeginningOfWeek,
@@ -68,7 +69,6 @@ export const useDayChange = () => {
       setTmrwDOW(daysOfWeek[(dayOfWeekI + 1) % 7]);
       setTodayDate(getTodayDate());
       setTmrwDate(getTmrwDate());
-
       const tmrw = new Date(now);
       tmrw.setDate(now.getDate() + 1); 
       setTmrwDateName(getFormattedDate(tmrw));

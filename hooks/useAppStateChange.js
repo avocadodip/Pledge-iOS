@@ -1,3 +1,4 @@
+// This file is currently not being used. It's for checking timezone changes
 import { useEffect, useState } from "react";
 import { AppState } from "react-native";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
