@@ -120,6 +120,15 @@ const FinishSignup = () => {
   const [firstTodoLocked, setFirstTodoLocked] = useState(false);
   const [secondTodoLocked, setSecondTodoLocked] = useState(false);
   const [thirdTodoLocked, setThirdTodoLocked] = useState(false);
+  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAnimationComplete(true);
+    }, 12500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const placeholders = [
     "Publish a book ✍️",
@@ -334,7 +343,12 @@ const FinishSignup = () => {
       await createFirebaseUserDoc();
     }
     // Go to next step
-    if (step !== 4 && step !== 5) {
+    if (step === 1) {
+      if (isAnimationComplete) {
+        setStep(step + 1);
+      }
+    }
+    if (step !== 4 && step !== 5 && step !== 1) {
       setStep(step + 1);
     }
   };
@@ -488,9 +502,14 @@ const FinishSignup = () => {
             {step === 1 && (
               <>
                 <AnimatedComponent>
-                  <PromptText text="Welcome to Pledge!" />
                   <Animated.View
                     entering={FadeIn.duration(700).delay(1000)}
+                    style={{ width: "100%", alignItems: "center" }}
+                  >
+                  <PromptText text="Welcome to Pledge!" />
+                  </Animated.View>
+                  <Animated.View
+                    entering={FadeIn.duration(700).delay(3200)}
                     style={{ width: "100%", alignItems: "center" }}
                   >
                     <PromptText
@@ -500,17 +519,17 @@ const FinishSignup = () => {
                     />
                   </Animated.View>
                   <Animated.View
-                    entering={FadeIn.duration(700).delay(2500)}
+                    entering={FadeIn.duration(700).delay(5700)}
                     style={{ width: "100%", alignItems: "center" }}
                   >
                     <PromptText
-                      text="We hope it works for you too."
+                      text="We hope it works for you, too."
                       fontSize={18}
                       fontWeight={400}
                     />
                   </Animated.View>
                   <Animated.View
-                    entering={FadeIn.duration(700).delay(4000)}
+                    entering={FadeIn.duration(700).delay(8200)}
                     style={{ width: "100%", alignItems: "center" }}
                   >
                     <PromptText
@@ -520,7 +539,7 @@ const FinishSignup = () => {
                     />
                   </Animated.View>
                   <Animated.View
-                    entering={FadeIn.duration(700).delay(5500)}
+                    entering={FadeIn.duration(700).delay(10700)}
                     style={{ width: "100%", alignItems: "center" }}
                   >
                     <PromptText
@@ -530,7 +549,7 @@ Chris and Josh`}
                       fontWeight={400}
                     />
                   </Animated.View>
-                  <AnimatedSignature delay={7000} />
+                  <AnimatedSignature delay={10700} />
                 </AnimatedComponent>
               </>
             )}
@@ -802,6 +821,7 @@ Chris and Josh`}
                     keyboardType="default"
                     textAlign="center"
                     autoFocus
+                    onSubmitEditing={handleNextPress}
                   />
                 </AnimatedComponent>
               </>
@@ -822,6 +842,7 @@ Chris and Josh`}
                     keyboardType="default"
                     textAlign="center"
                     autoFocus
+                    onSubmitEditing={handleNextPress}
                   />
                 </AnimatedComponent>
               </>
@@ -842,6 +863,7 @@ Chris and Josh`}
                     keyboardType="default"
                     textAlign="center"
                     autoFocus
+                    onSubmitEditing={handleNextPress}
                   />
                 </AnimatedComponent>
               </>
@@ -852,6 +874,7 @@ Chris and Josh`}
             {/* Back button logic */}
             {step > 1 ? (
               <TouchableOpacity
+                style={styles.backButton}
                 onPress={() => {
                   if (step === 5) {
                     setFirstTodoChecked(false);
@@ -873,7 +896,7 @@ Chris and Josh`}
               </TouchableOpacity>
             ) : (
               <Animated.View
-                entering={FadeIn.duration(700).delay(8000)}
+                entering={FadeIn.duration(700).delay(10400)}
                 style={{ width: "100%", alignItems: "center" }}
               >
                 <Text style={styles.buttonLabelText}>Tap to continue</Text>
@@ -958,8 +981,12 @@ const styles = StyleSheet.create({
     color: "white",
     opacity: 0.6,
     fontSize: 17,
-    marginBottom: 14,
   },
+  backButton: {
+    display: "flex",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  }
 });
 
 export default FinishSignup;
