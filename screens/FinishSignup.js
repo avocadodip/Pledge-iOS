@@ -10,10 +10,21 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { redGradientValues } from "../themes";
-import Animated, { FadeIn, FadeOutUp } from "react-native-reanimated";
+import {
+  greenGradientValues,
+  purpleGradientValues,
+  redGradientValues,
+} from "../themes";
+import Animated, {
+  FadeIn,
+  FadeOutUp,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { getIdToken } from "@firebase/auth";
 import { auth, db } from "../database/firebase";
 import { API_URL } from "@env";
@@ -23,6 +34,10 @@ import SampleNotif from "../components/SampleNotif";
 import { EXPO_PROJECT_ID } from "@env";
 import * as Notifications from "expo-notifications";
 import { useDayChange } from "../hooks/useDayChange";
+import ProgressBar from "../components/onboard/ProgressBar";
+import OnboardTodo from "../components/todo/OnboardTodo";
+import AnimatedSignature from "../components/onboard/AnimatedSignature";
+import ExponentialCurve from "../components/onboard/ExponentialCurve";
 
 export const PLACEHOLDER_TEXT_COLOR = "rgba(255, 255, 255, 0.6)";
 
@@ -31,18 +46,36 @@ export const AnimatedComponent = ({ isFirstStep = false, children }) => {
     <Animated.View
       entering={isFirstStep ? undefined : FadeIn.duration(400).delay(300)}
       exiting={FadeOutUp.duration(400)}
+      style={{ width: "100%", alignItems: "center" }}
     >
       {children}
     </Animated.View>
   );
 };
 
-export const PromptText = ({ text, fontSize = 25 }) => {
+export const PromptText = ({
+  text,
+  fontSize = 25,
+  fontWeight = 500,
+  width = "100%",
+}) => {
   return (
     <View
-      style={{ alignItems: "center", marginBottom: 15, marginHorizontal: 30 }}
+      style={{
+        alignItems: "center",
+        marginBottom: 15,
+        width: width,
+        paddingHorizontal: 30,
+      }}
     >
-      <Text style={[styles.promptText, { fontSize: fontSize }]}>{text}</Text>
+      <Text
+        style={[
+          styles.promptText,
+          { fontSize: fontSize, fontWeight: fontWeight },
+        ]}
+      >
+        {text}
+      </Text>
     </View>
   );
 };
@@ -81,6 +114,12 @@ const FinishSignup = () => {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const { todayDate } = useDayChange();
+  const [firstTodoChecked, setFirstTodoChecked] = useState(false);
+  const [secondTodoChecked, setSecondTodoChecked] = useState(false);
+  const [thirdTodoChecked, setThirdTodoChecked] = useState(false);
+  const [firstTodoLocked, setFirstTodoLocked] = useState(false);
+  const [secondTodoLocked, setSecondTodoLocked] = useState(false);
+  const [thirdTodoLocked, setThirdTodoLocked] = useState(false);
 
   const placeholders = [
     "Publish a book ✍️",
@@ -100,7 +139,7 @@ const FinishSignup = () => {
         if (currentCharIndex < currentPlaceholder.length) {
           const nextChar = currentPlaceholder[currentCharIndex];
           // Check if the next character is the start of an emoji
-          if (nextChar >= '\ud800' && nextChar <= '\udbff') {
+          if (nextChar >= "\ud800" && nextChar <= "\udbff") {
             // Add the whole emoji (which is two characters in JavaScript)
             setPlaceholder(currentPlaceholder.slice(0, currentCharIndex + 2));
             return currentCharIndex + 2;
@@ -274,49 +313,470 @@ const FinishSignup = () => {
 
   // Handle next button click
   const handleNextPress = async () => {
-    if (step === 1) {
+    if (step === 6) {
+    }
+    if (step === 7) {
+    }
+    if (step === 9) {
       await getNotifPermissions();
-      setStep(2);
     }
-    if (step == 2) {
-      setStep(3);
+    if (step === 10) {
+      if (firstName.trim().length === 0) {
+        return;
+      }
     }
-    if (step == 3) {
-      setStep(4);
+    if (step === 11) {
+      if (lastName.trim().length === 0) {
+        return;
+      }
     }
-    if (step === 4) {
-      setButtonLoading(true);
+    if (step === 12) {
       await createFirebaseUserDoc();
+    }
+    // Go to next step
+    if (step !== 4 && step !== 5) {
+      setStep(step + 1);
     }
   };
 
-  // Handle disabled button logic
+  // Handle hook logic
   useEffect(
     () => {
-      if (step === 1) {
-        setButtonText("Turn on");
-        setButtonDisabled(false);
+      if (step === 4) {
+        if (firstTodoChecked && secondTodoChecked && thirdTodoChecked) {
+          setTimeout(() => {
+            setStep(5);
+          }, 200);
+        }
       }
-      if (step === 2) {
-        setButtonText("Next");
-        setButtonDisabled(firstName.trim() == "");
+      if (step === 5) {
+        if (firstTodoLocked && secondTodoLocked && thirdTodoLocked) {
+          setStep(6);
+        }
       }
-      if (step === 3) {
-        setButtonDisabled(lastName.trim() == "");
+      if (step === 6) {
+        turnGreenAnimation();
+        removePurpleAnimation();
+      } else if (step < 6) {
+        removeGreenAnimation();
+      }
+      if (step === 7) {
+        turnPurpleAnimation();
+        removeRedAnimation();
+      } else if (step < 6) {
+        removePurpleAnimation();
+      }
+      if (step === 8) {
+        turnRedAnimation();
       }
     },
     // prettier-ignore
-    [ step, firstName, lastName]
+    [ step, firstName, lastName, firstTodoChecked, secondTodoChecked, thirdTodoChecked, firstTodoLocked, secondTodoLocked, thirdTodoLocked]
   );
 
+  // ANIMATING BACKGROUND
+  const greenGradientY = useSharedValue(Dimensions.get("window").height);
+  const greenGradientStyle = useAnimatedStyle(() => {
+    return {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      height: "100%", // Full height of the screen
+      transform: [{ translateY: greenGradientY.value }],
+    };
+  });
+  const purpleGradientY = useSharedValue(Dimensions.get("window").height);
+  const purpleGradientStyle = useAnimatedStyle(() => {
+    return {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      height: "100%", // Full height of the screen
+      transform: [{ translateY: purpleGradientY.value }],
+    };
+  });
+  const redGradientY = useSharedValue(Dimensions.get("window").height);
+  const redGradientStyle = useAnimatedStyle(() => {
+    return {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      height: "100%", // Full height of the screen
+      transform: [{ translateY: redGradientY.value }],
+    };
+  });
+  const turnRedAnimation = () => {
+    redGradientY.value = withTiming(0, { duration: 1000 }, () => {});
+  };
+  const turnGreenAnimation = () => {
+    greenGradientY.value = withTiming(0, { duration: 1000 }, () => {});
+  };
+  const turnPurpleAnimation = () => {
+    purpleGradientY.value = withTiming(0, { duration: 1000 }, () => {});
+  };
+
+  const removeGreenAnimation = () => {
+    // Slide the green gradient down
+    greenGradientY.value = withTiming(Dimensions.get("window").height, {
+      duration: 500,
+    });
+  };
+  const removePurpleAnimation = () => {
+    // Slide the green gradient down
+    purpleGradientY.value = withTiming(Dimensions.get("window").height, {
+      duration: 500,
+    });
+  };
+  const removeRedAnimation = () => {
+    // Slide the green gradient down
+    redGradientY.value = withTiming(Dimensions.get("window").height, {
+      duration: 500,
+    });
+  };
+
   return (
-    <LinearGradient colors={redGradientValues} style={{ flex: 1 }}>
+    <TouchableOpacity
+      style={{ flex: 1, overflow: "hidden" }}
+      activeOpacity={1}
+      onPress={handleNextPress}
+    >
+      {/* Gradient container */}
+      <View
+        style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+      >
+        {/* Red Gradient as the base */}
+        {step < 7 && (
+          <LinearGradient colors={redGradientValues} style={{ flex: 1 }} />
+        )}
+
+        {/* Animated Green Gradient */}
+        <Animated.View style={greenGradientStyle}>
+          <LinearGradient colors={greenGradientValues} style={{ flex: 1 }} />
+        </Animated.View>
+        {/* Animated Purple Gradient */}
+        <Animated.View style={purpleGradientStyle}>
+          <LinearGradient colors={purpleGradientValues} style={{ flex: 1 }} />
+        </Animated.View>
+        {/* Animated Red Gradient */}
+        <Animated.View style={redGradientStyle}>
+          <LinearGradient colors={redGradientValues} style={{ flex: 1 }} />
+        </Animated.View>
+      </View>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
+        {step === 8 && (
+          <Animated.View
+            exiting={FadeOutUp.duration(400)}
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <ExponentialCurve />
+          </Animated.View>
+        )}
         <SafeAreaView style={styles.container}>
+          <ProgressBar progress={(step - 1) / 12} />
           <View style={styles.promptContainer}>
+            {/* {step >= 3 && step <= 6 && <EachDayYouHaveTwoObligations />} */}
             {step === 1 && (
+              <>
+                <AnimatedComponent>
+                  <PromptText text="Welcome to Pledge!" />
+                  <Animated.View
+                    entering={FadeIn.duration(700).delay(1000)}
+                    style={{ width: "100%", alignItems: "center" }}
+                  >
+                    <PromptText
+                      text="We made this app to hold ourselves accountable to our most spectacular dreams."
+                      fontSize={18}
+                      fontWeight={400}
+                    />
+                  </Animated.View>
+                  <Animated.View
+                    entering={FadeIn.duration(700).delay(2500)}
+                    style={{ width: "100%", alignItems: "center" }}
+                  >
+                    <PromptText
+                      text="We hope it works for you too."
+                      fontSize={18}
+                      fontWeight={400}
+                    />
+                  </Animated.View>
+                  <Animated.View
+                    entering={FadeIn.duration(700).delay(4000)}
+                    style={{ width: "100%", alignItems: "center" }}
+                  >
+                    <PromptText
+                      text="This is the first day of the rest of your life."
+                      fontSize={18}
+                      fontWeight={400}
+                    />
+                  </Animated.View>
+                  <Animated.View
+                    entering={FadeIn.duration(700).delay(5500)}
+                    style={{ width: "100%", alignItems: "center" }}
+                  >
+                    <PromptText
+                      text={`Sincerely,
+Chris and Josh`}
+                      fontSize={18}
+                      fontWeight={400}
+                    />
+                  </Animated.View>
+                  <AnimatedSignature delay={7000} />
+                </AnimatedComponent>
+              </>
+            )}
+            {step === 2 && (
+              <>
+                <AnimatedComponent>
+                  <Animated.View
+                    entering={FadeIn.duration(700).delay(700)}
+                    style={{ width: "100%", alignItems: "center" }}
+                  >
+                    <PromptText
+                      text="Pledge is simple."
+                      fontSize={20}
+                      fontWeight={400}
+                    />
+                  </Animated.View>
+                  <Animated.View
+                    entering={FadeIn.duration(700).delay(2000)}
+                    style={{ width: "100%", alignItems: "center" }}
+                  >
+                    <PromptText
+                      text="You assign a cash value to each task."
+                      fontSize={20}
+                      fontWeight={400}
+                    />
+                  </Animated.View>
+                  <Animated.View
+                    entering={FadeIn.duration(700).delay(3000)}
+                    style={{ width: "100%", alignItems: "center" }}
+                  >
+                    <OnboardTodo
+                      type={"sample"}
+                      bool={firstTodoChecked}
+                      setBool={setFirstTodoChecked}
+                      title={"Upload new video"}
+                      dream={"Dream: Reach 1 million subscribers!"}
+                      amount={"$5"}
+                    />
+                  </Animated.View>
+
+                  <Animated.View
+                    entering={FadeIn.duration(700).delay(5000)}
+                    style={{
+                      width: "100%",
+                      alignItems: "center",
+                      marginTop: 17,
+                    }}
+                  >
+                    <PromptText
+                      text="If you don’t check it off by the deadline, we charge your card that amount."
+                      fontSize={20}
+                      fontWeight={400}
+                    />
+                  </Animated.View>
+                </AnimatedComponent>
+              </>
+            )}
+            {step === 3 && (
+              <>
+                <AnimatedComponent>
+                  <PromptText
+                    text={`Each day you have 2 obligations.        
+                    `}
+                    fontSize={22}
+                    fontWeight={400}
+                  />
+                </AnimatedComponent>
+              </>
+            )}
+            {step === 4 && (
+              <>
+                <AnimatedComponent>
+                  <PromptText
+                    text="First, check off the 3 tasks you set yesterday."
+                    fontSize={20}
+                    fontWeight={400}
+                    width={270}
+                  />
+                  <OnboardTodo
+                    type={"today"}
+                    bool={firstTodoChecked}
+                    setBool={setFirstTodoChecked}
+                    title={"Revise Chapter 3"}
+                    dream={"Publish a book 📘"}
+                    amount={"$10"}
+                  />
+                  <OnboardTodo
+                    type={"today"}
+                    bool={secondTodoChecked}
+                    setBool={setSecondTodoChecked}
+                    title={"Do 5 sets of pull-ups"}
+                    dream={"Get ripped 💪"}
+                    amount={"$3"}
+                  />
+                  <OnboardTodo
+                    type={"today"}
+                    bool={thirdTodoChecked}
+                    setBool={setThirdTodoChecked}
+                    title={"Study 3-point perspective"}
+                    dream={"Learn oil painting 🎨"}
+                    amount={"$5"}
+                  />
+                </AnimatedComponent>
+              </>
+            )}
+            {step === 5 && (
+              <>
+                <Animated.View
+                  entering={FadeIn.duration(400).delay(300)}
+                  style={{ width: "100%", alignItems: "center" }}
+                >
+                  <PromptText
+                    text="Second, lock in 3 tasks for tomorrow."
+                    fontSize={20}
+                    fontWeight={400}
+                    width={300}
+                  />
+                  <OnboardTodo
+                    type={"tmrw"}
+                    bool={firstTodoLocked}
+                    setBool={setFirstTodoLocked}
+                    title={"Write two pages of ch. 4"}
+                    dream={"Publish a book 📘"}
+                    amount={"$5"}
+                  />
+                  <OnboardTodo
+                    type={"tmrw"}
+                    bool={secondTodoLocked}
+                    setBool={setSecondTodoLocked}
+                    title={"Do 60 incline push-ups"}
+                    dream={"Get ripped 💪"}
+                    amount={"$8"}
+                  />
+                  <OnboardTodo
+                    type={"tmrw"}
+                    bool={thirdTodoLocked}
+                    setBool={setThirdTodoLocked}
+                    title={"Sketch out cityscape"}
+                    dream={"Learn oil painting 🎨"}
+                    amount={"$3"}
+                  />
+                </Animated.View>
+              </>
+            )}
+            {step === 6 && (
+              <>
+                <Animated.View style={{ width: "100%", alignItems: "center" }}>
+                  <Animated.View
+                    entering={FadeIn.duration(400).delay(300)}
+                    style={{ width: "100%", alignItems: "center" }}
+                  >
+                    <PromptText
+                      text="That's it! Once both are done, the app turns green."
+                      fontSize={20}
+                      fontWeight={400}
+                      width={330}
+                    />
+                  </Animated.View>
+                  <OnboardTodo
+                    type={"tmrw"}
+                    bool={firstTodoLocked}
+                    setBool={setFirstTodoLocked}
+                    title={"Write two pages of ch. 4"}
+                    dream={"Publish a book 📘"}
+                    amount={"$5"}
+                  />
+                  <OnboardTodo
+                    type={"tmrw"}
+                    bool={secondTodoLocked}
+                    setBool={setSecondTodoLocked}
+                    title={"Do 60 incline push-ups"}
+                    dream={"Get ripped 💪"}
+                    amount={"$8"}
+                  />
+                  <OnboardTodo
+                    type={"tmrw"}
+                    bool={thirdTodoLocked}
+                    setBool={setThirdTodoLocked}
+                    title={"Sketch out cityscape"}
+                    dream={"Learn oil painting 🎨"}
+                    amount={"$3"}
+                  />
+                </Animated.View>
+              </>
+            )}
+            {step === 7 && (
+              <>
+                <Animated.View
+                  entering={FadeIn.duration(400).delay(300)}
+                  style={{ width: "100%", alignItems: "center" }}
+                >
+                  <PromptText
+                    text="After the deadline has passed, the app goes to sleep."
+                    fontSize={20}
+                    fontWeight={400}
+                    width={350}
+                  />
+                </Animated.View>
+                <OnboardTodo
+                  type={"tmrw"}
+                  bool={firstTodoLocked}
+                  setBool={setFirstTodoLocked}
+                  title={"Write two pages of ch. 4"}
+                  dream={"Publish a book 📘"}
+                  amount={"$5"}
+                  sleepMode={true}
+                />
+                <OnboardTodo
+                  type={"tmrw"}
+                  bool={secondTodoLocked}
+                  setBool={setSecondTodoLocked}
+                  title={"Do 60 incline push-ups"}
+                  dream={"Get ripped 💪"}
+                  amount={"$8"}
+                  sleepMode={true}
+                />
+                <OnboardTodo
+                  type={"tmrw"}
+                  bool={thirdTodoLocked}
+                  setBool={setThirdTodoLocked}
+                  title={"Sketch out cityscape"}
+                  dream={"Learn oil painting 🎨"}
+                  amount={"$3"}
+                  sleepMode={true}
+                />
+              </>
+            )}
+            {step === 8 && (
+              <>
+                <AnimatedComponent>
+                  <PromptText
+                    text="Rinse and repeat for the next day."
+                    fontSize={20}
+                    fontWeight={500}
+                    width={270}
+                  />
+                  <PromptText
+                    text="A 1% improvement each day for a year will make you 37x better."
+                    fontSize={20}
+                    fontWeight={400}
+                    width={330}
+                  />
+                </AnimatedComponent>
+              </>
+            )}
+            {step === 9 && (
               <>
                 <AnimatedComponent>
                   <PromptText text="Pledge works best with notifications on." />
@@ -326,7 +786,7 @@ const FinishSignup = () => {
                 </AnimatedComponent>
               </>
             )}
-            {step === 2 && (
+            {step === 10 && (
               <>
                 <AnimatedComponent>
                   <PromptText text="Enter your first name" />
@@ -346,7 +806,7 @@ const FinishSignup = () => {
                 </AnimatedComponent>
               </>
             )}
-            {step === 3 && (
+            {step === 11 && (
               <>
                 <AnimatedComponent>
                   <PromptText text="Enter your last name" />
@@ -366,7 +826,7 @@ const FinishSignup = () => {
                 </AnimatedComponent>
               </>
             )}
-            {step === 4 && (
+            {step === 12 && (
               <>
                 <AnimatedComponent>
                   <PromptText text="What's a dream of yours?" />
@@ -389,32 +849,48 @@ const FinishSignup = () => {
           </View>
 
           <View style={styles.bottomContainer}>
-            {/* Conditional text above next button */}
-            <TouchableOpacity
-              onPress={() => {
-                if (step === 1) {
-                  setStep(2);
-                }
-                if (step > 1) {
+            {/* Back button logic */}
+            {step > 1 ? (
+              <TouchableOpacity
+                onPress={() => {
+                  if (step === 5) {
+                    setFirstTodoChecked(false);
+                    setSecondTodoChecked(false);
+                    setThirdTodoChecked(false);
+                    setFirstTodoLocked(false);
+                    setSecondTodoLocked(false);
+                    setThirdTodoLocked(false);
+                  }
+                  if (step === 6) {
+                    setFirstTodoLocked(false);
+                    setSecondTodoLocked(false);
+                    setThirdTodoLocked(false);
+                  }
                   setStep((prevStep) => prevStep - 1);
-                }
-              }}
-            >
-              <Text style={styles.buttonLabelText}>
-                {step === 1 ? "Skip" : "Back"}
-              </Text>
-            </TouchableOpacity>
-
-            <ConfirmButton
-              text={buttonText}
-              onPress={handleNextPress}
-              disabled={buttonDisabled}
-              loading={buttonLoading}
-            />
+                }}
+              >
+                <Text style={styles.buttonLabelText}>Back</Text>
+              </TouchableOpacity>
+            ) : (
+              <Animated.View
+                entering={FadeIn.duration(700).delay(8000)}
+                style={{ width: "100%", alignItems: "center" }}
+              >
+                <Text style={styles.buttonLabelText}>Tap to continue</Text>
+              </Animated.View>
+            )}
+            {/* {!(step >= 3 && step <= 5) && (
+              <ConfirmButton
+                text={buttonText}
+                onPress={handleNextPress}
+                disabled={buttonDisabled}
+                loading={buttonLoading}
+              />
+            )} */}
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>
-    </LinearGradient>
+    </TouchableOpacity>
   );
 };
 
@@ -454,6 +930,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 10,
     width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
   },
 
   // button

@@ -18,7 +18,7 @@ const SampleNotif = () => {
           <Text style={styles.timestamp}>now</Text>
         </View>
         <Text style={styles.sampleNotifMessage}>
-          You have 3 hours remaining to complete your tasks!
+          You have 3 hours left to complete your day!
         </Text>
       </View>
     </Animated.View>

@@ -1,14 +1,14 @@
 import { StyleSheet } from "react-native";
 
 const TODO_HEIGHT = "30.5%";
-const BORDER_RADIUS = 24;
+export const BORDER_RADIUS = 24;
 
 // Task name || "more..."
 export const variableFontSize = (text, isMore) => {
   let length = text.length;
 
   if (length < 10) {
-    if (isMore) return 20;
+    if (isMore) return 20;r
     return 35; // Large font size
   } else if (length < 15) {
     if (isMore) return 18;
@@ -27,7 +27,7 @@ export const getTodoStyles = (theme) =>
     leftButtonContainer: {
       backgroundColor: theme.faintishPrimary,
       height: "100%",
-    },
+    }, 
     // Today
     rightButtonContainer: {
       backgroundColor: theme.faintishPrimary,
