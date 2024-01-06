@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     },
     sampleNotifContent: {
       flexDirection: "column",
-      gap: 0,
+      gap: 4,
       width: "80%",
     },
     sampleNotifTopContent: {

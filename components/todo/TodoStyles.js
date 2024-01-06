@@ -8,7 +8,7 @@ export const variableFontSize = (text, isMore) => {
   let length = text.length;
 
   if (length < 10) {
-    if (isMore) return 20;r
+    if (isMore) return 20;
     return 35; // Large font size
   } else if (length < 15) {
     if (isMore) return 18;

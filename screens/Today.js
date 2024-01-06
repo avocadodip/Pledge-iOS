@@ -13,6 +13,8 @@ import { APP_HORIZONTAL_PADDING } from "../GlobalStyles";
 import TodayTodo from "../components/todo/TodayTodo";
 import FinedTodo from "../components/todo/FinedTodo";
 import DayStatusIndicator from "../components/todaytmrw/DayStatusIndicator";
+import { AnimatedComponent } from "./FinishSignup";
+import Animated, { FadeIn, FadeOutUp } from "react-native-reanimated";
 
 const Today = () => {
   const { theme } = useThemes();
@@ -31,7 +33,7 @@ const Today = () => {
   const { todayDOWAbbrev } = useDayChange();
   const [modalVisible, setModalVisible] = useState(false);
   const [renderedTodos, setRenderedTodos] = useState([]);
-  
+
   // re-renders based on todayTodos (updates based on day) & isDay (change appearance of todo)
   useEffect(() => {
     const updatedTodos = todayTodos.map((todo, i) => {
@@ -45,6 +47,10 @@ const Today = () => {
     setRenderedTodos(updatedTodos);
   }, [todayTodos, timeStatus]);
 
+  useEffect(() => {
+    console.log(timeStatus);
+  }, [timeStatus]);
+
   return (
     <SafeAreaView style={styles.pageContainer}>
       {/* <OnboardingPopup
@@ -53,14 +59,22 @@ const Today = () => {
       /> */}
       {isOnboarded && <DayStatusIndicator />}
 
-      <View style={styles.headerContainer}>
+      <Animated.View
+        entering={FadeIn.duration(400).delay(300)}
+        exiting={FadeOutUp.duration(400)}
+        style={styles.headerContainer}
+      >
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Today</Text>
           <Text style={styles.headerDayOfWeek}>{todayDOWAbbrev}</Text>
         </View>
-      </View>
+      </Animated.View>
 
-      <View style={styles.pageContent}>
+      <Animated.View
+        entering={FadeIn.duration(400).delay(300)}
+        exiting={FadeOutUp.duration(400)}
+        style={styles.pageContent}
+      >
         {!isOnboarded ? (
           <TodayTmrwMessage
             type={"new user"}
@@ -76,7 +90,7 @@ const Today = () => {
         ) : (
           <View style={styles.todosContainer}>{renderedTodos}</View>
         )}
-      </View>
+      </Animated.View>
 
       <GettingStartedModal
         modalVisible={modalVisible}

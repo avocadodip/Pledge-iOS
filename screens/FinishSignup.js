@@ -46,7 +46,7 @@ export const AnimatedComponent = ({ isFirstStep = false, children }) => {
     <Animated.View
       entering={isFirstStep ? undefined : FadeIn.duration(400).delay(300)}
       exiting={FadeOutUp.duration(400)}
-      style={{ width: "100%", alignItems: "center" }}
+      style={{ width: "100%", justifyContent: "center", alignItems: "center" }}
     >
       {children}
     </Animated.View>
@@ -101,15 +101,13 @@ export const ConfirmButton = ({ text, onPress, disabled, loading }) => {
 };
 
 const FinishSignup = () => {
-  const [step, setStep] = useState(1); // TEMP
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [buttonText, setButtonText] = useState("Next");
+  const [step, setStep] = useState(1);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [dream, setDream] = useState("");
   const [expoPushToken, setExpoPushToken] = useState(null);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [buttonLoading, setButtonLoading] = useState(false);
+  const [endFadeOut, setEndFadeOut] = useState(false);
   const [placeholder, setPlaceholder] = useState("");
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
@@ -317,11 +315,19 @@ const FinishSignup = () => {
         "Error",
         "Failed to make an account. Please try again later."
       );
+      setStep(1);
+      setEndFadeOut(false)
     }
   };
 
   // Handle next button click
   const handleNextPress = async () => {
+    // Go to next step
+    if (step === 1) {
+      if (isAnimationComplete) {
+        setStep(step + 1);
+      }
+    }
     if (step === 6) {
     }
     if (step === 7) {
@@ -340,14 +346,12 @@ const FinishSignup = () => {
       }
     }
     if (step === 12) {
-      await createFirebaseUserDoc();
-    }
-    // Go to next step
-    if (step === 1) {
-      if (isAnimationComplete) {
-        setStep(step + 1);
+      if (dream.trim().length > 5) {
+        setEndFadeOut(true);
+        await createFirebaseUserDoc();
       }
     }
+    // Increment for all steps but these:
     if (step !== 4 && step !== 5 && step !== 1) {
       setStep(step + 1);
     }
@@ -496,9 +500,8 @@ const FinishSignup = () => {
           </Animated.View>
         )}
         <SafeAreaView style={styles.container}>
-          <ProgressBar progress={(step - 1) / 12} />
+          {!endFadeOut && <ProgressBar progress={(step - 1) / 11} />}
           <View style={styles.promptContainer}>
-            {/* {step >= 3 && step <= 6 && <EachDayYouHaveTwoObligations />} */}
             {step === 1 && (
               <>
                 <AnimatedComponent>
@@ -506,7 +509,7 @@ const FinishSignup = () => {
                     entering={FadeIn.duration(700).delay(1000)}
                     style={{ width: "100%", alignItems: "center" }}
                   >
-                  <PromptText text="Welcome to Pledge!" />
+                    <PromptText text="Welcome to Pledge!" />
                   </Animated.View>
                   <Animated.View
                     entering={FadeIn.duration(700).delay(3200)}
@@ -822,6 +825,7 @@ Chris and Josh`}
                     textAlign="center"
                     autoFocus
                     onSubmitEditing={handleNextPress}
+                    enterKeyHint={"done"}
                   />
                 </AnimatedComponent>
               </>
@@ -843,74 +847,72 @@ Chris and Josh`}
                     textAlign="center"
                     autoFocus
                     onSubmitEditing={handleNextPress}
+                    enterKeyHint={"done"}
                   />
                 </AnimatedComponent>
               </>
             )}
             {step === 12 && (
               <>
-                <AnimatedComponent>
-                  <PromptText text="What's a dream of yours?" />
-                  <TextInput
-                    style={styles.inputField}
-                    placeholder={placeholder}
-                    value={dream}
-                    onChangeText={(text) => {
-                      setDream(text);
-                    }}
-                    placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
-                    autoCorrect={false}
-                    keyboardType="default"
-                    textAlign="center"
-                    autoFocus
-                    onSubmitEditing={handleNextPress}
-                  />
-                </AnimatedComponent>
+                {!endFadeOut && (
+                  <AnimatedComponent>
+                    <PromptText text="What's a dream of yours?" />
+                    <TextInput
+                      style={styles.inputField}
+                      placeholder={placeholder}
+                      value={dream}
+                      onChangeText={(text) => {
+                        setDream(text);
+                      }}
+                      placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
+                      autoCorrect={false}
+                      keyboardType="default"
+                      textAlign="center"
+                      autoFocus
+                      onSubmitEditing={handleNextPress}
+                      enterKeyHint={"done"}
+                    />
+                  </AnimatedComponent>
+                )}
               </>
             )}
           </View>
 
-          <View style={styles.bottomContainer}>
-            {/* Back button logic */}
-            {step > 1 ? (
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => {
-                  if (step === 5) {
-                    setFirstTodoChecked(false);
-                    setSecondTodoChecked(false);
-                    setThirdTodoChecked(false);
-                    setFirstTodoLocked(false);
-                    setSecondTodoLocked(false);
-                    setThirdTodoLocked(false);
-                  }
-                  if (step === 6) {
-                    setFirstTodoLocked(false);
-                    setSecondTodoLocked(false);
-                    setThirdTodoLocked(false);
-                  }
-                  setStep((prevStep) => prevStep - 1);
-                }}
-              >
-                <Text style={styles.buttonLabelText}>Back</Text>
-              </TouchableOpacity>
-            ) : (
-              <Animated.View
-                entering={FadeIn.duration(700).delay(10400)}
-                style={{ width: "100%", alignItems: "center" }}
-              >
-                <Text style={styles.buttonLabelText}>Tap to continue</Text>
-              </Animated.View>
-            )}
-            {/* {!(step >= 3 && step <= 5) && (
-              <ConfirmButton
-                text={buttonText}
-                onPress={handleNextPress}
-                disabled={buttonDisabled}
-                loading={buttonLoading}
-              />
-            )} */}
-          </View>
+          {!endFadeOut && (
+            <View style={styles.bottomContainer}>
+              {/* Back button logic */}
+              {step > 1 ? (
+                <TouchableOpacity
+                  style={styles.backButton}
+                  onPress={() => {
+                    if (step === 5) {
+                      setFirstTodoChecked(false);
+                      setSecondTodoChecked(false);
+                      setThirdTodoChecked(false);
+                      setFirstTodoLocked(false);
+                      setSecondTodoLocked(false);
+                      setThirdTodoLocked(false);
+                    }
+                    if (step === 6) {
+                      setFirstTodoLocked(false);
+                      setSecondTodoLocked(false);
+                      setThirdTodoLocked(false);
+                    }
+                    setStep((prevStep) => prevStep - 1);
+                  }}
+                >
+                  <Text style={styles.buttonLabelText}>Back</Text>
+                </TouchableOpacity>
+              ) : (
+                <Animated.View
+                  entering={FadeIn.duration(700).delay(10400)}
+                  style={{ width: "100%", alignItems: "center" }}
+                >
+                  <Text style={styles.buttonLabelText}>Tap to continue</Text>
+                </Animated.View>
+              )}
+            </View>
+          )}
         </SafeAreaView>
       </KeyboardAvoidingView>
     </TouchableOpacity>
@@ -986,7 +988,7 @@ const styles = StyleSheet.create({
     display: "flex",
     paddingVertical: 10,
     paddingHorizontal: 20,
-  }
+  },
 });
 
 export default FinishSignup;
