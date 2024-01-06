@@ -61,7 +61,6 @@ const Today = () => {
 
       <Animated.View
         entering={FadeIn.duration(400).delay(300)}
-        exiting={FadeOutUp.duration(400)}
         style={styles.headerContainer}
       >
         <View style={styles.headerTitleContainer}>
@@ -72,7 +71,6 @@ const Today = () => {
 
       <Animated.View
         entering={FadeIn.duration(400).delay(300)}
-        exiting={FadeOutUp.duration(400)}
         style={styles.pageContent}
       >
         {!isOnboarded ? (

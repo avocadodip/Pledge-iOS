@@ -3,7 +3,7 @@
     "name": "Pledge - Bet On Yourself",
     "scheme": "pledge",
     "slug": "pledge",
-    "version": "1.1.7",
+    "version": "1.1.8",
     "plugins": ["expo-apple-authentication"],
     "orientation": "portrait",
     "icon": "./assets/logos/1024ios.png",
@@ -18,7 +18,7 @@
       "infoPlist": {
         "NSCameraUsageDescription": "We need access to your camera so Stripe can scan your card information."
       },
-      "buildNumber": "18",
+      "buildNumber": "19",
       "usesAppleSignIn": true
     },
     "android": {
