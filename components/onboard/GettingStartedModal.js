@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   useWindowDimensions,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import SetStartDay from "./SetStartDay";
@@ -20,11 +21,11 @@ import { db } from "../../database/firebase";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   AnimatedComponent,
-  ConfirmButton,
   PLACEHOLDER_TEXT_COLOR,
   PromptText,
 } from "../../screens/FinishSignup";
 import OnboardTimePicker from "./OnboardTimePicker";
+
 
 const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
   const { currentUserID, setDayCompleted, dreamsArray } = useSettings();
@@ -45,6 +46,26 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
 
   const [viewHeight, setViewHeight] = useState(0);
   const dim = useWindowDimensions();
+
+  const ConfirmButton = ({ text, onPress, disabled, loading }) => {
+    return (
+      <TouchableOpacity
+        style={[styles.button, disabled && styles.buttonDisabled]}
+        onPress={onPress}
+        disabled={disabled}
+      >
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          <Text
+            style={[styles.buttonText, {color: theme.authButtonText}]}
+          >
+            {text}
+          </Text>
+        )}
+      </TouchableOpacity>
+    );
+  };
 
   // Handle disabled button logic
   useEffect(
@@ -365,6 +386,7 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
                   }
                 }}
                 disabled={buttonDisabled}
+                theme={theme}
               />
             </View>
           </SafeAreaView>
@@ -415,6 +437,25 @@ const getStyles = (theme) =>
       opacity: 0.6,
       fontSize: 17,
       marginBottom: 14,
+    },
+
+    button: {
+      width: "80%",
+      height: 55,
+      backgroundColor: "#ffffffc9",
+      borderRadius: 50,
+      alignSelf: "center",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonText: {
+      color: "#f75f2cc4",
+      fontWeight: 700,
+      fontSize: 20,
+      textAlign: "center",
+    },
+    buttonDisabled: {
+      opacity: 0.5,
     },
   });
 

@@ -82,26 +82,6 @@ export const PromptText = ({
   );
 };
 
-export const ConfirmButton = ({ text, onPress, disabled, loading }) => {
-  return (
-    <TouchableOpacity
-      style={[styles.button, disabled && styles.buttonDisabled]}
-      onPress={onPress}
-      disabled={disabled}
-    >
-      {loading ? (
-        <ActivityIndicator />
-      ) : (
-        <Text
-          style={[styles.buttonText, disabled && styles.buttonTextDisabled]}
-        >
-          {text}
-        </Text>
-      )}
-    </TouchableOpacity>
-  );
-};
-
 const FinishSignup = () => {
   const [step, setStep] = useState(1);
   const [firstName, setFirstName] = useState("");
@@ -964,24 +944,6 @@ const styles = StyleSheet.create({
   },
 
   // button
-  button: {
-    width: "80%",
-    height: 55,
-    backgroundColor: "#ffffffc9",
-    borderRadius: 50,
-    alignSelf: "center",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonText: {
-    color: "#f75f2cc4",
-    fontWeight: 700,
-    fontSize: 20,
-    textAlign: "center",
-  },
-  buttonDisabled: {
-    opacity: 0.3,
-  },
   buttonLabelText: {
     color: "white",
     opacity: 0.6,
