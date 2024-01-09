@@ -14,7 +14,6 @@ const SetStartDay = ({
   const styles = getStyles(theme);
   const [hoursLeft, setHoursLeft] = useState(0);
 
-
   // Calculate time left
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -64,25 +63,23 @@ const SetStartDay = ({
           >
             Today
           </Text>
-          <View style={styles.descContainer}>
-            <Text
-              style={[
-                styles.buttonDescText,
-                startDay === "Today" && styles.buttonDescTextSelected,
-              ]}
-            >
-              Tasks must be completed by{" "}
-            </Text>
-            <Text
-              style={[
-                styles.buttonDescBoldText,
-                startDay === "Today" && styles.buttonDescTextSelected,
-              ]}
-            >
-              {timePickerText.end} ({hoursLeft}{" "}
-              {hoursLeft === 1 ? "hour" : "hours"} left)
-            </Text>
-          </View>
+          <Text
+            style={[
+              styles.buttonDescText,
+              startDay === "Today" && styles.buttonDescTextSelected,
+            ]}
+          >
+            Tasks must be completed by
+          </Text>
+          <Text
+            style={[
+              styles.buttonDescBoldText,
+              startDay === "Today" && styles.buttonDescTextSelected,
+            ]}
+          >
+            {timePickerText.end} ({hoursLeft}{" "}
+            {hoursLeft === 1 ? "hour" : "hours"} left)
+          </Text>
         </TouchableOpacity>
       )}
 
@@ -99,24 +96,22 @@ const SetStartDay = ({
         >
           Tomorrow
         </Text>
-        <View style={styles.descContainer}>
-          <Text
-            style={[
-              styles.buttonDescText,
-              startDay === "Tmrw" && styles.buttonDescTextSelected,
-            ]}
-          >
-            Tasks must be completed by{" "}
-          </Text>
-          <Text
-            style={[
-              styles.buttonDescBoldText,
-              startDay === "Tmrw" && styles.buttonDescTextSelected,
-            ]}
-          >
-            {timePickerText.end}, {tmrwDateName}
-          </Text> 
-        </View>
+        <Text
+          style={[
+            styles.buttonDescText,
+            startDay === "Tmrw" && styles.buttonDescTextSelected,
+          ]}
+        >
+          Tasks must be completed by{" "}
+        </Text>
+        <Text
+          style={[
+            styles.buttonDescBoldText,
+            startDay === "Tmrw" && styles.buttonDescTextSelected,
+          ]}
+        >
+          {timePickerText.end}, {tmrwDateName}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -143,9 +138,8 @@ const getStyles = (theme) =>
     button: {
       // Base styles
       flexDirection: "column",
-      gap: 7,
       borderRadius: 12,
-      width: "100%",
+      width: 300,
       height: 120,
       justifyContent: "center",
       alignItems: "center",
@@ -181,19 +175,11 @@ const getStyles = (theme) =>
       color: theme.authButtonText,
     },
 
-    descContainer: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      width: "100%",
-      paddingHorizontal: 20,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-
     buttonRemainingTimeText: {
       color: "#ffffffb1",
       fontSize: 16,
       fontWeight: "bold",
+      textAlign: "center",
     },
     buttonRemainingTimeTextSelected: {
       color: theme.authButtonText,

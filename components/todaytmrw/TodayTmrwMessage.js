@@ -3,12 +3,13 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import CircleRightArrow from "../../assets/icons/circle-right-arrow.svg";
 import { useNavigation } from "@react-navigation/native";
 import { useThemes } from "../../hooks/ThemesContext";
-import { daysOfWeek, getNextActiveDay } from "../../utils/currentDate";
+import { getNextActiveDay } from "../../utils/currentDate";
 import GlowButton from "../GlowButton";
 import { useSettings } from "../../hooks/SettingsContext";
 import { useDayChange } from "../../hooks/useDayChange";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
+import { DAYS_OF_WEEK } from "../../constants";
 
 const TodayTmrwMessage = ({ type, setModalVisible }) => {
   const { theme } = useThemes();
@@ -22,8 +23,8 @@ const TodayTmrwMessage = ({ type, setModalVisible }) => {
   const [nextActiveDay, setNextActiveDay] = useState(
     getNextActiveDay(tmrwDOW, daysActive)
   );
-  const nextActiveDayIndex = daysOfWeek.indexOf(nextActiveDay);
-  const dayBeforeNextActiveDay = daysOfWeek[(nextActiveDayIndex - 1 + 7) % 7];
+  const nextActiveDayIndex = DAYS_OF_WEEK.indexOf(nextActiveDay);
+  const dayBeforeNextActiveDay = DAYS_OF_WEEK[(nextActiveDayIndex - 1 + 7) % 7];
 
   const turnOffVacation = async () => {
     const userRef = doc(db, "users", currentUserID);

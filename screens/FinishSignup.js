@@ -58,6 +58,7 @@ export const PromptText = ({
   fontSize = 25,
   fontWeight = 500,
   width = "100%",
+  style = {},
 }) => {
   return (
     <View
@@ -66,6 +67,7 @@ export const PromptText = ({
         marginBottom: 15,
         width: width,
         paddingHorizontal: 30,
+        ...style,
       }}
     >
       <Text
@@ -364,13 +366,14 @@ const FinishSignup = () => {
         if (firstTodoChecked && secondTodoChecked && thirdTodoChecked) {
           setTimeout(() => {
             setStep(5);
-          }, 200);
+          }, 300);
         }
       }
       if (step === 5) {
         if (firstTodoLocked && secondTodoLocked && thirdTodoLocked) {
-          setStep(6);
-        }
+          setTimeout(() => {
+            setStep(6);
+          }, 200);        }
       }
       if (step === 6) {
         turnGreenAnimation();

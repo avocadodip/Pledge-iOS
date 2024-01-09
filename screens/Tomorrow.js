@@ -18,7 +18,7 @@ const Tomorrow = () => {
   const {
     settings: { tmrwIsVacation, isOnboarded, tmrwTodos, tmrwIsActive, missedTaskFine}, timeStatus
   } = useSettings();
-  const { dayChanged, tmrwDOWAbbrev } = useDayChange();
+  const { dayChanged, tmrwDOWAbbrev, tmrwDateNameAbbrev } = useDayChange();
   const [modalVisible, setModalVisible] = useState(false);
 
   const renderTodos = useCallback(() => {
@@ -42,7 +42,7 @@ const Tomorrow = () => {
       <View style={styles.headerContainer}>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Tmrw</Text>
-          <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}</Text>
+          <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}, {tmrwDateNameAbbrev}</Text>
         </View>
       </View>
 

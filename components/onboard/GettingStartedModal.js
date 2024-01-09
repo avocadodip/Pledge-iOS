@@ -27,7 +27,7 @@ import {
 import OnboardTimePicker from "./OnboardTimePicker";
 
 const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
-  const { currentUserID, setDayCompleted } = useSettings();
+  const { currentUserID, setDayCompleted, dreamsArray } = useSettings();
   const { theme, backgroundGradient } = useThemes();
   const styles = getStyles(theme);
 
@@ -288,10 +288,11 @@ const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
               {step === 4 && (
                 <>
                   <AnimatedComponent>
-                    <PromptText text="Enter your first task. Make sure this one's a step towards your dream!" />
+                    <PromptText text="Enter your first task" />
+                    {/* <PromptText text={dreamsArray[0].title} fontWeight={700} fontSize={20}/> */}
                     <TextInput
                       style={styles.inputField}
-                      placeholder="Write 2 pages of screenplay"
+                      placeholder="Box for 20 minutes"
                       value={firstTodoTitle}
                       onChangeText={(text) => {
                         setFirstTodoTitle(text);

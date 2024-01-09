@@ -1,61 +1,32 @@
 // This file simply starts a function that runs every second and exports the updated current time in various formats. e.g. "Monday", "Mon.", "112623" (or Nov 26, 2023), etc.
 import { useEffect, useState } from "react";
 import {
-  getBeginningOfWeek,
+  abbreviateMonth,
+  getFormattedDate,
   getTmrwAbbrevDOW,
   getTmrwDate,
   getTodayAbbrevDOW,
   getTodayDate,
 } from "../utils/currentDate";
-
-const getFormattedDate = (date) => {
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const day = date.getDate();
-  const monthIndex = date.getMonth();
-  const monthName = monthNames[monthIndex];
-
-  return `${monthName} ${day}`;
-};
+import { DAYS_OF_WEEK } from "../constants";
 
 export const useDayChange = () => {
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
   const todayIndex = new Date().getDay();
   const [todayDOWIndex, setTodayDOWIndex] = useState(todayIndex);
-  const [todayDOW, setTodayDOW] = useState(daysOfWeek[todayIndex]);
+  const [todayDOW, setTodayDOW] = useState(DAYS_OF_WEEK[todayIndex]);
   const [todayDOWAbbrev, setTodayDOWAbbrev] = useState(getTodayAbbrevDOW());
   const [tmrwDOWAbbrev, setTmrwDOWAbbrev] = useState(getTmrwAbbrevDOW());
 
-  const [tmrwDOW, setTmrwDOW] = useState(daysOfWeek[(todayIndex + 1) % 7]);
+  const [tmrwDOW, setTmrwDOW] = useState(DAYS_OF_WEEK[(todayIndex + 1) % 7]);
   const [dayChanged, setDayChanged] = useState(false);
 
-  const [todayDate, setTodayDate] = useState(getTodayDate());
+  const [todayDate, setTodayDate] = useState(getTodayDate()); // 20240108
   const [tmrwDate, setTmrwDate] = useState(getTmrwDate());
-  const today = new Date();
-  const tmrwForInitialState = new Date(today);
-  tmrwForInitialState.setDate(today.getDate() + 1);
+  const [todayDateNameAbbrev, setTodayDateNameAbbrev] = useState(abbreviateMonth(getFormattedDate(new Date())));
+  const tmrwForInitialState = new Date();
+  tmrwForInitialState.setDate(tmrwForInitialState.getDate() + 1);
   const [tmrwDateName, setTmrwDateName] = useState(getFormattedDate(tmrwForInitialState)); // July 24
+  const [tmrwDateNameAbbrev, setTmrwDateNameAbbrev] = useState(abbreviateMonth(getFormattedDate(tmrwForInitialState)));
 
   const checkDayChange = () => {
     const now = new Date();
@@ -63,10 +34,10 @@ export const useDayChange = () => {
     if (dayOfWeekI !== todayDOWIndex) {
       setDayChanged(true);
       setTodayDOWIndex(dayOfWeekI);
-      setTodayDOW(daysOfWeek[dayOfWeekI]);
+      setTodayDOW(DAYS_OF_WEEK[dayOfWeekI]);
       setTodayDOWAbbrev(getTodayAbbrevDOW())
       setTmrwDOWAbbrev(getTmrwAbbrevDOW());
-      setTmrwDOW(daysOfWeek[(dayOfWeekI + 1) % 7]);
+      setTmrwDOW(DAYS_OF_WEEK[(dayOfWeekI + 1) % 7]);
       setTodayDate(getTodayDate());
       setTmrwDate(getTmrwDate());
       const tmrw = new Date(now);
@@ -111,5 +82,7 @@ export const useDayChange = () => {
     todayDate,
     tmrwDate,
     tmrwDateName,
+    todayDateNameAbbrev,
+    tmrwDateNameAbbrev
   };
 };

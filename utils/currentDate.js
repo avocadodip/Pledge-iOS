@@ -4,6 +4,7 @@ import {
   differenceInMonths,
   differenceInYears,
 } from "date-fns";
+import { ABBREVIATED_DAYS_OF_WEEK, DAYS_OF_WEEK } from '../constants';
 
 export const getTimezoneAbbrev = (timezone) => {
   return moment.tz(timezone).format('z');
@@ -81,27 +82,6 @@ export const getBeginningOfWeekDate = () => {
   return `${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`;
 };
 
-// Array of week days
-export const daysOfWeek = [
-  "Sunday",
-  "Monday", 
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
-export const abbreviatedDaysOfWeek = [
-  "Sun.",
-  "Mon.",
-  "Tues.",
-  "Wed.",
-  "Thurs.",
-  "Fri.",
-  "Sat.",
-];
-
 export const abbreviateDOW = (dayOfWeek) => {
   const abbreviations = {
     "Sunday": "Sun.",
@@ -118,53 +98,76 @@ export const abbreviateDOW = (dayOfWeek) => {
 // "October 16" to "Oct. 16"
 export const abbreviateMonth = (dateString) => {
   const monthAbbreviations = {
-    "January": "Jan.",
-    "February": "Feb.",
-    "March": "Mar.",
-    "April": "Apr.",
+    "January": "Jan",
+    "February": "Feb",
+    "March": "Mar",
+    "April": "Apr",
     "May": "May",
-    "June": "Jun.",
-    "July": "Jul.",
-    "August": "Aug.",
-    "September": "Sep.",
-    "October": "Oct.",
-    "November": "Nov.",
-    "December": "Dec.",
+    "June": "Jun",
+    "July": "Jul",
+    "August": "Aug",
+    "September": "Sep",
+    "October": "Oct",
+    "November": "Nov",
+    "December": "Dec",
   };
   const [month, day] = dateString.split(" ");
   return `${monthAbbreviations[month]} ${day}`;
 };
 
+export const getFormattedDate = (date) => {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const day = date.getDate();
+  const monthIndex = date.getMonth();
+  const monthName = monthNames[monthIndex];
+
+  return `${monthName} ${day}`;
+};
+
 
 export function getTodayDOW() {
   const currentDate = new Date();
-  return daysOfWeek[currentDate.getDay()];
+  return DAYS_OF_WEEK[currentDate.getDay()];
 }
 
 export const getTodayAbbrevDOW = () => {
   const currentDate = new Date();
-  return abbreviatedDaysOfWeek[currentDate.getDay()];
+  return ABBREVIATED_DAYS_OF_WEEK[currentDate.getDay()];
 };
 
 export function getTmrwDOW() {
   const tmrwDate = new Date();
   tmrwDate.setDate(tmrwDate.getDate() + 1);
-  return daysOfWeek[tmrwDate.getDay()];
+  return DAYS_OF_WEEK[tmrwDate.getDay()];
 }
 
 export const getTmrwAbbrevDOW = () => {
   const currentDate = new Date();
   const tmrwDayIndex = (currentDate.getDay() + 1) % 7; // get tomorrow's day index, wrap around at the end of the week
-  return abbreviatedDaysOfWeek[tmrwDayIndex];
+  return ABBREVIATED_DAYS_OF_WEEK[tmrwDayIndex];
 };
 
 // Helper function to get next active day
 export const getNextActiveDay = (nextDay, days) => {
   let startChecking = false;
 
-  for (let i = 0; i < daysOfWeek.length * 2; i++) {
+  for (let i = 0; i < DAYS_OF_WEEK.length * 2; i++) {
     // loop twice to handle week cycle
-    const day = daysOfWeek[i % daysOfWeek.length];
+    const day = DAYS_OF_WEEK[i % DAYS_OF_WEEK.length];
 
     if (day === nextDay) {
       startChecking = true; // start checking from the next day
@@ -196,15 +199,3 @@ export const getTmrwDate = () => {
     date.getDate().toString().padStart(2, "0")
   );
 };
-
-// 3 - returns "20221231" if today is January 1, 2023
-// export const getYesterdayDate = () => {
-//   const todayDate = new Date();
-//   const yesterDate = new Date();
-//   yesterDate.setDate(todayDate.getDate() - 1);
-//   const dateTime =
-//     yesterDate.getFullYear() +
-//     ("0" + (yesterDate.getMonth() + 1)).slice(-2) +
-//     ("0" + yesterDate.getDate()).slice(-2);
-//   return dateTime;
-// };

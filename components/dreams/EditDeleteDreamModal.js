@@ -25,7 +25,7 @@ const EditDeleteDreamModal = ({ modalVisible, setModalVisible, title, id }) => {
   const [dreamTitle, setDreamTitle] = useState("");
   const [originalTitle, setOriginalTitle] = useState("");
   const { theme, backgroundGradient, currentThemeName } = useThemes();
-  const { currentUserID } = useSettings();
+  const { currentUserID, dreamsArray } = useSettings();
   const { todayDate } = useDayChange();
   const styles = getStyles(theme);
   useEffect(() => {
@@ -127,35 +127,37 @@ const EditDeleteDreamModal = ({ modalVisible, setModalVisible, title, id }) => {
             </TouchableHighlight>
             <View style={{ height: 10 }} />
             {/* DELETE BUTTON */}
-            <TouchableHighlight
-              style={[
-                styles.addButton,
-                { opacity: dreamTitle.length < 7 ? 0.5 : 1 },
-              ]}
-              onPress={() => {
-                deleteDream();
-                setModalVisible(!modalVisible);
-              }}
-              underlayColor={theme.faintPrimary}
-              disabled={dreamTitle.length < 7}
-            >
-              <LinearGradient
-                colors={
-                  currentThemeName === "Dark"
-                    ? ["#F13434", "#E89C44"]
-                    : [theme.faintPrimary, theme.faintPrimary]
-                }
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: 10,
-                  justifyContent: "center",
-                  alignItems: "center",
+            {dreamsArray.length > 1 && (
+              <TouchableHighlight
+                style={[
+                  styles.addButton,
+                  { opacity: dreamTitle.length < 7 ? 0.5 : 1 },
+                ]}
+                onPress={() => {
+                  deleteDream();
+                  setModalVisible(!modalVisible);
                 }}
+                underlayColor={theme.faintPrimary}
+                disabled={dreamTitle.length < 7}
               >
-                <Text style={styles.addButtonText}>Delete</Text>
-              </LinearGradient>
-            </TouchableHighlight>
+                <LinearGradient
+                  colors={
+                    currentThemeName === "Dark"
+                      ? ["#F13434", "#E89C44"]
+                      : [theme.faintPrimary, theme.faintPrimary]
+                  }
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={styles.addButtonText}>Delete</Text>
+                </LinearGradient>
+              </TouchableHighlight>
+            )}
           </LinearGradient>
         </View>
       </TouchableOpacity>

@@ -30,7 +30,7 @@ const Today = () => {
       onboardStartTmrw,
     },
   } = useSettings();
-  const { todayDOWAbbrev } = useDayChange();
+  const { todayDOWAbbrev, todayDate, todayDateNameAbbrev } = useDayChange();
   const [modalVisible, setModalVisible] = useState(false);
   const [renderedTodos, setRenderedTodos] = useState([]);
 
@@ -47,16 +47,8 @@ const Today = () => {
     setRenderedTodos(updatedTodos);
   }, [todayTodos, timeStatus]);
 
-  useEffect(() => {
-    console.log(timeStatus);
-  }, [timeStatus]);
-
   return (
     <SafeAreaView style={styles.pageContainer}>
-      {/* <OnboardingPopup
-        texts={['This is the Today page.', 'Your three tasks planned the night before will show up here.','Your only mission is to check them off before the day ends!']}
-        buttonTitle="Cool, what's next?"
-      /> */}
       {isOnboarded && <DayStatusIndicator />}
 
       <Animated.View
@@ -65,7 +57,7 @@ const Today = () => {
       >
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Today</Text>
-          <Text style={styles.headerDayOfWeek}>{todayDOWAbbrev}</Text>
+          <Text style={styles.headerDayOfWeek}>{todayDOWAbbrev}, {todayDateNameAbbrev}</Text>
         </View>
       </Animated.View>
 

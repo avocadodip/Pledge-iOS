@@ -43,7 +43,6 @@ import MailIcon from "../assets/icons/mail-alt.svg";
 import MoneyIcon from "../assets/icons/money-icon.svg";
 import LogoutIcon from "../assets/icons/logout.svg";
 import NotificationBellIcon from "../assets/icons/notification-bell-icon.svg";
-import { daysOfWeek } from "../utils/currentDate";
 import DeleteAccountButton from "../components/settings/DeleteAccountButton";
 import TaskFineIcon from "../assets/icons/missed-task-fine-icon.svg";
 import PigIcon from "../assets/icons/pig-icon.svg";
@@ -54,6 +53,7 @@ import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import XMarkIcon from "../assets/icons/x-mark.svg";
 import { doc, updateDoc } from "firebase/firestore";
+import { DAYS_OF_WEEK } from "../constants";
 
 const BUTTON_HEIGHT = 51;
 const BUTTON_TEXTS = ["S", "M", "T", "W", "T", "F", "S"];
@@ -354,7 +354,7 @@ const Settings = () => {
                       All
                     </Text>
                   ) : (
-                    daysOfWeek.map((dayKey, index) => (
+                    DAYS_OF_WEEK.map((dayKey, index) => (
                       <Text
                         style={{
                           fontSize: 15,
