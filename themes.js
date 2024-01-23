@@ -132,7 +132,7 @@ export default {
     textDisabled: "rgba(255, 255, 255, 0.38)",
 
     // Auth button
-    authButtonBg: "#eaeaea",
+    authButtonBg: "white",
     authButtonBorder: "#ffffff88",
     authButtonText: "#3c3c3c",
 

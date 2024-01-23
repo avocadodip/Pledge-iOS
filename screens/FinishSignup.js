@@ -334,7 +334,7 @@ const FinishSignup = () => {
       }
     }
     // Increment for all steps but these:
-    if (step !== 4 && step !== 5 && step !== 1) {
+    if (step !== 4 && step !== 5 && step !== 1 && step !== 12) {
       setStep(step + 1);
     }
   };

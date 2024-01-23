@@ -442,7 +442,7 @@ const getStyles = (theme) =>
     button: {
       width: "80%",
       height: 55,
-      backgroundColor: "#ffffffc9",
+      backgroundColor: theme.authButtonBg,
       borderRadius: 50,
       alignSelf: "center",
       alignItems: "center",
