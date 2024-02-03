@@ -33,7 +33,7 @@ export const initializePaymentSheet = async (
     },
     primaryButton: {
       colors: {
-        background: theme.paymentSheetSetupButton,
+        background: theme.stripeSetupButton,
         text: Color.white,
       },
       shapes: {

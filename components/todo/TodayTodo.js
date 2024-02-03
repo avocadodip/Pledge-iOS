@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { getTodoStyles, variableFontSize } from "./TodoStyles";
 import CheckIcon from "../../assets/icons/check-icon.svg";
@@ -10,7 +10,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import TouchableRipple from "../TouchableRipple";
-import { Color } from "../../GlobalStyles";
+import { APP_HORIZONTAL_PADDING, Color } from "../../GlobalStyles";
 import { useThemes } from "../../hooks/ThemesContext";
 import { useBottomSheet } from "../../hooks/BottomSheetContext";
 import {
@@ -105,33 +105,31 @@ const TodayTodo = ({ todoData }) => {
   };
 
   // ------------- ANIMATIONS -------------
-  const [shouldRenderTaskInfo, setShouldRenderTaskInfo] = useState(!isComplete);
+  const containerWidth =
+    Dimensions.get("window").width - 2 * APP_HORIZONTAL_PADDING;
 
-  // Render animation whenever isComplete changes
+  const OPEN_DURATION = 100;
+
+  const rightWidth = useSharedValue("100%");
+
+  const opacityValue = useSharedValue(1); // Initial opacity
+
   useEffect(() => {
     if (isComplete) {
-      // Hide task info and set flex values
-      setShouldRenderTaskInfo(false);
-      leftFlex.value = 0;
-      rightFlex.value = 10;
+      rightWidth.value = "100%";
+      opacityValue.value = 0; // Fade out when full width is reached
     } else {
-      // Initially hide task info then set to true to avoid premature flashing
-      setShouldRenderTaskInfo(false);
-      leftFlex.value = 8;
-      rightFlex.value = 2;
-      const timeoutId = setTimeout(() => {
-        setShouldRenderTaskInfo(true);
-      }, OPEN_DURATION - 50); // Slightly shorter than duration so it looks smoother
-
-      return () => clearTimeout(timeoutId);
+      rightWidth.value = "20%";
+      opacityValue.value = 1; // Set opacity back to fully visible
     }
   }, [isComplete]);
 
-  const leftStyle = useAnimatedStyle(() => ({
-    flex: withTiming(leftFlex.value, { duration: CLOSE_DURATION }),
-  }));
   const rightStyle = useAnimatedStyle(() => ({
-    flex: withTiming(rightFlex.value, { duration: OPEN_DURATION }),
+    width: withTiming(rightWidth.value, { duration: OPEN_DURATION }),
+  }));
+
+  const leftStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(opacityValue.value, { duration: OPEN_DURATION }),
   }));
 
   // ------------- JSX -------------
@@ -203,64 +201,87 @@ const TodayTodo = ({ todoData }) => {
   // During day, show the following:
   if (timeStatus === 1) {
     return (
-      <View style={styles.infoContainer}>
+      <View
+        style={styles.infoContainer}
+      >
         {/* Left side */}
-        <Animated.View style={leftStyle}>
+        {/* <Animated.View style={[leftStyle, styles.leftContainer]}>
           <TouchableRipple
             onPress={() => {
               openBottomSheet("today", todoNumber);
             }}
-            style={[styles.leftContainer, { padding: 0 }]}
+            style={{ padding: 0 }}
           >
-            {shouldRenderTaskInfo && (
-              <View
-                style={[
-                  styles.leftContainerInner,
-                  { width: "100%", padding: 16 },
-                ]}
-              >
-                {tag && (
-                  <View style={styles.tagContainer}>
-                    <Text style={styles.tagText}>{dreamTitle}</Text>
-                  </View>
-                )}
-                <View style={styles.titleContainer}>
-                  <Text
-                    style={[
-                      styles.titleText,
-                      { fontSize: variableFontSize(title) },
-                    ]}
-                  >
-                    {title}{" "}
-                    {description !== "" && (
-                      <Text
-                        style={[
-                          styles.moreText,
-                          { fontSize: variableFontSize(title, true) },
-                        ]}
-                      >
-                        {" "}
-                        more...
-                      </Text>
-                    )}
+            <View
+              style={[
+                styles.leftContainerInner,
+                { width: "100%", padding: 16 },
+              ]}
+            >
+              {tag && (
+                <View style={styles.tagContainer}>
+                  <Text style={styles.tagText}>{dreamTitle}</Text>
+                </View>
+              )}
+              <View style={styles.titleContainer}>
+                <Text
+                  style={[
+                    styles.titleText,
+                    { fontSize: variableFontSize(title) },
+                  ]}
+                >
+                  {title}{" "}
+                  {description !== "" && (
+                    <Text
+                      style={[
+                        styles.moreText,
+                        { fontSize: variableFontSize(title, true) },
+                      ]}
+                    >
+                      {" "}
+                      more...
+                    </Text>
+                  )}
+                </Text>
+              </View>
+              {stringAmount && (
+                <View style={styles.amountContainer}>
+                  <Text style={styles.amountText}>
+                    {"$" + stringAmount.toString()}
                   </Text>
                 </View>
-                {stringAmount && (
-                  <View style={styles.amountContainer}>
-                    <Text style={styles.amountText}>
-                      {"$" + stringAmount.toString()}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            )}
+              )}
+            </View>
           </TouchableRipple>
-        </Animated.View>
+        </Animated.View> */}
         {/* Right side */}
-        <Animated.View style={rightStyle}>
+        <Animated.View
+          style={[
+            rightStyle,
+            {
+              position: "absolute",
+              top: 0,
+              right: 0,
+              height: "100%",
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: theme.faintishPrimary,
+
+              borderWidth: 1,
+               borderColor: "white",
+            },
+          ]}
+        >
           <TouchableRipple
             onPress={handleCheckTodo}
-            style={styles.rightButtonContainer}
+            // style={styles.rightButtonContainer}
+            style={{
+              height: "100%",
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
             <CheckIcon color={theme.primary} />
           </TouchableRipple>

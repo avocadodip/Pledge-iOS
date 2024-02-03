@@ -609,7 +609,7 @@ Chris and Josh`}
               <>
                 <AnimatedComponent>
                   <PromptText
-                    text="First, check off the 3 tasks you set yesterday."
+                    text="Check off the 3 tasks you set yesterday."
                     fontSize={20}
                     fontWeight={400}
                     width={270}
@@ -648,7 +648,7 @@ Chris and Josh`}
                   style={{ width: "100%", alignItems: "center" }}
                 >
                   <PromptText
-                    text="Second, lock in 3 tasks for tomorrow."
+                    text="Lock in 3 tasks for tomorrow."
                     fontSize={20}
                     fontWeight={400}
                     width={300}

@@ -19,6 +19,7 @@ import { useDayChange } from "../hooks/useDayChange";
 import { formatDateDifference } from "../utils/currentDate";
 import AddDreamModal from "../components/dreams/AddDreamModal";
 import EditDeleteDreamModal from "../components/dreams/EditDeleteDreamModal";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 const Dreams = ({ navigation, route }) => {
   const { theme } = useThemes();
@@ -37,7 +38,10 @@ const Dreams = ({ navigation, route }) => {
   return (
     <>
       <SafeAreaView style={settingsPageStyles.pageContainer}>
-        <View style={styles.headerContainer}>
+        <Animated.View
+          style={styles.headerContainer}
+          entering={FadeIn.duration(300)}
+        >
           <Text style={styles.pageTitle}>Dreams</Text>
           <TouchableHighlight
             style={styles.gearButton}
@@ -46,7 +50,7 @@ const Dreams = ({ navigation, route }) => {
           >
             <GearIcon width={33} height={33} color={theme.textHigh} />
           </TouchableHighlight>
-        </View>
+        </Animated.View>
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}

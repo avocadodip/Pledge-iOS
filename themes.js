@@ -69,12 +69,6 @@ export default {
     stepStrokeFinishedColor: "#f56565",
     stepIndicatorUnFinishedColor: "#f97676",
 
-    // Payment sheet
-    paymentSheetComponentBackground: "#E05E56",
-    paymentSheetComponentBackground: "#FFFFFF",
-    paymentSheetSetupButton: "#4b4b4b",
-    paymentSheetPrimary: "#fcfdff",
-
     // Day Status indicator
     dayStatusIndicatorBg: Color.white18,
     dayStatusIndicatorBorder: Color.white18,
@@ -92,16 +86,16 @@ export default {
     buttonBorder: "#feb3b33d",
 
     // stripe
-    stripePrimary: '#000000',
-    stripeBackground: '#ffffff',
-    stripeComponentBackground: '#f3f8fa',
-    stripeComponentBorder: '#f3f8fa',
-    stripeComponentDivider: '#000000',
-    stripePrimaryText: '#000000',
-    stripeSecondaryText: '#000000',
-    stripeComponentText: '#000000',
-    stripePlaceholderText: '#73757b',
-
+    stripePrimary: Color.white,
+    stripeBackground: "#eb6b3e",
+    stripeComponentBackground: "#f29c7e",
+    stripeComponentBorder: "#f3f8fa",
+    stripeComponentDivider: Color.white,
+    stripePrimaryText: Color.white,
+    stripeSecondaryText: Color.white,
+    stripeComponentText: Color.white,
+    stripePlaceholderText: "#f3f8fa",
+    stripeSetupButton: "#f29c7e",
   },
   Dark: {
     accent: Color.black,
@@ -142,12 +136,6 @@ export default {
 
     vacationToggleDisabled: "#6b6b6b",
 
-    // Payment sheet
-    paymentSheetBackground: Color.black,
-    paymentSheetComponentBackground: "#5c5c5c",
-    paymentSheetSetupButton: "#474747",
-    paymentSheetPrimary: "#fcfdff",
-
     // Day Status indicator
     dayStatusIndicatorBg: Color.white12,
     dayStatusIndicatorBorder: "#4a4a4a",
@@ -172,6 +160,7 @@ export default {
     stripeSecondaryText: Color.white,
     stripeComponentText: Color.black,
     stripePlaceholderText: "#80121212",
+    stripeSetupButton: "#474747",
   },
   Light: {
     accent: Color.white,
@@ -208,12 +197,6 @@ export default {
     // GetStartedModal step indicator
     stepStrokeUnFinishedColor: "#f56565",
     stepIndicatorUnFinishedColor: "#f97676",
-
-    // Payment sheet
-    paymentSheetBackground: "#FFFFFF",
-    paymentSheetComponentBackground: "#999999",
-    paymentSheetSetupButton: "#4b4b4b",
-    paymentSheetPrimary: "#616161",
 
     // Day Status indicator
     dayStatusIndicatorBg: "#ff7d7a",

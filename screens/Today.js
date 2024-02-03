@@ -49,7 +49,12 @@ const Today = () => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      {isOnboarded && <DayStatusIndicator />}
+      <Animated.View
+        entering={FadeIn.duration(400).delay(300)}
+        style={{width: "100%"}}
+      >
+        {isOnboarded && <DayStatusIndicator />}
+      </Animated.View>
 
       <Animated.View
         entering={FadeIn.duration(400).delay(300)}
@@ -57,7 +62,9 @@ const Today = () => {
       >
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Today</Text>
-          <Text style={styles.headerDayOfWeek}>{todayDOWAbbrev}, {todayDateNameAbbrev}</Text>
+          <Text style={styles.headerDayOfWeek}>
+            {todayDOWAbbrev}, {todayDateNameAbbrev}
+          </Text>
         </View>
       </Animated.View>
 
@@ -99,7 +106,7 @@ const getStyles = (theme) =>
       paddingTop: 10,
     },
     headerContainer: {
-      marginTop: 7,
+      marginTop: 2,
       width: "100%",
       flexDirection: "row",
       alignItems: "center",

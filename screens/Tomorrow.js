@@ -11,12 +11,20 @@ import TmrwTodo from "../components/todo/TmrwTodo";
 import FinedTodo from "../components/todo/FinedTodo";
 import NumberTodo from "../components/todo/NumberTodo";
 import DayStatusIndicator from "../components/todaytmrw/DayStatusIndicator";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 const Tomorrow = () => {
   const { theme } = useThemes();
   const styles = getStyles(theme);
   const {
-    settings: { tmrwIsVacation, isOnboarded, tmrwTodos, tmrwIsActive, missedTaskFine}, timeStatus
+    settings: {
+      tmrwIsVacation,
+      isOnboarded,
+      tmrwTodos,
+      tmrwIsActive,
+      missedTaskFine,
+    },
+    timeStatus,
   } = useSettings();
   const { dayChanged, tmrwDOWAbbrev, tmrwDateNameAbbrev } = useDayChange();
   const [modalVisible, setModalVisible] = useState(false);
@@ -27,26 +35,41 @@ const Tomorrow = () => {
         if (timeStatus == 0 || timeStatus == 1) {
           return <NumberTodo key={index} todoNumber={index + 1} />;
         } else if (timeStatus === 2 && !itemData.isLocked) {
-          return <FinedTodo key={index} isFined={missedTaskFine > 0}/>;
+          return <FinedTodo key={index} isFined={missedTaskFine > 0} />;
         }
       } else {
         return <TmrwTodo key={index} todoData={itemData} />;
       }
     });
   }, [tmrwTodos, dayChanged]);
-  
+
   return (
     <SafeAreaView style={styles.pageContainer}>
-      {isOnboarded && !tmrwIsVacation && <DayStatusIndicator />}
+      <Animated.View
+        entering={FadeIn.duration(300)}
+        style={{width: "100%"}}
+      >
+        {isOnboarded && !tmrwIsVacation && <DayStatusIndicator />}
+      </Animated.View>
 
-      <View style={styles.headerContainer}>
-        <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerTitle}>Tmrw</Text>
-          <Text style={styles.headerDayOfWeek}>{tmrwDOWAbbrev}, {tmrwDateNameAbbrev}</Text>
+      <Animated.View
+        entering={FadeIn.duration(300)}
+        style={styles.headerContainer}
+      >
+        <View style={styles.headerContainer}>
+          <View style={styles.headerTitleContainer}>
+            <Text style={styles.headerTitle}>Tmrw</Text>
+            <Text style={styles.headerDayOfWeek}>
+              {tmrwDOWAbbrev}, {tmrwDateNameAbbrev}
+            </Text>
+          </View>
         </View>
-      </View>
+      </Animated.View>
 
-      <View style={styles.pageContent}>
+      <Animated.View
+        entering={FadeIn.duration(300)}
+        style={styles.pageContent}
+      >
         {!isOnboarded ? (
           <TodayTmrwMessage
             type={"new user"}
@@ -59,7 +82,7 @@ const Tomorrow = () => {
         ) : (
           <View style={styles.todosContainer}>{renderTodos()}</View>
         )}
-      </View>
+      </Animated.View>
 
       <GettingStartedModal
         modalVisible={modalVisible}
@@ -78,7 +101,7 @@ const getStyles = (theme) =>
       paddingTop: 10,
     },
     headerContainer: {
-      marginTop: 7,
+      marginTop: 2,
       width: "100%",
       flexDirection: "row",
       alignItems: "center",
