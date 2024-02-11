@@ -1,10 +1,11 @@
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import * as Progress from "react-native-progress";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const ProgressBar = ({ progress }) => {
   return (
-    <View style={styles.container}>
+    <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.container}>
       <Progress.Bar
         progress={progress}
         width={200}
@@ -12,7 +13,7 @@ const ProgressBar = ({ progress }) => {
         color={"#ffffff"}
         unfilledColor={"#ffffff2f"}
       />
-    </View>
+    </Animated.View>
   );
 };
 

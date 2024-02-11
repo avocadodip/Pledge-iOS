@@ -12,8 +12,6 @@ import {
   APP_ID,
 } from "@env";
 
-
-
 const firebaseConfig = {
   apiKey: API_KEY,
   authDomain: AUTH_DOMAIN,

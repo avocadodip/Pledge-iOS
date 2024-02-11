@@ -205,7 +205,7 @@ const TodayTodo = ({ todoData }) => {
         style={styles.infoContainer}
       >
         {/* Left side */}
-        {/* <Animated.View style={[leftStyle, styles.leftContainer]}>
+        <Animated.View style={[leftStyle, styles.leftContainer]}>
           <TouchableRipple
             onPress={() => {
               openBottomSheet("today", todoNumber);
@@ -253,7 +253,7 @@ const TodayTodo = ({ todoData }) => {
               )}
             </View>
           </TouchableRipple>
-        </Animated.View> */}
+        </Animated.View>
         {/* Right side */}
         <Animated.View
           style={[
@@ -267,9 +267,6 @@ const TodayTodo = ({ todoData }) => {
               justifyContent: "center",
               alignItems: "center",
               backgroundColor: theme.faintishPrimary,
-
-              borderWidth: 1,
-               borderColor: "white",
             },
           ]}
         >

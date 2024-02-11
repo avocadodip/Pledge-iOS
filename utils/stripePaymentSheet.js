@@ -76,6 +76,7 @@ export const initializePaymentSheet = async (
     appearance: paymentSheetAppearance,
   });
 
+
   if (error) {
     throw error; // Throw the error if initialization fails
   }

@@ -336,7 +336,6 @@ export const SettingsProvider = ({ children }) => {
         todayCount =
           todayTodos?.filter((todo) => todo.isLocked && !todo.isComplete)
             .length || 0;
-        console.log(todayCount);
       }
       if (tmrwIsActive && !tmrwIsVacation && timeStatus === 1) {
         tmrwCount = tmrwTodos?.filter((todo) => !todo.isLocked).length || 0;
@@ -347,13 +346,7 @@ export const SettingsProvider = ({ children }) => {
     setTmrwItemsLeft(tmrwCount);
 
     setDayCompleted(todayCount === 0 && tmrwCount === 0 && timeStatus > 0);
-    console.log("_____");
-    console.log("today count");
-    console.log(todayCount);
-    console.log("tmrw count");
-    console.log(tmrwCount);
-    console.log("time status");
-    console.log(timeStatus);
+
   }, [settings, timeStatus]);
 
   return (

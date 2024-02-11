@@ -19,10 +19,14 @@ import {
   redGradientValues,
 } from "../themes";
 import Animated, {
+  Easing,
   FadeIn,
+  FadeOut,
   FadeOutUp,
   useAnimatedStyle,
   useSharedValue,
+  withRepeat,
+  withSequence,
   withTiming,
 } from "react-native-reanimated";
 import { getIdToken } from "@firebase/auth";
@@ -198,7 +202,6 @@ const FinishSignup = () => {
 
       // Call the Firebase Cloud Function to create a new Stripe customer
       const idToken = await getIdToken(auth.currentUser, true);
-      console.log(API_URL);
       // Send paymentMethod.id to Cloud Function
       const response = await fetch(`${API_URL}/createStripeCustomer`, {
         method: "POST",
@@ -298,7 +301,7 @@ const FinishSignup = () => {
         "Failed to make an account. Please try again later."
       );
       setStep(1);
-      setEndFadeOut(false)
+      setEndFadeOut(false);
     }
   };
 
@@ -353,7 +356,8 @@ const FinishSignup = () => {
         if (firstTodoLocked && secondTodoLocked && thirdTodoLocked) {
           setTimeout(() => {
             setStep(6);
-          }, 200);        }
+          }, 200);
+        }
       }
       if (step === 6) {
         turnGreenAnimation();
@@ -895,6 +899,13 @@ Chris and Josh`}
                 </Animated.View>
               )}
             </View>
+          )}
+
+          {/* creating firebase doc loading indicator */}
+          {endFadeOut && (
+            <Animated.View entering={FadeIn.duration(200).delay(1000)} exiting={FadeOut}>
+              <Text style={{color: "white", opacity: 0.6, fontSize: 14}}>One moment...</Text>
+            </Animated.View>
           )}
         </SafeAreaView>
       </KeyboardAvoidingView>

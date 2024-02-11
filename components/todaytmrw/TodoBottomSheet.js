@@ -50,7 +50,6 @@ export default function TodoBottomSheet() {
       setTodo(selectedTodo);
       todoRef.current = selectedTodo;
     }
-    console.log(selectedTodo);
   }, [selectedTodo]);
 
   const findDreamTitleById = (id, dreams) => {

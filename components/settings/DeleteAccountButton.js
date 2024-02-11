@@ -15,7 +15,7 @@ const DeleteAccountButton = () => {
   const confirmDeleteAccount = async () => {
     Alert.alert(
       "⚠️ Delete Account?",
-      "This action cannot be undone.",
+      "This action cannot be undone. Your payment method will be removed from our system upon deletion.",
       [
         {
           text: "Cancel",

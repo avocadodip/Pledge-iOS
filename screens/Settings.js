@@ -7,6 +7,7 @@ import {
   Alert,
   StatusBar,
   Dimensions,
+  Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -471,8 +472,50 @@ const Settings = () => {
             </View>
           </TouchableRipple>
         </View>
-        <DeleteAccountButton />
-        <View style={{ height: 60 }}></View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: 40,
+            marginTop: 25,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL("https://joshuawolk.com/pledgeterms.html")
+            }
+          >
+            <Text
+              style={{
+                color: theme.textMedium,
+                opacity: 0.8,
+                fontSize: 14,
+                textAlign: "left",
+              }}
+            >
+              Terms of Service
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL("https://joshuawolk.com/pledgepolicy.html")
+            }
+          >
+            <Text
+              style={{
+                color: theme.textMedium,
+                opacity: 0.8,
+                fontSize: 14,
+                textAlign: "left",
+              }}
+            >
+              Privacy Policy
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{alignItems: "center"}}>
+          <DeleteAccountButton />
+        </View>
       </View>
     </LinearGradient>
   );
