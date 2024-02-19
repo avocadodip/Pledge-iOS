@@ -29,7 +29,7 @@ import {
   signInWithCredential,
   signInWithPopup,
 } from "@firebase/auth";
-import { auth } from "../database/firebase";
+import { auth, db } from "../database/firebase";
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as Crypto from "expo-crypto";
 import AnimatedButton from "../components/AnimatedButton";
@@ -43,6 +43,7 @@ import Animated, {
   SlideOutDown,
   SlideOutUp,
 } from "react-native-reanimated";
+import { doc, setDoc } from "firebase/firestore";
 
 const BUTTON_BORDER_RADIUS = 15;
 const BUTTON_HEIGHT = 50;
@@ -84,17 +85,28 @@ const Auth = () => {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      console.log("what i want?");
-      console.log(appleCredential);
+
       const { identityToken } = appleCredential;
 
-      let credential;
       if (identityToken) {
         try {
           credential = new OAuthProvider("apple.com").credential({
             idToken: identityToken,
             rawNonce: nonce,
           });
+
+          if (
+            appleCredential.fullName &&
+            (appleCredential.fullName.givenName || appleCredential.fullName.familyName)
+          ) {
+            // Save user data to Firestore
+            await setDoc(doc(db, "users", auth.currentUser.uid), {
+              appleSignInUser: true,
+              fullName: appleCredential.fullName.givenName + " " + appleCredential.fullName.familyName,
+              email: auth.currentUser.email,
+            });
+          } 
+
           const { user } = await signInWithCredential(auth, credential);
           console.log("user signed in");
           console.log(user);

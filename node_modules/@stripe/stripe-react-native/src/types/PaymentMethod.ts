@@ -43,7 +43,8 @@ export type CreateParams =
   | BancontactParams
   | USBankAccountParams
   | PayPalParams
-  | AffirmParams;
+  | AffirmParams
+  | CashAppParams;
 
 export type ConfirmParams = CreateParams;
 
@@ -210,6 +211,13 @@ export type PayPalParams = {
   };
 };
 
+export type CashAppParams = {
+  paymentMethodType: 'CashApp';
+  paymentMethodData?: {
+    billingDetails?: BillingDetails;
+  };
+};
+
 export interface AuBecsDebitResult {
   fingerprint?: string;
   last4?: string;
@@ -232,6 +240,11 @@ export interface CardResult {
   last4?: string;
   preferredNetwork?: string;
   availableNetworks?: Array<string>;
+  threeDSecureUsage?: ThreeDSecureUsage;
+}
+
+export interface ThreeDSecureUsage {
+  isSupported?: boolean;
 }
 
 export interface FpxResult {

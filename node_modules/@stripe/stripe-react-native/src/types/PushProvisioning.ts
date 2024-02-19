@@ -39,12 +39,14 @@ export type IsCardInWalletResult =
 export type CanAddCardToWalletParams = {
   /** The `primary_account_identifier` value from the issued card. Can be an empty string. */
   primaryAccountIdentifier: string | null;
-  /** Last 4 digits of the card number. */
+  /** Last 4 digits of the card number. Required for Android. */
   cardLastFour: string;
   /** iOS only. Set this to `true` until shipping through TestFlight || App Store. If false, you must be using live cards, and have the proper iOS entitlement set up. See https://stripe.com/docs/issuing/cards/digital-wallets?platform=react-native#requesting-access-for-ios */
   testEnv?: boolean;
   /** iOS only. Set this to `true` if: your user has an Apple Watch device currently paired, and you want to check that device for the presence of the specified card. */
   hasPairedAppleWatch?: boolean;
+  /** Android only, defaults to `true`. Set this to `false` if you'd like to allow users without NFC-enabled devices to add cards to the wallet. NFC is required for paying in stores. */
+  supportsTapToPay?: boolean;
 };
 
 export type CanAddCardToWalletResult =

@@ -42,6 +42,7 @@ import ProgressBar from "../components/onboard/ProgressBar";
 import OnboardTodo from "../components/todo/OnboardTodo";
 import AnimatedSignature from "../components/onboard/AnimatedSignature";
 import ExponentialCurve from "../components/onboard/ExponentialCurve";
+import { useSettings } from "../hooks/SettingsContext";
 
 export const PLACEHOLDER_TEXT_COLOR = "rgba(255, 255, 255, 0.6)";
 
@@ -105,6 +106,7 @@ const FinishSignup = () => {
   const [secondTodoLocked, setSecondTodoLocked] = useState(false);
   const [thirdTodoLocked, setThirdTodoLocked] = useState(false);
   const [isAnimationComplete, setIsAnimationComplete] = useState(false);
+  const { settings: { appleSignInUser, fullName } } = useSettings();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -212,7 +214,7 @@ const FinishSignup = () => {
         body: JSON.stringify({
           email: auth.currentUser.email,
           uid: auth.currentUser.uid,
-          name: firstName + " " + lastName,
+          name: fullName || (firstName + " " + lastName),
         }),
       });
 
@@ -226,7 +228,7 @@ const FinishSignup = () => {
 
       // Save user data to Firestore
       await setDoc(doc(db, "users", auth.currentUser.uid), {
-        fullName: firstName + " " + lastName,
+        fullName: fullName || (firstName + " " + lastName),
         email: auth.currentUser.email,
         profilePhoto: 1,
         todayDayStart: "7:30",
@@ -319,6 +321,11 @@ const FinishSignup = () => {
     }
     if (step === 9) {
       await getNotifPermissions();
+      if (appleSignInUser && fullName) {
+        setStep(12);
+      } else {
+        setStep(10);
+      }
     }
     if (step === 10) {
       if (firstName.trim().length === 0) {
@@ -337,7 +344,7 @@ const FinishSignup = () => {
       }
     }
     // Increment for all steps but these:
-    if (step !== 4 && step !== 5 && step !== 1 && step !== 12) {
+    if (step !== 1 && step !== 4 && step !== 5 && step !== 9 && step !== 12) {
       setStep(step + 1);
     }
   };

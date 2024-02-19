@@ -1,5 +1,11 @@
 import type { BillingDetails, AddressDetails } from './Common';
 import type { CartSummaryItem } from './ApplePay';
+import type {
+  ButtonType,
+  RecurringPaymentRequest,
+  AutomaticReloadPaymentRequest,
+  MultiMerchantRequest,
+} from './PlatformPay';
 
 export type SetupParams = ClientSecretParams & {
   /** Your customer-facing business name. On Android, this is required and cannot be an empty string. */
@@ -19,6 +25,8 @@ export type SetupParams = ClientSecretParams & {
   style?: 'alwaysLight' | 'alwaysDark' | 'automatic';
   /** A URL that redirects back to your app that PaymentSheet can use to auto-dismiss web views used for additional authentication, e.g. 3DS2 */
   returnURL?: string;
+  /** Configuration for how billing details are collected during checkout. */
+  billingDetailsCollectionConfiguration?: BillingDetailsCollectionConfiguration;
   /** PaymentSheet pre-populates the billing fields that are displayed in the Payment Sheet (only country and postal code, as of this version) with the values provided. */
   defaultBillingDetails?: BillingDetails;
   /**
@@ -57,9 +65,26 @@ export type ApplePayParams = {
   /**
    * An array of CartSummaryItem item objects that summarize the amount of the payment. If you're using a SetupIntent
    * for a recurring payment, you should set this to display the amount you intend to charge. */
-  paymentSummaryItems?: CartSummaryItem[];
-  // TODO: Uncomment when https://github.com/stripe/stripe-react-native/pull/1164 lands
-  // buttonType: ButtonType
+  cartItems?: CartSummaryItem[];
+  /** Sets the text displayed by the call to action button in the Apple Pay sheet. */
+  buttonType?: ButtonType;
+  /** A typical request is for a one-time payment. To support different types of payment requests, include a PaymentRequestType. Only supported on iOS 16 and up. */
+  request?:
+    | RecurringPaymentRequest
+    | AutomaticReloadPaymentRequest
+    | MultiMerchantRequest;
+  /** Callback function for setting the order details (retrieved from your server) to give users the
+   * ability to track and manage their purchases in Wallet. Stripe calls your implementation after the
+   * payment is complete, but before iOS dismisses the Apple Pay sheet. You must call the `completion`
+   * function, or else the Apple Pay sheet will hang. */
+  setOrderTracking?: (
+    completion: (
+      orderIdentifier: string,
+      orderTypeIdentifier: string,
+      authenticationToken: string,
+      webServiceUrl: string
+    ) => void
+  ) => void;
 };
 
 export type GooglePayParams = {
@@ -231,4 +256,42 @@ type RecursivePartial<T> = {
 export interface PaymentOption {
   label: string;
   image: string;
+}
+
+export type PresentOptions = {
+  /** The number of milliseconds (after presenting) before the Payment Sheet closes automatically, at which point
+   *`presentPaymentSheet` will resolve with an `error.code` of `PaymentSheetError.Timeout`. The default is no timeout.
+   */
+  timeout?: number;
+};
+
+export type BillingDetailsCollectionConfiguration = {
+  /** How to collect the name field. Defaults to `CollectionMode.automatic`. */
+  name?: CollectionMode;
+  /** How to collect the phone field. Defaults to `CollectionMode.automatic`. */
+  phone?: CollectionMode;
+  /** How to collect the email field. Defaults to `CollectionMode.automatic`. */
+  email?: CollectionMode;
+  /** How to collect the billing address. Defaults to `CollectionMode.automatic`. */
+  address?: AddressCollectionMode;
+  /** Whether the values included in `Configuration.defaultBillingDetails` should be attached to the payment method, this includes fields that aren't displayed in the form. If `false` (the default), those values will only be used to prefill the corresponding fields in the form. */
+  attachDefaultsToPaymentMethod?: Boolean;
+};
+
+export enum CollectionMode {
+  /** The field may or may not be collected depending on the Payment Method's requirements. */
+  AUTOMATIC = 'automatic',
+  /** The field will never be collected. If this field is required by the Payment Method, you must provide it as part of `defaultBillingDetails`. */
+  NEVER = 'never',
+  /** The field will always be collected, even if it isn't required for the Payment Method. */
+  ALWAYS = 'always',
+}
+
+export enum AddressCollectionMode {
+  /** Only the fields required by the Payment Method will be collected, which may be none. */
+  AUTOMATIC = 'automatic',
+  /** Billing address will never be collected. If the Payment Method requires a billing address, you must provide it as part of `defaultBillingDetails`. */
+  NEVER = 'never',
+  /** Collect the full billing address, regardless of the Payment Method's requirements. */
+  FULL = 'full',
 }

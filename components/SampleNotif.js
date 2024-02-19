@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     appName: {
       fontSize: 15,
       color: "black",
-      fontWeight: 500,
+      fontWeight: "500",
     },
     timestamp: {
       fontSize: 15,

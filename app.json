@@ -33,7 +33,8 @@
         "jsx",
         "json",
         "wasm",
-        "svg"
+        "svg",
+        "cjs"
       ]
     },
     "owner": "cewidiupleek",

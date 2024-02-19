@@ -1,7 +1,11 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, initializeAuth } from "firebase/auth";
-import { getReactNativePersistence } from "firebase/auth/react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  initializeAuth,
+  getReactNativePersistence,
+} from "firebase/auth";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeFirestore } from "firebase/firestore";
 import {
   API_KEY,
@@ -27,7 +31,7 @@ if (!getApps().length) {
   try {
     app = initializeApp(firebaseConfig);
     auth = initializeAuth(app, {
-      persistence: getReactNativePersistence(AsyncStorage),
+      persistence: getReactNativePersistence(ReactNativeAsyncStorage),
     });
   } catch (error) {
     console.log("Error initializing app: " + error);
