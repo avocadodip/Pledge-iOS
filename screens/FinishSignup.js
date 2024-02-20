@@ -106,7 +106,9 @@ const FinishSignup = () => {
   const [secondTodoLocked, setSecondTodoLocked] = useState(false);
   const [thirdTodoLocked, setThirdTodoLocked] = useState(false);
   const [isAnimationComplete, setIsAnimationComplete] = useState(false);
-  const { settings: { appleSignInUser, fullName } } = useSettings();
+  const {
+    settings: { appleSignInUser, fullName },
+  } = useSettings();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -204,6 +206,16 @@ const FinishSignup = () => {
 
       // Call the Firebase Cloud Function to create a new Stripe customer
       const idToken = await getIdToken(auth.currentUser, true);
+
+      let bodyData = {
+        email: auth.currentUser.email,
+        uid: auth.currentUser.uid,
+      }
+
+      if (!appleSignInUser) {
+        bodyData.name = firstName + " " + lastName;
+      }
+
       // Send paymentMethod.id to Cloud Function
       const response = await fetch(`${API_URL}/createStripeCustomer`, {
         method: "POST",
@@ -211,11 +223,7 @@ const FinishSignup = () => {
           "Content-Type": "application/json",
           Authorization: "Bearer " + idToken,
         },
-        body: JSON.stringify({
-          email: auth.currentUser.email,
-          uid: auth.currentUser.uid,
-          name: fullName || (firstName + " " + lastName),
-        }),
+        body: JSON.stringify(bodyData),
       });
 
       // Handle response from your server.
@@ -226,9 +234,7 @@ const FinishSignup = () => {
       const result = await response.json();
       const stripeCustomerId = result.customerId;
 
-      // Save user data to Firestore
-      await setDoc(doc(db, "users", auth.currentUser.uid), {
-        fullName: fullName || (firstName + " " + lastName),
+      let userData = {
         email: auth.currentUser.email,
         profilePhoto: 1,
         todayDayStart: "7:30",
@@ -295,7 +301,14 @@ const FinishSignup = () => {
         todayNoInputCount: 0,
         todayNoInputFine: 0,
         todayTodos: [],
-      });
+      };
+
+      if (!appleSignInUser && !fullName) {
+        userData.fullName = firstName + " " + lastName;
+      }
+
+      // Save user data to Firestore
+      await setDoc(doc(db, "users", auth.currentUser.uid), userData);
     } catch (error) {
       console.error(error);
       Alert.alert(
@@ -321,7 +334,7 @@ const FinishSignup = () => {
     }
     if (step === 9) {
       await getNotifPermissions();
-      if (appleSignInUser && fullName) {
+      if (appleSignInUser) {
         setStep(12);
       } else {
         setStep(10);
@@ -910,8 +923,13 @@ Chris and Josh`}
 
           {/* creating firebase doc loading indicator */}
           {endFadeOut && (
-            <Animated.View entering={FadeIn.duration(200).delay(1000)} exiting={FadeOut}>
-              <Text style={{color: "white", opacity: 0.6, fontSize: 14}}>One moment...</Text>
+            <Animated.View
+              entering={FadeIn.duration(200).delay(1000)}
+              exiting={FadeOut}
+            >
+              <Text style={{ color: "white", opacity: 0.6, fontSize: 14 }}>
+                One moment...
+              </Text>
             </Animated.View>
           )}
         </SafeAreaView>
