@@ -57,12 +57,12 @@ const styles = StyleSheet.create({
     timestamp: {
       fontSize: 15,
       color: "grey",
-      fontWeight: 400,
+      fontWeight: "400",
     },
     sampleNotifMessage: {
       fontSize: 15,
       lineHeight: 17,
       color: "black",
-      fontWeight: 400,
+      fontWeight: "400",
     },
 });

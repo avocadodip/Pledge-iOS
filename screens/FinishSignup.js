@@ -43,6 +43,8 @@ import OnboardTodo from "../components/todo/OnboardTodo";
 import AnimatedSignature from "../components/onboard/AnimatedSignature";
 import ExponentialCurve from "../components/onboard/ExponentialCurve";
 import { useSettings } from "../hooks/SettingsContext";
+import DeleteAccountButton from "../components/settings/DeleteAccountButton";
+import LoadingIndicator from "../components/onboard/LoadingIndicator";
 
 export const PLACEHOLDER_TEXT_COLOR = "rgba(255, 255, 255, 0.6)";
 
@@ -61,7 +63,7 @@ export const AnimatedComponent = ({ isFirstStep = false, children }) => {
 export const PromptText = ({
   text,
   fontSize = 25,
-  fontWeight = 500,
+  fontWeight = "500",
   width = "100%",
   style = {},
 }) => {
@@ -106,9 +108,7 @@ const FinishSignup = () => {
   const [secondTodoLocked, setSecondTodoLocked] = useState(false);
   const [thirdTodoLocked, setThirdTodoLocked] = useState(false);
   const [isAnimationComplete, setIsAnimationComplete] = useState(false);
-  const {
-    settings: { appleSignInUser, fullName },
-  } = useSettings();
+  const { appleSignInUser } = useSettings();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -210,7 +210,7 @@ const FinishSignup = () => {
       let bodyData = {
         email: auth.currentUser.email,
         uid: auth.currentUser.uid,
-      }
+      };
 
       if (!appleSignInUser) {
         bodyData.name = firstName + " " + lastName;
@@ -303,7 +303,7 @@ const FinishSignup = () => {
         todayTodos: [],
       };
 
-      if (!appleSignInUser && !fullName) {
+      if (!appleSignInUser) {
         userData.fullName = firstName + " " + lastName;
       }
 
@@ -333,10 +333,14 @@ const FinishSignup = () => {
     if (step === 7) {
     }
     if (step === 9) {
+      console.log("hi");
       await getNotifPermissions();
       if (appleSignInUser) {
+        console.log("1");
+
         setStep(12);
       } else {
+        console.log("2");
         setStep(10);
       }
     }
@@ -514,16 +518,20 @@ const FinishSignup = () => {
                 <AnimatedComponent>
                   <Animated.View
                     entering={FadeIn.duration(700).delay(1000)}
-                    style={{ width: "100%", alignItems: "center" }}
+                    style={{
+                      width: "100%",
+                      alignItems: "center",
+                      marginBottom: 10,
+                    }}
                   >
-                    <PromptText text="Welcome to Pledge!" />
+                    <PromptText text="Hey there." />
                   </Animated.View>
                   <Animated.View
                     entering={FadeIn.duration(700).delay(3200)}
                     style={{ width: "100%", alignItems: "center" }}
                   >
                     <PromptText
-                      text="We made this app to hold ourselves accountable to our most spectacular dreams."
+                      text="We made Pledge to hold ourselves accountable to our most spectacular dreams."
                       fontSize={18}
                       fontWeight={400}
                     />
@@ -559,6 +567,7 @@ Chris and Josh`}
                       fontWeight={400}
                     />
                   </Animated.View>
+
                   <AnimatedSignature delay={10700} />
                 </AnimatedComponent>
               </>
@@ -920,19 +929,26 @@ Chris and Josh`}
               )}
             </View>
           )}
-
-          {/* creating firebase doc loading indicator */}
-          {endFadeOut && (
-            <Animated.View
-              entering={FadeIn.duration(200).delay(1000)}
-              exiting={FadeOut}
-            >
-              <Text style={{ color: "white", opacity: 0.6, fontSize: 14 }}>
-                One moment...
-              </Text>
-            </Animated.View>
-          )}
         </SafeAreaView>
+        {/* creating firebase doc loading indicator */}
+        {endFadeOut && (
+          <Animated.View
+            entering={FadeIn.duration(200).delay(1000)}
+            exiting={FadeOut}
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 1,
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <Text style={{ color: "white", opacity: 0.6, fontSize: 15 }}>
+              One moment...
+            </Text>
+          </Animated.View>
+        )}
       </KeyboardAvoidingView>
     </TouchableOpacity>
   );

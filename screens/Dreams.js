@@ -197,7 +197,7 @@ const getStyles = (theme) =>
     },
     lastCompletedText: {
       color: theme.textMedium,
-      fontWeight: 500,
+      fontWeight: "500",
       fontSize: 13,
       position: "absolute",
       top: 13,
@@ -233,7 +233,7 @@ const getStyles = (theme) =>
     },
     streakText: {
       color: "white",
-      fontWeight: 700,
+      fontWeight: "700",
       fontSize: 15,
     },
 
@@ -246,7 +246,7 @@ const getStyles = (theme) =>
     },
     addDreamText: {
       color: theme.textMedium,
-      fontWeight: 700,
+      fontWeight: "700",
       fontSize: 18,
     },
   });

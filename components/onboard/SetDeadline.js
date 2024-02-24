@@ -96,13 +96,13 @@ const getStyles = (theme) =>
     title: {
       color: theme.textHigh,
       fontSize: 26,
-      fontWeight: 600,
+      fontWeight: "600",
       marginTop: 35,
     },
     subtitle: {
       color: theme.textHigh,
       fontSize: 22,
-      fontWeight: 600,
+      fontWeight: "600",
       marginTop: 10,
     },
     explainerContainer: {
@@ -134,7 +134,7 @@ const getStyles = (theme) =>
     promptText: {
       color: theme.textHigh,
       fontSize: 22,
-      fontWeight: 600,
+      fontWeight: "600",
     },
     iconContainer: {
       width: 42,

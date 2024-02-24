@@ -5,7 +5,7 @@ import TodayIcon from "../assets/icons/tab-today.svg";
 import TmrwIcon from "../assets/icons/tab-tmrw.svg";
 import DreamsIcon from "../assets/icons/tab-dreams.svg";
 import { BOTTOM_TAB_HEIGHT } from "../GlobalStyles";
-import { StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import Today from "../screens/Today";
 import Tomorrow from "../screens/Tomorrow";
 import PastBets from "../screens/PastBets";
@@ -83,11 +83,9 @@ const getTabStyles = () =>
     tabBar: {
       borderTopWidth: 0,
       position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      height: BOTTOM_TAB_HEIGHT,
-      marginBottom: 7,
+      justifyContent: "center",
+      alignItems: "center",
+      paddingBottom: -10
     },
   });
 
@@ -97,67 +95,65 @@ export default function MainStack() {
   const { theme, backgroundGradient } = useThemes();
 
   if (finishSignup) {
-    return (
-      <FinishSignup />
-    );
+    return <FinishSignup />;
   }
 
   return (
     <LinearGradient colors={backgroundGradient} style={{ flex: 1 }}>
-
-
-      <Tab.Navigator
-        screenOptions={{
-          headerShown: false,
-          tabBarStyle: tabStyles.tabBar,
-          tabBarShowLabel: false,
-          unmountOnBlur: false,
-        }}
-        initialRouteName="Today"
-      >
-        <Tab.Screen
-          name="Today"
-          component={TodayStack}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <TabIcon
-                type={"today"}
-                focused={focused}
-                activeIcon={TodayIcon}
-                theme={theme}
-              />
-            ),
+      <SafeAreaView style={{flex: 1}}>
+        <Tab.Navigator
+          screenOptions={{
+            headerShown: false,
+            tabBarStyle: tabStyles.tabBar,
+            tabBarShowLabel: false,
+            unmountOnBlur: false,
           }}
-        />
-        <Tab.Screen
-          name="Tomorrow"
-          component={TomorrowScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <TabIcon
-                type={"tmrw"}
-                focused={focused}
-                activeIcon={TmrwIcon}
-                theme={theme}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="DreamsStack"
-          component={DreamsStack}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <TabIcon
-                type={"dreams"}
-                focused={focused}
-                activeIcon={DreamsIcon}
-                theme={theme}
-              />
-            ),
-          }}
-        />
-      </Tab.Navigator>
+          initialRouteName="Today"
+        >
+          <Tab.Screen
+            name="Today"
+            component={TodayStack}
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <TabIcon
+                  type={"today"}
+                  focused={focused}
+                  activeIcon={TodayIcon}
+                  theme={theme}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Tomorrow"
+            component={TomorrowScreen}
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <TabIcon
+                  type={"tmrw"}
+                  focused={focused}
+                  activeIcon={TmrwIcon}
+                  theme={theme}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="DreamsStack"
+            component={DreamsStack}
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <TabIcon
+                  type={"dreams"}
+                  focused={focused}
+                  activeIcon={DreamsIcon}
+                  theme={theme}
+                />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+      </SafeAreaView>
     </LinearGradient>
   );
 }

@@ -48,7 +48,7 @@ const Today = () => {
   }, [todayTodos, timeStatus]);
 
   return (
-    <SafeAreaView style={styles.pageContainer}>
+    <View style={styles.pageContainer}>
       <Animated.View
         entering={FadeIn.duration(400).delay(300)}
         style={{width: "100%"}}
@@ -93,7 +93,7 @@ const Today = () => {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

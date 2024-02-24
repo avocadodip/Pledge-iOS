@@ -62,7 +62,7 @@ const PastBets = ({ navigation }) => {
                 textAlign: "center",
                 color: theme.textHigh,
                 fontSize: 16,
-                fontWeight: 500,
+                fontWeight: "500",
               }}
             >
               Previous bets will appear here.

@@ -168,7 +168,7 @@ const getStyles = (theme) =>
     },
     glowButtonText: {
       color: theme.primary,
-      fontWeight: 500,
+      fontWeight: "500",
       fontSize: 19,
     },
   });

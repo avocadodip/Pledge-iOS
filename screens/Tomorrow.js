@@ -44,51 +44,47 @@ const Tomorrow = () => {
   }, [tmrwTodos, dayChanged]);
 
   return (
-    <SafeAreaView style={styles.pageContainer}>
+    <>
       <Animated.View
-        entering={FadeIn.duration(300)}
-        style={{width: "100%"}}
+        style={styles.pageContainer}
+        entering={FadeIn.duration(400)}
       >
-        {isOnboarded && !tmrwIsVacation && <DayStatusIndicator />}
-      </Animated.View>
+        <View style={{ width: "100%" }}>
+          {isOnboarded && !tmrwIsVacation && <DayStatusIndicator />}
+        </View>
 
-      <Animated.View
-        entering={FadeIn.duration(300)}
-        style={styles.headerContainer}
-      >
         <View style={styles.headerContainer}>
-          <View style={styles.headerTitleContainer}>
-            <Text style={styles.headerTitle}>Tmrw</Text>
-            <Text style={styles.headerDayOfWeek}>
-              {tmrwDOWAbbrev}, {tmrwDateNameAbbrev}
-            </Text>
+          <View style={styles.headerContainer}>
+            <View style={styles.headerTitleContainer}>
+              <Text style={styles.headerTitle}>Tmrw</Text>
+              <Text style={styles.headerDayOfWeek}>
+                {tmrwDOWAbbrev}, {tmrwDateNameAbbrev}
+              </Text>
+            </View>
           </View>
         </View>
-      </Animated.View>
 
-      <Animated.View
-        entering={FadeIn.duration(300)}
-        style={styles.pageContent}
-      >
-        {!isOnboarded ? (
-          <TodayTmrwMessage
-            type={"new user"}
-            setModalVisible={setModalVisible}
-          />
-        ) : tmrwIsVacation ? (
-          <TodayTmrwMessage type={"vacation"} />
-        ) : !tmrwIsActive ? (
-          <TodayTmrwMessage type={"rest day (tmrw screen)"} />
-        ) : (
-          <View style={styles.todosContainer}>{renderTodos()}</View>
-        )}
+        <View style={styles.pageContent}>
+          {!isOnboarded ? (
+            <TodayTmrwMessage
+              type={"new user"}
+              setModalVisible={setModalVisible}
+            />
+          ) : tmrwIsVacation ? (
+            <TodayTmrwMessage type={"vacation"} />
+          ) : !tmrwIsActive ? (
+            <TodayTmrwMessage type={"rest day (tmrw screen)"} />
+          ) : (
+            <View style={styles.todosContainer}>{renderTodos()}</View>
+          )}
+        </View>
       </Animated.View>
 
       <GettingStartedModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />
-    </SafeAreaView>
+    </>
   );
 };
 
@@ -137,7 +133,7 @@ const getStyles = (theme) =>
     startButton: {},
     startButtonText: {
       color: theme.primary,
-      fontWeight: 500,
+      fontWeight: "500",
       fontSize: 20,
     },
     timeZone: {

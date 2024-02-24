@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   mainButtonText: {
     fontSize: 18,
     color: Color.white,
-    fontWeight: 500,
+    fontWeight: "500",
   },
 
   // DISABLED CONTAINER
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   enableSubheader: {
     fontSize: 15,
     color: Color.white,
-    fontWeight: 400,
+    fontWeight: "400",
     marginBottom: 35,
     textAlign: "center",
     lineHeight: 20,
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   remindMeText: {
     fontSize: 17,
     color: Color.white,
-    fontWeight: 400,
+    fontWeight: "400",
   },
 
   // checkbox styles

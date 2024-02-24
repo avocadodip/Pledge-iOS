@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: Color.white,
     fontSize: 19,
-    fontWeight: 600,
+    fontWeight: "600",
   },
   buttonWrapper: {
     borderRadius: 10,

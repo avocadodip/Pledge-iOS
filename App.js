@@ -11,6 +11,7 @@ import TodoBottomSheet from "./components/todaytmrw/TodoBottomSheet";
 import { MenuProvider } from "react-native-popup-menu";
 import Auth from "./screens/Auth";
 import { createStackNavigator } from "@react-navigation/stack";
+import { SafeAreaView } from "react-native";
 
 const Stack = createStackNavigator();
 

@@ -25,6 +25,7 @@ import {
   PromptText,
 } from "../../screens/FinishSignup";
 import OnboardTimePicker from "./OnboardTimePicker";
+import DeleteAccountButton from "../settings/DeleteAccountButton";
 
 
 const GettingStartedModal = ({ modalVisible, setModalVisible }) => {
@@ -450,7 +451,7 @@ const getStyles = (theme) =>
     },
     buttonText: {
       color: "#f75f2cc4",
-      fontWeight: 700,
+      fontWeight: "700",
       fontSize: 20,
       textAlign: "center",
     },

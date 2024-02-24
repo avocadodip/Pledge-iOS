@@ -390,7 +390,7 @@ const getStyles = (theme) =>
     descText: {
       color: theme.primary,
       fontSize: 15,
-      fontWeight: 500,
+      fontWeight: "500",
       width: "100%",
     },
     textInput: {
@@ -409,7 +409,7 @@ const getStyles = (theme) =>
     },
     addPaymentButtonText: {
       color: theme.accent,
-      fontWeight: 500,
+      fontWeight: "500",
     },
 
     // DREAMS

@@ -85,7 +85,7 @@ const getStyles = (theme) =>
     },
     notificationText: {
       color: "white",
-      fontWeight: 800,
+      fontWeight: "800",
       fontSize: 13,
     },
   });

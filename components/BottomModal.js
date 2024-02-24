@@ -74,7 +74,7 @@ const getStyles = (theme) =>
     },
     modalTitle: {
       fontSize: 18,
-      fontWeight: 500,
+      fontWeight: "500",
       color: theme.primary,
     },
 

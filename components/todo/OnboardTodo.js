@@ -128,7 +128,7 @@ const getStyles = (theme, containerWidth) =>
     title: {
       color: "white",
       fontSize: 18,
-      fontWeight: 600,
+      fontWeight: "600",
     },
 
     dream: {
@@ -141,7 +141,7 @@ const getStyles = (theme, containerWidth) =>
     dreamText: {
       color: "white",
       fontSize: 13,
-      fontWeight: 500,
+      fontWeight: "500",
     },
     amount: {
       alignSelf: "flex-start",
@@ -153,6 +153,6 @@ const getStyles = (theme, containerWidth) =>
     amountText: {
       color: "white",
       fontSize: 17,
-      fontWeight: 600,
+      fontWeight: "600",
     },
   });

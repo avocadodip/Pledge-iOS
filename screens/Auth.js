@@ -44,6 +44,7 @@ import Animated, {
   SlideOutUp,
 } from "react-native-reanimated";
 import { doc, setDoc } from "firebase/firestore";
+import { useSettings } from "../hooks/SettingsContext";
 
 const BUTTON_BORDER_RADIUS = 15;
 const BUTTON_HEIGHT = 50;
@@ -51,6 +52,7 @@ const BUTTON_HEIGHT = 50;
 WebBrowser.maybeCompleteAuthSession();
 
 const Auth = () => {
+  const { setAppleSignInUser } = useSettings();
   const [request, response, promptAsync] = Google.useAuthRequest({
     iosClientId:
       "339175420075-v42r1ddjnh204setp3dqbvcrra44ld67.apps.googleusercontent.com",
@@ -95,23 +97,23 @@ const Auth = () => {
             rawNonce: nonce,
           });
 
-          if (
-            appleCredential.fullName &&
-            (appleCredential.fullName.givenName || appleCredential.fullName.familyName)
-          ) {
-            // Save user data to Firestore
-            await setDoc(doc(db, "users", auth.currentUser.uid), {
-              appleSignInUser: true,
-              fullName: appleCredential.fullName.givenName + " " + appleCredential.fullName.familyName,
-              email: auth.currentUser.email,
-            });
-          } 
-
           const { user } = await signInWithCredential(auth, credential);
           console.log("user signed in");
           console.log(user);
+
+          // if (appleCredential.fullName) {
+          //   if (appleCredential.fullName.givenName) {
+          //     userObject.givenName = appleCredential.fullName.givenName;
+          //   }
+          //   if (appleCredential.fullName.familyName) {
+          //     userObject.familyName = appleCredential.fullName.familyName;
+          //   }
+          // }
+          // await setDoc(doc(db, "users", user.uid), userObject);
         } catch (error) {
           console.error("Error signing in: ", error);
+        } finally {
+          setAppleSignInUser(true);
         }
       }
     } catch (e) {
@@ -139,21 +141,21 @@ const Auth = () => {
       >
         <View style={styles.buttonContainer}>
           <AnimatedButton
-            style={[styles.authButton, styles.googleButton]}
-            onPress={() => promptAsync()}
-          >
-            <Image
-              source={require("../assets/logos/Google.png")}
-              style={{ width: 22, height: 22 }}
-            />
-          </AnimatedButton>
-          <AnimatedButton
             style={[styles.authButton, styles.appleButton]}
             onPress={() => appleSignIn()}
           >
             <Image
               source={require("../assets/logos/Apple.png")}
               style={{ width: 18, height: 23 }}
+            />
+          </AnimatedButton>
+          <AnimatedButton
+            style={[styles.authButton, styles.googleButton]}
+            onPress={() => promptAsync()}
+          >
+            <Image
+              source={require("../assets/logos/Google.png")}
+              style={{ width: 22, height: 22 }}
             />
           </AnimatedButton>
         </View>

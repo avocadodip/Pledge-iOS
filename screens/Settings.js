@@ -349,7 +349,7 @@ const Settings = () => {
                       style={{
                         fontSize: 15,
                         color: theme.textHigh,
-                        fontWeight: 500,
+                        fontWeight: "500",
                       }}
                     >
                       All
@@ -579,7 +579,7 @@ const getStyles = (theme) =>
       color: theme.textHigh,
       fontSize: 15,
       marginLeft: 16,
-      fontWeight: 500,
+      fontWeight: "500",
     },
     daysOfWeekTextContainer: {
       flexDirection: "row",

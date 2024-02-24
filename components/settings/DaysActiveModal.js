@@ -81,7 +81,7 @@ const DaysActiveModal = ({ isVisible, handleToggleModal }) => {
 const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
-    fontWeight: 500,
+    fontWeight: "500",
     marginBottom: 1,
     color: Color.white,
   },

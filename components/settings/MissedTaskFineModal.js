@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontSize: 14,
     color: Color.white,
-    fontWeight: 400,
+    fontWeight: "400",
     textAlign: "center",
     lineHeight: 19,
   },
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   mainButtonText: {
     fontSize: 18,
     color: Color.white,
-    fontWeight: 500,
+    fontWeight: "500",
   },
 
   // DISABLED CONTAINER

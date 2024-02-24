@@ -39,6 +39,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Color.fervo_red,
     fontSize: 16,
-    fontWeight: 600,
+    fontWeight: "600",
   },
 });

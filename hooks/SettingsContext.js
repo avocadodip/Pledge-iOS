@@ -27,6 +27,7 @@ export const SettingsProvider = ({ children }) => {
   const [currentUserFirstName, setCurrentUserFirstName] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [appleSignInUser, setAppleSignInUser] = useState(null);
   const [userDataFetched, setUserDataFetched] = useState(false);
   const [todayPageLoaded, setTodayPageLoaded] = useState(false);
   const [finishSignup, setFinishSignup] = useState(false);
@@ -55,6 +56,7 @@ export const SettingsProvider = ({ children }) => {
   const resetStates = () => {
     setCurrentUserID(null);
     setIsAuthenticated(false);
+    setAppleSignInUser(false);
     setUserDataFetched(false);
     setTodayPageLoaded(false);
     setAllPastBetsDataFetched(false);
@@ -71,6 +73,12 @@ export const SettingsProvider = ({ children }) => {
       if (user) {
         setCurrentUserID(user.uid);
         setIsAuthenticated(true);
+
+        // Check if the user signed in using Apple
+        const isAppleUser = user.providerData.some(
+          (provider) => provider.providerId === "apple.com"
+        );
+        setAppleSignInUser(isAppleUser);
       } else {
         resetStates();
       }
@@ -346,7 +354,6 @@ export const SettingsProvider = ({ children }) => {
     setTmrwItemsLeft(tmrwCount);
 
     setDayCompleted(todayCount === 0 && tmrwCount === 0 && timeStatus > 0);
-
   }, [settings, timeStatus]);
 
   return (
@@ -359,6 +366,8 @@ export const SettingsProvider = ({ children }) => {
         currentUserEmail,
         setCurrentUserEmail,
         isAuthenticated,
+        appleSignInUser,
+        setAppleSignInUser,
         userDataFetched,
         todayPageLoaded,
         finishSignup,

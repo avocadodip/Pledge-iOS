@@ -129,7 +129,7 @@ const getStyles = (theme) =>
     promptText: {
       color: "white",
       fontSize: 26,
-      fontWeight: 600,
+      fontWeight: "600",
       alignSelf: "flex-start",
       lineHeight: 35,
     },
@@ -151,7 +151,7 @@ const getStyles = (theme) =>
     buttonTitleText: {
       color: "#ffffffb1",
       fontSize: 23,
-      fontWeight: 600,
+      fontWeight: "600",
     },
     buttonDescText: {
       color: "#ffffffb1",

@@ -122,7 +122,7 @@ export const getTodoStyles = (theme) =>
       color: theme.primary,
       fontSize: 12,
       lineHeight: 12,
-      fontWeight: 500,
+      fontWeight: "500",
     },
 
     // TITLE/DESCRIPTION

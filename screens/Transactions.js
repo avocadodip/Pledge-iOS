@@ -23,11 +23,9 @@ const Transactions = ({ navigation }) => {
   } = useSettings();
   const styles = getStyles(theme);
 
-  
   useEffect(() => {
     fetchTransactions();
   }, []);
-
 
   let message = "Today: Jun 30\nNext payment: Jul 1, 11:45 pm";
   return (
@@ -59,7 +57,6 @@ const Transactions = ({ navigation }) => {
                   paddingHorizontal: APP_HORIZONTAL_PADDING,
                   paddingTop: 7,
                   paddingBottom: 150,
-
                 }}
                 style={styles.sectionList}
                 renderSectionFooter={() => <View style={{ height: 10 }} />}
@@ -69,8 +66,8 @@ const Transactions = ({ navigation }) => {
               <View style={styles.textBox}>
                 <Text style={styles.infoText}>
                   Weekly charges will appear here.{"\n\n"}
-                  When a credit card is set up, a charge will occur on
-                  Saturday at 11:45pm.
+                  When a credit card is set up, weekly fines will occur on Saturday
+                  at 11:45pm.
                 </Text>
               </View>
             )
@@ -95,11 +92,11 @@ const getStyles = (theme) =>
   StyleSheet.create({
     pageContainer: {
       display: "flex",
+      flex: 1,
     },
     sectionList: {
       width: "100%",
       height: "100%",
-
     },
     bundleContainer: {
       marginBottom: 10,
@@ -114,15 +111,16 @@ const getStyles = (theme) =>
     },
 
     textBox: {
-      height: "90%",
       justifyContent: "center",
       alignItems: "center",
-      paddingHorizontal: 20,
+      paddingHorizontal: 30,
+      flex: 1,
+      paddingBottom: 130,
     },
     infoText: {
       textAlign: "center",
       color: theme.textHigh,
       fontSize: 16,
-      fontWeight: 500,
+      fontWeight: "500",
     },
   });

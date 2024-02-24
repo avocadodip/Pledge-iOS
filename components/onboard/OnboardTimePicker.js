@@ -263,7 +263,7 @@ const getStyles = (theme) =>
     buttonText: {
       color: Color.white,
       fontSize: 23,
-      fontWeight: 600,
+      fontWeight: "600",
     },
 
     // Modal and modal content styles
